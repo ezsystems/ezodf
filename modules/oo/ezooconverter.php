@@ -111,7 +111,6 @@ class eZOOConverter
             }
 
             /*
-               List test code
             $ooGenerator->addHeader( "Test code from here" );
             $ooGenerator->startList( "unordered" );
             $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
@@ -122,20 +121,39 @@ class eZOOConverter
             $ooGenerator->nextListItem();
             $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
             $ooGenerator->nextListItem();
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
             $ooGenerator->endList( );
 
             $ooGenerator->startList( "ordered" );
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->addParagraph( "Level 2" );
             $ooGenerator->nextListItem();
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->addParagraph( "Level 2" );
             $ooGenerator->nextListItem();
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->addParagraph( "Level 2" );
             $ooGenerator->nextListItem();
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->addParagraph( "Level 2" );
             $ooGenerator->nextListItem();
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+
+
             $ooGenerator->endList( );
+
+            $ooGenerator->startTable();
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->nextCell();
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->nextCell();
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->nextCell();
+
+            $ooGenerator->nextRow( "defaultstyle" );
+
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->nextCell();
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->nextCell();
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+
+            $ooGenerator->endTable();
+
             */
 
             /*
@@ -252,6 +270,28 @@ class eZOOConverter
                                 $generator->nextListItem();
                             }
                             $generator->endList();
+                        }break;
+
+                        case "table":
+                        {
+                            $generator->startTable();
+
+                            foreach ( $child->children() as $row )
+                            {
+                                foreach ( $row->children() as $cell )
+                                {
+                                    foreach ( $cell->children() as $cellNode )
+                                    {
+                                        if ( $cellNode->name() == "#text" )
+                                            $generator->addParagraph( $cellNode->content() );
+                                        else
+                                            eZOOConverter::handleNode( $cellNode, $generator, $level );
+                                    }
+                                    $generator->nextCell();
+                                }
+                                $generator->nextRow();
+                            }
+                            $generator->endTable();
                         }break;
 
                         case "object":

@@ -307,9 +307,19 @@ class eZOOGenerator
             }
             else
             {
-                $currentChild = $this->DocumentStack[$this->CurrentStackNumber]['CurrentChild'];
-                $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'][$currentChild][] = array( 'Type' => 'paragraph',
-                                                                                                        'Content' => array( array( 'Type' => 'text', "Content" => func_get_arg(0) ) ) );
+                if ( $this->DocumentStack[$this->CurrentStackNumber]['Type'] == 'list' )
+                {
+                    $currentChild = $this->DocumentStack[$this->CurrentStackNumber]['CurrentChild'];
+                    $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'][$currentChild][] = array( 'Type' => 'paragraph',
+                                                                                                            'Content' => array( array( 'Type' => 'text', "Content" => func_get_arg(0) ) ) );
+                }
+                else
+                {
+                    $currentRow = $this->DocumentStack[$this->CurrentStackNumber]['CurrentRow'];
+                    $currentCell = $this->DocumentStack[$this->CurrentStackNumber]['CurrentCell'];
+                    $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'][$currentRow][$currentCell][] = array( 'Type' => 'paragraph',
+                                                                                                            'Content' => array( array( 'Type' => 'text', "Content" => func_get_arg(0) ) ) );
+                }
             }
         }
     }
@@ -327,12 +337,13 @@ class eZOOGenerator
     }
 
     /*!
-      Starts a un-ordered or numbered list sequence. The $type parameter can either be the string
+      Starts an un-ordered or numbered list sequence. The $type parameter can either be the string
       unordered or ordered.
     */
     function startList( $type="unordered" )
     {
         $this->CurrentStackNumber += 1;
+        $this->DocumentStack[$this->CurrentStackNumber]['Tyoe'] = 'list';
         $this->DocumentStack[$this->CurrentStackNumber]['ListType'] = $type;
         $this->DocumentStack[$this->CurrentStackNumber]['CurrentChild'] = 0;
         $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'] = array();
@@ -366,6 +377,65 @@ class eZOOGenerator
             $this->DocumentArray[] = array( 'Type' => 'list',
                                             'ListType' => $this->DocumentStack[$this->CurrentStackNumber + 1]['ListType'],
                                             'Content' => $listItemArray );
+        }
+        else
+        {
+            // Inside a list or a table
+        }
+    }
+
+    /*!
+     Starts a new table sequence.
+    */
+    function startTable()
+    {
+        $this->CurrentStackNumber += 1;
+        $this->DocumentStack[$this->CurrentStackNumber]['Tyoe'] = 'table';
+        $this->DocumentStack[$this->CurrentStackNumber]['CurrentRow'] = 0;
+        $this->DocumentStack[$this->CurrentStackNumber]['CurrentCell'] = 0;
+        $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'] = array();
+    }
+
+    /*!
+      Starts a new table cell.
+    */
+    function nextCell()
+    {
+        $this->DocumentStack[$this->CurrentStackNumber]['CurrentCell'] += 1;
+    }
+
+    /*!
+      Starts a new table row.
+    */
+    function nextRow()
+    {
+        $this->DocumentStack[$this->CurrentStackNumber]['CurrentRow'] += 1;
+        $this->DocumentStack[$this->CurrentStackNumber]['CurrentCell'] = 0;
+    }
+
+    /*!
+      Ends a table sequence.
+    */
+    function endTable()
+    {
+        $rowArray = array();
+
+        foreach ( $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'] as $tableRowArray )
+        {
+            $cellArray = array();
+            foreach ( $tableRowArray as $cell )
+            {
+                $cellArray[] = $cell;
+            }
+            $rowArray[] = $cellArray;
+        }
+
+        $this->CurrentStackNumber -= 1;
+
+        if ( $this->CurrentStackNumber == 0 )
+        {
+            $this->DocumentArray[] = array( 'Type' => 'table',
+                                            'Content' => $rowArray );
         }
         else
         {
@@ -474,6 +544,39 @@ class eZOOGenerator
                 else
                     $contentXML .= "<text:unordered-list text:style-name='L1'>" . $listContent . "</text:unordered-list>";
 
+            }break;
+
+            case 'table':
+            {
+                $cellCount = 0;
+                $rowContent = "";
+                foreach ( $element['Content'] as $rowArray )
+                {
+                    $cellContent = "";
+                    $currentCellCount = 0;
+                    foreach ( $rowArray as $cellArray )
+                    {
+                        $currentCellCount += 1;
+                        if ( $currentCellCount > $cellCount )
+                            $cellCount = $currentCellCount;
+                        $cellElementContent = "";
+                        foreach ( $cellArray as $cellElement )
+                        {
+                            $cellElementContent .= $this->handleElement( $cellElement );
+                        }
+                        $cellContent .= "<table:table-cell table:style-name='Table1.A1' table:value-type='string'>" . $cellElementContent . "</table:table-cell>";
+                    }
+                    $rowContent .= "<table:table-row>" . $cellContent . "</table:table-row>";
+                }
+
+                $numberLetter = "A";
+                for ( $i =0; $i < $cellCount; $i++ )
+                {
+                    $columnDefinition .= "<table:table-column table:style-name='Table1.$numberLetter'/>";
+                    $numberLetter++;
+                }
+
+                $contentXML .= "<table:table table:name='Table1' table:style-name='Table1'>" . $columnDefinition . $rowContent . "</table:table>";
             }break;
 
             default:
