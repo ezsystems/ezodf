@@ -145,7 +145,7 @@ class eZOOImport
 
                     $xmlTextArray[$sectionName] = "<?xml version='1.0' encoding='utf-8' ?>" .
                          "<section xmlns:image='http://ez.no/namespaces/ezpublish3/image/' " .
-                         "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'>\<section>n" . $xmlText . $endSectionPart . "</section></section>";
+                         "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'><section>" . $xmlText . $endSectionPart . "</section></section>";
                 }
             }
         }
@@ -171,7 +171,7 @@ class eZOOImport
 
                 $xmlTextBody = "<?xml version='1.0' encoding='utf-8' ?>" .
                      "<section xmlns:image='http://ez.no/namespaces/ezpublish3/image/' " .
-                     "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'>\n<section>" . $xmlText . $endSectionPart . "</section></section>";
+                     "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'><section>" . $xmlText . $endSectionPart . "</section></section>";
             }
         }
 
@@ -208,8 +208,11 @@ class eZOOImport
                     switch( $dataMap[$attributeIdentifier]->DataTypeString )
                     {
                         case "ezstring":
+                        case "eztext":
                         {
-                            $dataMap[$attributeIdentifier]->setAttribute( 'data_text', trim( strip_tags( $xmlTextArray[$sectionName] ) ) );
+                            $dom =& $xml->domTree( $xmlTextArray[$sectionName] );
+                            $text = eZOOImport::domToText( $dom->root() );
+                            $dataMap[$attributeIdentifier]->setAttribute( 'data_text', trim( $text ) );
                             $dataMap[$attributeIdentifier]->store();
                         }break;
 
@@ -683,6 +686,26 @@ class eZOOImport
         }
 
         return $subNode;
+    }
+
+    /*!
+      \private
+      Converts a dom node/tree to a plain ascii string
+    */
+    function domToText( $node )
+    {
+        $textContent = "";
+
+        foreach ( $node->children() as $childNode )
+        {
+            $textContent .= eZOOImport::domToText( $childNode );
+        }
+
+        if  ( $node->name() == "#text" )
+        {
+            $textContent .= $node->content();
+        }
+        return $textContent;
     }
 
 
