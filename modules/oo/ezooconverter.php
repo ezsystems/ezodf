@@ -77,7 +77,11 @@ class eZOOConverter
                 {
                     case "ezstring":
                     {
-                        $ooGenerator->addHeader( $attribute->content() );
+                        $text = trim( $attribute->content() );
+                        if ( $text != "" )
+                        {
+                            $ooGenerator->addHeader( $attribute->content() );
+                        }
                     }break;
 
                     case "eztext":
@@ -97,7 +101,6 @@ class eZOOConverter
                                 eZOOConverter::handleNode( $node, $ooGenerator );
                             }
                         }
-
                     }break;
 
                     default:
@@ -130,13 +133,21 @@ class eZOOConverter
      \private
      Internal function to handle an eZXMLText node and convert it to OO format
     */
-    function handleNode( $node, &$generator )
+    function handleNode( $node, &$generator, $level = 0 )
     {
         switch ( $node->name() )
         {
+            case "section":
+            {
+                foreach ( $node->children() as $childNode )
+                {
+                    eZOOConverter::handleNode( $childNode, $generator, $level + 1 );
+                }
+            }break;
+
             case "header":
             {
-                $generator->addHeader( $node->textContent() );
+                $generator->addHeader( trim( $node->textContent() ), $level );
             }break;
 
             case "paragraph":
@@ -161,17 +172,20 @@ class eZOOConverter
                         {
                             // Only support objects of image class for now
                             $object = eZContentObject::fetch( $child->attributeValue( "id" ) );
-                            $classIdentifier = $object->attribute( "class_identifier" );
-
-                            // Todo: read class identifiers from configuration
-                            if ( $classIdentifier == "image" )
+                            if ( $object )
                             {
-                                $dataMap = $object->dataMap();
-                                $imageAttribute = $dataMap['image'];
+                                $classIdentifier = $object->attribute( "class_identifier" );
 
-                                $imageHandler = $imageAttribute->content();
-                                $originalImage= $imageHandler->attribute( 'original' );
-                                $imageArray[] = array( "FileName" => $originalImage['url'] );
+                                // Todo: read class identifiers from configuration
+                                if ( $classIdentifier == "image" )
+                                {
+                                    $dataMap = $object->dataMap();
+                                    $imageAttribute = $dataMap['image'];
+
+                                    $imageHandler = $imageAttribute->content();
+                                    $originalImage= $imageHandler->attribute( 'original' );
+                                    $imageArray[] = array( "FileName" => $originalImage['url'] );
+                                }
                             }
 
                         }break;
@@ -188,12 +202,11 @@ class eZOOConverter
 
                 foreach ( $imageArray as $image )
                 {
-                    print( $image['FileName'] );
                     $generator->addImage( $image['FileName'] );
                 }
             }break;
 
-                default:
+            default:
             {
                 eZDebug::writeError( "Unsupported node for document conversion: " . $node->name() );
             }break;

@@ -68,37 +68,42 @@ if ( $module->isCurrentAction( 'OOPlace' ) )
 
     if ( is_numeric( $nodeID ) )
     {
-        print( $nodeID );
         // Do the actual eZ publish export
         $fileName = eZOOConverter::objectToOO( $nodeID );
 
-        $contentLength = filesize( $fileName );
-        $originalFileName = "test.sxw";
-
-        // Download the file
-        header( "Pragma: " );
-        header( "Cache-Control: " );
-        /* Set cache time out to 10 minutes, this should be good enough to work around an IE bug */
-        header( "Expires: ". gmdate('D, d M Y H:i:s', time() + 600) . 'GMT');
-        header( "Content-Length: $contentLength" );
-        header( "Content-Type: application/vnd.sun.xml.writer" );
-        header( "X-Powered-By: eZ publish" );
-        header( "Content-disposition: attachment; filename=\"$originalFileName\"" );
-        header( "Content-Transfer-Encoding: binary" );
-        header( "Accept-Ranges: bytes" );
-
-        $fh = fopen( "$fileName", "rb" );
-        if ( $fileOffset )
+        if ( !is_array( $fileName ) )
         {
-            fseek( $fh, $fileOffset );
+            $contentLength = filesize( $fileName );
+            $originalFileName = "test.sxw";
+
+            // Download the file
+            header( "Pragma: " );
+            header( "Cache-Control: " );
+            /* Set cache time out to 10 minutes, this should be good enough to work around an IE bug */
+            header( "Expires: ". gmdate('D, d M Y H:i:s', time() + 600) . 'GMT');
+            header( "Content-Length: $contentLength" );
+            header( "Content-Type: application/vnd.sun.xml.writer" );
+            header( "X-Powered-By: eZ publish" );
+            header( "Content-disposition: attachment; filename=\"$originalFileName\"" );
+            header( "Content-Transfer-Encoding: binary" );
+            header( "Accept-Ranges: bytes" );
+
+            $fh = fopen( "$fileName", "rb" );
+            if ( $fileOffset )
+            {
+                fseek( $fh, $fileOffset );
+            }
+
+            ob_end_clean();
+            fpassthru( $fh );
+            fclose( $fh );
+            fflush();
+            eZExecution::cleanExit();
         }
-
-        ob_end_clean();
-        fpassthru( $fh );
-        fclose( $fh );
-        fflush();
-        eZExecution::cleanExit();
-
+        else
+        {
+            $tpl->setVariable( "error_string", $fileName[1] );
+        }
     }
 }
 

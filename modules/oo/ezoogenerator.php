@@ -49,6 +49,9 @@ include_once( "lib/ezfile/classes/ezfilehandler.php" );
 define( "EZ_OO_TEXT", 1001 );
 define( "EZ_OO_LINK", 1002 );
 
+define( "EZ_OO_ERROR_TEMPLATE_NOT_READABLE", 1010 );
+define( "EZ_OO_ERROR_COULD_NOT_COPY", 1011 );
+
 class eZOOGenerator
 {
     /*!
@@ -66,7 +69,7 @@ class eZOOGenerator
         include_once( "lib/ezfile/classes/ezdir.php" );
         $ooRootDir = "var/cache/oo/";
         $ooExportDir = "var/cache/oo/export/";
-        $ooTemplateDir = $ooRootDir . "template/";
+        $ooTemplateDir = $ooRootDir . "templates/";
         eZDir::mkdir( $ooRootDir );
         eZDir::mkdir( $ooExportDir );
         eZDir::mkdir( $ooTemplateDir );
@@ -125,19 +128,23 @@ class eZOOGenerator
                 require_once('extension/oo/lib/pclzip.lib.php');
                 $templateArchive = new PclZip( $templateFile );
                 $templateArchive->extract( PCLZIP_OPT_PATH, $ooTemplateDir );
+
+                if ( $templateArchive->errorCode() <> 0 )
+                {
+                    return array( EZ_OO_ERROR_TEMPLATE_NOT_READABLE, "Could not read template file" );
+                }
             }
 
             // Copy styles.xml and images, if any to the document beeing generated
             if ( !copy( $ooTemplateDir . "styles.xml", $ooExportDir . "styles.xml" ) )
             {
-                print( "Could not copy styles file" );
+                return array( EZ_OO_ERROR_COULD_NOT_COPY, "Could not copy the styles.xml file." );
             }
 
             $sourceDir = $ooTemplateDir . "Pictures";
             $destDir = $ooExportDir . "Pictures";
             eZDir::mkdir( $destDir );
             eZDir::copy( $sourceDir, $destDir, false, true );
-
         }
         else
         {
@@ -217,7 +224,7 @@ class eZOOGenerator
 
                 case "header":
                 {
-                    $contentXML .= "<text:h text:style-name='Heading 1' text:level='1'>" . $element['Text'] . "</text:h>";
+                    $contentXML .= "<text:h text:style-name='Heading " . $element['Level'] . "' text:level='" . $element['Level'] . "'>" . $element['Text'] . "</text:h>";
                 }break;
 
                 case "image" :
@@ -313,7 +320,7 @@ class eZOOGenerator
     /*!
       Adds a new header to the document.
     */
-    function addHeader( $text, $level )
+    function addHeader( $text, $level = 1 )
     {
         $this->DocumentArray[] = array( 'Type' => 'header',
                                         'Text' => $text,
