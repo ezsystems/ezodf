@@ -225,6 +225,13 @@ class eZOOImport
             $operationResult = eZOperationHandler::execute( 'content', 'publish', array( 'object_id' => $contentObjectID,
                                                                                          'version' => 1 ) );
 
+            // Publish all embedded images as related objects
+            foreach ( $this->RelatedImageArray as $image )
+            {
+                $contentObject->addContentObjectRelation( $image['ID'], 1 );
+                print( "adding related object<br>" );
+            }
+
             $mainNode = $contentObject->attribute( 'main_node' );
             // Create object stop.
             $importResult['URLAlias'] = $mainNode->attribute( 'url_alias' );
@@ -509,6 +516,7 @@ class eZOOImport
                     $imageContent->initializeFromFile( $href );
                     $dataMap['image']->store();
 
+                    $this->RelatedImageArray[] = array( "ID" => $contentObjectID );
 
                     include_once( 'lib/ezutils/classes/ezoperationhandler.php' );
                     $operationResult = eZOperationHandler::execute( 'content', 'publish', array( 'object_id' => $contentObjectID,
@@ -528,6 +536,8 @@ class eZOOImport
 
         return $paragraphContent;
     }
+
+    var $RelatedImageArray = array();
 }
 
 ?>
