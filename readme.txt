@@ -47,7 +47,36 @@ and this can be imported automatically to an article while another document is
 imported as a product. This is configured in oo.ini. See the examples for sample 
 documents.
 
+Export
+......
+During the export of content you have the possibility to specify an OpenOffice.org 
+Writer template file to style your document. This template file is simply placed in 
+the templates/ subdirectory of the OpenOffice.org extension. Then you set the setting
+UseTemplate=true in oo.ini and put the name of the document in the setting 
+TemplateName=mytemplate.stw.
+
 Examples
 --------
 There are some documents under examples/ in the oo extension which you can use to 
 test the import to eZ publish. 
+
+Supported features
+------------------
+The integration between OpenOffice.org has some limitations. There is a difference
+in the way OpenOffice.org and eZ publish handles content in terms of presentation.
+
+The following is a summary of the supported features during import and export.
+
+Import features
+...............
+* Normal paragraph text
+* Bold and italic text span
+* Multiple levels of headers
+
+
+Export features
+...............
+
+* Normal paragraph text
+* Multiple levels of headers
+* Images with sizes and alignment

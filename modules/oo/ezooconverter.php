@@ -147,6 +147,8 @@ class eZOOConverter
 
             case "header":
             {
+                if ( $level == 0 )
+                    $level = 1;
                 $generator->addHeader( trim( $node->textContent() ), $level );
             }break;
 
@@ -179,12 +181,21 @@ class eZOOConverter
                                 // Todo: read class identifiers from configuration
                                 if ( $classIdentifier == "image" )
                                 {
+                                    $imageSize = $child->attributeValue( 'size' );
+                                    $imageAlignment = $child->attributeValue( 'align' );
+
                                     $dataMap = $object->dataMap();
                                     $imageAttribute = $dataMap['image'];
 
                                     $imageHandler = $imageAttribute->content();
-                                    $originalImage= $imageHandler->attribute( 'original' );
-                                    $imageArray[] = array( "FileName" => $originalImage['url'] );
+                                    $originalImage = $imageHandler->attribute( 'original' );
+                                    $displayImage = $imageHandler->attribute( $imageSize );
+                                    $displayWidth = $displayImage['width'];
+                                    $displayHeight = $displayImage['height'];
+                                    $imageArray[] = array( "FileName" => $originalImage['url'],
+                                                           "Alignment" => $imageAlignment,
+                                                           "DisplayWidth" => $displayWidth,
+                                                           "DisplayHeight" => $displayHeight );
                                 }
                             }
 
@@ -202,7 +213,7 @@ class eZOOConverter
 
                 foreach ( $imageArray as $image )
                 {
-                    $generator->addImage( $image['FileName'] );
+                    $generator->addImage( $image );
                 }
             }break;
 
@@ -211,12 +222,6 @@ class eZOOConverter
                 eZDebug::writeError( "Unsupported node for document conversion: " . $node->name() );
             }break;
         }
-/*
-        foreach ( $node->children() as $child )
-        {
-            print( $child->name() . "<br>"  );
-        }
-*/
     }
 }
 

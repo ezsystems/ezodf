@@ -10,4 +10,5 @@ Changes from 1.0 Alpha 1 to 1.0 Beta 1
   Template usage can be turned on/off in oo.ini, template file is also set in oo.ini
 - Added better error checking
 - Added support for multiple levels of headers in export
-- Added support for importing image size and alignment during import
+- Added support for image size and alignment during import
+- Added support for image size and alignment during export

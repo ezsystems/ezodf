@@ -178,7 +178,14 @@ class eZOOGenerator
                       "<office:document-content xmlns:office='http://openoffice.org/2000/office' xmlns:style='http://openoffice.org/2000/style' xmlns:text='http://openoffice.org/2000/text' xmlns:table='http://openoffice.org/2000/table' xmlns:draw='http://openoffice.org/2000/drawing' xmlns:fo='http://www.w3.org/1999/XSL/Format' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:number='http://openoffice.org/2000/datastyle' xmlns:svg='http://www.w3.org/2000/svg' xmlns:chart='http://openoffice.org/2000/chart' xmlns:dr3d='http://openoffice.org/2000/dr3d' xmlns:math='http://www.w3.org/1998/Math/MathML' xmlns:form='http://openoffice.org/2000/form' xmlns:script='http://openoffice.org/2000/script' office:class='text' office:version='1.0'>" .
                      " <office:script/>" .
                      " <office:font-decls/>" .
-                     " <office:automatic-styles/>" .
+                     " <office:automatic-styles>" .
+                     "   <style:style style:name='imageright' style:family='graphics' style:parent-style-name='Graphics'>" .
+                     "     <style:properties style:wrap='left' style:number-wrapped-paragraphs='no-limit' style:wrap-contour='false' style:vertical-pos='top' style:vertical-rel='paragraph' style:horizontal-pos='right' style:horizontal-rel='paragraph' style:mirror='none' fo:clip='rect(0inch 0inch 0inch 0inch)' draw:luminance='0%' draw:contrast='0%' draw:red='0%' draw:green='0%' draw:blue='0%' draw:gamma='1' draw:color-inversion='false' draw:transparency='0%' draw:color-mode='standard'/>" .
+                     "  </style:style>\n" .
+                     "  <style:style style:name='imageleft' style:family='graphics' style:parent-style-name='Graphics'>" .
+                     "     <style:properties style:wrap='right' style:number-wrapped-paragraphs='no-limit' style:wrap-contour='false' style:horizontal-pos='left' style:horizontal-rel='paragraph' style:mirror='none' fo:clip='rect(0inch 0inch 0inch 0inch)' draw:luminance='0%' draw:contrast='0%' draw:red='0%' draw:green='0%' draw:blue='0%' draw:gamma='1' draw:color-inversion='false' draw:transparency='0%' draw:color-mode='standard'/>" .
+                     "  </style:style>" .
+                     " </office:automatic-styles>" .
                      " <office:body>" .
                      "  <text:sequence-decls>" .
                      "  <text:sequence-decl text:display-outline-level='0' text:name='Illustration'/>" .
@@ -224,15 +231,14 @@ class eZOOGenerator
 
                 case "header":
                 {
-                    $contentXML .= "<text:h text:style-name='Heading " . $element['Level'] . "' text:level='" . $element['Level'] . "'>" . $element['Text'] . "</text:h>";
+                    $contentXML .= "\n<text:h text:style-name='Heading " . $element['Level'] . "' text:level='" . $element['Level'] . "'>" . $element['Text'] . "</text:h>\n";
                 }break;
 
                 case "image" :
                 {
                     $uniquePart = substr( md5( mktime() . rand( 0, 20000 ) ), 6 );
                     $fileName = $element['SRC'];
-                    $documentRoot = "var/cache/oo/";
-                    $destFile = $documentRoot . "Pictures/" . $uniquePart . basename( $fileName );
+                    $destFile = $ooExportDir . "Pictures/" . $uniquePart . basename( $fileName );
                     $relativeFile = "Pictures/" . $uniquePart . basename( $fileName );
 
                     if ( copy( $fileName, $destFile ) )
@@ -240,11 +246,20 @@ class eZOOGenerator
                         $realFileName = $destFile;
                         $sizeArray = getimagesize( $destFile );
 
-                        $width = ( (double)$sizeArray[0] / (double)150 );
-                        $height = ( (double)$sizeArray[1] / (double)150 );
+                        $widthRatio = ( $element['DisplayWidth'] / 580 ) * 100;
+                        $width = 6 * $widthRatio / 100;
+
+                        $imageAspect = $sizeArray[0] / $sizeArray[1];
+                        $height = $width / $imageAspect;
+
+                        $styleName = "fr1";
+                        if ( $element['Alignment'] == "left" )
+                            $styleName = "imageleft";
+                        if ( $element['Alignment'] == "right" )
+                            $styleName = "imageright";
 
                         $contentXML .= "<text:p text:style-name='Standard'>" .
-                             "<draw:image draw:style-name='fr1'
+                             "<draw:image draw:style-name='$styleName'
                                                 draw:name='Graphic1'
                                                 text:anchor-type='paragraph'
                                                 svg:width='" . $width ."inch'
@@ -381,7 +396,10 @@ class eZOOGenerator
     function addImage( $fileName )
     {
         $this->DocumentArray[] = array( 'Type' => 'image',
-                                        'SRC' => $fileName );
+                                        'SRC' => $fileName['FileName'],
+                                        'Alignment' => $fileName['Alignment'],
+                                        'DisplayWidth' => $fileName['DisplayWidth'],
+                                        'DisplayHeight' => $fileName['DisplayHeight'] );
     }
 
     var $DocumentArray = array();
