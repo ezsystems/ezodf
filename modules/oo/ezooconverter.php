@@ -120,16 +120,9 @@ class eZOOConverter
             $ooGenerator->addImage("documents/ooo_logo.gif" );
             */
 
-            $ooGenerator->writeDocument();
+            $destFile = $ooGenerator->writeDocument();
 
-            // Todo: find a more compatible zip function
-            $currentDir = getcwd();
-            chdir( "var/cache/oo" );
-            exec( "zip -r ../ootest.sxw *", $result );
-            chdir( $currentDir );
-
-            $fileName = "var/cache/ootest.sxw";
-            return $fileName;
+            return $destFile;
         }
     }
 

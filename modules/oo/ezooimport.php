@@ -66,8 +66,18 @@ class eZOOImport
         $http =& eZHTTPTool::instance();
         $file = $http->sessionVariable( "oo_import_filename" );
 
-        // Need to have the unzip command on the local filesystem.
-        exec( "unzip -o $file -d var/cache/oo", $unzipResult );
+        // Check if zlib extension is loaded, if it's loaded use bundled ZIP library,
+        // if not rely on the unzip commandline version.
+        if ( !function_exists( 'gzopen' ) )
+        {
+            exec( "unzip -o $file -d var/cache/oo", $unzipResult );
+        }
+        else
+        {
+            require_once('extension/oo/lib/pclzip.lib.php');
+            $archive = new PclZip( $file );
+            $archive->extract( PCLZIP_OPT_PATH, "var/cache/oo" );
+        }
 
         $fileName = "var/cache/oo/content.xml";
         $xml = new eZXML();
@@ -170,7 +180,6 @@ class eZOOImport
 
             if ( $customClassFound == true )
             {
-                print( "custom class" );
                 // Initialize the actual object attributes
                 $attributeArray = $ooINI->variable( $importClassIdentifier, 'Attribute' );
                 foreach ( $attributeArray as $attributeIdentifier => $sectionName  )

@@ -57,7 +57,7 @@ class eZOOGenerator
     }
 
 
-    function writeDocument()
+    function writeDocument( )
     {
 
         // Write meta XML file
@@ -240,6 +240,29 @@ class eZOOGenerator
         $fp = fopen( $fileName, "w" );
         fwrite( $fp, $manifestXML );
         fclose( $fp );
+
+
+        // Check if zlib extension is loaded, if it's loaded use bundled ZIP library,
+        // if not rely on the zip commandline version.
+        if ( !function_exists( 'gzopen' ) )
+        {
+            $currentDir = getcwd();
+            chdir( "var/cache/oo" );
+            exec( "zip -r ../ootest.sxw *", $result );
+            chdir( $currentDir );
+        }
+        else
+        {
+            print( "using extension" );
+            require_once('extension/oo/lib/pclzip.lib.php');
+            $archive = new PclZip( "var/cache/ootest.sxw" );
+            $archive->create( "var/cache/oo",
+                              PCLZIP_OPT_REMOVE_PATH, 'var/cache/oo' );
+        }
+
+        $fileName = "var/cache/ootest.sxw";
+
+        return $fileName;
     }
 
     /*!
