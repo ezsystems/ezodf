@@ -252,13 +252,24 @@ class eZOOImport
                 {
                     $level = $node->attributeValueNS( 'level', 'http://openoffice.org/2000/text' );
 
+                    if ( $level > 6 )
+                        $level = 6;
+
                     if ( $level >= 1 && $level <= 6 )
                     {
                         $sectionLevel = $level;
-                        $xhtmlTextContent .= "<header>" . $node->textContent() . "</header>\n";
+                        $headerContent = "";
+                        foreach ( $node->children() as $childNode )
+                        {
+                            $headerContent .= eZOOImport::handleInlineNode( $childNode );
+                        }
+
+                        $xhtmlTextContent .= "<header>" . $headerContent . "</header>\n";
                     }
                     else
-                        print( "Unsupported header level" );
+                    {
+                        print( "Unsupported header level $level<br>" . $node->textContent() . "<br>" );
+                    }
                 }break;
 
                 case 'p' :
@@ -266,122 +277,13 @@ class eZOOImport
                     $paragraphContent = "";
                     foreach ( $node->children() as $childNode )
                     {
-                        switch ( $childNode->name() )
-                        {
-                            case "text-box":
-                            {
-                                foreach ( $childNode->children() as $textBoxNode )
-                                {
-                                    $boxContent .= eZOOImport::handleNode( $textBoxNode );
-                                }
-
-                                // Textboxes are defined inside paragraphs.
-                                $paragraphContent .= "</paragraph>$boxContent<paragraph>";
-                            }break;
-
-                            case "s" :
-                            {
-                                $paragraphContent .= "&nbsp;";
-                            }break;
-
-                            case "a" :
-                            {
-                                $href = $childNode->attributeValueNS( 'href', 'http://www.w3.org/1999/xlink' );
-                                $paragraphContent .= "<link href='$href'>" . $childNode->textContent() . "</link>";
-                            }break;
-
-                            case "#text" :
-                            {
-                                $tagContent =& str_replace( "&", "&amp;", $childNode->content() );
-                                $tagContent =& str_replace( ">", "&gt;", $tagContent );
-                                $tagContent =& str_replace( "<", "&lt;", $tagContent );
-                                $tagContent =& str_replace( "'", "&apos;", $tagContent );
-                                $tagContent =& str_replace( '"', "&quot;", $tagContent );
-
-                                $paragraphContent .= $tagContent;
-                            }break;
-
-                            case "span" :
-                            {
-                                // Todo: do actual lookup of the style
-                                $styleName = $childNode->attributeValueNS( 'style-name', 'http://openoffice.org/2000/text' );
-
-                                switch ( $styleName )
-                                {
-                                    case 'T1':
-                                    {
-                                        $paragraphContent .= "<strong>" . $childNode->textContent() . "</strong>";
-                                    }break;
-
-                                    case 'T2':
-                                    {
-                                        $paragraphContent .= "<emphasize>" . $childNode->textContent() . "</emphasize>";
-                                    }break;
-
-                                    default:
-                                    {
-                                        $paragraphContent .= $childNode->textContent();
-                                    }break;
-                                }
-                            }break;
-
-                            case "image" :
-                            {
-                                $href = ltrim( $childNode->attributeValueNS( 'href', 'http://www.w3.org/1999/xlink' ), '#' );
-
-                                $href = "var/cache/oo/" . $href;
-
-                                if ( file_exists( $href ) )
-                                {
-                                    // Import image
-                                    $classID = 5;
-                                    $class =& eZContentClass::fetch( $classID );
-                                    $creatorID = 14; // 14 == admin
-                                    $parentNodeID = 51;
-                                    $contentObject =& $class->instantiate( $creatorID, 1 );
-
-                                    $nodeAssignment =& eZNodeAssignment::create( array(
-                                                                                     'contentobject_id' => $contentObject->attribute( 'id' ),
-                                                                                     'contentobject_version' => $contentObject->attribute( 'current_version' ),
-                                                                                     'parent_node' => $parentNodeID,
-                                                                                     'is_main' => 1
-                                                                                     )
-                                                                                 );
-                                    $nodeAssignment->store();
-
-                                    $version =& $contentObject->version( 1 );
-                                    $version->setAttribute( 'modified', eZDateTime::currentTimeStamp() );
-                                    $version->setAttribute( 'status', EZ_VERSION_STATUS_DRAFT );
-                                    $version->store();
-
-                                    $contentObjectID = $contentObject->attribute( 'id' );
-                                    $dataMap =& $contentObject->dataMap();
-
-                                    $dataMap['name']->setAttribute( 'data_text', "Imported Image" );
-                                    $dataMap['name']->store();
-
-                                    $imageContent =& $dataMap['image']->attribute( 'content' );
-                                    $imageContent->initializeFromFile( $href );
-                                    $dataMap['image']->store();
-
-
-                                    include_once( 'lib/ezutils/classes/ezoperationhandler.php' );
-                                    $operationResult = eZOperationHandler::execute( 'content', 'publish', array( 'object_id' => $contentObjectID,
-                                                                                                                 'version' => 1 ) );
-
-                                    $paragraphContent .= "<object id='$contentObjectID' align='center' size='large' />";
-                                }
-
-                            }break;
-
-                            default:
-                            {
-                                print( "Unsupported node: " . $childNode->name() . "<br>" );
-                            }break;
-
-                        }
+                        $paragraphContent .= eZOOImport::handleInlineNode( $childNode );
                     }
-                    $xhtmlTextContent .= '<paragraph>' . $paragraphContent . "</paragraph>\n";
+
+                    if ( trim( $paragraphContent ) != "" )
+                    {
+                        $xhtmlTextContent .= '<paragraph>' . $paragraphContent . "</paragraph>\n";
+                    }
                 }break;
 
 
@@ -475,10 +377,144 @@ class eZOOImport
                 default:
                 {
                     print( "Unsupported top node " . $node->name() . "<br/" );
-                }
+                }break;
             }
         }
         return $xhtmlTextContent;
+    }
+
+    /*!
+      Handles the rendering of line nodes, e.g. inside paragraphs and headers.
+     */
+    function handleInlineNode( $childNode )
+    {
+        $paragraphContent = "";
+        switch ( $childNode->name() )
+        {
+            case "text-box":
+            {
+                foreach ( $childNode->children() as $textBoxNode )
+                {
+                    $boxContent .= eZOOImport::handleNode( $textBoxNode );
+                }
+
+                // Textboxes are defined inside paragraphs.
+                $paragraphContent .= "</paragraph>$boxContent<paragraph>";
+            }break;
+
+            case "date" :
+            {
+                $paragraphContent .= $childNode->textContent();
+            }break;
+
+            case "initial-creator" :
+            {
+                $paragraphContent .= $childNode->textContent();
+            }break;
+
+            case "s" :
+            {
+                $paragraphContent .= "&nbsp;";
+            }break;
+
+            case "a" :
+            {
+                $href = $childNode->attributeValueNS( 'href', 'http://www.w3.org/1999/xlink' );
+                $paragraphContent .= "<link href='$href'>" . $childNode->textContent() . "</link>";
+            }break;
+
+            case "#text" :
+            {
+                $tagContent =& str_replace( "&", "&amp;", $childNode->content() );
+                $tagContent =& str_replace( ">", "&gt;", $tagContent );
+                $tagContent =& str_replace( "<", "&lt;", $tagContent );
+                $tagContent =& str_replace( "'", "&apos;", $tagContent );
+                $tagContent =& str_replace( '"', "&quot;", $tagContent );
+
+                $paragraphContent .= $tagContent;
+            }break;
+
+            case "span" :
+            {
+                // Todo: do actual lookup of the style
+                $styleName = $childNode->attributeValueNS( 'style-name', 'http://openoffice.org/2000/text' );
+
+                switch ( $styleName )
+                {
+                    case 'T1':
+                    {
+                        $paragraphContent .= "<strong>" . $childNode->textContent() . "</strong>";
+                    }break;
+
+                    case 'T2':
+                    {
+                        $paragraphContent .= "<emphasize>" . $childNode->textContent() . "</emphasize>";
+                    }break;
+
+                    default:
+                    {
+                        $paragraphContent .= $childNode->textContent();
+                    }break;
+                }
+            }break;
+
+            case "image" :
+            {
+                $href = ltrim( $childNode->attributeValueNS( 'href', 'http://www.w3.org/1999/xlink' ), '#' );
+
+                $href = "var/cache/oo/" . $href;
+
+                if ( file_exists( $href ) )
+                {
+                    // Import image
+                    $classID = 5;
+                    $class =& eZContentClass::fetch( $classID );
+                    $creatorID = 14; // 14 == admin
+                    $parentNodeID = 51;
+                    $contentObject =& $class->instantiate( $creatorID, 1 );
+
+                    $nodeAssignment =& eZNodeAssignment::create( array(
+                                                                     'contentobject_id' => $contentObject->attribute( 'id' ),
+                                                                     'contentobject_version' => $contentObject->attribute( 'current_version' ),
+                                                                     'parent_node' => $parentNodeID,
+                                                                     'is_main' => 1
+                                                                     )
+                                                                 );
+                    $nodeAssignment->store();
+
+                    $version =& $contentObject->version( 1 );
+                    $version->setAttribute( 'modified', eZDateTime::currentTimeStamp() );
+                    $version->setAttribute( 'status', EZ_VERSION_STATUS_DRAFT );
+                    $version->store();
+
+                    $contentObjectID = $contentObject->attribute( 'id' );
+                    $dataMap =& $contentObject->dataMap();
+
+                    $dataMap['name']->setAttribute( 'data_text', "Imported Image" );
+                    $dataMap['name']->store();
+
+                    $imageContent =& $dataMap['image']->attribute( 'content' );
+                    $imageContent->initializeFromFile( $href );
+                    $dataMap['image']->store();
+
+
+                    include_once( 'lib/ezutils/classes/ezoperationhandler.php' );
+                    $operationResult = eZOperationHandler::execute( 'content', 'publish', array( 'object_id' => $contentObjectID,
+                                                                                                 'version' => 1 ) );
+
+                    $paragraphContent .= "<object id='$contentObjectID' align='center' size='large' />";
+                }
+
+            }break;
+
+            default:
+            {
+                print( "Unsupported node: " . $childNode->name() . "<br>" );
+            }break;
+
+        }
+
+        return $paragraphContent;
     }
 }
 
