@@ -61,8 +61,7 @@ class eZOOImport
         $importResult = array();
         include_once( "lib/ezfile/classes/ezdir.php" );
         $unzipResult = "";
-        $importDir = "var/cache/oo/import/";
-        eZDir::mkdir( $importDir );
+        eZDir::mkdir( $this->ImportDir );
 
         $http =& eZHTTPTool::instance();
         $file = $http->sessionVariable( "oo_import_filename" );
@@ -71,16 +70,16 @@ class eZOOImport
         // if not rely on the unzip commandline version.
         if ( !function_exists( 'gzopen' ) )
         {
-            exec( "unzip -o $file -d $importDir", $unzipResult );
+            exec( "unzip -o $file -d " . $this->ImportDir, $unzipResult );
         }
         else
         {
             require_once('extension/oo/lib/pclzip.lib.php');
             $archive = new PclZip( $file );
-            $archive->extract( PCLZIP_OPT_PATH, $importDir );
+            $archive->extract( PCLZIP_OPT_PATH, $this->ImportDir );
         }
 
-        $fileName = $importDir . "content.xml";
+        $fileName = $this->ImportDir . "content.xml";
         $xml = new eZXML();
         $dom =& $xml->domTree( file_get_contents( $fileName ) );
 
@@ -290,7 +289,7 @@ class eZOOImport
         }
 
         // Clean up
-        eZDir::recursiveDelete( $importDir );
+//        eZDir::recursiveDelete( $this->ImportDir );
         return $importResult;
     }
 
@@ -556,7 +555,7 @@ Illustration
             {
                 $href = ltrim( $childNode->attributeValueNS( 'href', 'http://www.w3.org/1999/xlink' ), '#' );
 
-                $href = $importDir . $href;
+                $href = $this->ImportDir . $href;
 
                 // Check image size
                 $imageSize = "large";
@@ -608,6 +607,7 @@ Illustration
                     }
                 }
 
+                print( "Checking file: $href <br>" );
                 if ( file_exists( $href ) )
                 {
                     // Import image
@@ -636,6 +636,7 @@ Illustration
                                                         "ContentObject" => $contentObject );
 
                     $paragraphContent .= "<object id='$contentObjectID' align='$imageAlignment' size='$imageSize' />";
+
                 }
 
             }break;
@@ -730,6 +731,7 @@ Illustration
 
     var $RelatedImageArray = array();
     var $AutomaticStyles = array();
+    var $ImportDir = "var/cache/oo/import/";
 }
 
 ?>
