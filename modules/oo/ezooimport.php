@@ -83,6 +83,13 @@ class eZOOImport
         $xml = new eZXML();
         $dom =& $xml->domTree( file_get_contents( $fileName ) );
 
+        // Fetch the automatic document styles
+        $automaticStyleArray =& $dom->elementsByNameNS( 'automatic-styles', 'http://openoffice.org/2000/office' );
+        if ( count( $automaticStyleArray ) == 1 )
+        {
+            $this->AutomaticStyles = $automaticStyleArray[0]->children();
+        }
+
         // Fetch the body section content
         $sectionNodeArray =& $dom->elementsByNameNS( 'section', 'http://openoffice.org/2000/text' );
 
@@ -266,7 +273,6 @@ class eZOOImport
             $importResult['URLAlias'] = $mainNode->attribute( 'url_alias' );
             $importResult['ClassIdentifier'] = $importClassIdentifier;
         }
-
         return $importResult;
     }
 
@@ -512,26 +518,65 @@ class eZOOImport
 
                 $href = "var/cache/oo/" . $href;
 
+                // Check image size
+                $imageSize = "large";
+                $pageWidth = 6;
+                $width = $childNode->attributeValueNS( 'width', 'http://www.w3.org/2000/svg' );
+                $sizePercentage = $width / $pageWidth * 100;
+
+                if ( $sizePercentage < 80 and $sizePercentage > 30 )
+                    $imageSize = 'medium';
+
+                if ( $sizePercentage <= 30 )
+                    $imageSize = 'small';
+
+                $styleName = $childNode->attributeValueNS( 'style-name', 'http://openoffice.org/2000/drawing' );
+
+                // Check for style definitions
+                $imageAlignment = "center";
+                foreach ( $this->AutomaticStyles as $style )
+                {
+                    $tmpStyleName = $style->attributeValueNS( "name", "http://openoffice.org/2000/style" );
+                    if ( $styleName == $tmpStyleName )
+                    {
+                        if ( count( $style->children() == 1 ) )
+                        {
+                            $children = $style->children();
+                            $properties = $children[0];
+                            $alignment = $properties->attributeValueNS( "horizontal-pos", "http://openoffice.org/2000/style" );
+                        }
+
+                        // Check image alignment
+                        switch ( $alignment )
+                        {
+                            case "left":
+                            {
+                                $imageAlignment = "left";
+                            }break;
+
+                            case "right":
+                            {
+                                $imageAlignment = "right";
+                            }break;
+
+                            default:
+                            {
+                                $imageAlignment = "center";
+                            }break;
+                        }
+                        break;
+                    }
+                }
+
                 if ( file_exists( $href ) )
                 {
                     // Import image
                     $classID = 5;
                     $class =& eZContentClass::fetch( $classID );
-                    $creatorID = 14; // 14 == admin
-//                    $parentNodeID = 51;
+                    $creatorID = 14;
+
                     $contentObject =& $class->instantiate( $creatorID, 1 );
 
-                    /*
-                    $nodeAssignment =& eZNodeAssignment::create( array(
-                                                                     'contentobject_id' => $contentObject->attribute( 'id' ),
-                                                                     'contentobject_version' => $contentObject->attribute( 'current_version' ),
-                                                                     'parent_node' => $parentNodeID,
-                                                                     'is_main' => 1
-                                                                     )
-                                                                 );
-                    $nodeAssignment->store();
-
-                    */
                     $version =& $contentObject->version( 1 );
                     $version->setAttribute( 'modified', eZDateTime::currentTimeStamp() );
                     $version->setAttribute( 'status', EZ_VERSION_STATUS_DRAFT );
@@ -550,13 +595,7 @@ class eZOOImport
                     $this->RelatedImageArray[] = array( "ID" => $contentObjectID,
                                                         "ContentObject" => $contentObject );
 
-                    /*
-                    include_once( 'lib/ezutils/classes/ezoperationhandler.php' );
-                    $operationResult = eZOperationHandler::execute( 'content', 'publish', array( 'object_id' => $contentObjectID,
-                                                                                                 'version' => 1 ) );
-                    */
-
-                    $paragraphContent .= "<object id='$contentObjectID' align='center' size='large' />";
+                    $paragraphContent .= "<object id='$contentObjectID' align='$imageAlignment' size='$imageSize' />";
                 }
 
             }break;
@@ -630,6 +669,7 @@ class eZOOImport
 
 
     var $RelatedImageArray = array();
+    var $AutomaticStyles = array();
 }
 
 ?>
