@@ -63,7 +63,6 @@ class eZOOImport
         $unzipResult = "";
         eZDir::mkdir( $this->ImportDir );
 
-        print( $this->ImportDir );
         $http =& eZHTTPTool::instance();
         $file = $http->sessionVariable( "oo_import_filename" );
 
@@ -143,8 +142,9 @@ class eZOOImport
                     $levelDiff = 1 - $level;
                     if ( $levelDiff < 0 )
                         $endSectionPart = str_repeat( "</section>", abs( $levelDiff ) );
+                    $charset = eZTextCodec::internalCharset();
 
-                    $xmlTextArray[$sectionName] = "<?xml version='1.0' encoding='utf-8' ?>" .
+                    $xmlTextArray[$sectionName] = "<?xml version='1.0' encoding='$charset' ?>" .
                          "<section xmlns:image='http://ez.no/namespaces/ezpublish3/image/' " .
                          "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'><section>" . $xmlText . $endSectionPart . "</section></section>";
                 }
@@ -170,7 +170,8 @@ class eZOOImport
                 if ( $levelDiff < 0 )
                     $endSectionPart = str_repeat( "</section>", abs( $levelDiff ) );
 
-                $xmlTextBody = "<?xml version='1.0' encoding='utf-8' ?>" .
+                $charset = eZTextCodec::internalCharset();
+                $xmlTextBody = "<?xml version='1.0' encoding='$charset' ?>" .
                      "<section xmlns:image='http://ez.no/namespaces/ezpublish3/image/' " .
                      "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'><section>" . $xmlText . $endSectionPart . "</section></section>";
             }
@@ -472,16 +473,6 @@ class eZOOImport
         {
             case "text-box":
             {
-                /*
-
-                    <text:p text:style-name="Illustration">
-                    <draw:image draw:style-name="fr2" draw:name="Graphic1" text:anchor-type="paragraph" svg:x="0.0016inch" svg:y="0.0008inch" svg:width="6inch" style:rel-width="100%" svg:height="3.3835inch" style:rel-height="scale" draw:z-index="1" xlink:href="#Pictures/100002000000035C000001E5691B4A3E.gif" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>
-Illustration
-<text:sequence text:ref-name="refIllustration0" text:name="Illustration" text:formula="Illustration+1" style:num-format="1">1</text:sequence>
-: eZ publish worldwide usage.</text:p>
-
-
-                */
                 foreach ( $childNode->children() as $textBoxNode )
                 {
                     $boxContent .= eZOOImport::handleNode( $textBoxNode, $sectionLevel );
@@ -608,7 +599,6 @@ Illustration
                     }
                 }
 
-                print( "Checking file: $href <br>" );
                 if ( file_exists( $href ) )
                 {
                     // Import image
