@@ -38,6 +38,8 @@
 /*! \file ezoogenerator.php
 */
 
+include_once( "lib/ezfile/classes/ezfilehandler.php" );
+
 /*!
   \class eZOOGenerator ezoogenerator.php
   \brief The class eZOOGenerator does
@@ -56,9 +58,18 @@ class eZOOGenerator
     {
     }
 
-
     function writeDocument( )
     {
+        $ooINI =& eZINI::instance( 'oo.ini' );
+
+        // Initalize directories
+        include_once( "lib/ezfile/classes/ezdir.php" );
+        $ooRootDir = "var/cache/oo/";
+        $ooExportDir = "var/cache/oo/export/";
+        $ooTemplateDir = $ooRootDir . "template/";
+        eZDir::mkdir( $ooRootDir );
+        eZDir::mkdir( $ooExportDir );
+        eZDir::mkdir( $ooTemplateDir );
 
         // Write meta XML file
         $metaXML = "<?xml version='1.0' encoding='UTF-8'?>" .
@@ -79,7 +90,7 @@ class eZOOGenerator
                      " </office:meta>" .
                      "</office:document-meta>";
 
-        $fileName = "var/cache/oo/meta.xml";
+        $fileName = $ooExportDir . "meta.xml";
         $fp = fopen( $fileName, "w" );
         fwrite( $fp, $metaXML );
         fclose( $fp );
@@ -93,29 +104,63 @@ class eZOOGenerator
                        " </office:settings>" .
                        "</office:document-settings>";
 
-        $fileName = "var/cache/oo/settings.xml";
+        $fileName = $ooExportDir . "settings.xml";
         $fp = fopen( $fileName, "w" );
         fwrite( $fp, $settingsXML );
         fclose( $fp );
 
-        // Write styles.xml file
+        $useTemplate = ( $ooINI->variable( 'OOExport', 'UseTemplate' ) == "true" );
+        $templateName = $ooINI->variable( 'OOExport', 'TemplateName' );
+        if ( $useTemplate == true )
+        {
+            $templateFile = "extension/oo/templates/" . $templateName;
+            // Check if zlib extension is loaded, if it's loaded use bundled ZIP library,
+            // if not rely on the unzip commandline version.
+            if ( !function_exists( 'gzopen' ) )
+            {
+                exec( "unzip -o $templateFile -d $ooTemplateDir", $unzipResult );
+            }
+            else
+            {
+                require_once('extension/oo/lib/pclzip.lib.php');
+                $templateArchive = new PclZip( $templateFile );
+                $templateArchive->extract( PCLZIP_OPT_PATH, $ooTemplateDir );
+            }
 
-        $stylesXML = "<?xml version='1.0' encoding='UTF-8'?>" .
-                     "<!DOCTYPE office:document-styles PUBLIC '-//OpenOffice.org//DTD OfficeDocument 1.0//EN' 'office.dtd'>" .
-                     "<office:document-styles xmlns:office='http://openoffice.org/2000/office' xmlns:style='http://openoffice.org/2000/style' xmlns:text='http://openoffice.org/2000/text' xmlns:table='http://openoffice.org/2000/table' xmlns:draw='http://openoffice.org/2000/drawing' xmlns:fo='http://www.w3.org/1999/XSL/Format' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:number='http://openoffice.org/2000/datastyle' xmlns:svg='http://www.w3.org/2000/svg' xmlns:chart='http://openoffice.org/2000/chart' xmlns:dr3d='http://openoffice.org/2000/dr3d' xmlns:math='http://www.w3.org/1998/Math/MathML' xmlns:form='http://openoffice.org/2000/form' xmlns:script='http://openoffice.org/2000/script' office:version='1.0'>" .
-                    "   <office:styles>" .
-                    "  </office:styles>" .
-                    "</office:document-styles>";
+            // Copy styles.xml and images, if any to the document beeing generated
+            if ( !copy( $ooTemplateDir . "styles.xml", $ooExportDir . "styles.xml" ) )
+            {
+                print( "Could not copy styles file" );
+            }
 
-        $fileName = "var/cache/oo/styles.xml";
-        $fp = fopen( $fileName, "w" );
-        fwrite( $fp, $stylesXML );
-        fclose( $fp );
+            $sourceDir = $ooTemplateDir . "Pictures";
+            $destDir = $ooExportDir . "Pictures";
+            eZDir::mkdir( $destDir );
+            eZDir::copy( $sourceDir, $destDir, false, true );
+
+        }
+        else
+        {
+            // Generate a default empty styles.xml file
+
+            $stylesXML = "<?xml version='1.0' encoding='UTF-8'?>" .
+                 "<!DOCTYPE office:document-styles PUBLIC '-//OpenOffice.org//DTD OfficeDocument 1.0//EN' 'office.dtd'>" .
+                 "<office:document-styles xmlns:office='http://openoffice.org/2000/office' xmlns:style='http://openoffice.org/2000/style' xmlns:text='http://openoffice.org/2000/text' xmlns:table='http://openoffice.org/2000/table' xmlns:draw='http://openoffice.org/2000/drawing' xmlns:fo='http://www.w3.org/1999/XSL/Format' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:number='http://openoffice.org/2000/datastyle' xmlns:svg='http://www.w3.org/2000/svg' xmlns:chart='http://openoffice.org/2000/chart' xmlns:dr3d='http://openoffice.org/2000/dr3d' xmlns:math='http://www.w3.org/1998/Math/MathML' xmlns:form='http://openoffice.org/2000/form' xmlns:script='http://openoffice.org/2000/script' office:version='1.0'>" .
+                 "   <office:styles>" .
+                 "  </office:styles>" .
+                 "</office:document-styles>";
+
+            $fileName = $ooExportDir . "styles.xml";
+            $fp = fopen( $fileName, "w" );
+            fwrite( $fp, $stylesXML );
+            fclose( $fp );
+        }
+
 
         // Write mimetype file
         $mimeType = "application/vnd.sun.xml.writer";
 
-        $fileName = "var/cache/oo/mimetype";
+        $fileName = $ooExportDir . "mimetype";
         $fp = fopen( $fileName, "w" );
         fwrite( $fp, $mimeType );
         fclose( $fp );
@@ -219,7 +264,7 @@ class eZOOGenerator
         // Add the content end
         $contentXML .= "</office:body></office:document-content>";
 
-        $fileName = "var/cache/oo/content.xml";
+        $fileName = $ooExportDir . "content.xml";
         $fp = fopen( $fileName, "w" );
         fwrite( $fp, $contentXML );
         fclose( $fp );
@@ -236,31 +281,31 @@ class eZOOGenerator
                        " <manifest:file-entry manifest:media-type='text/xml' manifest:full-path='settings.xml'/>" .
                        "</manifest:manifest>";
 
-        $fileName = "var/cache/oo/META-INF/manifest.xml";
+        $fileName = $ooExportDir . "META-INF/manifest.xml";
         $fp = fopen( $fileName, "w" );
         fwrite( $fp, $manifestXML );
         fclose( $fp );
 
-
         // Check if zlib extension is loaded, if it's loaded use bundled ZIP library,
         // if not rely on the zip commandline version.
-        if ( !function_exists( 'gzopen' ) )
+        if ( true )
+            // Todo: fix support for PclZip and correct zip of images.
+//        if ( !function_exists( 'gzopen' ) )
         {
             $currentDir = getcwd();
-            chdir( "var/cache/oo" );
+            chdir( $ooExportDir );
             exec( "zip -r ../ootest.sxw *", $result );
             chdir( $currentDir );
         }
         else
         {
-            print( "using extension" );
             require_once('extension/oo/lib/pclzip.lib.php');
-            $archive = new PclZip( "var/cache/ootest.sxw" );
-            $archive->create( "var/cache/oo",
-                              PCLZIP_OPT_REMOVE_PATH, 'var/cache/oo' );
+            $archive = new PclZip( $ooRootDir . "ootest.sxw" );
+            $archive->create( $ooExportDir,
+                              PCLZIP_OPT_REMOVE_PATH, $ooExportDir );
         }
 
-        $fileName = "var/cache/ootest.sxw";
+        $fileName = $ooRootDir . "ootest.sxw";
 
         return $fileName;
     }
