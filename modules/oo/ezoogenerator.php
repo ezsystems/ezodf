@@ -243,6 +243,9 @@ class eZOOGenerator
 
         $fileName = $this->OORootDir . "ootest.sxw";
 
+        // Clean up
+        eZDir::recursiveDelete( $this->OOExportDir );
+        eZDir::recursiveDelete( $this->OOTemplateDir);
         return $fileName;
     }
 
@@ -606,7 +609,7 @@ class eZOOGenerator
 
     var $OORootDir = "var/cache/oo/";
     var $OOExportDir = "var/cache/oo/export/";
-    var $OOTemplateDir = "var/cache/oo/templates/";
+    var $OOTemplateDir = "var/cache/oo/template/";
 }
 
 ?>

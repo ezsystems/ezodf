@@ -61,7 +61,8 @@ class eZOOImport
         $importResult = array();
         include_once( "lib/ezfile/classes/ezdir.php" );
         $unzipResult = "";
-        eZDir::mkdir( "var/cache/oo" );
+        $importDir = "var/cache/oo/import/";
+        eZDir::mkdir( $importDir );
 
         $http =& eZHTTPTool::instance();
         $file = $http->sessionVariable( "oo_import_filename" );
@@ -70,16 +71,16 @@ class eZOOImport
         // if not rely on the unzip commandline version.
         if ( !function_exists( 'gzopen' ) )
         {
-            exec( "unzip -o $file -d var/cache/oo", $unzipResult );
+            exec( "unzip -o $file -d $importDir", $unzipResult );
         }
         else
         {
             require_once('extension/oo/lib/pclzip.lib.php');
             $archive = new PclZip( $file );
-            $archive->extract( PCLZIP_OPT_PATH, "var/cache/oo" );
+            $archive->extract( PCLZIP_OPT_PATH, $importDir );
         }
 
-        $fileName = "var/cache/oo/content.xml";
+        $fileName = $importDir . "content.xml";
         $xml = new eZXML();
         $dom =& $xml->domTree( file_get_contents( $fileName ) );
 
@@ -287,6 +288,9 @@ class eZOOImport
             $importResult['URLAlias'] = $mainNode->attribute( 'url_alias' );
             $importResult['ClassIdentifier'] = $importClassIdentifier;
         }
+
+        // Clean up
+        eZDir::recursiveDelete( $importDir );
         return $importResult;
     }
 
@@ -468,6 +472,16 @@ class eZOOImport
         {
             case "text-box":
             {
+                /*
+
+                    <text:p text:style-name="Illustration">
+                    <draw:image draw:style-name="fr2" draw:name="Graphic1" text:anchor-type="paragraph" svg:x="0.0016inch" svg:y="0.0008inch" svg:width="6inch" style:rel-width="100%" svg:height="3.3835inch" style:rel-height="scale" draw:z-index="1" xlink:href="#Pictures/100002000000035C000001E5691B4A3E.gif" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>
+Illustration
+<text:sequence text:ref-name="refIllustration0" text:name="Illustration" text:formula="Illustration+1" style:num-format="1">1</text:sequence>
+: eZ publish worldwide usage.</text:p>
+
+
+                */
                 foreach ( $childNode->children() as $textBoxNode )
                 {
                     $boxContent .= eZOOImport::handleNode( $textBoxNode, $sectionLevel );
@@ -475,6 +489,11 @@ class eZOOImport
 
                 // Textboxes are defined inside paragraphs.
                 $paragraphContent .= "</paragraph>$boxContent<paragraph>";
+            }break;
+
+            case "sequence" :
+            {
+                $paragraphContent .= $childNode->textContent();
             }break;
 
             case "date" :
@@ -537,7 +556,7 @@ class eZOOImport
             {
                 $href = ltrim( $childNode->attributeValueNS( 'href', 'http://www.w3.org/1999/xlink' ), '#' );
 
-                $href = "var/cache/oo/" . $href;
+                $href = $importDir . $href;
 
                 // Check image size
                 $imageSize = "large";
