@@ -120,22 +120,25 @@ class eZOOImport
                 }
             }
 
-            foreach ( $sectionNodeArray as $sectionNode )
+            if ( $customClassFound == true )
             {
-                $sectionName = strtolower( $sectionNode->attributeValueNS( 'name', 'http://openoffice.org/2000/text' ) );
-
-                $xmlText = "";
-                foreach ( $sectionNode->children() as $childNode )
+                foreach ( $sectionNodeArray as $sectionNode )
                 {
+                    $sectionName = strtolower( $sectionNode->attributeValueNS( 'name', 'http://openoffice.org/2000/text' ) );
+                    print( "Found Section: " . $sectionName );
+                    $xmlText = "";
+                    foreach ( $sectionNode->children() as $childNode )
+                    {
                     $xmlText .= eZOOImport::handleNode( $childNode, $level );
+                    }
+                    $xmlTextArray[$sectionName] = "<?xml version='1.0' encoding='utf-8' ?>" .
+                         "<section xmlns:image='http://ez.no/namespaces/ezpublish3/image/' " .
+                         "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'>\n" . $xmlText . "</section>";
                 }
-                $xmlTextArray[$sectionName] = "<?xml version='1.0' encoding='utf-8' ?>" .
-                                              "<section xmlns:image='http://ez.no/namespaces/ezpublish3/image/' " .
-                                              "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'>\n" . $xmlText . "</section>";
-
             }
         }
-        else
+
+        if ( $customClassFound == false )
         {
             // No defined sections. Do default import.
             $bodyNodeArray =& $dom->elementsByNameNS( 'body', 'http://openoffice.org/2000/office' );
@@ -246,6 +249,15 @@ class eZOOImport
                 case 'sequence-decls' :
                 {
                     // do nothing
+                }break;
+
+                case 'section' :
+                {
+                    foreach ( $node->children() as $childNode )
+                    {
+                        $xhtmlTextContent  .= eZOOImport::handleNode( $childNode );
+                    }
+
                 }break;
 
                 case 'h' :

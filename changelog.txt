@@ -3,3 +3,4 @@ Changes from 1.0 Alpha 1 to 1.0 Beta 1
 - Added support for date and initial-creator nodes as inline elements.
 - Fixed support for header definitions larger than 6.
 - Added removal of empty paragraphs.
+- Added support for sections in non-custom documents
