@@ -300,11 +300,21 @@ class eZOOGenerator
             $paragraphArray = array( array( 'Type' => 'text', "Content" => func_get_arg(0) ) );
         }
 
+        $elementArray = array( 'Type' => 'paragraph',
+                               'Content' => $paragraphArray );
+        $this->addElement( $elementArray );
+    }
+
+    /*!
+     \private
+      Adds a new element to the document array.
+     */
+    function addElement( $elementArray )
+    {
         // Check if we're inside a list or table
         if ( $this->CurrentStackNumber == 0 )
         {
-            $this->DocumentArray[] = array( 'Type' => 'paragraph',
-                                            'Content' => $paragraphArray );
+            $this->DocumentArray[] = $elementArray;
         }
         else
         {
@@ -312,16 +322,14 @@ class eZOOGenerator
             {
                 // Add the paragraph inside a list
                 $currentChild = $this->DocumentStack[$this->CurrentStackNumber]['CurrentChild'];
-                $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'][$currentChild][] = array( 'Type' => 'paragraph',
-                                                                                                        'Content' => $paragraphArray );
+                $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'][$currentChild][] = $elementArray;
             }
             else
             {
                 // Add the paragraph inside a table cell
                 $currentRow = $this->DocumentStack[$this->CurrentStackNumber]['CurrentRow'];
                 $currentCell = $this->DocumentStack[$this->CurrentStackNumber]['CurrentCell'];
-                $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'][$currentRow][$currentCell][] = array( 'Type' => 'paragraph',
-                                                                                                                    'Content' => $paragraphArray );
+                $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'][$currentRow][$currentCell][] = $elementArray;
             }
         }
     }
@@ -331,11 +339,13 @@ class eZOOGenerator
     */
     function addImage( $fileName )
     {
-        $this->DocumentArray[] = array( 'Type' => 'image',
-                                        'SRC' => $fileName['FileName'],
-                                        'Alignment' => $fileName['Alignment'],
-                                        'DisplayWidth' => $fileName['DisplayWidth'],
-                                        'DisplayHeight' => $fileName['DisplayHeight'] );
+        $elementArray = array( 'Type' => 'image',
+                               'SRC' => $fileName['FileName'],
+                               'Alignment' => $fileName['Alignment'],
+                               'DisplayWidth' => $fileName['DisplayWidth'],
+                               'DisplayHeight' => $fileName['DisplayHeight'] );
+
+        $this->addElement( $elementArray );
     }
 
     /*!
