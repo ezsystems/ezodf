@@ -294,8 +294,28 @@ class eZOOGenerator
                     }break;
                 }
             }
-            $this->DocumentArray[] = array( 'Type' => 'paragraph',
-                                            'Content' => $paragraphArray );
+            // Check if we're inside a list or table
+            if ( $this->CurrentStackNumber == 0 )
+            {
+                $this->DocumentArray[] = array( 'Type' => 'paragraph',
+                                                'Content' => $paragraphArray );
+            }
+            else
+            {
+                if ( $this->DocumentStack[$this->CurrentStackNumber]['Type'] == 'list' )
+                {
+                    $currentChild = $this->DocumentStack[$this->CurrentStackNumber]['CurrentChild'];
+                    $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'][$currentChild][] = array( 'Type' => 'paragraph',
+                                                                                                            'Content' => $paragraphArray );
+                }
+                else
+                {
+                    $currentRow = $this->DocumentStack[$this->CurrentStackNumber]['CurrentRow'];
+                    $currentCell = $this->DocumentStack[$this->CurrentStackNumber]['CurrentCell'];
+                    $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'][$currentRow][$currentCell][] = array( 'Type' => 'paragraph',
+                                                                                                                        'Content' => $paragraphArray );
+                }
+            }
         }
         else
         {
@@ -577,6 +597,7 @@ class eZOOGenerator
                 }
 
                 $contentXML .= "<table:table table:name='Table1' table:style-name='Table1'>" . $columnDefinition . $rowContent . "</table:table>";
+
             }break;
 
             default:

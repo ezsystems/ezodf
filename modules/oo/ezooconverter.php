@@ -135,8 +135,11 @@ class eZOOConverter
 
 
             $ooGenerator->endList( );
-
+            */
+/*
             $ooGenerator->startTable();
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
             $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
             $ooGenerator->nextCell();
             $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
@@ -152,10 +155,16 @@ class eZOOConverter
             $ooGenerator->nextCell();
             $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
 
+            $ooGenerator->nextRow( "defaultstyle" );
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->nextCell();
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->nextCell();
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+
             $ooGenerator->endTable();
 
-            */
-
+*/
             /*
             $ooGenerator->addHeader( "This is generated from PHP!!" );
 
@@ -282,10 +291,7 @@ class eZOOConverter
                                 {
                                     foreach ( $cell->children() as $cellNode )
                                     {
-                                        if ( $cellNode->name() == "#text" )
-                                            $generator->addParagraph( $cellNode->content() );
-                                        else
-                                            eZOOConverter::handleNode( $cellNode, $generator, $level );
+                                        eZOOConverter::handleNode( $cellNode, $generator, $level );
                                     }
                                     $generator->nextCell();
                                 }
