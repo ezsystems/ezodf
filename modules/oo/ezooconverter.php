@@ -112,6 +112,7 @@ class eZOOConverter
 
             /*
             $ooGenerator->addHeader( "Test code from here" );
+
             $ooGenerator->startList( "unordered" );
             $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
             $ooGenerator->nextListItem();
@@ -249,6 +250,12 @@ class eZOOConverter
                 {
                     switch ( $child->name() )
                     {
+                        case "line":
+                        {
+                            // Todo: support inline tags
+                            $paragraphParameters[] = array( EZ_OO_TEXT, $child->textContent() );
+                        }break;
+
                         case "#text":
                         {
                             $paragraphParameters[] = array( EZ_OO_TEXT, $child->content() );
@@ -339,12 +346,13 @@ class eZOOConverter
 
                     }
                 }
-                call_user_func_array( array( &$generator, "addParagraph" ), $paragraphParameters );
-
                 foreach ( $imageArray as $image )
                 {
                     $generator->addImage( $image );
                 }
+
+                call_user_func_array( array( &$generator, "addParagraph" ), $paragraphParameters );
+
             }break;
 
             default:

@@ -294,52 +294,34 @@ class eZOOGenerator
                     }break;
                 }
             }
-            // Check if we're inside a list or table
-            if ( $this->CurrentStackNumber == 0 )
-            {
-                $this->DocumentArray[] = array( 'Type' => 'paragraph',
-                                                'Content' => $paragraphArray );
-            }
-            else
-            {
-                if ( $this->DocumentStack[$this->CurrentStackNumber]['Type'] == 'list' )
-                {
-                    $currentChild = $this->DocumentStack[$this->CurrentStackNumber]['CurrentChild'];
-                    $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'][$currentChild][] = array( 'Type' => 'paragraph',
-                                                                                                            'Content' => $paragraphArray );
-                }
-                else
-                {
-                    $currentRow = $this->DocumentStack[$this->CurrentStackNumber]['CurrentRow'];
-                    $currentCell = $this->DocumentStack[$this->CurrentStackNumber]['CurrentCell'];
-                    $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'][$currentRow][$currentCell][] = array( 'Type' => 'paragraph',
-                                                                                                                        'Content' => $paragraphArray );
-                }
-            }
         }
         else
         {
-            // Check if we're inside a list or table
-            if ( $this->CurrentStackNumber == 0 )
+            $paragraphArray = array( array( 'Type' => 'text', "Content" => func_get_arg(0) ) );
+        }
+
+        // Check if we're inside a list or table
+        if ( $this->CurrentStackNumber == 0 )
+        {
+            $this->DocumentArray[] = array( 'Type' => 'paragraph',
+                                            'Content' => $paragraphArray );
+        }
+        else
+        {
+            if ( $this->DocumentStack[$this->CurrentStackNumber]['Type'] == 'list' )
             {
-                $this->DocumentArray[] = array( 'Type' => 'paragraph',
-                                                'Content' => array( array( 'Type' => 'text', "Content" => func_get_arg(0) ) ) );
+                // Add the paragraph inside a list
+                $currentChild = $this->DocumentStack[$this->CurrentStackNumber]['CurrentChild'];
+                $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'][$currentChild][] = array( 'Type' => 'paragraph',
+                                                                                                        'Content' => $paragraphArray );
             }
             else
             {
-                if ( $this->DocumentStack[$this->CurrentStackNumber]['Type'] == 'list' )
-                {
-                    $currentChild = $this->DocumentStack[$this->CurrentStackNumber]['CurrentChild'];
-                    $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'][$currentChild][] = array( 'Type' => 'paragraph',
-                                                                                                            'Content' => array( array( 'Type' => 'text', "Content" => func_get_arg(0) ) ) );
-                }
-                else
-                {
-                    $currentRow = $this->DocumentStack[$this->CurrentStackNumber]['CurrentRow'];
-                    $currentCell = $this->DocumentStack[$this->CurrentStackNumber]['CurrentCell'];
-                    $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'][$currentRow][$currentCell][] = array( 'Type' => 'paragraph',
-                                                                                                            'Content' => array( array( 'Type' => 'text', "Content" => func_get_arg(0) ) ) );
-                }
+                // Add the paragraph inside a table cell
+                $currentRow = $this->DocumentStack[$this->CurrentStackNumber]['CurrentRow'];
+                $currentCell = $this->DocumentStack[$this->CurrentStackNumber]['CurrentCell'];
+                $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'][$currentRow][$currentCell][] = array( 'Type' => 'paragraph',
+                                                                                                                    'Content' => $paragraphArray );
             }
         }
     }
@@ -363,7 +345,7 @@ class eZOOGenerator
     function startList( $type="unordered" )
     {
         $this->CurrentStackNumber += 1;
-        $this->DocumentStack[$this->CurrentStackNumber]['Tyoe'] = 'list';
+        $this->DocumentStack[$this->CurrentStackNumber]['Type'] = 'list';
         $this->DocumentStack[$this->CurrentStackNumber]['ListType'] = $type;
         $this->DocumentStack[$this->CurrentStackNumber]['CurrentChild'] = 0;
         $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'] = array();
@@ -596,7 +578,8 @@ class eZOOGenerator
                     $numberLetter++;
                 }
 
-                $contentXML .= "<table:table table:name='Table1' table:style-name='Table1'>" . $columnDefinition . $rowContent . "</table:table>";
+                $contentXML .= "<table:table table:name='Table1' table:style-name='Table1'>\n" . $columnDefinition . $rowContent . "</table:table>";
+
 
             }break;
 
