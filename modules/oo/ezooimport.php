@@ -63,6 +63,7 @@ class eZOOImport
         $unzipResult = "";
         eZDir::mkdir( $this->ImportDir );
 
+        print( $this->ImportDir );
         $http =& eZHTTPTool::instance();
         $file = $http->sessionVariable( "oo_import_filename" );
 
