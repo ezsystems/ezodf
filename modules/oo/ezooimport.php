@@ -225,11 +225,40 @@ class eZOOImport
             $operationResult = eZOperationHandler::execute( 'content', 'publish', array( 'object_id' => $contentObjectID,
                                                                                          'version' => 1 ) );
 
+            // Fetch object to get correct name
+            $contentObject = eZContentObject::fetch( $contentObjectID );
+
+            // Create image folder if it does not already exist
+            {
+                $mediaRootNodeID = 43;
+                $node = eZContentObjectTreeNode::fetch( $mediaRootNodeID );
+
+                $articleFolderName = $contentObject->attribute( 'name' );
+                $importFolderName = $importClassIdentifier = $ooINI->variable( 'OOImport', 'ImportedImagesMediaNodeName' );
+                $importNode = eZOOImport::createSubNode( $node, $importFolderName );
+
+                $articleNode = eZOOImport::createSubNode( $importNode, $articleFolderName );
+            }
+
             // Publish all embedded images as related objects
             foreach ( $this->RelatedImageArray as $image )
             {
+
+                // Publish related images
+                $nodeAssignment =& eZNodeAssignment::create( array(
+                                                                 'contentobject_id' => $image['ID'],
+                                                                 'contentobject_version' => 1,
+                                                                 'parent_node' => $articleNode->attribute( "node_id" ),
+                                                                 'is_main' => 1
+                                                                 )
+                                                             );
+                $nodeAssignment->store();
+
+                include_once( 'lib/ezutils/classes/ezoperationhandler.php' );
+                $operationResult = eZOperationHandler::execute( 'content', 'publish', array( 'object_id' => $image['ID'],
+                                                                                             'version' => 1 ) );
+
                 $contentObject->addContentObjectRelation( $image['ID'], 1 );
-                print( "adding related object<br>" );
             }
 
             $mainNode = $contentObject->attribute( 'main_node' );
@@ -489,9 +518,10 @@ class eZOOImport
                     $classID = 5;
                     $class =& eZContentClass::fetch( $classID );
                     $creatorID = 14; // 14 == admin
-                    $parentNodeID = 51;
+//                    $parentNodeID = 51;
                     $contentObject =& $class->instantiate( $creatorID, 1 );
 
+                    /*
                     $nodeAssignment =& eZNodeAssignment::create( array(
                                                                      'contentobject_id' => $contentObject->attribute( 'id' ),
                                                                      'contentobject_version' => $contentObject->attribute( 'current_version' ),
@@ -501,6 +531,7 @@ class eZOOImport
                                                                  );
                     $nodeAssignment->store();
 
+                    */
                     $version =& $contentObject->version( 1 );
                     $version->setAttribute( 'modified', eZDateTime::currentTimeStamp() );
                     $version->setAttribute( 'status', EZ_VERSION_STATUS_DRAFT );
@@ -516,11 +547,14 @@ class eZOOImport
                     $imageContent->initializeFromFile( $href );
                     $dataMap['image']->store();
 
-                    $this->RelatedImageArray[] = array( "ID" => $contentObjectID );
+                    $this->RelatedImageArray[] = array( "ID" => $contentObjectID,
+                                                        "ContentObject" => $contentObject );
 
+                    /*
                     include_once( 'lib/ezutils/classes/ezoperationhandler.php' );
                     $operationResult = eZOperationHandler::execute( 'content', 'publish', array( 'object_id' => $contentObjectID,
                                                                                                  'version' => 1 ) );
+                    */
 
                     $paragraphContent .= "<object id='$contentObjectID' align='center' size='large' />";
                 }
@@ -536,6 +570,64 @@ class eZOOImport
 
         return $paragraphContent;
     }
+
+    /*!
+      \private
+      Creates a sub node of a given node by name, if it does not already exist.
+      If it does exist the node is created.
+    */
+    function createSubNode( $node, $name )
+    {
+        $namedChildrenArray = $node->childrenByName( $name );
+        $subNode = false;
+        if ( count( $namedChildrenArray ) == 0 )
+        {
+            $class = eZContentClass::fetchByIdentifier( "folder" );
+            {
+                $creatorID = 14; // 14 == admin
+                $parentNodeID = $placeNodeID;
+                $contentObject =& $class->instantiate( $creatorID, 1 );
+
+                $nodeAssignment =& eZNodeAssignment::create( array(
+                                                                 'contentobject_id' => $contentObject->attribute( 'id' ),
+                                                                 'contentobject_version' => $contentObject->attribute( 'current_version' ),
+                                                                 'parent_node' => $node->attribute( 'node_id' ),
+                                                                 'is_main' => 1
+                                                                 )
+                                                             );
+                $nodeAssignment->store();
+
+                $version =& $contentObject->version( 1 );
+                $version->setAttribute( 'modified', eZDateTime::currentTimeStamp() );
+                $version->setAttribute( 'status', EZ_VERSION_STATUS_DRAFT );
+                $version->store();
+
+                $contentObjectID = $contentObject->attribute( 'id' );
+                $dataMap =& $contentObject->dataMap();
+
+                $titleAttribudeIdentifier = 'name';
+
+                $dataMap[$titleAttribudeIdentifier]->setAttribute( 'data_text', $name );
+                $dataMap[$titleAttribudeIdentifier]->store();
+
+                include_once( 'lib/ezutils/classes/ezoperationhandler.php' );
+                $operationResult = eZOperationHandler::execute( 'content', 'publish', array( 'object_id' => $contentObjectID,
+                                                                                             'version' => 1 ) );
+
+                $subNode = $contentObject->mainNode();
+            }
+        }
+        else
+        {
+            if ( count( $namedChildrenArray ) == 1 )
+            {
+                $subNode = $namedChildrenArray[0];
+            }
+        }
+
+        return $subNode;
+    }
+
 
     var $RelatedImageArray = array();
 }

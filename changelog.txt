@@ -5,3 +5,4 @@ Changes from 1.0 Alpha 1 to 1.0 Beta 1
 - Added removal of empty paragraphs.
 - Added support for sections in non-custom documents
 - Fixed adding embedded images as related objects
+- Imported images are now placed in a separate folder for each imported object
