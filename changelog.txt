@@ -14,3 +14,4 @@ Changes from 1.0 Alpha 1 to 1.0 Beta 1
 - Added support for image size and alignment during export
 - Added support for multiple header levels during import
 - Fixed proper handling of XML special chars in string and text datatype during import
+- Added support for exporting ordered and unordered lists.

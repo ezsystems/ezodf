@@ -111,6 +111,34 @@ class eZOOConverter
             }
 
             /*
+               List test code
+            $ooGenerator->addHeader( "Test code from here" );
+            $ooGenerator->startList( "unordered" );
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->nextListItem();
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->nextListItem();
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->nextListItem();
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->nextListItem();
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->endList( );
+
+            $ooGenerator->startList( "ordered" );
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->nextListItem();
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->nextListItem();
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->nextListItem();
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->nextListItem();
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->endList( );
+            */
+
+            /*
             $ooGenerator->addHeader( "This is generated from PHP!!" );
 
             $ooGenerator->addParagraph( array( EZ_OO_TEXT, "Pent vaaaar i dag"),
@@ -120,7 +148,41 @@ class eZOOConverter
             $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
             $ooGenerator->addHeader( "This is generated from PHP!!" );
 
-            $ooGenerator->addImage("documents/ooo_logo.gif" );
+            $ooGenerator->addImage( "documents/ooo_logo.gif" );
+
+            $paragraph = $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+
+            // Generating a list
+            $ooGenerator->startList( "bullet/numbered" );
+
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->addImage( "documents/ooo_logo.gif" );
+
+            $ooGenerator->nextListItem();
+
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->addHeader( "This is generated from PHP!!" );
+            $ooGenerator->addImage( "documents/ooo_logo.gif" );
+
+            $ooGenerator->endList();
+
+            // Generate a table
+            $ooGenerator->startTable();
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->nextCell();
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->nextCell();
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->nextCell();
+
+            $ooGenerator->nextRow( "defaultstyle" );
+
+            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+            $ooGenerator->nextCell();
+            $ooGenerator->nextCell();
+
+            $ooGenerator->endTable();
+
             */
 
             $destFile = $ooGenerator->writeDocument();
@@ -168,6 +230,28 @@ class eZOOConverter
                         case "link":
                         {
                             $paragraphParameters[] = array( EZ_OO_LINK, $child->attributeValue( "href" ), $child->textContent() );
+                        }break;
+
+                        case "ol":
+                        case "ul":
+                        {
+                            if ( $child->name() == "ol" )
+                                $generator->startList( "ordered" );
+                            else
+                                $generator->startList( "unordered" );
+
+                            foreach ( $child->children() as $listItem )
+                            {
+                                foreach ( $listItem->children() as $childNode )
+                                {
+                                    if ( $childNode->name() == "#text" )
+                                        $generator->addParagraph( $childNode->content() );
+                                    else
+                                        eZOOConverter::handleNode( $childNode, $generator, $level );
+                                }
+                                $generator->nextListItem();
+                            }
+                            $generator->endList();
                         }break;
 
                         case "object":

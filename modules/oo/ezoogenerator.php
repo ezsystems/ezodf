@@ -67,12 +67,9 @@ class eZOOGenerator
 
         // Initalize directories
         include_once( "lib/ezfile/classes/ezdir.php" );
-        $ooRootDir = "var/cache/oo/";
-        $ooExportDir = "var/cache/oo/export/";
-        $ooTemplateDir = $ooRootDir . "templates/";
-        eZDir::mkdir( $ooRootDir );
-        eZDir::mkdir( $ooExportDir );
-        eZDir::mkdir( $ooTemplateDir );
+        eZDir::mkdir( $this->OORootDir );
+        eZDir::mkdir( $this->OOExportDir );
+        eZDir::mkdir( $this->OOTemplateDir );
 
         // Write meta XML file
         $metaXML = "<?xml version='1.0' encoding='UTF-8'?>" .
@@ -93,7 +90,7 @@ class eZOOGenerator
                      " </office:meta>" .
                      "</office:document-meta>";
 
-        $fileName = $ooExportDir . "meta.xml";
+        $fileName = $this->OOExportDir . "meta.xml";
         $fp = fopen( $fileName, "w" );
         fwrite( $fp, $metaXML );
         fclose( $fp );
@@ -107,7 +104,7 @@ class eZOOGenerator
                        " </office:settings>" .
                        "</office:document-settings>";
 
-        $fileName = $ooExportDir . "settings.xml";
+        $fileName = $this->OOExportDir . "settings.xml";
         $fp = fopen( $fileName, "w" );
         fwrite( $fp, $settingsXML );
         fclose( $fp );
@@ -121,13 +118,13 @@ class eZOOGenerator
             // if not rely on the unzip commandline version.
             if ( !function_exists( 'gzopen' ) )
             {
-                exec( "unzip -o $templateFile -d $ooTemplateDir", $unzipResult );
+                exec( "unzip -o $templateFile -d $this->OOTemplateDir", $unzipResult );
             }
             else
             {
                 require_once('extension/oo/lib/pclzip.lib.php');
                 $templateArchive = new PclZip( $templateFile );
-                $templateArchive->extract( PCLZIP_OPT_PATH, $ooTemplateDir );
+                $templateArchive->extract( PCLZIP_OPT_PATH, $this->OOTemplateDir );
 
                 if ( $templateArchive->errorCode() <> 0 )
                 {
@@ -136,13 +133,13 @@ class eZOOGenerator
             }
 
             // Copy styles.xml and images, if any to the document beeing generated
-            if ( !copy( $ooTemplateDir . "styles.xml", $ooExportDir . "styles.xml" ) )
+            if ( !copy( $this->OOTemplateDir . "styles.xml", $this->OOExportDir . "styles.xml" ) )
             {
                 return array( EZ_OO_ERROR_COULD_NOT_COPY, "Could not copy the styles.xml file." );
             }
 
-            $sourceDir = $ooTemplateDir . "Pictures";
-            $destDir = $ooExportDir . "Pictures";
+            $sourceDir = $this->OOTemplateDir . "Pictures";
+            $destDir = $this->OOExportDir . "Pictures";
             eZDir::mkdir( $destDir );
             eZDir::copy( $sourceDir, $destDir, false, true );
         }
@@ -157,7 +154,7 @@ class eZOOGenerator
                  "  </office:styles>" .
                  "</office:document-styles>";
 
-            $fileName = $ooExportDir . "styles.xml";
+            $fileName = $this->OOExportDir . "styles.xml";
             $fp = fopen( $fileName, "w" );
             fwrite( $fp, $stylesXML );
             fclose( $fp );
@@ -167,7 +164,7 @@ class eZOOGenerator
         // Write mimetype file
         $mimeType = "application/vnd.sun.xml.writer";
 
-        $fileName = $ooExportDir . "mimetype";
+        $fileName = $this->OOExportDir . "mimetype";
         $fp = fopen( $fileName, "w" );
         fwrite( $fp, $mimeType );
         fclose( $fp );
@@ -197,96 +194,13 @@ class eZOOGenerator
         // Add body contents
         foreach ( $this->DocumentArray as $element )
         {
-            switch ( $element['Type'] )
-            {
-                case "paragraph":
-                {
-                    $contentXML .= "<text:p text:style-name='Standard'>";
-                    foreach ( $element['Content'] as $paragraphElement )
-                    {
-                        switch ( $paragraphElement['Type'] )
-                        {
-                            case "text":
-                            {
-                                $contentXML .=  $paragraphElement['Content'];
-                            }
-                            break;
-
-                            case "link":
-                            {
-                                $contentXML .= "<text:a xlink:type='simple' xlink:href='" . $paragraphElement['HREF']. "'>" . $paragraphElement['Content'] . "</text:a>";
-                            }
-                            break;
-
-                            default:
-                            {
-                                eZDebug::writeError( "Unsupported paragraph element" );
-                            }break;
-                        }
-                    }
-                    $contentXML .= "</text:p>";
-
-
-                }break;
-
-                case "header":
-                {
-                    $contentXML .= "\n<text:h text:style-name='Heading " . $element['Level'] . "' text:level='" . $element['Level'] . "'>" . $element['Text'] . "</text:h>\n";
-                }break;
-
-                case "image" :
-                {
-                    $uniquePart = substr( md5( mktime() . rand( 0, 20000 ) ), 6 );
-                    $fileName = $element['SRC'];
-                    $destFile = $ooExportDir . "Pictures/" . $uniquePart . basename( $fileName );
-                    $relativeFile = "Pictures/" . $uniquePart . basename( $fileName );
-
-                    if ( copy( $fileName, $destFile ) )
-                    {
-                        $realFileName = $destFile;
-                        $sizeArray = getimagesize( $destFile );
-
-                        $widthRatio = ( $element['DisplayWidth'] / 580 ) * 100;
-                        $width = 6 * $widthRatio / 100;
-
-                        $imageAspect = $sizeArray[0] / $sizeArray[1];
-                        $height = $width / $imageAspect;
-
-                        $styleName = "fr1";
-                        if ( $element['Alignment'] == "left" )
-                            $styleName = "imageleft";
-                        if ( $element['Alignment'] == "right" )
-                            $styleName = "imageright";
-
-                        $contentXML .= "<text:p text:style-name='Standard'>" .
-                             "<draw:image draw:style-name='$styleName'
-                                                draw:name='Graphic1'
-                                                text:anchor-type='paragraph'
-                                                svg:width='" . $width ."inch'
-                                                svg:height='" . $height . "inch'
-                                                draw:z-index='0'
-                                                xlink:href='#$relativeFile'
-                                                xlink:type='simple'
-                                                xlink:show='embed'
-                                                xlink:actuate='onLoad'/>" .
-                             "</text:p>";
-                    }
-                     else
-                    {
-                        eZDebug::writeError( "Could not copy image while generating OpenOffice.org Writer document" );
-                    }
-                }break;
-
-                default:
-                {
-                }break;
-            }
+            $contentXML .= $this->handleElement( $element );
         }
 
         // Add the content end
         $contentXML .= "</office:body></office:document-content>";
 
-        $fileName = $ooExportDir . "content.xml";
+        $fileName = $this->OOExportDir . "content.xml";
         $fp = fopen( $fileName, "w" );
         fwrite( $fp, $contentXML );
         fclose( $fp );
@@ -303,7 +217,7 @@ class eZOOGenerator
                        " <manifest:file-entry manifest:media-type='text/xml' manifest:full-path='settings.xml'/>" .
                        "</manifest:manifest>";
 
-        $fileName = $ooExportDir . "META-INF/manifest.xml";
+        $fileName = $this->OOExportDir . "META-INF/manifest.xml";
         $fp = fopen( $fileName, "w" );
         fwrite( $fp, $manifestXML );
         fclose( $fp );
@@ -315,19 +229,19 @@ class eZOOGenerator
 //        if ( !function_exists( 'gzopen' ) )
         {
             $currentDir = getcwd();
-            chdir( $ooExportDir );
+            chdir( $this->OOExportDir );
             exec( "zip -r ../ootest.sxw *", $result );
             chdir( $currentDir );
         }
         else
         {
             require_once('extension/oo/lib/pclzip.lib.php');
-            $archive = new PclZip( $ooRootDir . "ootest.sxw" );
-            $archive->create( $ooExportDir,
-                              PCLZIP_OPT_REMOVE_PATH, $ooExportDir );
+            $archive = new PclZip( $this->OORootDir . "ootest.sxw" );
+            $archive->create( $this->OOExportDir,
+                              PCLZIP_OPT_REMOVE_PATH, $this->OOExportDir );
         }
 
-        $fileName = $ooRootDir . "ootest.sxw";
+        $fileName = $this->OORootDir . "ootest.sxw";
 
         return $fileName;
     }
@@ -385,8 +299,18 @@ class eZOOGenerator
         }
         else
         {
-            $this->DocumentArray[] = array( 'Type' => 'paragraph',
-                                            'Content' => array( array( 'Type' => 'text', "Content" => func_get_arg(0) ) ) );
+            // Check if we're inside a list or table
+            if ( $this->CurrentStackNumber == 0 )
+            {
+                $this->DocumentArray[] = array( 'Type' => 'paragraph',
+                                                'Content' => array( array( 'Type' => 'text', "Content" => func_get_arg(0) ) ) );
+            }
+            else
+            {
+                $currentChild = $this->DocumentStack[$this->CurrentStackNumber]['CurrentChild'];
+                $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'][$currentChild][] = array( 'Type' => 'paragraph',
+                                                                                                        'Content' => array( array( 'Type' => 'text', "Content" => func_get_arg(0) ) ) );
+            }
         }
     }
 
@@ -402,7 +326,170 @@ class eZOOGenerator
                                         'DisplayHeight' => $fileName['DisplayHeight'] );
     }
 
+    /*!
+      Starts a un-ordered or numbered list sequence. The $type parameter can either be the string
+      unordered or ordered.
+    */
+    function startList( $type="unordered" )
+    {
+        $this->CurrentStackNumber += 1;
+        $this->DocumentStack[$this->CurrentStackNumber]['ListType'] = $type;
+        $this->DocumentStack[$this->CurrentStackNumber]['CurrentChild'] = 0;
+        $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'] = array();
+    }
+
+    /*!
+      Creates a new list item.
+    */
+    function nextListItem()
+    {
+        $this->DocumentStack[$this->CurrentStackNumber]['CurrentChild'] += 1;
+    }
+
+    /*!
+      Ends a list sequence.
+    */
+    function endList()
+    {
+        $listItemArray = array();
+        // Buils list item array
+        foreach ( $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'] as $listItem )
+        {
+            $listItemArray[] = array( 'Type' => 'listitem',
+                                      'Content' => $listItem );
+        }
+
+        $this->CurrentStackNumber -= 1;
+
+        if ( $this->CurrentStackNumber == 0 )
+        {
+            $this->DocumentArray[] = array( 'Type' => 'list',
+                                            'ListType' => $this->DocumentStack[$this->CurrentStackNumber + 1]['ListType'],
+                                            'Content' => $listItemArray );
+        }
+        else
+        {
+            // Inside a list or a table
+        }
+    }
+
+    function handleElement( $element )
+    {
+        $contentXML = "";
+        switch ( $element['Type'] )
+        {
+            case "paragraph":
+            {
+                $contentXML .= "<text:p text:style-name='Standard'>";
+                foreach ( $element['Content'] as $paragraphElement )
+                {
+                    switch ( $paragraphElement['Type'] )
+                    {
+                        case "text":
+                        {
+                            $contentXML .=  $paragraphElement['Content'];
+                        }
+                        break;
+
+                        case "link":
+                        {
+                            $contentXML .= "<text:a xlink:type='simple' xlink:href='" . $paragraphElement['HREF']. "'>" . $paragraphElement['Content'] . "</text:a>";
+                        }
+                        break;
+
+                        default:
+                        {
+                            eZDebug::writeError( "Unsupported paragraph element" );
+                        }break;
+                    }
+                }
+                $contentXML .= "</text:p>";
+
+
+            }break;
+
+            case "header":
+            {
+                $contentXML .= "\n<text:h text:style-name='Heading " . $element['Level'] . "' text:level='" . $element['Level'] . "'>" . $element['Text'] . "</text:h>\n";
+            }break;
+
+            case "image" :
+            {
+                $uniquePart = substr( md5( mktime() . rand( 0, 20000 ) ), 6 );
+                $fileName = $element['SRC'];
+                $destFile = $this->OOExportDir . "Pictures/" . $uniquePart . basename( $fileName );
+                $relativeFile = "Pictures/" . $uniquePart . basename( $fileName );
+
+                if ( copy( $fileName, $destFile ) )
+                {
+                    $realFileName = $destFile;
+                    $sizeArray = getimagesize( $destFile );
+
+                    $widthRatio = ( $element['DisplayWidth'] / 580 ) * 100;
+                    $width = 6 * $widthRatio / 100;
+
+                    $imageAspect = $sizeArray[0] / $sizeArray[1];
+                    $height = $width / $imageAspect;
+
+                    $styleName = "fr1";
+                    if ( $element['Alignment'] == "left" )
+                        $styleName = "imageleft";
+                    if ( $element['Alignment'] == "right" )
+                        $styleName = "imageright";
+
+                    $contentXML .= "<text:p text:style-name='Standard'>" .
+                         "<draw:image draw:style-name='$styleName'
+                                                draw:name='Graphic1'
+                                                text:anchor-type='paragraph'
+                                                svg:width='" . $width ."inch'
+                                                svg:height='" . $height . "inch'
+                                                draw:z-index='0'
+                                                xlink:href='#$relativeFile'
+                                                xlink:type='simple'
+                                                xlink:show='embed'
+                                                xlink:actuate='onLoad'/>" .
+                         "</text:p>";
+                }
+                else
+                {
+                    eZDebug::writeError( "Could not copy image while generating OpenOffice.org Writer document" );
+                }
+            }break;
+
+            case 'list':
+            {
+                $listContent = "";
+                foreach ( $element['Content'] as $listItem )
+                {
+                    $itemContent = "";
+                    foreach ( $listItem['Content'] as $itemElement )
+                    {
+                        $itemContent .= $this->handleElement( $itemElement );
+                    }
+                    $listContent .= "<text:list-item>" . $itemContent . "</text:list-item>\n";
+                }
+
+                if ( $element['ListType'] == "ordered" )
+                    $contentXML .= "<text:ordered-list text:style-name='L1'>" . $listContent . "</text:ordered-list>";
+                else
+                    $contentXML .= "<text:unordered-list text:style-name='L1'>" . $listContent . "</text:unordered-list>";
+
+            }break;
+
+            default:
+            {
+            }break;
+        }
+        return $contentXML;
+    }
+
+    var $CurrentStackNumber = 0;
+    var $DocumentStack = array();
     var $DocumentArray = array();
+
+    var $OORootDir = "var/cache/oo/";
+    var $OOExportDir = "var/cache/oo/export/";
+    var $OOTemplateDir = "var/cache/oo/templates/";
 }
 
 ?>
