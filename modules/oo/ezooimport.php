@@ -132,15 +132,20 @@ class eZOOImport
                 foreach ( $sectionNodeArray as $sectionNode )
                 {
                     $sectionName = strtolower( $sectionNode->attributeValueNS( 'name', 'http://openoffice.org/2000/text' ) );
-                    print( "Found Section: " . $sectionName );
                     $xmlText = "";
+                    $level = 1;
                     foreach ( $sectionNode->children() as $childNode )
                     {
-                    $xmlText .= eZOOImport::handleNode( $childNode, $level );
+                        $xmlText .= eZOOImport::handleNode( $childNode, $level );
                     }
+                    $endSectionPart = "";
+                    $levelDiff = 1 - $level;
+                    if ( $levelDiff < 0 )
+                        $endSectionPart = str_repeat( "</section>", abs( $levelDiff ) );
+
                     $xmlTextArray[$sectionName] = "<?xml version='1.0' encoding='utf-8' ?>" .
                          "<section xmlns:image='http://ez.no/namespaces/ezpublish3/image/' " .
-                         "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'>\n" . $xmlText . "</section>";
+                         "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'>\<section>n" . $xmlText . $endSectionPart . "</section></section>";
                 }
             }
         }
@@ -153,16 +158,22 @@ class eZOOImport
             if ( count( $bodyNodeArray ) == 1 )
             {
                 $xmlText = "";
+                $level = 1;
                 foreach ( $bodyNodeArray[0]->children() as $childNode )
                 {
                     $xmlText .= eZOOImport::handleNode( $childNode, $level );
                 }
+
+                $endSectionPart = "";
+                $levelDiff = 1 - $level;
+                if ( $levelDiff < 0 )
+                    $endSectionPart = str_repeat( "</section>", abs( $levelDiff ) );
+
                 $xmlTextBody = "<?xml version='1.0' encoding='utf-8' ?>" .
                      "<section xmlns:image='http://ez.no/namespaces/ezpublish3/image/' " .
-                     "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'>\n" . $xmlText . "</section>";
+                     "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'>\n<section>" . $xmlText . $endSectionPart . "</section></section>";
             }
         }
-
 
         // Create object start
         $class = eZContentClass::fetchByIdentifier( $importClassIdentifier );
@@ -297,9 +308,8 @@ class eZOOImport
                 {
                     foreach ( $node->children() as $childNode )
                     {
-                        $xhtmlTextContent  .= eZOOImport::handleNode( $childNode );
+                        $xhtmlTextContent  .= eZOOImport::handleNode( $childNode, $sectionLevel );
                     }
-
                 }break;
 
                 case 'h' :
@@ -311,12 +321,20 @@ class eZOOImport
 
                     if ( $level >= 1 && $level <= 6 )
                     {
+                        $levelDiff = $level - $sectionLevel;
                         $sectionLevel = $level;
                         $headerContent = "";
                         foreach ( $node->children() as $childNode )
                         {
                             $headerContent .= eZOOImport::handleInlineNode( $childNode );
                         }
+                        $sectionLevel = $level;
+
+                        if ( $levelDiff > 0 )
+                            $xhtmlTextContent .= str_repeat( "<section>", $levelDiff );
+
+                        if ( $levelDiff < 0 )
+                            $xhtmlTextContent .= str_repeat( "</section>", abs( $levelDiff ) );
 
                         $xhtmlTextContent .= "<header>" . $headerContent . "</header>\n";
                     }
@@ -351,7 +369,7 @@ class eZOOImport
                             foreach ( $itemNode->children() as $childNode )
                             {
                                 // Remove strip tags, since it's supported with paragraphs in trunk
-                                $listContent .= "<li>" . strip_tags( eZOOImport::handleNode( $childNode ) ) . "</li>";
+                                $listContent .= "<li>" . strip_tags( eZOOImport::handleNode( $childNode, $sectionLevel ) ) . "</li>";
                             }
                         }
                     }
@@ -369,7 +387,7 @@ class eZOOImport
                             foreach ( $itemNode->children() as $childNode )
                             {
                                 // Remove strip tags, since it's supported with paragraphs in trunk
-                                $listContent .= "<li>" . strip_tags( eZOOImport::handleNode( $childNode ) ) . "</li>";
+                                $listContent .= "<li>" . strip_tags( eZOOImport::handleNode( $childNode, $sectionLevel ) ) . "</li>";
                             }
                         }
                     }
@@ -395,7 +413,7 @@ class eZOOImport
                                             $cellContent = "";
                                             foreach ( $tableCell->children() as $tableContentNode )
                                             {
-                                                $cellContent .= eZOOImport::handleNode( $tableContentNode );
+                                                $cellContent .= eZOOImport::handleNode( $tableContentNode, $sectionLevel );
                                             }
                                             $rowContent .= "<th>" . $cellContent . "</th>";
                                         }
@@ -414,7 +432,7 @@ class eZOOImport
                                     $cellContent = "";
                                     foreach ( $tableCell->children() as $tableContentNode )
                                     {
-                                        $cellContent .= eZOOImport::handleNode( $tableContentNode );
+                                        $cellContent .= eZOOImport::handleNode( $tableContentNode, $sectionLevel );
                                     }
                                     $rowContent .= "<td>" . $cellContent . "</td>";
                                 }
@@ -449,7 +467,7 @@ class eZOOImport
             {
                 foreach ( $childNode->children() as $textBoxNode )
                 {
-                    $boxContent .= eZOOImport::handleNode( $textBoxNode );
+                    $boxContent .= eZOOImport::handleNode( $textBoxNode, $sectionLevel );
                 }
 
                 // Textboxes are defined inside paragraphs.
