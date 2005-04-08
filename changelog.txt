@@ -3,6 +3,7 @@ Changes from 1.0 Beta 1 to 1.0 Beta 2
 - Fixed proper character handling when importing documents
 - Fixed correct temporary storing of images during import
 - Added preliminary documentation
+- Fixed proper cleanup of temporary files after import and export
 
 Changes from 1.0 Alpha 1 to 1.0 Beta 1
 --------------------------------------

@@ -98,6 +98,8 @@ if ( $module->isCurrentAction( 'OOPlace' ) )
             fpassthru( $fh );
             fclose( $fh );
             fflush();
+
+            unlink( $fileName );
             eZExecution::cleanExit();
         }
         else
