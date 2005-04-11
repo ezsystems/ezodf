@@ -72,7 +72,9 @@ Import features
 * Normal paragraph text
 * Bold and italic text span
 * Multiple levels of headers
-
+* Images with size and alignment
+* Tables
+* Ordered and un-ordered lists
 
 Export features
 ...............
@@ -80,3 +82,5 @@ Export features
 * Normal paragraph text
 * Multiple levels of headers
 * Images with sizes and alignment
+* Ordered and un-ordered lists
+* Tables
