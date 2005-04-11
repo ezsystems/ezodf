@@ -164,8 +164,8 @@ class eZOOConverter
             $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
 
             $ooGenerator->endTable();
-
 */
+
             /*
             $ooGenerator->addHeader( "This is generated from PHP!!" );
 
@@ -194,6 +194,8 @@ class eZOOConverter
 
             $ooGenerator->endList();
 
+            */
+            /*
             // Generate a table
             $ooGenerator->startTable();
             $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
@@ -210,8 +212,8 @@ class eZOOConverter
             $ooGenerator->nextCell();
 
             $ooGenerator->endTable();
-
             */
+
 
             $destFile = $ooGenerator->writeDocument();
 

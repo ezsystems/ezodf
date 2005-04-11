@@ -473,6 +473,7 @@ class eZOOGenerator
                         case "text":
                         {
                             $contentXML .=  $paragraphElement['Content'];
+                            print( "found text. $contentXML" );
                         }
                         break;
 
@@ -575,24 +576,20 @@ class eZOOGenerator
                         if ( $currentCellCount > $cellCount )
                             $cellCount = $currentCellCount;
                         $cellElementContent = "";
-                        foreach ( $cellArray as $cellElement )
-                        {
-                            $cellElementContent .= $this->handleElement( $cellElement );
-                        }
-                        $cellContent .= "<table:table-cell table:style-name='Table1.A1' table:value-type='string'>" . $cellElementContent . "</table:table-cell>";
+                        $cellElementContent .= $this->handleElement( $cellArray );
+                        $cellContent .= "    <table:table-cell table:style-name='Table1.A1' table:value-type='string'>" . $cellElementContent . "</table:table-cell>\n";
                     }
-                    $rowContent .= "<table:table-row>" . $cellContent . "</table:table-row>";
+                    $rowContent .= "<table:table-row>\n" . $cellContent . "</table:table-row>\n";
                 }
 
                 $numberLetter = "A";
                 for ( $i =0; $i < $cellCount; $i++ )
                 {
-                    $columnDefinition .= "<table:table-column table:style-name='Table1.$numberLetter'/>";
+                    $columnDefinition .= "<table:table-column table:style-name='Table1.$numberLetter'/>\n";
                     $numberLetter++;
                 }
 
                 $contentXML .= "<table:table table:name='Table1' table:style-name='Table1'>\n" . $columnDefinition . $rowContent . "</table:table>";
-
 
             }break;
 
