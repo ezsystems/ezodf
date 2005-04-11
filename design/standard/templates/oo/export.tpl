@@ -2,7 +2,7 @@
 
 <div class="context-block">
 {* DESIGN: Header START *}<div class="box-header"><div class="box-tc"><div class="box-ml"><div class="box-mr"><div class="box-tl"><div class="box-tr">
-<h1 class="context-title">{"OpenOffice.org import"|i18n("design/standard/oo")}</h1>
+<h1 class="context-title">{"OpenOffice.org export"|i18n("extension/oo")}</h1>
 
 {* DESIGN: Mainline *}<div class="header-mainline"></div>
 
@@ -14,14 +14,14 @@
 
    <img align="right" src={"ooo_logo.gif"|ezimage} alt="OpenOffice.org" />
 
-<h1>Export eZ publish content to OpenOffice.org</h1>
+<h1>{"Export eZ publish content to OpenOffice.org"|i18n("extension/oo")}</h1>
 
 {section show=$error_string}
    <h2>{"Error"|i18n("design/standard/oo")}: {$error_string}</h2>
 {/section}
 
 <p>
-Here you can export any eZ publish content object to an OpenOffice.org Writer document format.
+{"Here you can export any eZ publish content object to an OpenOffice.org Writer document format."|i18n("extension/oo")}
 </p>
 
 </div>

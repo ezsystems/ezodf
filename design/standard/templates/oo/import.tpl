@@ -1,9 +1,8 @@
-
 <form enctype="multipart/form-data" method="post" action={"/oo/import"|ezurl}>
 
 <div class="context-block">
 {* DESIGN: Header START *}<div class="box-header"><div class="box-tc"><div class="box-ml"><div class="box-mr"><div class="box-tl"><div class="box-tr">
-<h1 class="context-title">{"OpenOffice.org import"|i18n("design/standard/section")}</h1>
+<h1 class="context-title">{"OpenOffice.org import"|i18n("extension/oo")}</h1>
 
 {* DESIGN: Mainline *}<div class="header-mainline"></div>
 
@@ -17,20 +16,13 @@
 
 {section show=eq($oo_mode,'imported')}
 
-<h1>Object is now imported<//h1>
-<p>
-The object was imported as: {$class_identifier}
-</p>
-<p>
- You can find the object <a href={$url_alias|ezurl}>here</a>.
-</p>
-<p>
-The images are placed in the media and can be re-used.
-</p>
-
-<p>
-Click <a href={"/oo/import"|ezurl}>here</a>  to import another document.
-</p>
+<h1>{"Document is now imported"|i18n("extension/oo")}<//h1>
+<ul>
+  <li>{"The object was imported as: %class_name"|i18n('extension/oo','', hash( '%class_name', $class_identifier ) )}</li>
+  <li>{"Document imported as"|i18n("extension/oo")} <a href={$url_alias|ezurl}>{$node_name}</a>.</li>
+  <li>{"The images are placed in the media and can be re-used."|i18n("extension/oo")}</li>
+  <li><a href={"/oo/import"|ezurl}>{"Import another document"|i18n("extension/oo")}</a></li>
+</ul>
 
 </div>
 
@@ -42,13 +34,13 @@ Click <a href={"/oo/import"|ezurl}>here</a>  to import another document.
 
 {section-else}
 
-<h1>Import OpenOffice.org document</h1>
+<h1>{"Import OpenOffice.org document"|i18n("extension/oo")}</h1>
 
 <p>
-You can import OpenOffice.org Writer documents directly into eZ publish from this page. You are
+{"You can import OpenOffice.org Writer documents directly into eZ publish from this page. You are
 aksed where to place the document and eZ publish does the rest. The document is converted into
 the appropriate class during the import, you get a notice about this after the import is done.
-Images are placed in the media library so you can re-use them in other articles.
+Images are placed in the media library so you can re-use them in other articles."|i18n("extension/oo")}
 </p>
 
 <input type="hidden" name="MAX_FILE_SIZE" value="40000000"/>

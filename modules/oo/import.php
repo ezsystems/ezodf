@@ -66,12 +66,11 @@ if ( $module->isCurrentAction( 'OOPlace' ) )
             $result = $import->import( $http->sessionVariable( "oo_import_filename" ), $nodeID );
             $tpl->setVariable( 'class_identifier', $result['ClassIdentifier'] );
             $tpl->setVariable( 'url_alias', $result['URLAlias'] );
+            $tpl->setVariable( 'node_name', $result['NodeName'] );
 
-            /* ADD removal
-              $http->removeSessionVariable( 'oo_import_step' );
-              $http->removeSessionVariable( 'oo_import_filename' );
-              $http->removeSessionVariable( 'oo_import_original_filename' );
-            */
+            $http->removeSessionVariable( 'oo_import_step' );
+            $http->removeSessionVariable( 'oo_import_filename' );
+            $http->removeSessionVariable( 'oo_import_original_filename' );
         }
         else
         {

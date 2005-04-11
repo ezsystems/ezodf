@@ -257,7 +257,7 @@ class eZOOImport
                 $node = eZContentObjectTreeNode::fetch( $mediaRootNodeID );
 
                 $articleFolderName = $contentObject->attribute( 'name' );
-                $importFolderName = $importClassIdentifier = $ooINI->variable( 'OOImport', 'ImportedImagesMediaNodeName' );
+                $importFolderName = $ooINI->variable( 'OOImport', 'ImportedImagesMediaNodeName' );
                 $importNode = eZOOImport::createSubNode( $node, $importFolderName );
 
                 $articleNode = eZOOImport::createSubNode( $importNode, $articleFolderName );
@@ -287,6 +287,7 @@ class eZOOImport
             $mainNode = $contentObject->attribute( 'main_node' );
             // Create object stop.
             $importResult['URLAlias'] = $mainNode->attribute( 'url_alias' );
+            $importResult['NodeName'] = $contentObject->attribute( 'name' );
             $importResult['ClassIdentifier'] = $importClassIdentifier;
         }
 
