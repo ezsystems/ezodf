@@ -112,6 +112,6 @@ if ( $module->isCurrentAction( 'OOPlace' ) )
 $Result = array();
 $Result['content'] =& $tpl->fetch( "design:oo/export.tpl" );
 $Result['path'] = array( array( 'url' => '/oo/export/',
-                                'text' => 'OpenOffice.org export'  ));
+                                'text' => ezi18n( 'extension/oo', 'OpenOffice.org export' ) ) );
 
 ?>

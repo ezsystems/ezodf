@@ -119,7 +119,7 @@ else
 $Result = array();
 $Result['content'] =& $tpl->fetch( "design:oo/import.tpl" );
 $Result['path'] = array( array( 'url' => '/oo/import/',
-                                'text' => 'OpenOffice.org import'  ));
+                                'text' => ezi18n( 'extension/oo', 'OpenOffice.org import' ) ));
 
 
 
