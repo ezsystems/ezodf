@@ -73,8 +73,15 @@ if ( $module->isCurrentAction( 'OOPlace' ) )
 
         if ( !is_array( $fileName ) )
         {
+            $node = eZContentObjectTreeNode::fetch( $nodeID );
             $contentLength = filesize( $fileName );
-            $originalFileName = "test.sxw";
+            $nodeName = $node->attribute( 'name' );
+
+            include_once( 'lib/ezi18n/classes/ezchartransform.php' );
+            $trans =& eZCharTransform::instance();
+            $nodeName = $trans->transformByGroup( $nodeName, 'urlalias' );
+
+            $originalFileName = $nodeName . ".sxw";
 
             // Download the file
             header( "Pragma: " );

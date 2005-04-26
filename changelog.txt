@@ -1,3 +1,7 @@
+Changes from 1.0 Beta 2 to 1.0 stable
+-------------------------------------
+- Fixed name of generated filename on export to be based on the name of the exported object
+
 Changes from 1.0 Beta 1 to 1.0 Beta 2
 -------------------------------------
 - Fixed proper character handling when importing documents
