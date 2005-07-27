@@ -69,14 +69,14 @@ class eZOOGenerator
         include_once( "lib/ezfile/classes/ezdir.php" );
         eZDir::mkdir( $this->OORootDir );
         eZDir::mkdir( $this->OOExportDir );
+        eZDir::mkdir( $this->OOExportDir . "/META-INF" );
         eZDir::mkdir( $this->OOTemplateDir );
 
         // Write meta XML file
         $metaXML = "<?xml version='1.0' encoding='UTF-8'?>" .
-                   "<!DOCTYPE office:document-meta PUBLIC '-//OpenOffice.org//DTD OfficeDocument 1.0//EN' 'office.dtd'>" .
-                   "<office:document-meta xmlns:office='http://openoffice.org/2000/office' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:meta='http://openoffice.org/2000/meta' office:version='1.0'>" .
-                    "<office:meta>" .
-                     "<meta:generator>eZ publish 3.5</meta:generator>" .
+                   "<office:document-meta xmlns:office='urn:oasis:names:tc:opendocument:xmlns:office:1.0' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:meta='urn:oasis:names:tc:opendocument:xmlns:meta:1.0' xmlns:ooo='http://openoffice.org/2004/office' office:version='1.0'>" .
+                     "<office:meta>" .
+                     "<meta:generator>eZ publish</meta:generator>" .
                      " <meta:creation-date>2004-11-10T11:39:50</meta:creation-date>" .
                      "  <dc:date>2004-11-10T11:40:15</dc:date>" .
                      "  <dc:language>en-US</dc:language>" .
@@ -98,8 +98,7 @@ class eZOOGenerator
         // Write settings XML file
 
         $settingsXML = "<?xml version='1.0' encoding='UTF-8'?>" .
-                       "<!DOCTYPE office:document-settings PUBLIC '-//OpenOffice.org//DTD OfficeDocument 1.0//EN' 'office.dtd'>" .
-                       " <office:document-settings xmlns:office='http://openoffice.org/2000/office' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:config='http://openoffice.org/2001/config' office:version='1.0'>" .
+                       "<office:document-settings xmlns:office='urn:oasis:names:tc:opendocument:xmlns:office:1.0' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:config='urn:oasis:names:tc:opendocument:xmlns:config:1.0' xmlns:ooo='http://openoffice.org/2004/office' office:version='1.0'>" .
                        "  <office:settings>" .
                        " </office:settings>" .
                        "</office:document-settings>";
@@ -148,9 +147,13 @@ class eZOOGenerator
             // Generate a default empty styles.xml file
 
             $stylesXML = "<?xml version='1.0' encoding='UTF-8'?>" .
-                 "<!DOCTYPE office:document-styles PUBLIC '-//OpenOffice.org//DTD OfficeDocument 1.0//EN' 'office.dtd'>" .
-                 "<office:document-styles xmlns:office='http://openoffice.org/2000/office' xmlns:style='http://openoffice.org/2000/style' xmlns:text='http://openoffice.org/2000/text' xmlns:table='http://openoffice.org/2000/table' xmlns:draw='http://openoffice.org/2000/drawing' xmlns:fo='http://www.w3.org/1999/XSL/Format' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:number='http://openoffice.org/2000/datastyle' xmlns:svg='http://www.w3.org/2000/svg' xmlns:chart='http://openoffice.org/2000/chart' xmlns:dr3d='http://openoffice.org/2000/dr3d' xmlns:math='http://www.w3.org/1998/Math/MathML' xmlns:form='http://openoffice.org/2000/form' xmlns:script='http://openoffice.org/2000/script' office:version='1.0'>" .
+                         "<office:document-styles xmlns:office='urn:oasis:names:tc:opendocument:xmlns:office:1.0' xmlns:style='urn:oasis:names:tc:opendocument:xmlns:style:1.0' xmlns:text='urn:oasis:names:tc:opendocument:xmlns:text:1.0' xmlns:table='urn:oasis:names:tc:opendocument:xmlns:table:1.0' xmlns:draw='urn:oasis:names:tc:opendocument:xmlns:drawing:1.0' xmlns:fo='urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:meta='urn:oasis:names:tc:opendocument:xmlns:meta:1.0' xmlns:number='urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0' xmlns:svg='urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0' xmlns:chart='urn:oasis:names:tc:opendocument:xmlns:chart:1.0' xmlns:dr3d='urn:oasis:names:tc:opendocument:xmlns:dr3d:1.0' xmlns:math='http://www.w3.org/1998/Math/MathML' xmlns:form='urn:oasis:names:tc:opendocument:xmlns:form:1.0' xmlns:script='urn:oasis:names:tc:opendocument:xmlns:script:1.0' xmlns:ooo='http://openoffice.org/2004/office' xmlns:ooow='http://openoffice.org/2004/writer' xmlns:oooc='http://openoffice.org/2004/calc' xmlns:dom='http://www.w3.org/2001/xml-events' office:version='1.0'>" .
+                 "  <office:font-face-decls>" .
+                 "  </office:font-face-decls>" .
                  "   <office:styles>" .
+                 "     <style:style style:name='Table_20_Heading' style:display-name='Table Heading' style:family='paragraph' style:parent-style-name='Table_20_Contents' style:class='extra'>" .
+                 " <style:paragraph-properties fo:text-align='center' style:justify-single-word='false' text:number-lines='false' text:line-number='0'/>" .                 "  <style:text-properties fo:font-style='italic' fo:font-weight='bold' style:font-style-asian='italic' style:font-weight-asian='bold' style:font-style-complex='italic' style:font-weight-complex='bold'/>" .
+                 " </style:style>" .
                  "  </office:styles>" .
                  "</office:document-styles>";
 
@@ -162,7 +165,7 @@ class eZOOGenerator
 
 
         // Write mimetype file
-        $mimeType = "application/vnd.sun.xml.writer";
+        $mimeType = "application/vnd.oasis.opendocument.text";
 
         $fileName = $this->OOExportDir . "mimetype";
         $fp = fopen( $fileName, "w" );
@@ -172,24 +175,51 @@ class eZOOGenerator
         // Write content XML file
         $contentXML = "<?xml version='1.0' encoding='UTF-8'?>" .
                       "<!DOCTYPE office:document-content PUBLIC '-//OpenOffice.org//DTD OfficeDocument1.0//EN' 'office.dtd'>" .
-                      "<office:document-content xmlns:office='http://openoffice.org/2000/office' xmlns:style='http://openoffice.org/2000/style' xmlns:text='http://openoffice.org/2000/text' xmlns:table='http://openoffice.org/2000/table' xmlns:draw='http://openoffice.org/2000/drawing' xmlns:fo='http://www.w3.org/1999/XSL/Format' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:number='http://openoffice.org/2000/datastyle' xmlns:svg='http://www.w3.org/2000/svg' xmlns:chart='http://openoffice.org/2000/chart' xmlns:dr3d='http://openoffice.org/2000/dr3d' xmlns:math='http://www.w3.org/1998/Math/MathML' xmlns:form='http://openoffice.org/2000/form' xmlns:script='http://openoffice.org/2000/script' office:class='text' office:version='1.0'>" .
-                     " <office:script/>" .
-                     " <office:font-decls/>" .
-                     " <office:automatic-styles>" .
-                     "   <style:style style:name='imageright' style:family='graphics' style:parent-style-name='Graphics'>" .
-                     "     <style:properties style:wrap='left' style:number-wrapped-paragraphs='no-limit' style:wrap-contour='false' style:vertical-pos='top' style:vertical-rel='paragraph' style:horizontal-pos='right' style:horizontal-rel='paragraph' style:mirror='none' fo:clip='rect(0inch 0inch 0inch 0inch)' draw:luminance='0%' draw:contrast='0%' draw:red='0%' draw:green='0%' draw:blue='0%' draw:gamma='1' draw:color-inversion='false' draw:transparency='0%' draw:color-mode='standard'/>" .
-                     "  </style:style>\n" .
-                     "  <style:style style:name='imageleft' style:family='graphics' style:parent-style-name='Graphics'>" .
-                     "     <style:properties style:wrap='right' style:number-wrapped-paragraphs='no-limit' style:wrap-contour='false' style:horizontal-pos='left' style:horizontal-rel='paragraph' style:mirror='none' fo:clip='rect(0inch 0inch 0inch 0inch)' draw:luminance='0%' draw:contrast='0%' draw:red='0%' draw:green='0%' draw:blue='0%' draw:gamma='1' draw:color-inversion='false' draw:transparency='0%' draw:color-mode='standard'/>" .
-                     "  </style:style>" .
+                      "<office:document-content xmlns:office='urn:oasis:names:tc:opendocument:xmlns:office:1.0'".
+                      "                          xmlns:meta='urn:oasis:names:tc:opendocument:xmlns:meta:1.0'" .
+                      "                          xmlns:config='urn:oasis:names:tc:opendocument:xmlns:config:1.0'" .
+                      "                          xmlns:text='urn:oasis:names:tc:opendocument:xmlns:text:1.0'" .
+                      "                          xmlns:table='urn:oasis:names:tc:opendocument:xmlns:table:1.0'" .
+                      "                          xmlns:draw='urn:oasis:names:tc:opendocument:xmlns:drawing:1.0'" .
+                      "                          xmlns:presentation='urn:oasis:names:tc:opendocument:xmlns:presentation:1.0'" .
+                      "                          xmlns:dr3d='urn:oasis:names:tc:opendocument:xmlns:dr3d:1.0'" .
+                      "                          xmlns:chart='urn:oasis:names:tc:opendocument:xmlns:chart:1.0'" .
+                      "                          xmlns:form='urn:oasis:names:tc:opendocument:xmlns:form:1.0'" .
+                      "                          xmlns:script='urn:oasis:names:tc:opendocument:xmlns:script:1.0'" .
+                      "                          xmlns:style='urn:oasis:names:tc:opendocument:xmlns:style:1.0'" .
+                      "                          xmlns:number='urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0'" .
+                      "                          xmlns:math='http://www.w3.org/1998/Math/MathML'" .
+                      "                          xmlns:svg='urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0'" .
+                      "                          xmlns:fo='urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0'" .
+                      "                          xmlns:koffice='http://www.koffice.org/2005/'" .
+                      "                          xmlns:dc='http://purl.org/dc/elements/1.1/'" .
+                      "                          xmlns:xlink='http://www.w3.org/1999/xlink'>" .
+                      " <office:script/>" .
+                      " <office:font-face-decls/>" .
+                      " <office:automatic-styles>" .
+                      "  <text:list-style style:name='bulletlist'>" .
+                      "   <text:list-level-style-bullet text:level='1' text:style-name='Bullet_20_Symbols' style:num-suffix='.' text:bullet-char='•'>" .
+                      "      <style:list-level-properties text:space-before='0.25in' text:min-label-width='0.25in'/>" .
+                      "       <style:text-properties style:font-name='StarSymbol'/>" .
+                      "   </text:list-level-style-bullet>" .
+                      "  </text:list-style>" .
+                      "  <text:list-style style:name='numberedlist'>" .
+                      "   <text:list-level-style-number text:level='1' text:style-name='Numbering_20_Symbols' style:num-suffix='.' style:num-format='1'>" .
+                      "      <style:list-level-properties text:space-before='0.25in' text:min-label-width='0.25in'/>" .
+                      "   </text:list-level-style-number>" .
+                      "  </text:list-style>" .
+                      " <style:style style:name='imagecentered' style:family='graphic' style:parent-style-name='Graphics'>" .
+                      "  <style:graphic-properties style:horizontal-pos='center' style:horizontal-rel='paragraph' style:mirror='none' fo:clip='rect(0in 0in 0in 0in)' draw:luminance='0%' draw:contrast='0%' draw:red='0%' draw:green='0%' draw:blue='0%' draw:gamma='100%' draw:color-inversion='false' draw:image-opacity='100%' draw:color-mode='standard'/>" .
+                      " </style:style>" .
+                      " <style:style style:name='imageleft' style:family='graphic' style:parent-style-name='Graphics'>" .
+                      "   <style:graphic-properties style:wrap='right' style:horizontal-pos='left' style:horizontal-rel='paragraph' style:mirror='none' fo:clip='rect(0in 0in 0in 0in)' draw:luminance='0%' draw:contrast='0%' draw:red='0%' draw:green='0%' draw:blue='0%' draw:gamma='100%' draw:color-inversion='false' draw:image-opacity='100%' draw:color-mode='standard'/>" .
+                      "  </style:style>" .
+                      "  <style:style style:name='imageright' style:family='graphic' style:parent-style-name='Graphics'>" .
+                      "   <style:graphic-properties style:wrap='left' style:horizontal-pos='right' style:horizontal-rel='paragraph' style:mirror='none' fo:clip='rect(0in 0in 0in 0in)' draw:luminance='0%' draw:contrast='0%' draw:red='0%' draw:green='0%' draw:blue='0%' draw:gamma='100%' draw:color-inversion='false' draw:image-opacity='100%' draw:color-mode='standard'/>" .
+                      "  </style:style>" .
                      " </office:automatic-styles>" .
                      " <office:body>" .
-                     "  <text:sequence-decls>" .
-                     "  <text:sequence-decl text:display-outline-level='0' text:name='Illustration'/>" .
-                     "  <text:sequence-decl text:display-outline-level='0' text:name='Table'/>" .
-                     "  <text:sequence-decl text:display-outline-level='0' text:name='Text'/>" .
-                     "  <text:sequence-decl text:display-outline-level='0' text:name='Drawing'/>" .
-                     "</text:sequence-decls>";
+                     "   <office:text>";
 
         // Add body contents
         foreach ( $this->DocumentArray as $element )
@@ -198,7 +228,7 @@ class eZOOGenerator
         }
 
         // Add the content end
-        $contentXML .= "</office:body></office:document-content>";
+        $contentXML .= "</office:text></office:body></office:document-content>";
 
         $fileName = $this->OOExportDir . "content.xml";
         $fp = fopen( $fileName, "w" );
@@ -207,15 +237,18 @@ class eZOOGenerator
 
         // Write the manifest file
         $manifestXML = "<?xml version='1.0' encoding='UTF-8'?>" .
-                       "<!DOCTYPE manifest:manifest PUBLIC '-//OpenOffice.org//DTD Manifest 1.0//EN' 'Manifest.dtd'>" .
-                       "<manifest:manifest xmlns:manifest='http://openoffice.org/2001/manifest'>" .
-                       " <manifest:file-entry manifest:media-type='application/vnd.sun.xml.writer' manifest:full-path='/'/>" .
-                       " <manifest:file-entry manifest:media-type='' manifest:full-path='Pictures/'/>" .
-                       " <manifest:file-entry manifest:media-type='text/xml' manifest:full-path='content.xml'/>" .
-                       " <manifest:file-entry manifest:media-type='text/xml' manifest:full-path='styles.xml'/>" .
-                       " <manifest:file-entry manifest:media-type='text/xml' manifest:full-path='meta.xml'/>" .
-                       " <manifest:file-entry manifest:media-type='text/xml' manifest:full-path='settings.xml'/>" .
-                       "</manifest:manifest>";
+                      "<!DOCTYPE manifest:manifest PUBLIC '-//OpenOffice.org//DTD Manifest 1.0//EN' 'Manifest.dtd'>" .
+                      "<manifest:manifest xmlns:manifest='urn:oasis:names:tc:opendocument:xmlns:manifest:1.0'>" .
+                      "<manifest:file-entry manifest:media-type='application/vnd.oasis.opendocument.text' manifest:full-path='/'/>" .
+                      "<manifest:file-entry manifest:media-type='application/vnd.sun.xml.ui.configuration' manifest:full-path='Configurations2/'/>" .
+                      "<manifest:file-entry manifest:media-type='' manifest:full-path='Pictures/'/>" .
+                      "<manifest:file-entry manifest:media-type='text/xml' manifest:full-path='content.xml'/>" .
+                      "<manifest:file-entry manifest:media-type='text/xml' manifest:full-path='styles.xml'/>" .
+                      "<manifest:file-entry manifest:media-type='text/xml' manifest:full-path='meta.xml'/>" .
+                      "<manifest:file-entry manifest:media-type='' manifest:full-path='Thumbnails/thumbnail.png'/>" .
+                      "<manifest:file-entry manifest:media-type='' manifest:full-path='Thumbnails/'/>" .
+                      "<manifest:file-entry manifest:media-type='text/xml' manifest:full-path='settings.xml'/>" .
+                      "</manifest:manifest>";
 
         $fileName = $this->OOExportDir . "META-INF/manifest.xml";
         $fp = fopen( $fileName, "w" );
@@ -224,24 +257,26 @@ class eZOOGenerator
 
         // Check if zlib extension is loaded, if it's loaded use bundled ZIP library,
         // if not rely on the zip commandline version.
-        if ( true )
             // Todo: fix support for PclZip and correct zip of images.
+        if ( true )
 //        if ( !function_exists( 'gzopen' ) )
         {
             $currentDir = getcwd();
             chdir( $this->OOExportDir );
-            exec( "zip -r ../ootest.sxw *", $result );
+            exec( "zip -r ../ootest.odt *", $result );
             chdir( $currentDir );
         }
         else
         {
             require_once('extension/oo/lib/pclzip.lib.php');
-            $archive = new PclZip( $this->OORootDir . "ootest.sxw" );
+            $archive = new PclZip( $this->OORootDir . "ootest.odt" );
+
+            print( $this->OORootDir . "ootest.odt" );
             $archive->create( $this->OOExportDir,
                               PCLZIP_OPT_REMOVE_PATH, $this->OOExportDir );
         }
 
-        $fileName = $this->OORootDir . "ootest.sxw";
+        $fileName = $this->OORootDir . "ootest.odt";
 
         // Clean up
         eZDir::recursiveDelete( $this->OOExportDir );
@@ -333,6 +368,7 @@ class eZOOGenerator
                 $currentRow = $this->DocumentStack[$this->CurrentStackNumber]['CurrentRow'];
                 $currentCell = $this->DocumentStack[$this->CurrentStackNumber]['CurrentCell'];
                 $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'][$currentRow][$currentCell][] = $elementArray;
+
             }
         }
     }
@@ -395,7 +431,11 @@ class eZOOGenerator
         }
         else
         {
-            // Inside a list or a table
+            $elementArray = array( 'Type' => 'list',
+                                   'ListType' => $this->DocumentStack[$this->CurrentStackNumber + 1]['ListType'],
+                                   'Content' => $listItemArray );
+
+            $this->addElement( $elementArray );
         }
     }
 
@@ -405,7 +445,7 @@ class eZOOGenerator
     function startTable()
     {
         $this->CurrentStackNumber += 1;
-        $this->DocumentStack[$this->CurrentStackNumber]['Tyoe'] = 'table';
+        $this->DocumentStack[$this->CurrentStackNumber]['Type'] = 'table';
         $this->DocumentStack[$this->CurrentStackNumber]['CurrentRow'] = 0;
         $this->DocumentStack[$this->CurrentStackNumber]['CurrentCell'] = 0;
         $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'] = array();
@@ -465,7 +505,10 @@ class eZOOGenerator
         {
             case "paragraph":
             {
-                $contentXML .= "<text:p text:style-name='Standard'>";
+                if ( $this->IsInsideTableHeading == true )
+                    $contentXML .= "<text:p text:style-name='Table_20_Heading'>";
+                else
+                    $contentXML .= "<text:p text:style-name='Standard'>";
                 foreach ( $element['Content'] as $paragraphElement )
                 {
                     switch ( $paragraphElement['Type'] )
@@ -473,7 +516,6 @@ class eZOOGenerator
                         case "text":
                         {
                             $contentXML .=  $paragraphElement['Content'];
-                            print( "found text. $contentXML" );
                         }
                         break;
 
@@ -511,6 +553,7 @@ class eZOOGenerator
                     $realFileName = $destFile;
                     $sizeArray = getimagesize( $destFile );
 
+
                     $widthRatio = ( $element['DisplayWidth'] / 580 ) * 100;
                     $width = 6 * $widthRatio / 100;
 
@@ -524,16 +567,17 @@ class eZOOGenerator
                         $styleName = "imageright";
 
                     $contentXML .= "<text:p text:style-name='Standard'>" .
-                         "<draw:image draw:style-name='$styleName'
-                                                draw:name='Graphic1'
+                                   "<draw:frame draw:style-name='$styleName'
+                                                draw:name='graphics1'
                                                 text:anchor-type='paragraph'
-                                                svg:width='" . $width ."inch'
-                                                svg:height='" . $height . "inch'
-                                                draw:z-index='0'
-                                                xlink:href='#$relativeFile'
+                                                svg:width='" . $width . "in'
+                                                svg:height='" . $height . "in'
+                                                draw:z-index='0'>" .
+                                   "<draw:image xlink:href='$relativeFile'
                                                 xlink:type='simple'
                                                 xlink:show='embed'
                                                 xlink:actuate='onLoad'/>" .
+                         "</draw:frame>" .
                          "</text:p>";
                 }
                 else
@@ -556,50 +600,71 @@ class eZOOGenerator
                 }
 
                 if ( $element['ListType'] == "ordered" )
-                    $contentXML .= "<text:ordered-list text:style-name='L1'>" . $listContent . "</text:ordered-list>";
+                    $contentXML .= "<text:list text:style-name='numberedlist'>" . $listContent . "</text:list>";
                 else
-                    $contentXML .= "<text:unordered-list text:style-name='L1'>" . $listContent . "</text:unordered-list>";
+                    $contentXML .= "<text:list text:style-name='bulletlist'>" . $listContent . "</text:list>";
 
             }break;
 
             case 'table':
             {
-                $cellCount = 0;
+                // Global counter of number of tables in document
+                $tableCounter = 1;
+
+                $columnCount = 0;
                 $rowContent = "";
+                $rowCount = 1;
                 foreach ( $element['Content'] as $rowArray )
                 {
                     $cellContent = "";
                     $currentCellCount = 0;
+                    $cellLetter = "A";
                     foreach ( $rowArray as $cellArray )
                     {
                         $currentCellCount += 1;
-                        if ( $currentCellCount > $cellCount )
-                            $cellCount = $currentCellCount;
+                        if ( $currentCellCount > $columnCount )
+                            $columnCount = $currentCellCount;
                         $cellElementContent = "";
-                        $cellElementContent .= $this->handleElement( $cellArray );
-                        $cellContent .= "    <table:table-cell table:style-name='Table1.A1' table:value-type='string'>" . $cellElementContent . "</table:table-cell>\n";
+                        if ( $rowCount == 1 )
+                            $this->IsInsideTableHeading = true;
+                        else
+                            $this->IsInsideTableHeading = false;
+                        foreach ( $cellArray as $cellElement )
+                        {
+                            $cellElementContent .= $this->handleElement( $cellElement );
+                        }
+                        $cellContent .= "    <table:table-cell table:style-name='Table$tableCounter.$cellLetter$rowCount' office:value-type='string'>" . $cellElementContent . "</table:table-cell>\n";
+                        $cellLetter++;
                     }
+
+                    if ( $rowCount == 1 )
+                        $rowContent .= "<table:table-header-rows>";
+
                     $rowContent .= "<table:table-row>\n" . $cellContent . "</table:table-row>\n";
+                    if ( $rowCount == 1 )
+                        $rowContent .= "</table:table-header-rows>";
+
+                    $rowCount++;
                 }
 
                 $numberLetter = "A";
-                for ( $i =0; $i < $cellCount; $i++ )
-                {
-                    $columnDefinition .= "<table:table-column table:style-name='Table1.$numberLetter'/>\n";
-                    $numberLetter++;
-                }
+                $numberOfColumns = $columnCount;
 
-                $contentXML .= "<table:table table:name='Table1' table:style-name='Table1'>\n" . $columnDefinition . $rowContent . "</table:table>";
+                $columnDefinition .= "<table:table-column table:style-name='Table$tableCounter.$numberLetter' table:number-columns-repeated='$numberOfColumns' />\n";
+
+                $contentXML .= "<table:table table:name='Table$tableCounter' table:style-name='Table$tableCounter'>\n" . $columnDefinition . $rowContent . "</table:table>";
 
             }break;
 
             default:
             {
+                eZDebug::writeError( "Unsupported node type: " .$element['Type'] );
             }break;
         }
         return $contentXML;
     }
 
+    var $IsInsideTableHeading = false;
     var $CurrentStackNumber = 0;
     var $DocumentStack = array();
     var $DocumentArray = array();

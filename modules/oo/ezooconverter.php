@@ -256,6 +256,47 @@ class eZOOConverter
                         {
                             // Todo: support inline tags
                             $paragraphParameters[] = array( EZ_OO_TEXT, $child->textContent() );
+
+                            foreach ( $child->children() as $lineChild )
+                            {
+                                switch ( $lineChild->name() )
+                                {
+                                    case "embed":
+                                    {
+                                        // Only support objects of image class for now
+                                        $object = eZContentObject::fetch( $lineChild->attributeValue( "object_id" ) );
+                                        if ( $object )
+                                        {
+
+                                            $classIdentifier = $object->attribute( "class_identifier" );
+
+                                            // Todo: read class identifiers from configuration
+                                            if ( $classIdentifier == "image" )
+                                            {
+                                                $imageSize = $lineChild->attributeValue( 'size' );
+                                                if ( $imageSize == "" )
+                                                    $imageSize = "large";
+                                                $imageAlignment = $lineChild->attributeValue( 'align' );
+                                                if ( $imageAlignment == "" )
+                                                    $imageAlignment = "center";
+
+                                                $dataMap = $object->dataMap();
+                                                $imageAttribute = $dataMap['image'];
+
+                                                $imageHandler = $imageAttribute->content();
+                                                $originalImage = $imageHandler->attribute( 'original' );
+                                                $displayImage = $imageHandler->attribute( $imageSize );
+                                                $displayWidth = $displayImage['width'];
+                                                $displayHeight = $displayImage['height'];
+                                                $imageArray[] = array( "FileName" => $originalImage['url'],
+                                                                       "Alignment" => $imageAlignment,
+                                                                       "DisplayWidth" => $displayWidth,
+                                                                       "DisplayHeight" => $displayHeight );
+                                            }
+                                        }
+                                    }break;
+                                }
+                            }
                         }break;
 
                         case "#text":
@@ -340,6 +381,37 @@ class eZOOConverter
 
                         }break;
 
+                        case "embed":
+                        {
+                            // Only support objects of image class for now
+                            $object = eZContentObject::fetch( $child->attributeValue( "object_id" ) );
+                            if ( $object )
+                            {
+
+                                $classIdentifier = $object->attribute( "class_identifier" );
+
+                                // Todo: read class identifiers from configuration
+                                if ( $classIdentifier == "image" )
+                                {
+                                    $imageSize = $child->attributeValue( 'size' );
+                                    $imageAlignment = $child->attributeValue( 'align' );
+
+                                    $dataMap = $object->dataMap();
+                                    $imageAttribute = $dataMap['image'];
+
+                                    $imageHandler = $imageAttribute->content();
+                                    $originalImage = $imageHandler->attribute( 'original' );
+                                    $displayImage = $imageHandler->attribute( $imageSize );
+                                    $displayWidth = $displayImage['width'];
+                                    $displayHeight = $displayImage['height'];
+                                    $imageArray[] = array( "FileName" => $originalImage['url'],
+                                                           "Alignment" => $imageAlignment,
+                                                           "DisplayWidth" => $displayWidth,
+                                                           "DisplayHeight" => $displayHeight );
+                                }
+                            }
+                        }break;
+
                         default:
                         {
                             eZDebug::writeError( "Unsupported node at this level" . $child->name() );
@@ -354,7 +426,6 @@ class eZOOConverter
                 }
 
                 call_user_func_array( array( &$generator, "addParagraph" ), $paragraphParameters );
-
             }break;
 
             default:

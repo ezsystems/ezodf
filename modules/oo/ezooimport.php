@@ -83,15 +83,18 @@ class eZOOImport
         $xml = new eZXML();
         $dom =& $xml->domTree( file_get_contents( $fileName ) );
 
+        if ( !is_object( $dom ) )
+            return false;
+
         // Fetch the automatic document styles
-        $automaticStyleArray =& $dom->elementsByNameNS( 'automatic-styles', 'http://openoffice.org/2000/office' );
+        $automaticStyleArray =& $dom->elementsByNameNS( 'automatic-styles', 'urn:oasis:names:tc:opendocument:xmlns:office:1.0' );
         if ( count( $automaticStyleArray ) == 1 )
         {
             $this->AutomaticStyles = $automaticStyleArray[0]->children();
         }
 
         // Fetch the body section content
-        $sectionNodeArray =& $dom->elementsByNameNS( 'section', 'http://openoffice.org/2000/text' );
+        $sectionNodeArray =& $dom->elementsByNameNS( 'section', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' );
 
         $ooINI =& eZINI::instance( 'oo.ini' );
         $importClassIdentifier = $ooINI->variable( 'OOImport', 'DefaultImportClass' );
@@ -104,7 +107,7 @@ class eZOOImport
             $sectionNameArray = array();
             foreach ( $sectionNodeArray as $sectionNode )
             {
-                $sectionNameArray[] = strtolower( $sectionNode->attributeValueNS( "name", "http://openoffice.org/2000/text" ) );
+                $sectionNameArray[] = strtolower( $sectionNode->attributeValueNS( "name", "urn:oasis:names:tc:opendocument:xmlns:text:1.0" ) );
             }
 
             // Check if there is a coresponding eZ publish class for this document
@@ -154,7 +157,7 @@ class eZOOImport
         if ( $customClassFound == false )
         {
             // No defined sections. Do default import.
-            $bodyNodeArray =& $dom->elementsByNameNS( 'body', 'http://openoffice.org/2000/office' );
+            $bodyNodeArray =& $dom->elementsByNameNS( 'text', 'urn:oasis:names:tc:opendocument:xmlns:office:1.0' );
 
             if ( count( $bodyNodeArray ) == 1 )
             {
@@ -236,7 +239,13 @@ class eZOOImport
                 $titleAttribute = $ooINI->variable( 'OOImport', 'DefaultImportTitleAttribute' );
                 $bodyAttribute = $ooINI->variable( 'OOImport', 'DefaultImportBodyAttribute' );
 
-                $objectName = basename( $http->sessionVariable( "oo_import_original_filename" ), ".sxw" );
+                $objectName = basename( $http->sessionVariable( "oo_import_original_filename" ) );
+
+                // Remove extension from name
+                $objectName = preg_replace( "/(\....)$/", "", $objectName );
+                // Convert _ to spaces and upcase the first character
+                $objectName = ucfirst( str_replace( "_", " ", $objectName ) );
+
                 $dataMap[$titleAttribute]->setAttribute( 'data_text', $objectName );
                 $dataMap[$titleAttribute]->store();
 
@@ -309,9 +318,11 @@ class eZOOImport
             switch ( $node->name() )
             {
                 case 'sequence-decls' :
+                case 'forms' :
                 {
                     // do nothing
                 }break;
+
 
                 case 'section' :
                 {
@@ -323,7 +334,7 @@ class eZOOImport
 
                 case 'h' :
                 {
-                    $level = $node->attributeValueNS( 'level', 'http://openoffice.org/2000/text' );
+                    $level = $node->attributeValueNS( 'outline-level', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' );
 
                     if ( $level > 6 )
                         $level = 6;
@@ -368,8 +379,32 @@ class eZOOImport
                 }break;
 
 
-                case 'ordered-list' :
+                case 'list' :
                 {
+
+                    $styleName = $node->attributeValueNS( 'style-name', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' );
+
+
+                    // Check list style for unordered/ordered list
+                    $listType = "unordered";
+                    foreach ( $this->AutomaticStyles as $style )
+                    {
+                        $tmpStyleName = $style->attributeValueNS( "name", "urn:oasis:names:tc:opendocument:xmlns:style:1.0" );
+
+                        if ( $styleName == $tmpStyleName )
+                        {
+                            if ( count( $style->children() >= 1 ) )
+                            {
+                                $children = $style->children();
+
+                                if ( $children[0]->name() == "list-level-style-number" )
+                                {
+                                    $listType = "ordered";
+                                }
+                            }
+                        }
+                    }
+
                     $listContent = "";
                     foreach ( $node->children() as $itemNode )
                     {
@@ -382,25 +417,11 @@ class eZOOImport
                             }
                         }
                     }
-                    $xhtmlTextContent .= "<paragraph><ol>" . $listContent . "</ol></paragraph>\n";
-                }break;
 
-
-                case 'unordered-list' :
-                {
-                    $listContent = "";
-                    foreach ( $node->children() as $itemNode )
-                    {
-                        if ( $itemNode->name() == 'list-item' )
-                        {
-                            foreach ( $itemNode->children() as $childNode )
-                            {
-                                // Remove strip tags, since it's supported with paragraphs in trunk
-                                $listContent .= "<li>" . strip_tags( eZOOImport::handleNode( $childNode, $sectionLevel ) ) . "</li>";
-                            }
-                        }
-                    }
-                    $xhtmlTextContent .= "<paragraph><ul>" . $listContent . "</ul></paragraph>\n";
+                    if ( $listType == "ordered" )
+                        $xhtmlTextContent .= "<paragraph><ol>" . $listContent . "</ol></paragraph>\n";
+                    else
+                        $xhtmlTextContent .= "<paragraph><ul>" . $listContent . "</ul></paragraph>\n";
                 }break;
 
                 case 'table' :
@@ -457,7 +478,7 @@ class eZOOImport
 
                 default:
                 {
-                    print( "Unsupported top node " . $node->name() . "<br/" );
+                    print( "Unsupported top node " . $node->name() . "<br/>" );
                 }break;
             }
         }
@@ -472,6 +493,115 @@ class eZOOImport
         $paragraphContent = "";
         switch ( $childNode->name() )
         {
+            case "frame":
+            {
+                $frameContent = "";
+                foreach ( $childNode->children() as $imageNode )
+                {
+                    switch ( $imageNode->name() )
+                    {
+
+                        case "image" :
+                        {
+                            $href = ltrim( $imageNode->attributeValueNS( 'href', 'http://www.w3.org/1999/xlink' ), '#' );
+
+                            $href = $this->ImportDir . $href;
+
+                            $imageSize = "medium";
+                            $imageAlignment = "center";
+
+                            // Check image size
+                            $imageSize = "large";
+                            $pageWidth = 6;
+                            $width = $childNode->attributeValueNS( 'width', 'urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0' );
+
+                            $sizePercentage = $width / $pageWidth * 100;
+
+                            if ( $sizePercentage < 80 and $sizePercentage > 30 )
+                                $imageSize = 'medium';
+
+                            if ( $sizePercentage <= 30 )
+                                $imageSize = 'small';
+
+                            $styleName = $childNode->attributeValueNS( 'style-name', 'urn:oasis:names:tc:opendocument:xmlns:drawing:1.0' );
+
+                            // Check for style definitions
+                            $imageAlignment = "center";
+                            foreach ( $this->AutomaticStyles as $style )
+                            {
+                                $tmpStyleName = $style->attributeValueNS( "name", "urn:oasis:names:tc:opendocument:xmlns:style:1.0" );
+
+                                if ( $styleName == $tmpStyleName )
+                                {
+                                    if ( count( $style->children() == 1 ) )
+                                    {
+                                        $children = $style->children();
+                                        $properties = $children[0];
+                                        $alignment = $properties->attributeValueNS( "horizontal-pos", "urn:oasis:names:tc:opendocument:xmlns:style:1.0" );
+                                    }
+
+                                    // Check image alignment
+                                    switch ( $alignment )
+                                    {
+                                        case "left":
+                                        {
+                                            $imageAlignment = "left";
+                                        }break;
+
+                                        case "right":
+                                        {
+                                            $imageAlignment = "right";
+                                        }break;
+
+                                        default:
+                                        {
+                                            $imageAlignment = "center";
+                                        }break;
+                                    }
+                                    break;
+                                }
+                            }
+
+                            if ( file_exists( $href ) )
+                            {
+                                // Import image
+                                $classID = 5;
+                                $class =& eZContentClass::fetch( $classID );
+                                $creatorID = 14;
+
+                                $contentObject =& $class->instantiate( $creatorID, 1 );
+
+                                $version =& $contentObject->version( 1 );
+                                $version->setAttribute( 'modified', eZDateTime::currentTimeStamp() );
+                                $version->setAttribute( 'status', EZ_VERSION_STATUS_DRAFT );
+                                $version->store();
+
+                                $contentObjectID = $contentObject->attribute( 'id' );
+                                $dataMap =& $contentObject->dataMap();
+
+                                $dataMap['name']->setAttribute( 'data_text', "Imported Image" );
+                                $dataMap['name']->store();
+
+                                $imageContent =& $dataMap['image']->attribute( 'content' );
+                                $imageContent->initializeFromFile( $href );
+                                $dataMap['image']->store();
+
+                                $this->RelatedImageArray[] = array( "ID" => $contentObjectID,
+                                                                    "ContentObject" => $contentObject );
+
+                                $frameContent .= "<embed object_id='$contentObjectID' align='$imageAlignment' size='$imageSize' />";
+
+                            }
+
+                        }break;
+
+                    }
+                }
+
+                // Textboxes are defined inside paragraphs.
+                $paragraphContent .= "$frameContent";
+            }break;
+
             case "text-box":
             {
                 foreach ( $childNode->children() as $textBoxNode )
@@ -544,94 +674,6 @@ class eZOOImport
                 }
             }break;
 
-            case "image" :
-            {
-                $href = ltrim( $childNode->attributeValueNS( 'href', 'http://www.w3.org/1999/xlink' ), '#' );
-
-                $href = $this->ImportDir . $href;
-
-                // Check image size
-                $imageSize = "large";
-                $pageWidth = 6;
-                $width = $childNode->attributeValueNS( 'width', 'http://www.w3.org/2000/svg' );
-                $sizePercentage = $width / $pageWidth * 100;
-
-                if ( $sizePercentage < 80 and $sizePercentage > 30 )
-                    $imageSize = 'medium';
-
-                if ( $sizePercentage <= 30 )
-                    $imageSize = 'small';
-
-                $styleName = $childNode->attributeValueNS( 'style-name', 'http://openoffice.org/2000/drawing' );
-
-                // Check for style definitions
-                $imageAlignment = "center";
-                foreach ( $this->AutomaticStyles as $style )
-                {
-                    $tmpStyleName = $style->attributeValueNS( "name", "http://openoffice.org/2000/style" );
-                    if ( $styleName == $tmpStyleName )
-                    {
-                        if ( count( $style->children() == 1 ) )
-                        {
-                            $children = $style->children();
-                            $properties = $children[0];
-                            $alignment = $properties->attributeValueNS( "horizontal-pos", "http://openoffice.org/2000/style" );
-                        }
-
-                        // Check image alignment
-                        switch ( $alignment )
-                        {
-                            case "left":
-                            {
-                                $imageAlignment = "left";
-                            }break;
-
-                            case "right":
-                            {
-                                $imageAlignment = "right";
-                            }break;
-
-                            default:
-                            {
-                                $imageAlignment = "center";
-                            }break;
-                        }
-                        break;
-                    }
-                }
-
-                if ( file_exists( $href ) )
-                {
-                    // Import image
-                    $classID = 5;
-                    $class =& eZContentClass::fetch( $classID );
-                    $creatorID = 14;
-
-                    $contentObject =& $class->instantiate( $creatorID, 1 );
-
-                    $version =& $contentObject->version( 1 );
-                    $version->setAttribute( 'modified', eZDateTime::currentTimeStamp() );
-                    $version->setAttribute( 'status', EZ_VERSION_STATUS_DRAFT );
-                    $version->store();
-
-                    $contentObjectID = $contentObject->attribute( 'id' );
-                    $dataMap =& $contentObject->dataMap();
-
-                    $dataMap['name']->setAttribute( 'data_text', "Imported Image" );
-                    $dataMap['name']->store();
-
-                    $imageContent =& $dataMap['image']->attribute( 'content' );
-                    $imageContent->initializeFromFile( $href );
-                    $dataMap['image']->store();
-
-                    $this->RelatedImageArray[] = array( "ID" => $contentObjectID,
-                                                        "ContentObject" => $contentObject );
-
-                    $paragraphContent .= "<object id='$contentObjectID' align='$imageAlignment' size='$imageSize' />";
-
-                }
-
-            }break;
 
             default:
             {

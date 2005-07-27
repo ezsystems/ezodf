@@ -59,12 +59,23 @@ if ( $http->hasPostVariable( "ExportButton" ) )
     return;
 }
 
+$doImport = false;
 if ( $module->isCurrentAction( 'OOPlace' ) )
 {
     // We have the file and the placement. Do the actual import.
     $selectedNodeIDArray = eZContentBrowse::result( 'OOPlace' );
-
     $nodeID = $selectedNodeIDArray[0];
+    $doImport = true;
+}
+
+if ( $http->hasPostVariable( "NodeID" ) )
+{
+    $nodeID = $http->postVariable( "NodeID" );
+    $doImport = true;
+}
+
+if ( $doImport == true )
+{
 
     if ( is_numeric( $nodeID ) )
     {
@@ -81,7 +92,7 @@ if ( $module->isCurrentAction( 'OOPlace' ) )
             $trans =& eZCharTransform::instance();
             $nodeName = $trans->transformByGroup( $nodeName, 'urlalias' );
 
-            $originalFileName = $nodeName . ".sxw";
+            $originalFileName = $nodeName . ".odt";
 
             // Download the file
             header( "Pragma: " );
@@ -89,7 +100,7 @@ if ( $module->isCurrentAction( 'OOPlace' ) )
             /* Set cache time out to 10 minutes, this should be good enough to work around an IE bug */
             header( "Expires: ". gmdate('D, d M Y H:i:s', time() + 600) . 'GMT');
             header( "Content-Length: $contentLength" );
-            header( "Content-Type: application/vnd.sun.xml.writer" );
+            header( "Content-Type: application/vnd.oasis.opendocument.text" );
             header( "X-Powered-By: eZ publish" );
             header( "Content-disposition: attachment; filename=\"$originalFileName\"" );
             header( "Content-Transfer-Encoding: binary" );
