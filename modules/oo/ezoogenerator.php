@@ -263,7 +263,10 @@ class eZOOGenerator
         {
             $currentDir = getcwd();
             chdir( $this->OOExportDir );
-            exec( "zip -r ../ootest.odt *", $result );
+            $zipPath = $ooINI->variable( 'OOo', 'ZipPath' );
+            $execStr = $zipPath . "zip -r ../ootest.odt *";
+
+            exec(  $execStr, $result );
             chdir( $currentDir );
         }
         else
