@@ -161,7 +161,7 @@ else
 function deamonConvert( $sourceFile, $destFile )
 {
     $server = "127.0.0.1";
-    $port = "1042";
+    $port = "9090";
 
     $fp = fsockopen( $server,
                      $port,
