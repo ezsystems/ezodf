@@ -50,6 +50,17 @@ $tpl =& templateInit();
 
 $sourceFile = "documents/test1.sxw";
 
+$doImport = false;
+if ( $http->hasPostVariable( "NodeID" ) )
+{
+    $nodeID = $http->postVariable( "NodeID" );
+    $doImport = true;
+    $node =& eZContentObjectTreeNode::fetch( $nodeID );
+    $tpl->setVariable( 'import_node', $node );
+
+    $http->setSessionVariable( 'oo_direct_import_node', $nodeID );
+}
+
 if ( $module->isCurrentAction( 'OOPlace' ) )
 {
     // We have the file and the placement. Do the actual import.
@@ -63,7 +74,7 @@ if ( $module->isCurrentAction( 'OOPlace' ) )
         if ( file_exists( $fileName ) )
         {
             $import = new eZOOImport();
-            $result = $import->import( $http->sessionVariable( "oo_import_filename" ), $nodeID );
+            $result = $import->import( $http->sessionVariable( "oo_import_filename" ), $nodeID, $http->sessionVariable( "oo_import_original_filename" ) );
             $tpl->setVariable( 'class_identifier', $result['ClassIdentifier'] );
             $tpl->setVariable( 'url_alias', $result['URLAlias'] );
             $tpl->setVariable( 'node_name', $result['NodeName'] );
@@ -71,6 +82,7 @@ if ( $module->isCurrentAction( 'OOPlace' ) )
             $http->removeSessionVariable( 'oo_import_step' );
             $http->removeSessionVariable( 'oo_import_filename' );
             $http->removeSessionVariable( 'oo_import_original_filename' );
+
         }
         else
         {
@@ -86,6 +98,8 @@ if ( $module->isCurrentAction( 'OOPlace' ) )
 }
 else
 {
+    $tpl->setVariable( 'oo_mode', 'browse' );
+
     $file = eZHTTPFile::fetch( "oo_file" );
 
     if ( $file )
@@ -106,17 +120,35 @@ else
 
             }
 
-            $http->setSessionVariable( 'oo_import_step', 'browse' );
-            $http->setSessionVariable( 'oo_import_filename', $fileName );
-            $http->setSessionVariable( 'oo_import_original_filename', $originalFileName );
+            // If we have the NodeID do the import directly
+            if (  $http->sessionVariable( 'oo_direct_import_node' ) )
+            {
+                $nodeID = $http->sessionVariable( 'oo_direct_import_node' );
+                $import = new eZOOImport();
+                $result = $import->import( $fileName, $nodeID, $originalFileName );
 
-            eZContentBrowse::browse( array( 'action_name' => 'OOPlace',
-                                            'description_template' => 'design:oo/browse_place.tpl',
-                                            'content' => array(),
-                                            'from_page' => '/oo/import/',
-                                            'cancel_page' => '/oo/import/' ),
-                                     $module );
-            return;
+                $tpl->setVariable( 'class_identifier', $result['ClassIdentifier'] );
+                $tpl->setVariable( 'url_alias', $result['URLAlias'] );
+                $tpl->setVariable( 'node_name', $result['NodeName'] );
+                $tpl->setVariable( 'oo_mode', 'imported' );
+
+                $http->removeSessionVariable( 'oo_direct_import_node' );
+            }
+            else
+            {
+                // Make the user browser for document placement
+                $http->setSessionVariable( 'oo_import_step', 'browse' );
+                $http->setSessionVariable( 'oo_import_filename', $fileName );
+                $http->setSessionVariable( 'oo_import_original_filename', $originalFileName );
+
+                eZContentBrowse::browse( array( 'action_name' => 'OOPlace',
+                                                'description_template' => 'design:oo/browse_place.tpl',
+                                                'content' => array(),
+                                                'from_page' => '/oo/import/',
+                                                'cancel_page' => '/oo/import/' ),
+                                         $module );
+                return;
+            }
         }
         else
         {
@@ -124,7 +156,6 @@ else
         }
     }
 
-    $tpl->setVariable( 'oo_mode', 'browse' );
 }
 
 function deamonConvert( $sourceFile, $destFile )

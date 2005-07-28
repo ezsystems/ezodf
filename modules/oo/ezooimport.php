@@ -44,6 +44,8 @@
 
 */
 
+include_once( 'lib/ezxml/classes/ezxml.php' );
+
 class eZOOImport
 {
     /*!
@@ -56,7 +58,7 @@ class eZOOImport
     /*!
       Imports an OpenOffice.org document from the given file.
     */
-    function import( $file, $placeNodeID )
+    function import( $file, $placeNodeID, $originalFilename )
     {
         $importResult = array();
         include_once( "lib/ezfile/classes/ezdir.php" );
@@ -64,7 +66,6 @@ class eZOOImport
         eZDir::mkdir( $this->ImportDir );
 
         $http =& eZHTTPTool::instance();
-        $file = $http->sessionVariable( "oo_import_filename" );
 
         // Check if zlib extension is loaded, if it's loaded use bundled ZIP library,
         // if not rely on the unzip commandline version.
@@ -84,7 +85,10 @@ class eZOOImport
         $dom =& $xml->domTree( file_get_contents( $fileName ) );
 
         if ( !is_object( $dom ) )
+        {
+            print( "Error: could not parse XML");
             return false;
+        }
 
         // Fetch the automatic document styles
         $automaticStyleArray =& $dom->elementsByNameNS( 'automatic-styles', 'urn:oasis:names:tc:opendocument:xmlns:office:1.0' );
@@ -239,7 +243,7 @@ class eZOOImport
                 $titleAttribute = $ooINI->variable( 'OOImport', 'DefaultImportTitleAttribute' );
                 $bodyAttribute = $ooINI->variable( 'OOImport', 'DefaultImportBodyAttribute' );
 
-                $objectName = basename( $http->sessionVariable( "oo_import_original_filename" ) );
+                $objectName = basename( $originalFilename);
 
                 // Remove extension from name
                 $objectName = preg_replace( "/(\....)$/", "", $objectName );
@@ -301,7 +305,7 @@ class eZOOImport
         }
 
         // Clean up
-       eZDir::recursiveDelete( $this->ImportDir );
+        eZDir::recursiveDelete( $this->ImportDir );
         return $importResult;
     }
 
@@ -379,6 +383,20 @@ class eZOOImport
                 }break;
 
 
+                case 'numbered-paragraph' :
+                {
+                    $listContent = "";
+                    foreach ( $node->children() as $itemNode )
+                    {
+                        if ( $itemNode->name() == 'p' )
+                        {
+                            $listContent .= "<li>" . strip_tags( eZOOImport::handleNode( $itemNode, $sectionLevel ) ) . "</li>";
+                        }
+                    }
+
+                    $xhtmlTextContent .= "<paragraph><ul>" . $listContent . "</ul></paragraph>\n";
+                }break;
+
                 case 'list' :
                 {
 
@@ -412,7 +430,6 @@ class eZOOImport
                         {
                             foreach ( $itemNode->children() as $childNode )
                             {
-                                // Remove strip tags, since it's supported with paragraphs in trunk
                                 $listContent .= "<li>" . strip_tags( eZOOImport::handleNode( $childNode, $sectionLevel ) ) . "</li>";
                             }
                         }

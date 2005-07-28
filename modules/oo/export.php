@@ -59,22 +59,22 @@ if ( $http->hasPostVariable( "ExportButton" ) )
     return;
 }
 
-$doImport = false;
+$doExport = false;
 if ( $module->isCurrentAction( 'OOPlace' ) )
 {
     // We have the file and the placement. Do the actual import.
     $selectedNodeIDArray = eZContentBrowse::result( 'OOPlace' );
     $nodeID = $selectedNodeIDArray[0];
-    $doImport = true;
+    $doExport = true;
 }
 
 if ( $http->hasPostVariable( "NodeID" ) )
 {
     $nodeID = $http->postVariable( "NodeID" );
-    $doImport = true;
+    $doExport = true;
 }
 
-if ( $doImport == true )
+if ( $doExport == true )
 {
 
     if ( is_numeric( $nodeID ) )

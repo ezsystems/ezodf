@@ -36,6 +36,10 @@
 
 <h1>{"Import OpenOffice.org document"|i18n("extension/oo")}</h1>
 
+{section show=$import_node}
+<h2>{"Import to"|i18n("extension/oo")}: {$import_node.name}</h2>
+{/section}
+
 <p>
 {"You can import OpenOffice.org Writer documents directly into eZ publish from this page. You are
 aksed where to place the document and eZ publish does the rest. The document is converted into

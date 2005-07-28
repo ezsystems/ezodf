@@ -1,6 +1,7 @@
 Changes from 1.0 stable to 2.0 beta 1
 -------------------------------------
-- Added OpenOffice.org export link directly in the popup menu in the admin interface (3.6 only)
+- Added OpenOffice.org export link directly in the popup menu in the admin interface (3.6+ only)
+- Added OpenOffice.org import link directly in the popup menu in the admin interface (3.6+ only)
 - Changed document format from OpenOffice.org Writer 1.x to OASIS OpenDocument Text format
 - Added support for lists in table cells
 - Fixed export of table headers
