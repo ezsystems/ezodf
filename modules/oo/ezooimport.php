@@ -187,7 +187,7 @@ class eZOOImport
             {
                 foreach ( $sectionNodeArray as $sectionNode )
                 {
-                    $sectionName = strtolower( $sectionNode->attributeValueNS( 'name', 'http://openoffice.org/2000/text' ) );
+                    $sectionName = strtolower( $sectionNode->attributeValueNS( 'name', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' ) );
                     $xmlText = "";
                     $level = 1;
                     foreach ( $sectionNode->children() as $childNode )
