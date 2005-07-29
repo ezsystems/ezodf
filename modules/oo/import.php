@@ -108,18 +108,7 @@ else
         {
             $fileName = $file->attribute( 'filename' );
             $originalFileName = $file->attribute( 'original_filename' );
-
-            if ( substr( $originalFileName, -4, 4 ) != ".odt" )
-            {
-                copy( realpath( $fileName ), "/tmp/convert_from.doc" );
-                /// Convert document using the eZ publish document conversion deamon
-                deamonConvert( "/tmp/convert_from.doc", "/tmp/ooo_converted.odt" );
-
-                // Overwrite the file location
-                $fileName = "/tmp/ooo_converted.odt";
-
-            }
-
+            
             // If we have the NodeID do the import directly
             if (  $http->sessionVariable( 'oo_direct_import_node' ) )
             {
@@ -158,35 +147,6 @@ else
 
 }
 
-function deamonConvert( $sourceFile, $destFile )
-{
-    $server = "127.0.0.1";
-    $port = "9090";
-
-    $fp = fsockopen( $server,
-                     $port,
-                     $errorNR,
-                     $errorString,
-                     0 );
-
-    if ( $fp )
-    {
-        $welcome = fread( $fp, 1024 );
-
-        $welcome = trim( $welcome );
-        if ( $welcome == "eZ publish document conversion deamon" )
-        {
-            $commandString = "convert_to_ooo $sourceFile";
-            fputs( $fp, $commandString, strlen( $commandString ) );
-
-            $result = fread( $fp, 1024 );
-            $result = trim( $result );
-
-            print( "client got: $result\n" );
-        }
-        fclose( $fp );
-    }
-}
 
 
 $Result = array();

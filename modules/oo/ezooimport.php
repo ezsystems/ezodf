@@ -57,10 +57,56 @@ class eZOOImport
     }
 
     /*!
+      Connects to the eZ publish document conversion deamon and converts the document to OpenOffice.org Writer
+    */
+    function deamonConvert( $sourceFile, $destFile )
+    {
+        $server = "127.0.0.1";
+        $port = "9090";
+
+        $fp = fsockopen( $server,
+                         $port,
+                         $errorNR,
+                         $errorString,
+                         0 );
+
+        if ( $fp )
+        {
+            $welcome = fread( $fp, 1024 );
+
+            $welcome = trim( $welcome );
+            if ( $welcome == "eZ publish document conversion deamon" )
+            {
+                $commandString = "convert_to_ooo $sourceFile";
+                fputs( $fp, $commandString, strlen( $commandString ) );
+
+                $result = fread( $fp, 1024 );
+                $result = trim( $result );
+
+                print( "client got: $result\n" );
+            }
+            fclose( $fp );
+        }
+    }
+
+    /*!
       Imports an OpenOffice.org document from the given file.
     */
-    function import( $file, $placeNodeID, $originalFilename )
+    function import( $file, $placeNodeID, $originalFileName )
     {
+        // Check if document conversion is needed
+        //
+        if ( substr( $originalFileName, -4, 4 ) != ".odt" )
+        {
+            print( "ConvertingS" );
+            copy( realpath( $file ), "/tmp/convert_from.doc" );
+            /// Convert document using the eZ publish document conversion deamon
+            eZOOImport::deamonConvert( "/tmp/convert_from.doc", "/tmp/ooo_converted.odt" );
+
+            // Overwrite the file location
+            $file = "/tmp/ooo_converted.odt";
+        }
+
         $importResult = array();
         include_once( "lib/ezfile/classes/ezdir.php" );
         $unzipResult = "";
@@ -246,7 +292,7 @@ class eZOOImport
                 $titleAttribute = $ooINI->variable( 'OOImport', 'DefaultImportTitleAttribute' );
                 $bodyAttribute = $ooINI->variable( 'OOImport', 'DefaultImportBodyAttribute' );
 
-                $objectName = basename( $originalFilename);
+                $objectName = basename( $originalFileName);
 
                 // Remove extension from name
                 $objectName = preg_replace( "/(\....)$/", "", $objectName );
