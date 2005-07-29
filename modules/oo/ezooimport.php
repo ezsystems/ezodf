@@ -45,6 +45,7 @@
 */
 
 include_once( 'lib/ezxml/classes/ezxml.php' );
+include_once( 'lib/ezlocale/classes/ezdatetime.php' );
 
 class eZOOImport
 {
@@ -84,11 +85,13 @@ class eZOOImport
         $xml = new eZXML();
         $dom =& $xml->domTree( file_get_contents( $fileName ) );
 
+
         if ( !is_object( $dom ) )
         {
             print( "Error: could not parse XML");
             return false;
         }
+
 
         // Fetch the automatic document styles
         $automaticStyleArray =& $dom->elementsByNameNS( 'automatic-styles', 'urn:oasis:names:tc:opendocument:xmlns:office:1.0' );
@@ -299,6 +302,8 @@ class eZOOImport
 
             $mainNode = $contentObject->attribute( 'main_node' );
             // Create object stop.
+            $importResult['Object'] = $contentObject;
+            $importResult['MainNode'] = $mainNode;
             $importResult['URLAlias'] = $mainNode->attribute( 'url_alias' );
             $importResult['NodeName'] = $contentObject->attribute( 'name' );
             $importResult['ClassIdentifier'] = $importClassIdentifier;

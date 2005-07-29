@@ -16,7 +16,7 @@
 
 {section show=eq($oo_mode,'imported')}
 
-<h1>{"Document is now imported"|i18n("extension/oo")}<//h1>
+<h1>{"Document is now imported"|i18n("extension/oo")}</h1>
 <ul>
   <li>{"The object was imported as: %class_name"|i18n('extension/oo','', hash( '%class_name', $class_identifier ) )}</li>
   <li>{"Document imported as"|i18n("extension/oo")} <a href={$url_alias|ezurl}>{$node_name}</a>.</li>
