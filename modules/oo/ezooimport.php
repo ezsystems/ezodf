@@ -98,7 +98,6 @@ class eZOOImport
         //
         if ( substr( $originalFileName, -4, 4 ) != ".odt" )
         {
-            print( "ConvertingS" );
             copy( realpath( $file ), "/tmp/convert_from.doc" );
             /// Convert document using the eZ publish document conversion deamon
             eZOOImport::deamonConvert( "/tmp/convert_from.doc", "/tmp/ooo_converted.odt" );
@@ -310,19 +309,28 @@ class eZOOImport
             $operationResult = eZOperationHandler::execute( 'content', 'publish', array( 'object_id' => $contentObjectID,
                                                                                          'version' => 1 ) );
 
-            // Fetch object to get correct name
-            $contentObject = eZContentObject::fetch( $contentObjectID );
-
-            // Create image folder if it does not already exist
+            $storeImagesInMedia = $ooINI->variable( "OOImport", "PlaceImagesInMedia" ) == "true";
+            if ( $storeImagesInMedia == true )
             {
-                $mediaRootNodeID = 43;
-                $node = eZContentObjectTreeNode::fetch( $mediaRootNodeID );
+                // Fetch object to get correct name
+                $contentObject = eZContentObject::fetch( $contentObjectID );
 
-                $articleFolderName = $contentObject->attribute( 'name' );
-                $importFolderName = $ooINI->variable( 'OOImport', 'ImportedImagesMediaNodeName' );
-                $importNode = eZOOImport::createSubNode( $node, $importFolderName );
+                // Create image folder if it does not already exist
+                {
+                    $mediaRootNodeID = 43;
+                    $node = eZContentObjectTreeNode::fetch( $mediaRootNodeID );
 
-                $articleNode = eZOOImport::createSubNode( $importNode, $articleFolderName );
+                    $articleFolderName = $contentObject->attribute( 'name' );
+                    $importFolderName = $ooINI->variable( 'OOImport', 'ImportedImagesMediaNodeName' );
+                    $importNode = eZOOImport::createSubNode( $node, $importFolderName );
+
+                    $articleNode = eZOOImport::createSubNode( $importNode, $articleFolderName );
+                    $imageRootNode = $articleNode->attribute( "node_id" );
+                }
+            }
+            else
+            {
+                $imageRootNode = $contentObject->attribute( "main_node_id" );
             }
 
             // Publish all embedded images as related objects
@@ -333,7 +341,7 @@ class eZOOImport
                 $nodeAssignment =& eZNodeAssignment::create( array(
                                                                  'contentobject_id' => $image['ID'],
                                                                  'contentobject_version' => 1,
-                                                                 'parent_node' => $articleNode->attribute( "node_id" ),
+                                                                 'parent_node' => $imageRootNode,
                                                                  'is_main' => 1
                                                                  )
                                                              );

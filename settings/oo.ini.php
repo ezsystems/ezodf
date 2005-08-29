@@ -1,10 +1,8 @@
-
 [OOo]
 # Path to zip program on windows you can use: 
 # http://www.info-zip.org/pub/infozip/
 # enter for example c:\zip\ or /usr/local/bin/
 ZipPath=
-
 
 
 [OOImport]
@@ -14,11 +12,12 @@ DefaultImportBodyAttribute=body
 RegisteredClassArray[]=article
 RegisteredClassArray[]=folder
 ImportedImagesMediaNodeName=Imported images
+PlaceImagesInMedia=true
+
 
 [OOExport]
 UseTemplate=true
 TemplateName=ezpublish.ott
-
 
 # Map eZ publish attributes to OpenOffice.org section definitions
 [article]
