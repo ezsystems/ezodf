@@ -190,10 +190,9 @@ class eZOOImport
 
             if ( $customClassFound == true )
             {
-                print( "custom class found" );
                 foreach ( $sectionNodeArray as $sectionNode )
                 {
-                    $sectionName = strtolower( $sectionNode->attributeValueNS( 'name', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' ) );
+                    $sectionName = str_replace( " ", "_", strtolower( $sectionNode->attributeValueNS( 'name', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' ) ) );
                     $xmlText = "";
                     $level = 1;
                     foreach ( $sectionNode->children() as $childNode )
