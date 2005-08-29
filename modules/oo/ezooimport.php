@@ -169,6 +169,12 @@ class eZOOImport
 
                 if ( count( $attributeArray ) > 0 )
                 {
+                    // Convert space to _ in section names
+                    foreach ( $sectionNameArray as $key => $value )
+                    {
+                        $sectionNameArray[$key] = str_replace( " ", "_", $value );
+                    }
+
                     sort( $attributeArray );
                     sort( $sectionNameArray );
 
@@ -184,6 +190,7 @@ class eZOOImport
 
             if ( $customClassFound == true )
             {
+                print( "custom class found" );
                 foreach ( $sectionNodeArray as $sectionNode )
                 {
                     $sectionName = strtolower( $sectionNode->attributeValueNS( 'name', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' ) );
