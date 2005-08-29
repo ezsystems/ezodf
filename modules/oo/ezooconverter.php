@@ -80,17 +80,22 @@ class eZOOConverter
                         $text = trim( $attribute->content() );
                         if ( $text != "" )
                         {
+                            $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
                             $ooGenerator->addHeader( $attribute->content() );
+                            $ooGenerator->endSection( );
                         }
                     }break;
 
                     case "eztext":
                     {
+                        $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
                         $ooGenerator->addParagraph( $attribute->content() );
                     }break;
 
                     case "ezxmltext":
                     {
+                        $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
+
                         $xmlData = $attribute->attribute( 'data_text' );
                         $domTree =& $xml->domTree( $xmlData );
                         if ( $domTree )
@@ -101,6 +106,7 @@ class eZOOConverter
                                 eZOOConverter::handleNode( $node, $ooGenerator );
                             }
                         }
+                        $ooGenerator->endSection( );
                     }break;
 
                     default:

@@ -443,6 +443,23 @@ class eZOOGenerator
     }
 
     /*!
+       Stars a new section with the given name
+    */
+    function startSection( $name )
+    {
+        $this->DocumentArray[] = array( 'Type' => 'section',
+                                        'Text' => $name );
+    }
+
+    /*!
+       Ends the current defined section
+    */
+    function endSection( )
+    {
+        $this->DocumentArray[] = array( 'Type' => 'end-section' );
+    }
+
+    /*!
      Starts a new table sequence.
     */
     function startTable()
@@ -537,6 +554,16 @@ class eZOOGenerator
                 $contentXML .= "</text:p>";
 
 
+            }break;
+
+            case "section":
+            {
+                $contentXML .= "<text:section text:style-name='Sect1' text:name='" . $element['Text'] .  "'>\n";
+            }break;
+
+            case "end-section":
+            {
+                $contentXML .= "</text:section>\n   <text:p text:style-name='Standard'/>\n";
             }break;
 
             case "header":
