@@ -92,8 +92,12 @@ class eZOOImport
     /*!
       Imports an OpenOffice.org document from the given file.
     */
-    function import( $file, $placeNodeID, $originalFileName )
+    function import( $file, $placeNodeID, $originalFileName, $importType = "import" )
     {
+        // If replacing/updating the document we need the ID.
+        if ( $importType == "replace" )
+             $GLOBALS["OOImportObjectID"] = $placeNodeID;
+
         // Check if document conversion is needed
         //
         if ( substr( $originalFileName, -4, 4 ) != ".odt" )
@@ -241,26 +245,37 @@ class eZOOImport
         // Create object start
         $class = eZContentClass::fetchByIdentifier( $importClassIdentifier );
         {
-            $creatorID = 14; // 14 == admin
-            $parentNodeID = $placeNodeID;
-            $contentObject =& $class->instantiate( $creatorID, 1 );
+            // Check if we should replace the current object or import a new
+            if ( $importType !== "replace" )
+            {
+                $creatorID = 14; // 14 == admin
+                $parentNodeID = $placeNodeID;
+                $object =& $class->instantiate( $creatorID, 1 );
 
-            $nodeAssignment =& eZNodeAssignment::create( array(
-                                                             'contentobject_id' => $contentObject->attribute( 'id' ),
-                                                             'contentobject_version' => $contentObject->attribute( 'current_version' ),
-                                                             'parent_node' => $parentNodeID,
-                                                             'is_main' => 1
-                                                             )
-                                                         );
-            $nodeAssignment->store();
+                $nodeAssignment =& eZNodeAssignment::create( array(
+                                                                 'contentobject_id' => $object->attribute( 'id' ),
+                                                                 'contentobject_version' => $object->attribute( 'current_version' ),
+                                                                 'parent_node' => $parentNodeID,
+                                                                 'is_main' => 1
+                                                                 )
+                                                             );
+                $nodeAssignment->store();
 
-            $version =& $contentObject->version( 1 );
-            $version->setAttribute( 'modified', eZDateTime::currentTimeStamp() );
-            $version->setAttribute( 'status', EZ_VERSION_STATUS_DRAFT );
-            $version->store();
+                $version =& $object->version( 1 );
+                $version->setAttribute( 'modified', eZDateTime::currentTimeStamp() );
+                $version->setAttribute( 'status', EZ_VERSION_STATUS_DRAFT );
+                $version->store();
+                $dataMap =& $object->dataMap();
+            }
+            else
+            {
+                $node = eZContentObjectTreeNode::fetch( $placeNodeID );
+                $object = $node->attribute( 'object' );
+                $version = $object->createNewVersion();
 
-            $contentObjectID = $contentObject->attribute( 'id' );
-            $dataMap =& $contentObject->dataMap();
+                $dataMap = $object->fetchDataMap( $version->attribute( 'version' ) );
+            }
+            $contentObjectID = $object->attribute( 'id' );
 
             if ( $customClassFound == true )
             {
@@ -313,20 +328,20 @@ class eZOOImport
 
             include_once( 'lib/ezutils/classes/ezoperationhandler.php' );
             $operationResult = eZOperationHandler::execute( 'content', 'publish', array( 'object_id' => $contentObjectID,
-                                                                                         'version' => 1 ) );
+                                                                                         'version' => $version->attribute( 'version' ) ) );
 
             $storeImagesInMedia = $ooINI->variable( "OOImport", "PlaceImagesInMedia" ) == "true";
             if ( $storeImagesInMedia == true )
             {
                 // Fetch object to get correct name
-                $contentObject = eZContentObject::fetch( $contentObjectID );
+                $object = eZContentObject::fetch( $contentObjectID );
 
                 // Create image folder if it does not already exist
                 {
                     $mediaRootNodeID = 43;
                     $node = eZContentObjectTreeNode::fetch( $mediaRootNodeID );
 
-                    $articleFolderName = $contentObject->attribute( 'name' );
+                    $articleFolderName = $object->attribute( 'name' );
                     $importFolderName = $ooINI->variable( 'OOImport', 'ImportedImagesMediaNodeName' );
                     $importNode = eZOOImport::createSubNode( $node, $importFolderName );
 
@@ -336,7 +351,7 @@ class eZOOImport
             }
             else
             {
-                $imageRootNode = $contentObject->attribute( "main_node_id" );
+                $imageRootNode = $object->attribute( "main_node_id" );
             }
 
             // Publish all embedded images as related objects
@@ -357,15 +372,15 @@ class eZOOImport
                 $operationResult = eZOperationHandler::execute( 'content', 'publish', array( 'object_id' => $image['ID'],
                                                                                              'version' => 1 ) );
 
-                $contentObject->addContentObjectRelation( $image['ID'], 1 );
+                $object->addContentObjectRelation( $image['ID'], 1 );
             }
 
-            $mainNode = $contentObject->attribute( 'main_node' );
+            $mainNode = $object->attribute( 'main_node' );
             // Create object stop.
             $importResult['Object'] = $contentObject;
             $importResult['MainNode'] = $mainNode;
             $importResult['URLAlias'] = $mainNode->attribute( 'url_alias' );
-            $importResult['NodeName'] = $contentObject->attribute( 'name' );
+            $importResult['NodeName'] = $object->attribute( 'name' );
             $importResult['ClassIdentifier'] = $importClassIdentifier;
         }
 
@@ -646,30 +661,56 @@ class eZOOImport
 
                             if ( file_exists( $href ) )
                             {
-                                // Import image
-                                $classID = 5;
-                                $class =& eZContentClass::fetch( $classID );
-                                $creatorID = 14;
+                                // Calculate RemoteID based on image md5:
+                                $remoteID = "ezoo-" . md5( file_get_contents( $href ) );
 
-                                $contentObject =& $class->instantiate( $creatorID, 1 );
+                                // Check if an image with the same remote ID already exists
+                                $db =& eZDB::instance();
+                                $imageParentNodeID = 680;
+                                $resultArray = $db->arrayQuery( 'SELECT id, node_id, ezcontentobject.remote_id
+                                                                 FROM  ezcontentobject, ezcontentobject_tree
+                                                                 WHERE ezcontentobject.remote_id = "' . $remoteID. '" AND
+                                                                       ezcontentobject.id=ezcontentobject_tree.contentobject_id AND
+                                                                       ezcontentobject_tree.parent_node_id=' . $imageParentNodeID );
 
-                                $version =& $contentObject->version( 1 );
-                                $version->setAttribute( 'modified', eZDateTime::currentTimeStamp() );
-                                $version->setAttribute( 'status', EZ_VERSION_STATUS_DRAFT );
-                                $version->store();
+                                $contentObject = false;
+                                if ( count( $resultArray ) >= 1 )
+                                {
+                                    $contentObject = eZContentObject::fetch( $resultArray[0]['id'], true );
+                                    $contentObjectID = $resultArray[0]['id'];
+                                }
 
-                                $contentObjectID = $contentObject->attribute( 'id' );
-                                $dataMap =& $contentObject->dataMap();
+                                // If image does not already exist, create it as an object
+                                if ( $contentObject == false )
+                                {
+                                    // Import image
+                                    $classID = 5;
+                                    $class =& eZContentClass::fetch( $classID );
+                                    $creatorID = 14;
 
-                                $dataMap['name']->setAttribute( 'data_text', "Imported Image" );
-                                $dataMap['name']->store();
+                                    $contentObject =& $class->instantiate( $creatorID, 1 );
+                                    $contentObject->setAttribute( "remote_id",  $remoteID );
+                                    $contentObject->store();
 
-                                $imageContent =& $dataMap['image']->attribute( 'content' );
-                                $imageContent->initializeFromFile( $href );
-                                $dataMap['image']->store();
+                                    $version =& $contentObject->version( 1 );
+                                    $version->setAttribute( 'modified', eZDateTime::currentTimeStamp() );
+                                    $version->setAttribute( 'status', EZ_VERSION_STATUS_DRAFT );
+                                    $version->store();
 
-                                $this->RelatedImageArray[] = array( "ID" => $contentObjectID,
-                                                                    "ContentObject" => $contentObject );
+                                    $contentObjectID = $contentObject->attribute( 'id' );
+                                    $dataMap =& $contentObject->dataMap();
+
+                                    $dataMap['name']->setAttribute( 'data_text', "Imported Image" );
+                                    $dataMap['name']->store();
+
+                                    $imageContent =& $dataMap['image']->attribute( 'content' );
+                                    $imageContent->initializeFromFile( $href );
+                                    $dataMap['image']->store();
+                                    $this->RelatedImageArray[] = array( "ID" => $contentObjectID,
+                                                                        "ContentObject" => $contentObject );
+
+                                }
+
 
                                 $frameContent .= "<embed object_id='$contentObjectID' align='$imageAlignment' size='$imageSize' />";
 

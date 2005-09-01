@@ -51,13 +51,35 @@ $tpl =& templateInit();
 $sourceFile = "documents/test1.sxw";
 
 $doImport = false;
+$replaceObject = false;
+// Check if we should create a new document as a child of the selected or
+// replace it creating a new version
+if ( $http->hasPostVariable( "ImportType" ) )
+{
+    $type = $http->postVariable( "ImportType" );
+    if ( $type = "replace" )
+    {
+        $replaceObject = true;
+    }
+}
+
 if ( $http->hasPostVariable( "NodeID" ) )
 {
     $nodeID = $http->postVariable( "NodeID" );
     $doImport = true;
     $node =& eZContentObjectTreeNode::fetch( $nodeID );
-    $tpl->setVariable( 'import_node', $node );
 
+    if ( $replaceObject == true )
+    {
+        $tpl->setVariable( 'import_type', "replace" );
+        $http->setSessionVariable( 'oo_import_type', 'replace' );
+    }
+    else
+    {
+        $http->setSessionVariable( 'oo_import_type', 'import' );
+    }
+
+    $tpl->setVariable( 'import_node', $node );
     $http->setSessionVariable( 'oo_direct_import_node', $nodeID );
 }
 
@@ -108,13 +130,16 @@ else
         {
             $fileName = $file->attribute( 'filename' );
             $originalFileName = $file->attribute( 'original_filename' );
-            
-            // If we have the NodeID do the import directly
-            if (  $http->sessionVariable( 'oo_direct_import_node' ) )
+
+            // If we have the NodeID do the import/replace directly
+            if (  $http->sessionVariable( 'oo_direct_import_node' )  )
             {
                 $nodeID = $http->sessionVariable( 'oo_direct_import_node' );
+                $importType = $http->sessionVariable( 'oo_import_type' );
+                if ( $importType != "replace" )
+                    $importType = "import";
                 $import = new eZOOImport();
-                $result = $import->import( $fileName, $nodeID, $originalFileName );
+                $result = $import->import( $fileName, $nodeID, $originalFileName, $importType );
 
                 $tpl->setVariable( 'class_identifier', $result['ClassIdentifier'] );
                 $tpl->setVariable( 'url_alias', $result['URLAlias'] );

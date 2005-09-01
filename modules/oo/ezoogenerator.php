@@ -74,7 +74,7 @@ class eZOOGenerator
 
         // Write meta XML file
         $metaXML = "<?xml version='1.0' encoding='UTF-8'?>" .
-                   "<office:document-meta xmlns:office='urn:oasis:names:tc:opendocument:xmlns:office:1.0' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:meta='urn:oasis:names:tc:opendocument:xmlns:meta:1.0' xmlns:ooo='http://openoffice.org/2004/office' office:version='1.0'>" .
+                   "<office:document-meta xmlns:office='urn:oasis:names:tc:opendocument:xmlns:office:1.0' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:meta='urn:oasis:names:tc:opendocument:xmlns:meta:1.0' xmlns:ooo='http://openoffice.org/2004/office' office:version='1.0' xmlns:ezpublish='http://www.ez.no/ezpublish/oasis'>" .
                      "<office:meta>" .
                      "<meta:generator>eZ publish</meta:generator>" .
                      " <meta:creation-date>2004-11-10T11:39:50</meta:creation-date>" .
@@ -86,6 +86,7 @@ class eZOOGenerator
                      "  <meta:user-defined meta:name='Info 2'/>" .
                      "  <meta:user-defined meta:name='Info 3'/>" .
                      "  <meta:user-defined meta:name='Info 4'/>" .
+                     $eZMetaData .
                      " <meta:document-statistic meta:table-count='0' meta:image-count='0' meta:object-count='0' meta:page-count='1' meta:paragraph-count='1' meta:word-count='2' meta:character-count='10'/>" .
                      " </office:meta>" .
                      "</office:document-meta>";
