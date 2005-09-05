@@ -450,18 +450,45 @@ class eZOOImport
 
                 case 'p' :
                 {
+                    $styleName = $node->attributeValueNS( 'style-name', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' );
+
+                    $lastCollapsingTagName = $this->CollapsingTagName;
+                    switch ( $styleName )
+                    {
+                        case "Preformatted_20_Text" :
+                        {
+                            $this->CollapsingTagName = "literal";
+                        }break;
+                        default:
+                        {
+                            $this->CollapsingTagName = false;
+                        }break;
+                    }
+
                     $paragraphContent = "";
                     foreach ( $node->children() as $childNode )
                     {
                         $paragraphContent .= eZOOImport::handleInlineNode( $childNode );
                     }
 
-                    if ( trim( $paragraphContent ) != "" )
+                    if ( $this->CollapsingTagName == false )
                     {
-                        $xhtmlTextContent .= '<paragraph>' . $paragraphContent . "</paragraph>\n";
+                        // Add collapsed tag, if beyond the last collapsing tag
+                        if ( $lastCollapsingTagName !== false )
+                        {
+                            $xhtmlTextContent .= '<paragraph>' . '<' . $lastCollapsingTagName . '>' . $this->CollapsingTagContent . "</" . $lastCollapsingTagName . ">\n</paragraph>\n";
+                        }
+
+                        if ( trim( $paragraphContent ) != "" )
+                        {
+                            $xhtmlTextContent .= '<paragraph>' . $paragraphContent . "</paragraph>\n";
+                        }
+                    }
+                    else
+                    {
+                        $this->CollapsingTagContent .= $paragraphContent . "\n";
                     }
                 }break;
-
 
                 case 'numbered-paragraph' :
                 {
@@ -479,9 +506,7 @@ class eZOOImport
 
                 case 'list' :
                 {
-
                     $styleName = $node->attributeValueNS( 'style-name', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' );
-
 
                     // Check list style for unordered/ordered list
                     $listType = "unordered";
@@ -498,10 +523,18 @@ class eZOOImport
                                 if ( $children[0]->name() == "list-level-style-number" )
                                 {
                                     $listType = "ordered";
+                                    $this->InsideListType = "ordered";
                                 }
                             }
                         }
                     }
+
+                    $oldStyle = $this->InsideListType;
+                    if ( $this->InsideListType == false )
+                        $this->InsideListType = $listType;
+                    else
+                        $listType = $this->InsideListType;
+
 
                     $listContent = "";
                     foreach ( $node->children() as $itemNode )
@@ -510,10 +543,12 @@ class eZOOImport
                         {
                             foreach ( $itemNode->children() as $childNode )
                             {
-                                $listContent .= "<li>" . strip_tags( eZOOImport::handleNode( $childNode, $sectionLevel ) ) . "</li>";
+                                $listContent .= "<li>" . eZOOImport::handleNode( $childNode, $sectionLevel ) . "</li>";
                             }
                         }
                     }
+
+                    $this->InsideListType = $oldStyle;
 
                     if ( $listType == "ordered" )
                         $xhtmlTextContent .= "<paragraph><ol>" . $listContent . "</ol></paragraph>\n";
@@ -666,7 +701,7 @@ class eZOOImport
 
                                 // Check if an image with the same remote ID already exists
                                 $db =& eZDB::instance();
-                                $imageParentNodeID = 680;
+                                $imageParentNodeID = $GLOBALS["OOImportObjectID"];
                                 $resultArray = $db->arrayQuery( 'SELECT id, node_id, ezcontentobject.remote_id
                                                                  FROM  ezcontentobject, ezcontentobject_tree
                                                                  WHERE ezcontentobject.remote_id = "' . $remoteID. '" AND
@@ -889,6 +924,14 @@ class eZOOImport
     var $RelatedImageArray = array();
     var $AutomaticStyles = array();
     var $ImportDir = "var/cache/oo/import/";
+    var $InsideListType = false;
+
+    // Variable containing collapsing tag name.
+    // E.g. preformatted text is tagged on each paragraph,
+    // in eZ publish we make a <literal> tag around the text instead
+    var $CollapsingTagName = false;
+    var $CollapsingTagContent = false;
+
 }
 
 ?>

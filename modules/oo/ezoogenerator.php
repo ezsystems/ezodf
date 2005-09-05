@@ -222,11 +222,18 @@ class eZOOGenerator
                      " <office:body>" .
                      "   <office:text>";
 
+
         // Add body contents
         foreach ( $this->DocumentArray as $element )
         {
             $contentXML .= $this->handleElement( $element );
         }
+
+        // Handle charset conversion if needed
+        include_once( 'lib/ezi18n/classes/eztextcodec.php' );
+        $charset = 'UTF-8';
+        $codec =& eZTextCodec::instance( false, $charset );
+        $contentXML =& $codec->convertString( $contentXML );
 
         // Add the content end
         $contentXML .= "</office:text></office:body></office:document-content>";
