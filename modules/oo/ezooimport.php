@@ -199,9 +199,19 @@ class eZOOImport
                     $sectionName = str_replace( " ", "_", strtolower( $sectionNode->attributeValueNS( 'name', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' ) ) );
                     $xmlText = "";
                     $level = 1;
-                    foreach ( $sectionNode->children() as $childNode )
+                    $childArray =& $sectionNode->children();
+                    $nodeCount = 1;
+                    foreach ( $childArray as $childNode )
                     {
-                        $xmlText .= eZOOImport::handleNode( $childNode, $level );
+                        $isLastTag = false;
+                        if ( $nodeCount == count( $childArray ) )
+                        {
+                            print("found last tag" . $childNode->name() . "<br>" );
+                            $isLastTag = true;
+                        }
+
+                        $xmlText .= eZOOImport::handleNode( $childNode, $level, $isLastTag );
+                        $nodeCount++;
                     }
                     $endSectionPart = "";
                     $levelDiff = 1 - $level;
@@ -394,11 +404,20 @@ class eZOOImport
       Handless DOM node in the OpenOffice.org writer docuemnt and returns the eZXMLText equivalent.
       If images are embedded in the document they will be imported as media objects in eZ publish.
      */
-    function handleNode( $node, &$sectionLevel )
+    function handleNode( $node, &$sectionLevel, $isLastTag = false )
     {
         $xhtmlTextContent = "";
 //    if ( $node->namespaceURI() == 'http://openoffice.org/2000/text' )
         {
+
+            // If another tag than paragraph comes then terminate collapsing tags, if any
+            if ( $node->name() != "p" and $this->CollapsingTagName != false )
+            {
+                $xhtmlTextContent .= '<paragraph>' . '<' . $this->CollapsingTagName . '>' . $this->CollapsingTagContent . "</" . $this->CollapsingTagName . ">\n</paragraph>\n";
+                $this->CollapsingTagContent = false;
+                $this->CollapsingTagName = false;
+            }
+
             switch ( $node->name() )
             {
                 case 'sequence-decls' :
@@ -477,6 +496,7 @@ class eZOOImport
                         if ( $lastCollapsingTagName !== false )
                         {
                             $xhtmlTextContent .= '<paragraph>' . '<' . $lastCollapsingTagName . '>' . $this->CollapsingTagContent . "</" . $lastCollapsingTagName . ">\n</paragraph>\n";
+                            $this->CollapsingTagContent = false;
                         }
 
                         if ( trim( $paragraphContent ) != "" )
@@ -486,7 +506,18 @@ class eZOOImport
                     }
                     else
                     {
-                        $this->CollapsingTagContent .= $paragraphContent . "\n";
+                        if ( $isLastTag == true )
+                        {
+                            if ( $this->CollapsingTagName != false )
+                                $lastCollapsingTagName = $this->CollapsingTagName;
+                            $xhtmlTextContent .= '<paragraph>' . '<' . $lastCollapsingTagName . '>' . $paragraphContent . "</" . $lastCollapsingTagName . ">\n</paragraph>\n";
+                            $this->CollapsingTagContent = false;
+                            $this->CollapsingTagName = false;
+                        }
+                        else
+                        {
+                            $this->CollapsingTagContent .= $paragraphContent . "\n";
+                        }
                     }
                 }break;
 
@@ -788,7 +819,7 @@ class eZOOImport
 
             case "s" :
             {
-                $paragraphContent .= "&nbsp;";
+                $paragraphContent .= " ";
             }break;
 
             case "a" :

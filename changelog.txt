@@ -1,3 +1,13 @@
+Changes from 2.0 beta 1 to 2.0 beta 2
+-------------------------------------
+- Fixed proper UTF-8 conversion on export
+- Added support for nested lists during import
+- Added replace document function
+- Fixed not re-importing allready imported images when replacing a document
+- Added sections support when exporting document
+- Added support for import of literal text
+- Fixed converting &nbsp; to spaces on import
+
 Changes from 1.0 stable to 2.0 beta 1
 -------------------------------------
 - Added WebDAV import support for OpenOffice 2 documents

@@ -153,8 +153,13 @@ class eZOOGenerator
                  "  </office:font-face-decls>" .
                  "   <office:styles>" .
                  "     <style:style style:name='Table_20_Heading' style:display-name='Table Heading' style:family='paragraph' style:parent-style-name='Table_20_Contents' style:class='extra'>" .
-                 " <style:paragraph-properties fo:text-align='center' style:justify-single-word='false' text:number-lines='false' text:line-number='0'/>" .                 "  <style:text-properties fo:font-style='italic' fo:font-weight='bold' style:font-style-asian='italic' style:font-weight-asian='bold' style:font-style-complex='italic' style:font-weight-complex='bold'/>" .
+                 " <style:paragraph-properties fo:text-align='center' style:justify-single-word='false' text:number-lines='false' text:line-number='0'/>" .
+                 "  <style:text-properties fo:font-style='italic' fo:font-weight='bold' style:font-style-asian='italic' style:font-weight-asian='bold' style:font-style-complex='italic' style:font-weight-complex='bold'/>" .
                  " </style:style>" .
+                 " <style:style style:name='Preformatted_20_Text' style:display-name='Preformatted Text' style:family='paragraph' style:parent-style-name='Standard' style:class='html'>" .
+                 "   <style:paragraph-properties fo:margin-top='0in' fo:margin-bottom='0in'/>" .
+                 "   <style:text-properties style:font-name='Courier New' fo:font-size='10pt' style:font-name-asian='Courier New' style:font-size-asian='10pt' style:font-name-complex='Courier New' style:font-size-complex='10pt'/>" .
+                 "  </style:style>".
                  "  </office:styles>" .
                  "</office:document-styles>";
 
@@ -282,7 +287,6 @@ class eZOOGenerator
             require_once('extension/oo/lib/pclzip.lib.php');
             $archive = new PclZip( $this->OORootDir . "ootest.odt" );
 
-            print( $this->OORootDir . "ootest.odt" );
             $archive->create( $this->OOExportDir,
                               PCLZIP_OPT_REMOVE_PATH, $this->OOExportDir );
         }
@@ -310,10 +314,24 @@ class eZOOGenerator
     */
     function addParagraph( )
     {
-        if ( func_num_args() > 0 and ( is_array( func_get_arg(0) ) ) )
+        $style = "";
+        $argArray = func_get_args();
+
+        if ( func_num_args() > 1 )
+        {
+            // Check for style definition
+            if ( !is_array( $argArray[0] ) )
+            {
+                $style = $argArray[0];
+                $argArray = array_slice( $argArray, 1, count( $argArray ) -1 );
+            }
+        }
+
+        if ( func_num_args() > 0 and ( is_array( $argArray[0] ) ) )
         {
             $paragraphArray = array();
-            foreach ( func_get_args() as $paragraphElement )
+
+            foreach ( $argArray as $paragraphElement )
             {
                 switch ( $paragraphElement[0] )
                 {
@@ -346,10 +364,11 @@ class eZOOGenerator
         }
         else
         {
-            $paragraphArray = array( array( 'Type' => 'text', "Content" => func_get_arg(0) ) );
+            $paragraphArray = array( array( 'Type' => 'text', "Content" => $argArray[0] ) );
         }
 
         $elementArray = array( 'Type' => 'paragraph',
+                               'Style' => $style,
                                'Content' => $paragraphArray );
         $this->addElement( $elementArray );
     }
@@ -536,7 +555,19 @@ class eZOOGenerator
                 if ( $this->IsInsideTableHeading == true )
                     $contentXML .= "<text:p text:style-name='Table_20_Heading'>";
                 else
-                    $contentXML .= "<text:p text:style-name='Standard'>";
+                {
+                    if ( $element['Style'] == "" )
+                    {
+                        $contentXML .= "<text:p text:style-name='Standard'>";
+                    }
+                    else
+                    {
+                        $contentXML .= "<text:p text:style-name='" . $element['Style'] . "'>";
+                    }
+
+                }
+
+
                 foreach ( $element['Content'] as $paragraphElement )
                 {
                     switch ( $paragraphElement['Type'] )

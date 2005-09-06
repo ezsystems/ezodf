@@ -218,6 +218,10 @@ class eZOOConverter
             $ooGenerator->nextCell();
 
             $ooGenerator->endTable();
+
+            $ooGenerator->addParagraph( "Preformatted_20_Text", array( EZ_OO_TEXT, "This is just a sample paragraph. And it's of course added via PHP." ) );
+            $ooGenerator->addParagraph( "eZ_PRE_style", "Normal text here." );
+
             */
 
 
@@ -313,6 +317,18 @@ class eZOOConverter
                         case "link":
                         {
                             $paragraphParameters[] = array( EZ_OO_LINK, $child->attributeValue( "href" ), $child->textContent() );
+                        }break;
+
+                        case "literal":
+                        {
+                            $literalContent = $child->textContent();
+
+                            $literalContentArray = explode( "\n", $literalContent );
+                            foreach ( $literalContentArray as $literalLine )
+                            {
+                                $generator->addParagraph( "Preformatted_20_Text", htmlspecialchars( $literalLine ) );
+                            }
+
                         }break;
 
                         case "ol":
