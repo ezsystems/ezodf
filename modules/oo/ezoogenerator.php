@@ -180,52 +180,59 @@ class eZOOGenerator
 
         // Write content XML file
         $contentXML = "<?xml version='1.0' encoding='UTF-8'?>" .
-                      "<!DOCTYPE office:document-content PUBLIC '-//OpenOffice.org//DTD OfficeDocument1.0//EN' 'office.dtd'>" .
-                      "<office:document-content xmlns:office='urn:oasis:names:tc:opendocument:xmlns:office:1.0'".
-                      "                          xmlns:meta='urn:oasis:names:tc:opendocument:xmlns:meta:1.0'" .
-                      "                          xmlns:config='urn:oasis:names:tc:opendocument:xmlns:config:1.0'" .
-                      "                          xmlns:text='urn:oasis:names:tc:opendocument:xmlns:text:1.0'" .
-                      "                          xmlns:table='urn:oasis:names:tc:opendocument:xmlns:table:1.0'" .
-                      "                          xmlns:draw='urn:oasis:names:tc:opendocument:xmlns:drawing:1.0'" .
-                      "                          xmlns:presentation='urn:oasis:names:tc:opendocument:xmlns:presentation:1.0'" .
-                      "                          xmlns:dr3d='urn:oasis:names:tc:opendocument:xmlns:dr3d:1.0'" .
-                      "                          xmlns:chart='urn:oasis:names:tc:opendocument:xmlns:chart:1.0'" .
-                      "                          xmlns:form='urn:oasis:names:tc:opendocument:xmlns:form:1.0'" .
-                      "                          xmlns:script='urn:oasis:names:tc:opendocument:xmlns:script:1.0'" .
-                      "                          xmlns:style='urn:oasis:names:tc:opendocument:xmlns:style:1.0'" .
-                      "                          xmlns:number='urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0'" .
-                      "                          xmlns:math='http://www.w3.org/1998/Math/MathML'" .
-                      "                          xmlns:svg='urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0'" .
-                      "                          xmlns:fo='urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0'" .
-                      "                          xmlns:koffice='http://www.koffice.org/2005/'" .
-                      "                          xmlns:dc='http://purl.org/dc/elements/1.1/'" .
-                      "                          xmlns:xlink='http://www.w3.org/1999/xlink'>" .
-                      " <office:script/>" .
-                      " <office:font-face-decls/>" .
-                      " <office:automatic-styles>" .
-                      "  <text:list-style style:name='bulletlist'>" .
-                      "   <text:list-level-style-bullet text:level='1' text:style-name='Bullet_20_Symbols' style:num-suffix='.' text:bullet-char='•'>" .
-                      "      <style:list-level-properties text:space-before='0.25in' text:min-label-width='0.25in'/>" .
-                      "       <style:text-properties style:font-name='StarSymbol'/>" .
-                      "   </text:list-level-style-bullet>" .
-                      "  </text:list-style>" .
-                      "  <text:list-style style:name='numberedlist'>" .
-                      "   <text:list-level-style-number text:level='1' text:style-name='Numbering_20_Symbols' style:num-suffix='.' style:num-format='1'>" .
-                      "      <style:list-level-properties text:space-before='0.25in' text:min-label-width='0.25in'/>" .
-                      "   </text:list-level-style-number>" .
-                      "  </text:list-style>" .
-                      " <style:style style:name='imagecentered' style:family='graphic' style:parent-style-name='Graphics'>" .
-                      "  <style:graphic-properties style:horizontal-pos='center' style:horizontal-rel='paragraph' style:mirror='none' fo:clip='rect(0in 0in 0in 0in)' draw:luminance='0%' draw:contrast='0%' draw:red='0%' draw:green='0%' draw:blue='0%' draw:gamma='100%' draw:color-inversion='false' draw:image-opacity='100%' draw:color-mode='standard'/>" .
-                      " </style:style>" .
-                      " <style:style style:name='imageleft' style:family='graphic' style:parent-style-name='Graphics'>" .
-                      "   <style:graphic-properties style:wrap='right' style:horizontal-pos='left' style:horizontal-rel='paragraph' style:mirror='none' fo:clip='rect(0in 0in 0in 0in)' draw:luminance='0%' draw:contrast='0%' draw:red='0%' draw:green='0%' draw:blue='0%' draw:gamma='100%' draw:color-inversion='false' draw:image-opacity='100%' draw:color-mode='standard'/>" .
-                      "  </style:style>" .
-                      "  <style:style style:name='imageright' style:family='graphic' style:parent-style-name='Graphics'>" .
-                      "   <style:graphic-properties style:wrap='left' style:horizontal-pos='right' style:horizontal-rel='paragraph' style:mirror='none' fo:clip='rect(0in 0in 0in 0in)' draw:luminance='0%' draw:contrast='0%' draw:red='0%' draw:green='0%' draw:blue='0%' draw:gamma='100%' draw:color-inversion='false' draw:image-opacity='100%' draw:color-mode='standard'/>" .
-                      "  </style:style>" .
-                     " </office:automatic-styles>" .
-                     " <office:body>" .
-                     "   <office:text>";
+             "<!DOCTYPE office:document-content PUBLIC '-//OpenOffice.org//DTD OfficeDocument1.0//EN' 'office.dtd'>" .
+             "<office:document-content xmlns:office='urn:oasis:names:tc:opendocument:xmlns:office:1.0'".
+             "                          xmlns:meta='urn:oasis:names:tc:opendocument:xmlns:meta:1.0'" .
+             "                          xmlns:config='urn:oasis:names:tc:opendocument:xmlns:config:1.0'" .
+             "                          xmlns:text='urn:oasis:names:tc:opendocument:xmlns:text:1.0'" .
+             "                          xmlns:table='urn:oasis:names:tc:opendocument:xmlns:table:1.0'" .
+             "                          xmlns:draw='urn:oasis:names:tc:opendocument:xmlns:drawing:1.0'" .
+             "                          xmlns:presentation='urn:oasis:names:tc:opendocument:xmlns:presentation:1.0'" .
+             "                          xmlns:dr3d='urn:oasis:names:tc:opendocument:xmlns:dr3d:1.0'" .
+             "                          xmlns:chart='urn:oasis:names:tc:opendocument:xmlns:chart:1.0'" .
+             "                          xmlns:form='urn:oasis:names:tc:opendocument:xmlns:form:1.0'" .
+             "                          xmlns:script='urn:oasis:names:tc:opendocument:xmlns:script:1.0'" .
+             "                          xmlns:style='urn:oasis:names:tc:opendocument:xmlns:style:1.0'" .
+             "                          xmlns:number='urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0'" .
+             "                          xmlns:math='http://www.w3.org/1998/Math/MathML'" .
+             "                          xmlns:svg='urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0'" .
+             "                          xmlns:fo='urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0'" .
+             "                          xmlns:koffice='http://www.koffice.org/2005/'" .
+             "                          xmlns:dc='http://purl.org/dc/elements/1.1/'" .
+             "                          xmlns:xlink='http://www.w3.org/1999/xlink'>" .
+             " <office:script/>" .
+             " <office:font-face-decls/>" .
+             " <office:automatic-styles>" .
+             "  <text:list-style style:name='bulletlist'>" .
+             "   <text:list-level-style-bullet text:level='1' text:style-name='Bullet_20_Symbols' style:num-suffix='.' text:bullet-char='•'>" .
+             "      <style:list-level-properties text:space-before='0.25in' text:min-label-width='0.25in'/>" .
+             "       <style:text-properties style:font-name='StarSymbol'/>" .
+             "   </text:list-level-style-bullet>" .
+             "  </text:list-style>" .
+             "  <text:list-style style:name='numberedlist'>" .
+             "   <text:list-level-style-number text:level='1' text:style-name='Numbering_20_Symbols' style:num-suffix='.' style:num-format='1'>" .
+             "      <style:list-level-properties text:space-before='0.25in' text:min-label-width='0.25in'/>" .
+             "   </text:list-level-style-number>" .
+             "  </text:list-style>" .
+             " <style:style style:name='imagecentered' style:family='graphic' style:parent-style-name='Graphics'>" .
+             "  <style:graphic-properties style:horizontal-pos='center' style:horizontal-rel='paragraph' style:mirror='none' fo:clip='rect(0in 0in 0in 0in)' draw:luminance='0%' draw:contrast='0%' draw:red='0%' draw:green='0%' draw:blue='0%' draw:gamma='100%' draw:color-inversion='false' draw:image-opacity='100%' draw:color-mode='standard'/>" .
+             " </style:style>" .
+             " <style:style style:name='imageleft' style:family='graphic' style:parent-style-name='Graphics'>" .
+             "   <style:graphic-properties style:wrap='right' style:horizontal-pos='left' style:horizontal-rel='paragraph' style:mirror='none' fo:clip='rect(0in 0in 0in 0in)' draw:luminance='0%' draw:contrast='0%' draw:red='0%' draw:green='0%' draw:blue='0%' draw:gamma='100%' draw:color-inversion='false' draw:image-opacity='100%' draw:color-mode='standard'/>" .
+             "  </style:style>" .
+             "  <style:style style:name='imageright' style:family='graphic' style:parent-style-name='Graphics'>" .
+             "   <style:graphic-properties style:wrap='left' style:horizontal-pos='right' style:horizontal-rel='paragraph' style:mirror='none' fo:clip='rect(0in 0in 0in 0in)' draw:luminance='0%' draw:contrast='0%' draw:red='0%' draw:green='0%' draw:blue='0%' draw:gamma='100%' draw:color-inversion='false' draw:image-opacity='100%' draw:color-mode='standard'/>" .
+             "  </style:style>" .
+             " <style:style style:name='T1' style:family='text'>" .
+             "   <style:text-properties fo:font-weight='bold' style:font-weight-asian='bold' style:font-weight-complex='bold'/>" .
+             "   </style:style>" .
+             " <style:style style:name='T2' style:family='text'>" .
+             "  <style:text-properties fo:font-style='italic' style:font-style-asian='italic' style:font-style-complex='italic'/>" .
+             " </style:style>" .
+
+             " </office:automatic-styles>" .
+             " <office:body>" .
+             " <office:text>";
 
 
         // Add body contents
@@ -346,6 +353,19 @@ class eZOOGenerator
                         $tagContent =& str_replace( '"', "&quot;", $tagContent );
 
                         $paragraphArray[] = array( 'Type' => 'text', "Content" => $tagContent );
+                    }break;
+
+                    case EZ_OO_STYLE_START:
+                    {
+                        if ( $paragraphElement[1] == "bold" )
+                            $paragraphArray[] = array( 'Type' => 'bold_start' );
+                        if ( $paragraphElement[1] == "italic" )
+                            $paragraphArray[] = array( 'Type' => 'italic_start' );
+                    }break;
+
+                    case EZ_OO_STYLE_STOP:
+                    {
+                        $paragraphArray[] = array( 'Type' => 'style_stop' );
                     }break;
 
                     case EZ_OO_LINK:
@@ -575,6 +595,24 @@ class eZOOGenerator
                         case "text":
                         {
                             $contentXML .=  $paragraphElement['Content'];
+                        }
+                        break;
+
+                        case "bold_start":
+                        {
+                            $contentXML .=  "<text:span text:style-name='T1'>";
+                        }
+                        break;
+
+                        case "italic_start":
+                        {
+                            $contentXML .=  "<text:span text:style-name='T2'>";
+                        }
+                        break;
+
+                        case "style_stop":
+                        {
+                            $contentXML .=  "</text:span>";
                         }
                         break;
 

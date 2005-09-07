@@ -107,7 +107,7 @@ class eZOOConverter
                             }
                         }
                         $ooGenerator->endSection( );
-                    }break;
+                    }
 
                     default:
                     {
@@ -175,7 +175,9 @@ class eZOOConverter
             /*
             $ooGenerator->addHeader( "This is generated from PHP!!" );
 
-            $ooGenerator->addParagraph( array( EZ_OO_TEXT, "Pent vaaaar i dag"),
+            $ooGenerator->addParagraph( array( EZ_OO_STYLE_START, "bold" ),
+                                        array( EZ_OO_TEXT, "Pent vaaaar i dag"),
+                                        array( EZ_OO_STYLE_STOP ),
                                         array( EZ_OO_LINK, "eZ systems", "http://ez.no"),
                                         array( EZ_OO_TEXT, "Test" ) );
 
@@ -260,187 +262,9 @@ class eZOOConverter
                 $imageArray = array();
                 foreach ( $node->children() as $child )
                 {
-                    switch ( $child->name() )
-                    {
-                        case "line":
-                        {
-                            // Todo: support inline tags
-                            $paragraphParameters[] = array( EZ_OO_TEXT, $child->textContent() );
-
-                            foreach ( $child->children() as $lineChild )
-                            {
-                                switch ( $lineChild->name() )
-                                {
-                                    case "embed":
-                                    {
-                                        // Only support objects of image class for now
-                                        $object = eZContentObject::fetch( $lineChild->attributeValue( "object_id" ) );
-                                        if ( $object )
-                                        {
-
-                                            $classIdentifier = $object->attribute( "class_identifier" );
-
-                                            // Todo: read class identifiers from configuration
-                                            if ( $classIdentifier == "image" )
-                                            {
-                                                $imageSize = $lineChild->attributeValue( 'size' );
-                                                if ( $imageSize == "" )
-                                                    $imageSize = "large";
-                                                $imageAlignment = $lineChild->attributeValue( 'align' );
-                                                if ( $imageAlignment == "" )
-                                                    $imageAlignment = "center";
-
-                                                $dataMap = $object->dataMap();
-                                                $imageAttribute = $dataMap['image'];
-
-                                                $imageHandler = $imageAttribute->content();
-                                                $originalImage = $imageHandler->attribute( 'original' );
-                                                $displayImage = $imageHandler->attribute( $imageSize );
-                                                $displayWidth = $displayImage['width'];
-                                                $displayHeight = $displayImage['height'];
-                                                $imageArray[] = array( "FileName" => $originalImage['url'],
-                                                                       "Alignment" => $imageAlignment,
-                                                                       "DisplayWidth" => $displayWidth,
-                                                                       "DisplayHeight" => $displayHeight );
-                                            }
-                                        }
-                                    }break;
-                                }
-                            }
-                        }break;
-
-                        case "#text":
-                        {
-                            $paragraphParameters[] = array( EZ_OO_TEXT, $child->content() );
-                        }break;
-
-                        case "link":
-                        {
-                            $paragraphParameters[] = array( EZ_OO_LINK, $child->attributeValue( "href" ), $child->textContent() );
-                        }break;
-
-                        case "literal":
-                        {
-                            $literalContent = $child->textContent();
-
-                            $literalContentArray = explode( "\n", $literalContent );
-                            foreach ( $literalContentArray as $literalLine )
-                            {
-                                $generator->addParagraph( "Preformatted_20_Text", htmlspecialchars( $literalLine ) );
-                            }
-
-                        }break;
-
-                        case "ol":
-                        case "ul":
-                        {
-                            if ( $child->name() == "ol" )
-                                $generator->startList( "ordered" );
-                            else
-                                $generator->startList( "unordered" );
-
-                            foreach ( $child->children() as $listItem )
-                            {
-                                foreach ( $listItem->children() as $childNode )
-                                {
-                                    if ( $childNode->name() == "#text" )
-                                        $generator->addParagraph( $childNode->content() );
-                                    else
-                                        eZOOConverter::handleNode( $childNode, $generator, $level );
-                                }
-                                $generator->nextListItem();
-                            }
-                            $generator->endList();
-                        }break;
-
-                        case "table":
-                        {
-                            $generator->startTable();
-
-                            foreach ( $child->children() as $row )
-                            {
-                                foreach ( $row->children() as $cell )
-                                {
-                                    foreach ( $cell->children() as $cellNode )
-                                    {
-                                        eZOOConverter::handleNode( $cellNode, $generator, $level );
-                                    }
-                                    $generator->nextCell();
-                                }
-                                $generator->nextRow();
-                            }
-                            $generator->endTable();
-                        }break;
-
-                        case "object":
-                        {
-                            // Only support objects of image class for now
-                            $object = eZContentObject::fetch( $child->attributeValue( "id" ) );
-                            if ( $object )
-                            {
-                                $classIdentifier = $object->attribute( "class_identifier" );
-
-                                // Todo: read class identifiers from configuration
-                                if ( $classIdentifier == "image" )
-                                {
-                                    $imageSize = $child->attributeValue( 'size' );
-                                    $imageAlignment = $child->attributeValue( 'align' );
-
-                                    $dataMap = $object->dataMap();
-                                    $imageAttribute = $dataMap['image'];
-
-                                    $imageHandler = $imageAttribute->content();
-                                    $originalImage = $imageHandler->attribute( 'original' );
-                                    $displayImage = $imageHandler->attribute( $imageSize );
-                                    $displayWidth = $displayImage['width'];
-                                    $displayHeight = $displayImage['height'];
-                                    $imageArray[] = array( "FileName" => $originalImage['url'],
-                                                           "Alignment" => $imageAlignment,
-                                                           "DisplayWidth" => $displayWidth,
-                                                           "DisplayHeight" => $displayHeight );
-                                }
-                            }
-
-                        }break;
-
-                        case "embed":
-                        {
-                            // Only support objects of image class for now
-                            $object = eZContentObject::fetch( $child->attributeValue( "object_id" ) );
-                            if ( $object )
-                            {
-
-                                $classIdentifier = $object->attribute( "class_identifier" );
-
-                                // Todo: read class identifiers from configuration
-                                if ( $classIdentifier == "image" )
-                                {
-                                    $imageSize = $child->attributeValue( 'size' );
-                                    $imageAlignment = $child->attributeValue( 'align' );
-
-                                    $dataMap = $object->dataMap();
-                                    $imageAttribute = $dataMap['image'];
-
-                                    $imageHandler = $imageAttribute->content();
-                                    $originalImage = $imageHandler->attribute( 'original' );
-                                    $displayImage = $imageHandler->attribute( $imageSize );
-                                    $displayWidth = $displayImage['width'];
-                                    $displayHeight = $displayImage['height'];
-                                    $imageArray[] = array( "FileName" => $originalImage['url'],
-                                                           "Alignment" => $imageAlignment,
-                                                           "DisplayWidth" => $displayWidth,
-                                                           "DisplayHeight" => $displayHeight );
-                                }
-                            }
-                        }break;
-
-                        default:
-                        {
-                            eZDebug::writeError( "Unsupported node at this level" . $child->name() );
-
-                        }break;
-
-                    }
+                    $return = eZOOConverter::handleInlineNode( $child, $generator );
+                    $paragraphParameters = array_merge( $paragraphParameters,  $return['paragraph_parameters'] );
+                    $imageArray = $return['image_array'];
                 }
                 foreach ( $imageArray as $image )
                 {
@@ -455,6 +279,224 @@ class eZOOConverter
                 eZDebug::writeError( "Unsupported node for document conversion: " . $node->name() );
             }break;
         }
+    }
+
+    function handleInlineNode( $child, &$generator )
+    {
+        $paragraphParameters = array();
+        $imageArray = array();
+
+        switch ( $child->name() )
+        {
+            case "line":
+            {
+                // Todo: support inline tags
+                $paragraphParameters[] = array( EZ_OO_TEXT, $child->textContent() );
+
+                foreach ( $child->children() as $lineChild )
+                {
+                    switch ( $lineChild->name() )
+                    {
+                        case "embed":
+                        {
+                            // Only support objects of image class for now
+                            $object = eZContentObject::fetch( $lineChild->attributeValue( "object_id" ) );
+                            if ( $object )
+                            {
+
+                                $classIdentifier = $object->attribute( "class_identifier" );
+
+                                // Todo: read class identifiers from configuration
+                                if ( $classIdentifier == "image" )
+                                {
+                                    $imageSize = $lineChild->attributeValue( 'size' );
+                                    if ( $imageSize == "" )
+                                        $imageSize = "large";
+                                    $imageAlignment = $lineChild->attributeValue( 'align' );
+                                    if ( $imageAlignment == "" )
+                                        $imageAlignment = "center";
+
+                                    $dataMap = $object->dataMap();
+                                    $imageAttribute = $dataMap['image'];
+
+                                    $imageHandler = $imageAttribute->content();
+                                    $originalImage = $imageHandler->attribute( 'original' );
+                                    $displayImage = $imageHandler->attribute( $imageSize );
+                                    $displayWidth = $displayImage['width'];
+                                    $displayHeight = $displayImage['height'];
+                                    $imageArray[] = array( "FileName" => $originalImage['url'],
+                                                           "Alignment" => $imageAlignment,
+                                                           "DisplayWidth" => $displayWidth,
+                                                           "DisplayHeight" => $displayHeight );
+                                }
+                            }
+                        }break;
+                    }
+                }
+            }break;
+
+            case "#text":
+            {
+                $paragraphParameters[] = array( EZ_OO_TEXT, $child->content() );
+            }break;
+
+            case "link":
+            {
+                $paragraphParameters[] = array( EZ_OO_LINK, $child->attributeValue( "href" ), $child->textContent() );
+            }break;
+
+            case "emphasize":
+            {
+                $paragraphParameters[] = array( EZ_OO_STYLE_START, "italic" );
+
+                foreach ( $child->children() as $inlineNode )
+                {
+                    $return = eZOOConverter::handleInlineNode( $inlineNode );
+                    $paragraphParameters = array_merge( $paragraphParameters, $return['paragraph_parameters'] );
+                }
+
+                $paragraphParameters[] = array( EZ_OO_STYLE_STOP );
+            }break;
+
+            case "strong":
+            {
+                $paragraphParameters[] = array( EZ_OO_STYLE_START, "bold" );
+
+                foreach ( $child->children() as $inlineNode )
+                {
+                    $return = eZOOConverter::handleInlineNode( $inlineNode );
+                    $paragraphParameters = array_merge( $paragraphParameters, $return['paragraph_parameters'] );
+                }
+                $paragraphParameters[] = array( EZ_OO_STYLE_STOP );
+            }break;
+
+            case "literal":
+            {
+                $literalContent = $child->textContent();
+
+                $literalContentArray = explode( "\n", $literalContent );
+                foreach ( $literalContentArray as $literalLine )
+                {
+                    $generator->addParagraph( "Preformatted_20_Text", htmlspecialchars( $literalLine ) );
+                }
+
+            }break;
+
+            case "ol":
+            case "ul":
+            {
+                if ( $child->name() == "ol" )
+                    $generator->startList( "ordered" );
+                else
+                    $generator->startList( "unordered" );
+
+                foreach ( $child->children() as $listItem )
+                {
+                    foreach ( $listItem->children() as $childNode )
+                    {
+                        if ( $childNode->name() == "#text" )
+                            $generator->addParagraph( $childNode->content() );
+                        else
+                            eZOOConverter::handleNode( $childNode, $generator, $level );
+                    }
+                    $generator->nextListItem();
+                }
+                $generator->endList();
+            }break;
+
+            case "table":
+            {
+                $generator->startTable();
+
+                foreach ( $child->children() as $row )
+                {
+                    foreach ( $row->children() as $cell )
+                    {
+                        foreach ( $cell->children() as $cellNode )
+                        {
+                            eZOOConverter::handleNode( $cellNode, $generator, $level );
+                        }
+                        $generator->nextCell();
+                    }
+                    $generator->nextRow();
+                }
+                $generator->endTable();
+            }break;
+
+            case "object":
+            {
+                // Only support objects of image class for now
+                $object = eZContentObject::fetch( $child->attributeValue( "id" ) );
+                if ( $object )
+                {
+                    $classIdentifier = $object->attribute( "class_identifier" );
+
+                    // Todo: read class identifiers from configuration
+                    if ( $classIdentifier == "image" )
+                    {
+                        $imageSize = $child->attributeValue( 'size' );
+                        $imageAlignment = $child->attributeValue( 'align' );
+
+                        $dataMap = $object->dataMap();
+                        $imageAttribute = $dataMap['image'];
+
+                        $imageHandler = $imageAttribute->content();
+                        $originalImage = $imageHandler->attribute( 'original' );
+                        $displayImage = $imageHandler->attribute( $imageSize );
+                        $displayWidth = $displayImage['width'];
+                        $displayHeight = $displayImage['height'];
+                        $imageArray[] = array( "FileName" => $originalImage['url'],
+                                               "Alignment" => $imageAlignment,
+                                               "DisplayWidth" => $displayWidth,
+                                               "DisplayHeight" => $displayHeight );
+                    }
+                }
+
+            }break;
+
+            case "embed":
+            {
+                // Only support objects of image class for now
+                $object = eZContentObject::fetch( $child->attributeValue( "object_id" ) );
+                if ( $object )
+                {
+
+                    $classIdentifier = $object->attribute( "class_identifier" );
+
+                    // Todo: read class identifiers from configuration
+                    if ( $classIdentifier == "image" )
+                    {
+                        $imageSize = $child->attributeValue( 'size' );
+                        $imageAlignment = $child->attributeValue( 'align' );
+
+                        $dataMap = $object->dataMap();
+                        $imageAttribute = $dataMap['image'];
+
+                        $imageHandler = $imageAttribute->content();
+                        $originalImage = $imageHandler->attribute( 'original' );
+                        $displayImage = $imageHandler->attribute( $imageSize );
+                        $displayWidth = $displayImage['width'];
+                        $displayHeight = $displayImage['height'];
+                        $imageArray[] = array( "FileName" => $originalImage['url'],
+                                               "Alignment" => $imageAlignment,
+                                               "DisplayWidth" => $displayWidth,
+                                               "DisplayHeight" => $displayHeight );
+                    }
+                }
+            }break;
+
+            default:
+            {
+                eZDebug::writeError( "Unsupported node at this level" . $child->name() );
+
+            }break;
+
+        }
+
+
+        return array ( "paragraph_parameters" => $paragraphParameters,
+                       "image_array" =>  $imageArray );
+
     }
 }
 

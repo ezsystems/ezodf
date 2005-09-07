@@ -206,7 +206,6 @@ class eZOOImport
                         $isLastTag = false;
                         if ( $nodeCount == count( $childArray ) )
                         {
-                            print("found last tag" . $childNode->name() . "<br>" );
                             $isLastTag = true;
                         }
 
@@ -484,6 +483,41 @@ class eZOOImport
                         }break;
                     }
 
+                    // Check for bold and italic styles
+                    // OOo does not have tags for these styles but set the style on the whole paragraph
+                    $fontWeight = false;
+                    $fontStyle = false;
+                    foreach ( $this->AutomaticStyles as $style )
+                    {
+                        $tmpStyleName = $style->attributeValueNS( "name", "urn:oasis:names:tc:opendocument:xmlns:style:1.0" );
+
+                        if ( $styleName == $tmpStyleName )
+                        {
+                            if ( count( $style->children() >= 1 ) )
+                            {
+                                $children = $style->children();
+
+                                foreach ( $children as $styleChild )
+                                {
+                                    $fontWeight = $styleChild->attributeValue( 'font-weight' );
+                                    $fontStyle = $styleChild->attributeValue( 'font-style' );
+                                }
+                            }
+                        }
+                    }
+
+                    $preStyles = "";
+                    if ( $fontWeight == "bold" )
+                        $preStyles .= "<strong>";
+                    if ( $fontStyle == "italic" )
+                        $preStyles .= "<emphasize>";
+
+                    $postStyles = "";
+                    if ( $fontStyle == "italic" )
+                        $postStyles .= "</emphasize>";
+                    if ( $fontWeight == "bold" )
+                        $postStyles .= "</strong>";
+
                     $paragraphContent = "";
                     foreach ( $node->children() as $childNode )
                     {
@@ -501,7 +535,7 @@ class eZOOImport
 
                         if ( trim( $paragraphContent ) != "" )
                         {
-                            $xhtmlTextContent .= '<paragraph>' . $paragraphContent . "</paragraph>\n";
+                            $xhtmlTextContent .= '<paragraph>' . $preStyles . $paragraphContent . $postStyles . "</paragraph>\n";
                         }
                     }
                     else
@@ -841,9 +875,10 @@ class eZOOImport
 
             case "span" :
             {
-                // Todo: do actual lookup of the style
+                // Fetch the style from the span
                 $styleName = $childNode->attributeValueNS( 'style-name', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' );
 
+                // Check for bold and italic styles
                 $fontWeight = false;
                 $fontStyle = false;
                 foreach ( $this->AutomaticStyles as $style )
@@ -871,10 +906,10 @@ class eZOOImport
                     $paragraphContent .= "<emphasize>";
                 $paragraphContent .= $childNode->textContent();
 
-                if ( $fontWeight == "bold" )
-                    $paragraphContent .= "</strong>";
                 if ( $fontStyle == "italic" )
                     $paragraphContent .= "</emphasize>";
+                if ( $fontWeight == "bold" )
+                    $paragraphContent .= "</strong>";
             }break;
 
 
