@@ -842,25 +842,39 @@ class eZOOImport
             case "span" :
             {
                 // Todo: do actual lookup of the style
-                $styleName = $childNode->attributeValueNS( 'style-name', 'http://openoffice.org/2000/text' );
+                $styleName = $childNode->attributeValueNS( 'style-name', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' );
 
-                switch ( $styleName )
+                $fontWeight = false;
+                $fontStyle = false;
+                foreach ( $this->AutomaticStyles as $style )
                 {
-                    case 'T1':
-                    {
-                        $paragraphContent .= "<strong>" . $childNode->textContent() . "</strong>";
-                    }break;
+                    $tmpStyleName = $style->attributeValueNS( "name", "urn:oasis:names:tc:opendocument:xmlns:style:1.0" );
 
-                    case 'T2':
+                    if ( $styleName == $tmpStyleName )
                     {
-                        $paragraphContent .= "<emphasize>" . $childNode->textContent() . "</emphasize>";
-                    }break;
+                        if ( count( $style->children() >= 1 ) )
+                        {
+                            $children = $style->children();
 
-                    default:
-                    {
-                        $paragraphContent .= $childNode->textContent();
-                    }break;
+                            foreach ( $children as $styleChild )
+                            {
+                                $fontWeight = $styleChild->attributeValue( 'font-weight' );
+                                $fontStyle = $styleChild->attributeValue( 'font-style' );
+                            }
+                        }
+                    }
                 }
+
+                if ( $fontWeight == "bold" )
+                    $paragraphContent .= "<strong>";
+                if ( $fontStyle == "italic" )
+                    $paragraphContent .= "<emphasize>";
+                $paragraphContent .= $childNode->textContent();
+
+                if ( $fontWeight == "bold" )
+                    $paragraphContent .= "</strong>";
+                if ( $fontStyle == "italic" )
+                    $paragraphContent .= "</emphasize>";
             }break;
 
 
