@@ -645,7 +645,7 @@ class eZOOGenerator
 
             case "header":
             {
-                $contentXML .= "\n<text:h text:style-name='Heading " . $element['Level'] . "' text:level='" . $element['Level'] . "'>" . $element['Text'] . "</text:h>\n";
+                $contentXML .= "\n<text:h text:style-name='Heading " . $element['Level'] . "' text:outline-level='" . $element['Level'] . "'>" . $element['Text'] . "</text:h>\n";
             }break;
 
             case "image" :
