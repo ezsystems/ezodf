@@ -571,12 +571,6 @@ class eZOOImport
 
                 case 'list' :
                 {
-                    $isSubList = false;
-                    if ( $this->InsideListType != false )
-                    {
-                        $isSubList = true;
-                    }
-
                     $styleName = $node->attributeValueNS( 'style-name', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' );
 
                     // Check list style for unordered/ordered list
@@ -606,9 +600,11 @@ class eZOOImport
                     else
                         $listType = $this->InsideListType;
 
-
                     $listItemCount = 0;
                     $listContent = "";
+
+                    $isSubList = $this->IsSubList;
+                    $this->IsSubList = true;
                     foreach ( $node->children() as $itemNode )
                     {
                         if ( $itemNode->name() == 'list-item' )
@@ -635,19 +631,25 @@ class eZOOImport
                         }
                     }
 
+                    $this->IsSubList = $isSubList;
                     $this->InsideListType = $oldStyle;
 
                     $paragraphPreTag = "<paragraph>";
                     $paragraphPostTag = "</paragraph>";
-                    if ( $isSubList == true )
+
+                    // If we are inside a list, ommit paragraph tag
+                    if ( $this->IsSubList != false )
                     {
                         $paragraphPreTag = "";
                         $paragraphPostTag = "";
                     }
+
                     if ( $listType == "ordered" )
                         $xhtmlTextContent .= "$paragraphPreTag<ol>" . $listContent . "</li></ol>$paragraphPostTag\n";
                     else
+                    {
                         $xhtmlTextContent .= "$paragraphPreTag<ul>" . $listContent . "</li></ul>$paragraphPostTag\n";
+                    }
                 }break;
 
                 case 'table' :
@@ -1034,6 +1036,8 @@ class eZOOImport
     var $AutomaticStyles = array();
     var $ImportDir = "var/cache/oo/import/";
     var $InsideListType = false;
+
+    var $IsSubList = false;
 
     // Variable containing collapsing tag name.
     // E.g. preformatted text is tagged on each paragraph,
