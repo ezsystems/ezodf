@@ -256,6 +256,12 @@ class eZOOConverter
                 $generator->addHeader( trim( $node->textContent() ), $level );
             }break;
 
+            case "ul":
+            case "ol":
+            {
+                eZOOConverter::handleInlineNode( $node, $generator, $level );
+            }break;
+
             case "paragraph":
             {
                 $paragraphParameters = array();
@@ -276,6 +282,7 @@ class eZOOConverter
 
             default:
             {
+
                 eZDebug::writeError( "Unsupported node for document conversion: " . $node->name() );
             }break;
         }
@@ -397,7 +404,9 @@ class eZOOConverter
                         if ( $childNode->name() == "#text" )
                             $generator->addParagraph( $childNode->content() );
                         else
+                        {
                             eZOOConverter::handleNode( $childNode, $generator, $level );
+                        }
                     }
                     $generator->nextListItem();
                 }
