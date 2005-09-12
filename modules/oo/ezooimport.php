@@ -571,6 +571,12 @@ class eZOOImport
 
                 case 'list' :
                 {
+                    $isSubList = false;
+                    if ( $this->InsideListType != false )
+                    {
+                        $isSubList = true;
+                    }
+
                     $styleName = $node->attributeValueNS( 'style-name', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' );
 
                     // Check list style for unordered/ordered list
@@ -601,6 +607,7 @@ class eZOOImport
                         $listType = $this->InsideListType;
 
 
+                    $listItemCount = 0;
                     $listContent = "";
                     foreach ( $node->children() as $itemNode )
                     {
@@ -608,17 +615,39 @@ class eZOOImport
                         {
                             foreach ( $itemNode->children() as $childNode )
                             {
-                                $listContent .= "<li>" . eZOOImport::handleNode( $childNode, $sectionLevel ) . "</li>";
+                                $listItemContent = eZOOImport::handleNode( $childNode, $sectionLevel );
+
+                                if ( substr( $listItemContent, 0, 4 ) == "<ol>" or
+                                     substr( $listItemContent, 0, 4 ) == "<ul>" )
+                                {
+                                    $listContent .= $listItemContent;
+                                }
+                                else
+                                {
+                                    $endItemTag = "</li>";
+                                    if ( $listItemCount == 0 )
+                                        $endItemTag = "";
+                                    $listContent .= "$endItemTag<li>" . $listItemContent;
+                                }
+
+                                $listItemCount++;
                             }
                         }
                     }
 
                     $this->InsideListType = $oldStyle;
 
+                    $paragraphPreTag = "<paragraph>";
+                    $paragraphPostTag = "</paragraph>";
+                    if ( $isSubList == true )
+                    {
+                        $paragraphPreTag = "";
+                        $paragraphPostTag = "";
+                    }
                     if ( $listType == "ordered" )
-                        $xhtmlTextContent .= "<paragraph><ol>" . $listContent . "</ol></paragraph>\n";
+                        $xhtmlTextContent .= "$paragraphPreTag<ol>" . $listContent . "</li></ol>$paragraphPostTag\n";
                     else
-                        $xhtmlTextContent .= "<paragraph><ul>" . $listContent . "</ul></paragraph>\n";
+                        $xhtmlTextContent .= "$paragraphPreTag<ul>" . $listContent . "</li></ul>$paragraphPostTag\n";
                 }break;
 
                 case 'table' :
