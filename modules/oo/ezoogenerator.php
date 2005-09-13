@@ -671,9 +671,23 @@ class eZOOGenerator
                     $realFileName = $destFile;
                     $sizeArray = getimagesize( $destFile );
 
-
                     $widthRatio = ( $element['DisplayWidth'] / 580 ) * 100;
-                    $width = 6 * $widthRatio / 100;
+
+                    // If image is larger than 300 px make it full page, or pixelsize
+                    if ( $element['DisplayWidth'] >= 300 )
+                    {
+                        // Check how wide the image becomes in 75 dpi
+                        $fullWidthInches = round( $sizeArray[0] / 75, 2 );
+                        if ( $fullWidthInches > 5.77 )
+                            $width = 5.77;
+                        else
+                            $width = $fullWidthInches;
+                    }
+                    else
+                    {
+                        $width = 6 * $widthRatio / 100;
+                    }
+
 
                     $imageAspect = $sizeArray[0] / $sizeArray[1];
                     $height = $width / $imageAspect;

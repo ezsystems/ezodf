@@ -778,6 +778,11 @@ class eZOOImport
                             if ( $sizePercentage <= 30 )
                                 $imageSize = 'small';
 
+                            // Check if image should be set to original
+                            $sizeArray = getimagesize( $href );
+                            if ( $imageSize != "small" and $sizeArray[0] < 650 )
+                                $imageSize = "original";
+
                             $styleName = $childNode->attributeValueNS( 'style-name', 'urn:oasis:names:tc:opendocument:xmlns:drawing:1.0' );
 
                             // Check for style definitions

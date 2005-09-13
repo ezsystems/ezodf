@@ -1,5 +1,6 @@
 Changes from 2.0 beta 1 to 2.0 beta 2
 -------------------------------------
+- Changed image size calculation to keep images the same after multiple import/exports
 - Added support for matcing OOo styles named "eZCustom mytag" to eZ publish custom tags
 - Fixed proper UTF-8 conversion on export
 - Added support for nested lists during import
