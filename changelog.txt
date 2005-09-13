@@ -10,6 +10,7 @@ Changes from 2.0 beta 1 to 2.0 beta 2
 - Added support for import of literal text
 - Fixed converting &nbsp; to spaces on import
 - Fixed proper support for importing bold and italic text
+- Fixed cache bug when exporting objects. Scaled images was displayed with poor image quality
 
 Changes from 1.0 stable to 2.0 beta 1
 -------------------------------------

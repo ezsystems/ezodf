@@ -71,6 +71,10 @@ class eZOOConverter
             $attributes = $object->contentObjectAttributes();
             $xml = new eZXML();
 
+            // Clear the view cache when exporting, for some reason images are re-generated and the resolution is becomming poor
+            include_once( "kernel/classes/ezcontentcachemanager.php" );
+            eZContentCacheManager::clearObjectViewCache( $object->attribute( "id" ) );
+
             foreach ( $attributes as $attribute )
             {
                 switch ( $attribute->attribute( 'data_type_string' ) )
