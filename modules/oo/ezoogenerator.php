@@ -156,10 +156,22 @@ class eZOOGenerator
                  " <style:paragraph-properties fo:text-align='center' style:justify-single-word='false' text:number-lines='false' text:line-number='0'/>" .
                  "  <style:text-properties fo:font-style='italic' fo:font-weight='bold' style:font-style-asian='italic' style:font-weight-asian='bold' style:font-style-complex='italic' style:font-weight-complex='bold'/>" .
                  " </style:style>" .
+
                  " <style:style style:name='Preformatted_20_Text' style:display-name='Preformatted Text' style:family='paragraph' style:parent-style-name='Standard' style:class='html'>" .
                  "   <style:paragraph-properties fo:margin-top='0in' fo:margin-bottom='0in'/>" .
                  "   <style:text-properties style:font-name='Courier New' fo:font-size='10pt' style:font-name-asian='Courier New' style:font-size-asian='10pt' style:font-name-complex='Courier New' style:font-size-complex='10pt'/>" .
                  "  </style:style>".
+
+                 " <style:style style:name='eZCustom_20_factbox' style:display-name='eZCustom_20_factbox' style:family='paragraph' style:parent-style-name='Standard' style:class='text'>" .
+                 "   <style:paragraph-properties fo:margin-top='0in' fo:margin-bottom='0in'/>" .
+                 "   <style:text-properties style:font-name='Helvetica' fo:font-size='10pt' style:font-name-asian='Helvetica' style:font-size-asian='10pt' style:font-name-complex='Helvetica' style:font-size-complex='10pt'/>" .
+                 "  </style:style>".
+                 " <style:style style:name='eZCustom_20_quote' style:display-name='eZCustom_20_quote' style:family='paragraph' style:parent-style-name='Standard' style:class='text'>" .
+                 "   <style:paragraph-properties fo:margin-top='0in' fo:margin-bottom='0in'/>" .
+                 "   <style:text-properties style:font-name='Helvetica' fo:font-size='10pt' style:font-name-asian='Helvetica' style:font-size-asian='10pt' style:font-name-complex='Helvetica' style:font-size-complex='10pt'/>" .
+                 "  </style:style>".
+
+
                  "  </office:styles>" .
                  "</office:document-styles>";
 
@@ -229,7 +241,6 @@ class eZOOGenerator
              " <style:style style:name='T2' style:family='text'>" .
              "  <style:text-properties fo:font-style='italic' style:font-style-asian='italic' style:font-style-complex='italic'/>" .
              " </style:style>" .
-
              " </office:automatic-styles>" .
              " <office:body>" .
              " <office:text>";

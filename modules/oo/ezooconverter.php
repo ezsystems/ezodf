@@ -277,7 +277,10 @@ class eZOOConverter
                     $generator->addImage( $image );
                 }
 
-                call_user_func_array( array( &$generator, "addParagraph" ), $paragraphParameters );
+                if ( isset( $GLOBALS['CustomTagStyle'] ) and $GLOBALS['CustomTagStyle'] != false )
+                    call_user_func_array( array( &$generator, "addParagraph" ), array_merge( $GLOBALS['CustomTagStyle'], $paragraphParameters ) );
+                else
+                    call_user_func_array( array( &$generator, "addParagraph" ), $paragraphParameters );
             }break;
 
             default:
@@ -387,6 +390,19 @@ class eZOOConverter
                     $generator->addParagraph( "Preformatted_20_Text", htmlspecialchars( $literalLine ) );
                 }
 
+            }break;
+
+            case "custom":
+            {
+                $customTagName = $child->attributeValue( 'name' );
+                $GLOBALS['CustomTagStyle'] = "eZCustom_20_$customTagName";
+
+                foreach ( $child->children() as $customParagraph )
+                {
+                    eZOOConverter::handleNode( $customParagraph, $generator, $level );
+                }
+
+                $GLOBALS['CustomTagStyle'] = false;
             }break;
 
             case "ol":
