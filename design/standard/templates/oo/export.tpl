@@ -33,7 +33,7 @@
 <div class="controlbar">
 {* DESIGN: Control bar START *}<div class="box-bc"><div class="box-ml"><div class="box-mr"><div class="box-tc"><div class="box-bl"><div class="box-br">
 <div class="block">
-	<input class="button" type="submit" name="ExportButton" value="{'Export Object'|i18n('design/standard/oo/import)}" />
+	<input class="button" type="submit" name="ExportButton" value="{'Export Object'|i18n('design/standard/oo/import')}" />
 </div>
 
 {* DESIGN: Control bar END *}</div></div></div></div></div></div>
