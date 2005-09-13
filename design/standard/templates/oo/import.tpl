@@ -1,7 +1,9 @@
 <form enctype="multipart/form-data" method="post" action={"/oo/import"|ezurl}>
 
 <div class="context-block">
+
 {* DESIGN: Header START *}<div class="box-header"><div class="box-tc"><div class="box-ml"><div class="box-mr"><div class="box-tl"><div class="box-tr">
+
 <h1 class="context-title">{"OpenOffice.org import"|i18n("extension/oo")}</h1>
 
 {* DESIGN: Mainline *}<div class="header-mainline"></div>
@@ -12,11 +14,11 @@
 
 <div class="context-attributes">
 
-   <img align="right" src={"ooo_logo.gif"|ezimage} alt="OpenOffice.org" />
+ <img align="right" src={"ooo_logo.gif"|ezimage} alt="OpenOffice.org" />
 
 {section show=eq($oo_mode,'imported')}
 
-<h1>{"Document is now imported"|i18n("extension/oo")}</h1>
+<h2>{"Document is now imported"|i18n("extension/oo")}</h2>
 <ul>
   <li>{"The object was imported as: %class_name"|i18n('extension/oo','', hash( '%class_name', $class_identifier ) )}</li>
   <li>{"Document imported as"|i18n("extension/oo")} <a href={$url_alias|ezurl}>{$node_name}</a>.</li>
@@ -26,20 +28,23 @@
 
 </div>
 
-{* Buttons. *}
+{* DESIGN: Content END *}</div></div></div>
+
 <div class="controlbar">
 {* DESIGN: Control bar START *}<div class="box-bc"><div class="box-ml"><div class="box-mr"><div class="box-tc"><div class="box-bl"><div class="box-br">
 <div class="block">
-
+	<input class="button" type="submit" name="StoreButton" value="{'Upload file'|i18n('design/standard/oo/import)}" />
+</div>
 
 {section-else}
 
-<h1>{"Import OpenOffice.org document"|i18n("extension/oo")}</h1>
+
+<h2>{"Import OpenOffice.org document"|i18n("extension/oo")}</h2>
 
 {section show=$import_type|eq( "replace" )}
-<h2>{"Replace document"|i18n("extension/oo")}: {$import_node.name}</h2>
+<h3>{"Replace document"|i18n("extension/oo")}: {$import_node.name}</h3>
 {section-else}
-<h2>{"Import to"|i18n("extension/oo")}: {$import_node.name}</h2>
+<h3>{"Import to"|i18n("extension/oo")}: {$import_node.name}</h3>
 {/section}
 
 
@@ -55,18 +60,19 @@ Images are placed in the media library so you can re-use them in other articles.
 
 </div>
 
-{* Buttons. *}
+{* DESIGN: Content END *}</div></div></div>
+
 <div class="controlbar">
 {* DESIGN: Control bar START *}<div class="box-bc"><div class="box-ml"><div class="box-mr"><div class="box-tc"><div class="box-bl"><div class="box-br">
 <div class="block">
-
-<input class="button" type="submit" name="StoreButton" value="{'Upload file'|i18n('design/standard/oo/import)}" />
-
+	<input class="button" type="submit" name="StoreButton" value="{'Upload file'|i18n('design/standard/oo/import)}" />
+</div>
 
 {/section}
 
-</div>
 {* DESIGN: Control bar END *}</div></div></div></div></div></div>
+</div>
+
 </div>
 
 </form>
