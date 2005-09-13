@@ -412,8 +412,9 @@ class eZOOImport
             // If another tag than paragraph comes then terminate collapsing tags, if any
             if ( $node->name() != "p" and $this->CollapsingTagName != false )
             {
-                $xhtmlTextContent .= '<paragraph>' . '<' . $this->CollapsingTagName . '>' . $this->CollapsingTagContent . "</" . $this->CollapsingTagName . ">\n</paragraph>\n";
+                $xhtmlTextContent .= '<paragraph>' . '<' . $this->CollapsingTagName . ' ' . $this->CollapsingTagAttribute . ' >' . $this->CollapsingTagContent . "</" . $this->CollapsingTagName . ">\n</paragraph>\n";
                 $this->CollapsingTagContent = false;
+                $this->CollapsingTagAttribute = false;
                 $this->CollapsingTagName = false;
             }
 
@@ -471,16 +472,28 @@ class eZOOImport
                     $styleName = $node->attributeValueNS( 'style-name', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' );
 
                     $lastCollapsingTagName = $this->CollapsingTagName;
-                    switch ( $styleName )
+
+                    // Check for custom tags
+
+                    if ( substr( $styleName, 0, 12 ) == "eZCustom_20_" )
                     {
-                        case "Preformatted_20_Text" :
+                        $customName = substr( $styleName, 12, strlen( $styleName ) - 12 );
+                        $this->CollapsingTagName = "custom";
+                        $this->CollapsingTagAttribute = "name='$customName'";
+                    }
+                    else
+                    {
+                        switch ( $styleName )
                         {
-                            $this->CollapsingTagName = "literal";
-                        }break;
-                        default:
-                        {
-                            $this->CollapsingTagName = false;
-                        }break;
+                            case "Preformatted_20_Text" :
+                            {
+                                $this->CollapsingTagName = "literal";
+                            }break;
+                            default:
+                            {
+                                $this->CollapsingTagName = false;
+                            }break;
+                        }
                     }
 
                     // Check for bold and italic styles
@@ -529,8 +542,9 @@ class eZOOImport
                         // Add collapsed tag, if beyond the last collapsing tag
                         if ( $lastCollapsingTagName !== false )
                         {
-                            $xhtmlTextContent .= '<paragraph>' . '<' . $lastCollapsingTagName . '>' . $this->CollapsingTagContent . "</" . $lastCollapsingTagName . ">\n</paragraph>\n";
+                            $xhtmlTextContent .= '<paragraph>' . '<' . $lastCollapsingTagName . ' ' . $this->CollapsingTagAttribute . '>' . $this->CollapsingTagContent . "</" . $lastCollapsingTagName . ">\n</paragraph>\n";
                             $this->CollapsingTagContent = false;
+                            $this->CollapsingTagAttribute = false;
                         }
 
                         if ( trim( $paragraphContent ) != "" )
@@ -544,13 +558,24 @@ class eZOOImport
                         {
                             if ( $this->CollapsingTagName != false )
                                 $lastCollapsingTagName = $this->CollapsingTagName;
-                            $xhtmlTextContent .= '<paragraph>' . '<' . $lastCollapsingTagName . '>' . $paragraphContent . "</" . $lastCollapsingTagName . ">\n</paragraph>\n";
+                            $xhtmlTextContent .= '<paragraph>' . '<' . $lastCollapsingTagName . ' ' . $this->CollapsingTagAttribute . '>' . $paragraphContent . "</" . $lastCollapsingTagName . ">\n</paragraph>\n";
                             $this->CollapsingTagContent = false;
+                            $this->CollapsingTagAttribute = false;
                             $this->CollapsingTagName = false;
                         }
                         else
                         {
-                            $this->CollapsingTagContent .= $paragraphContent . "\n";
+                            if ( $this->CollapsingTagName == "custom" )
+                            {
+                                if ( trim( $paragraphContent ) != "" )
+                                {
+                                    $this->CollapsingTagContent .= '<paragraph>' . $preStyles . $paragraphContent . $postStyles . "</paragraph>\n";
+                                }
+                            }
+                            else
+                            {
+                                $this->CollapsingTagContent .= $paragraphContent . "\n";
+                            }
                         }
                     }
                 }break;
@@ -574,7 +599,7 @@ class eZOOImport
                     $styleName = $node->attributeValueNS( 'style-name', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' );
 
                     // Check list style for unordered/ordered list
-                    $listType = "unordered";
+                    $listType = false;
                     foreach ( $this->AutomaticStyles as $style )
                     {
                         $tmpStyleName = $style->attributeValueNS( "name", "urn:oasis:names:tc:opendocument:xmlns:style:1.0" );
@@ -590,14 +615,17 @@ class eZOOImport
                                     $listType = "ordered";
                                     $this->InsideListType = "ordered";
                                 }
+
+                                if ( $children[0]->name() == "list-level-style-bullet" )
+                                {
+                                    $listType = "unordered";
+                                    $this->InsideListType = "unordered";
+                                }
                             }
                         }
                     }
 
-                    $oldStyle = $this->InsideListType;
-                    if ( $this->InsideListType == false )
-                        $this->InsideListType = $listType;
-                    else
+                    if ( $listType == false )
                         $listType = $this->InsideListType;
 
                     $listItemCount = 0;
@@ -632,7 +660,6 @@ class eZOOImport
                     }
 
                     $this->IsSubList = $isSubList;
-                    $this->InsideListType = $oldStyle;
 
                     $paragraphPreTag = "<paragraph>";
                     $paragraphPostTag = "</paragraph>";
@@ -1044,6 +1071,7 @@ class eZOOImport
     // in eZ publish we make a <literal> tag around the text instead
     var $CollapsingTagName = false;
     var $CollapsingTagContent = false;
+    var $CollapsingTagAttribute = false;
 
 }
 

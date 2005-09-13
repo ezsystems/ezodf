@@ -82,6 +82,7 @@ if ( $doExport == true )
         // Do the actual eZ publish export
         $fileName = eZOOConverter::objectToOO( $nodeID );
 
+
         if ( !is_array( $fileName ) )
         {
             $node = eZContentObjectTreeNode::fetch( $nodeID );
