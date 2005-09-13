@@ -671,11 +671,15 @@ class eZOOImport
                         $paragraphPostTag = "";
                     }
 
-                    if ( $listType == "ordered" )
-                        $xhtmlTextContent .= "$paragraphPreTag<ol>" . $listContent . "</li></ol>$paragraphPostTag\n";
-                    else
+                    // Do not add empty lists
+                    if ( $listItemCount > 0 )
                     {
-                        $xhtmlTextContent .= "$paragraphPreTag<ul>" . $listContent . "</li></ul>$paragraphPostTag\n";
+                        if ( $listType == "ordered" )
+                            $xhtmlTextContent .= "$paragraphPreTag<ol>" . $listContent . "</li></ol>$paragraphPostTag\n";
+                        else
+                        {
+                            $xhtmlTextContent .= "$paragraphPreTag<ul>" . $listContent . "</li></ul>$paragraphPostTag\n";
+                        }
                     }
                 }break;
 
