@@ -246,17 +246,20 @@ class eZOOGenerator
              " <office:text>";
 
 
+        $bodyXML = "";
         // Add body contents
         foreach ( $this->DocumentArray as $element )
         {
-            $contentXML .= $this->handleElement( $element );
+            $bodyXML .= $this->handleElement( $element );
         }
 
         // Handle charset conversion if needed
         include_once( 'lib/ezi18n/classes/eztextcodec.php' );
         $charset = 'UTF-8';
         $codec =& eZTextCodec::instance( false, $charset );
-        $contentXML =& $codec->convertString( $contentXML );
+        $bodyXML =& $codec->convertString( $bodyXML );
+
+        $contentXML .= $bodyXML;
 
         // Add the content end
         $contentXML .= "</office:text></office:body></office:document-content>";
@@ -276,10 +279,17 @@ class eZOOGenerator
                       "<manifest:file-entry manifest:media-type='text/xml' manifest:full-path='content.xml'/>" .
                       "<manifest:file-entry manifest:media-type='text/xml' manifest:full-path='styles.xml'/>" .
                       "<manifest:file-entry manifest:media-type='text/xml' manifest:full-path='meta.xml'/>" .
-                      "<manifest:file-entry manifest:media-type='' manifest:full-path='Thumbnails/thumbnail.png'/>" .
                       "<manifest:file-entry manifest:media-type='' manifest:full-path='Thumbnails/'/>" .
-                      "<manifest:file-entry manifest:media-type='text/xml' manifest:full-path='settings.xml'/>" .
-                      "</manifest:manifest>";
+             "<manifest:file-entry manifest:media-type='text/xml' manifest:full-path='settings.xml'/>";
+
+        // Do not include the thumnail file.
+        // "<manifest:file-entry manifest:media-type='' manifest:full-path='Thumbnails/thumbnail.png'/>" .
+
+        foreach ( $this->ImageFileArray as $imageFile )
+        {
+            $manifestXML .= "<manifest:file-entry manifest:media-type='' manifest:full-path='$imageFile'/>\n";
+        }
+        $manifestXML .= "</manifest:manifest>";
 
         $fileName = $this->OOExportDir . "META-INF/manifest.xml";
         $fp = fopen( $fileName, "w" );
@@ -671,6 +681,7 @@ class eZOOGenerator
                     $realFileName = $destFile;
                     $sizeArray = getimagesize( $destFile );
 
+                    $this->ImageFileArray[] = "Pictures/" . $uniquePart . basename( $fileName );
                     $widthRatio = ( $element['DisplayWidth'] / 580 ) * 100;
 
                     // If image is larger than 300 px make it full page, or pixelsize
@@ -800,6 +811,8 @@ class eZOOGenerator
     var $CurrentStackNumber = 0;
     var $DocumentStack = array();
     var $DocumentArray = array();
+
+    var $ImageFileArray = array();
 
     var $OORootDir = "var/cache/oo/";
     var $OOExportDir = "var/cache/oo/export/";
