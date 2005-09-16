@@ -74,6 +74,17 @@ if ( $http->hasPostVariable( "NodeID" ) )
     $doExport = true;
 }
 
+$exportType = false;
+if ( $http->hasPostVariable( "ExportType" ) )
+{
+    $type = $http->postVariable( "ExportType" );
+
+    if ( $type == "PDF" or $type == "Word" )
+    {
+        $exportType = $type;
+    }
+}
+
 if ( $doExport == true )
 {
 
@@ -82,18 +93,43 @@ if ( $doExport == true )
         // Do the actual eZ publish export
         $fileName = eZOOConverter::objectToOO( $nodeID );
 
-
         if ( !is_array( $fileName ) )
         {
             $node = eZContentObjectTreeNode::fetch( $nodeID );
-            $contentLength = filesize( $fileName );
             $nodeName = $node->attribute( 'name' );
+
+            $originalFileName = $nodeName . ".odt";
+            $contentType = "application/vnd.oasis.opendocument.text";
 
             include_once( 'lib/ezi18n/classes/ezchartransform.php' );
             $trans =& eZCharTransform::instance();
             $nodeName = $trans->transformByGroup( $nodeName, 'urlalias' );
 
-            $originalFileName = $nodeName . ".odt";
+
+            switch ( $exportType )
+            {
+                case "PDF" :
+                {
+                    deamonConvertPDF( realpath( $fileName ), "/tmp/ooo_converted.pdf" );
+                    $originalFileName = $nodeName . ".pdf";
+                    $contentType = "application/pdf";
+                    $fileName = "/tmp/ooo_converted.pdf";
+
+                }break;
+
+                case "Word" :
+                {
+                    deamonConvertWord( realpath( $fileName ), "/tmp/ooo_converted.doc" );
+                    $originalFileName = $nodeName . ".doc";
+                    $contentType = "application/ms-word";
+                    $fileName = "/tmp/ooo_converted.doc";
+
+                }break;
+
+            }
+
+            $contentLength = filesize( $fileName );
+
 
             // Download the file
             header( "Pragma: " );
@@ -101,7 +137,7 @@ if ( $doExport == true )
             /* Set cache time out to 10 minutes, this should be good enough to work around an IE bug */
             header( "Expires: ". gmdate('D, d M Y H:i:s', time() + 600) . 'GMT');
             header( "Content-Length: $contentLength" );
-            header( "Content-Type: application/vnd.oasis.opendocument.text" );
+            header( "Content-Type: $contentType" );
             header( "X-Powered-By: eZ publish" );
             header( "Content-disposition: attachment; filename=\"$originalFileName\"" );
             header( "Content-Transfer-Encoding: binary" );
@@ -132,5 +168,68 @@ $Result = array();
 $Result['content'] =& $tpl->fetch( "design:oo/export.tpl" );
 $Result['path'] = array( array( 'url' => '/oo/export/',
                                 'text' => ezi18n( 'extension/oo', 'OpenOffice.org export' ) ) );
+
+
+/*!
+      Connects to the eZ publish document conversion deamon and converts the document to PDF
+*/
+function deamonConvertPDF( $sourceFile, $destFile )
+{
+    $server = "127.0.0.1";
+    $port = "9090";
+
+    $fp = fsockopen( $server,
+                     $port,
+                     $errorNR,
+                     $errorString,
+                     0 );
+
+    if ( $fp )
+    {
+        $welcome = fread( $fp, 1024 );
+
+        $welcome = trim( $welcome );
+        if ( $welcome == "eZ publish document conversion deamon" )
+        {
+            $commandString = "convert_to_pdf $sourceFile";
+            fputs( $fp, $commandString, strlen( $commandString ) );
+
+            $result = fread( $fp, 1024 );
+            $result = trim( $result );
+        }
+        fclose( $fp );
+    }
+}
+
+/*!
+      Connects to the eZ publish document conversion deamon and converts the document to Word
+*/
+function deamonConvertWord( $sourceFile, $destFile )
+{
+    $server = "127.0.0.1";
+    $port = "9090";
+
+    $fp = fsockopen( $server,
+                     $port,
+                     $errorNR,
+                     $errorString,
+                     0 );
+
+    if ( $fp )
+    {
+        $welcome = fread( $fp, 1024 );
+
+        $welcome = trim( $welcome );
+        if ( $welcome == "eZ publish document conversion deamon" )
+        {
+            $commandString = "convert_to_doc $sourceFile";
+            fputs( $fp, $commandString, strlen( $commandString ) );
+
+            $result = fread( $fp, 1024 );
+            $result = trim( $result );
+        }
+        fclose( $fp );
+    }
+}
 
 ?>

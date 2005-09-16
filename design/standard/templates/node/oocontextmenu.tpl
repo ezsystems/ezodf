@@ -1,6 +1,10 @@
  <hr/>
     <a id="menu-export-ooo" href="#" onmouseover="ezpopmenu_mouseOver( 'ContextMenu' )"
        onclick="ezpopmenu_submitForm( 'menu-form-export-ooo' ); return false;">{"Export OpenOffice.org"|i18n("design/admin/popupmenu")}</a>
+    <a id="menu-export-ooo" href="#" onmouseover="ezpopmenu_mouseOver( 'ContextMenu' )"
+       onclick="ezpopmenu_submitForm( 'menu-form-export-pdf' ); return false;">{"Export PDF"|i18n("design/admin/popupmenu")}</a>
+    <a id="menu-export-ooo" href="#" onmouseover="ezpopmenu_mouseOver( 'ContextMenu' )"
+       onclick="ezpopmenu_submitForm( 'menu-form-export-word' ); return false;">{"Export Word"|i18n("design/admin/popupmenu")}</a>
     <a id="menu-import-ooo" href="#" onmouseover="ezpopmenu_mouseOver( 'ContextMenu' )"
        onclick="ezpopmenu_submitForm( 'menu-form-import-ooo' ); return false;">{"Import OpenOffice.org"|i18n("design/admin/popupmenu")}</a>
     <a id="menu-import-ooo" href="#" onmouseover="ezpopmenu_mouseOver( 'ContextMenu' )"
@@ -8,6 +12,22 @@
 
 {* Export to OOo / OASIS document *}
 <form id="menu-form-export-ooo" method="post" action={"/oo/export/"|ezurl}>
+  <input type="hidden" name="NodeID" value="%nodeID%" />
+  <input type="hidden" name="ObjectID" value="%objectID%" />
+  <input type="hidden" name="CurrentURL" value="%currentURL%" />
+</form>
+
+{* Export to PDF *}
+<form id="menu-form-export-pdf" method="post" action={"/oo/export/"|ezurl}>
+  <input type="hidden" name="ExportType" value="PDF" />
+  <input type="hidden" name="NodeID" value="%nodeID%" />
+  <input type="hidden" name="ObjectID" value="%objectID%" />
+  <input type="hidden" name="CurrentURL" value="%currentURL%" />
+</form>
+
+{* Export to Word *}
+<form id="menu-form-export-word" method="post" action={"/oo/export/"|ezurl}>
+  <input type="hidden" name="ExportType" value="Word" />
   <input type="hidden" name="NodeID" value="%nodeID%" />
   <input type="hidden" name="ObjectID" value="%objectID%" />
   <input type="hidden" name="CurrentURL" value="%currentURL%" />

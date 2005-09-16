@@ -75,12 +75,15 @@ while ( $spawn = socket_accept( $socket ))
         $command = strtolower( trim( $inputParts[0] ) );
         $fileName = trim( $inputParts[1] );
 
+
         if ( file_exists( $fileName ) )
         {
             switch ( $command )
             {
                 case "convert_to_pdf":
                 {
+                    print( "Converting document to PDF\n" );
+
                     unlink( "/tmp/ooo_converted.pdf" );
                     $result = `openoffice.org-1.9 -writer "macro:///standard.Module1.convertToPDF($fileName)"`;
 
@@ -101,6 +104,8 @@ while ( $spawn = socket_accept( $socket ))
                 case "convert_to_doc":
                 {
                     unlink( "/tmp/ooo_converted.doc" );
+                    $result = `openoffice.org-1.9 -writer "macro:///standard.Module1.convertToDoc($fileName)"`;
+
                     socket_write( $spawn, "FilePath: /tmp/ooo_converted.doc" );
 
                 }break;
