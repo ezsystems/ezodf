@@ -438,6 +438,8 @@ class eZOOGenerator
                 // Add the paragraph inside a table cell
                 $currentRow = $this->DocumentStack[$this->CurrentStackNumber]['CurrentRow'];
                 $currentCell = $this->DocumentStack[$this->CurrentStackNumber]['CurrentCell'];
+                if ( is_numeric( $this->DocumentStack[$this->CurrentStackNumber]['CurrentColSpan'] ) )
+                    $elementArray = array_merge( $elementArray, array( "ColSpan" => $this->DocumentStack[$this->CurrentStackNumber]['CurrentColSpan'] ) );
                 $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'][$currentRow][$currentCell][] = $elementArray;
 
             }
@@ -542,9 +544,21 @@ class eZOOGenerator
     /*!
       Starts a new table cell.
     */
-    function nextCell()
+    function nextCell( $colSpan = false )
     {
         $this->DocumentStack[$this->CurrentStackNumber]['CurrentCell'] += 1;
+        if ( $colSpan != false )
+            $this->DocumentStack[$this->CurrentStackNumber]['CurrentColSpan'] = $colSpan;
+        else
+            unset( $this->DocumentStack[$this->CurrentStackNumber]['CurrentColSpan'] );
+    }
+
+    /*!
+      Sets the col span for the current cell
+     */
+    function setCurrentColSpan( $colSpan )
+    {
+        $this->DocumentStack[$this->CurrentStackNumber]['CurrentColSpan'] = $colSpan;
     }
 
     /*!
@@ -765,18 +779,33 @@ class eZOOGenerator
                     foreach ( $rowArray as $cellArray )
                     {
                         $currentCellCount += 1;
-                        if ( $currentCellCount > $columnCount )
-                            $columnCount = $currentCellCount;
                         $cellElementContent = "";
                         if ( $rowCount == 1 )
                             $this->IsInsideTableHeading = true;
                         else
                             $this->IsInsideTableHeading = false;
+
+                        $colSpan = false;
                         foreach ( $cellArray as $cellElement )
                         {
+                            // Check for colspan
+                            if ( is_numeric( $cellElement['ColSpan'] ) )
+                            {
+                                $colSpan = $cellElement['ColSpan'];
+                                // Increase cell count with 1-colspan
+                                $currentCellCount += $colSpan - 1;
+                            }
                             $cellElementContent .= $this->handleElement( $cellElement );
+
                         }
-                        $cellContent .= "    <table:table-cell table:style-name='Table$tableCounter.$cellLetter$rowCount' office:value-type='string'>" . $cellElementContent . "</table:table-cell>\n";
+
+                        if ( $currentCellCount > $columnCount )
+                            $columnCount = $currentCellCount;
+
+                        $colSpanXML = "";
+                        if ( $colSpan != false )
+                            $colSpanXML = " table:number-columns-spanned='$colSpan' ";
+                        $cellContent .= "    <table:table-cell table:style-name='Table$tableCounter.$cellLetter$rowCount' $colSpanXML office:value-type='string'>" . $cellElementContent . "</table:table-cell>\n";
                         $cellLetter++;
                     }
 

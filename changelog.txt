@@ -1,6 +1,7 @@
 Changes from 2.0 beta 2 to 2.0 beta 3
 -------------------------------------
 - Added links to export PDF and Word directly in the context menu
+- Added support for colspan in tables
 
 Changes from 2.0 beta 1 to 2.0 beta 2
 -------------------------------------

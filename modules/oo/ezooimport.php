@@ -697,6 +697,8 @@ class eZOOImport
                                     $rowContent = "";
                                     foreach ( $headerRow->children() as $tableCell )
                                     {
+                                        $colSpan = $tableCell->attributeValueNS( 'number-columns-spanned', 'urn:oasis:names:tc:opendocument:xmlns:table:1.0' );
+
                                         if ( $tableCell->name() == 'table-cell' )
                                         {
                                             $cellContent = "";
@@ -704,7 +706,12 @@ class eZOOImport
                                             {
                                                 $cellContent .= eZOOImport::handleNode( $tableContentNode, $sectionLevel );
                                             }
-                                            $rowContent .= "<th>" . $cellContent . "</th>";
+                                            $colSpanXML = "";
+                                            if ( is_numeric( $colSpan ) and $colSpan > 1 )
+                                            {
+                                                $colSpanXML = " xhtml:colspan='$colSpan' ";
+                                            }
+                                            $rowContent .= "<th $colSpanXML>" . $cellContent . "</th>";
                                         }
                                     }
                                     $tableContent .= "<tr>" . $rowContent . "</tr>";
@@ -719,11 +726,17 @@ class eZOOImport
                                 if ( $tableCell->name() == 'table-cell' )
                                 {
                                     $cellContent = "";
+                                    $colSpan = $tableCell->attributeValueNS( 'number-columns-spanned', 'urn:oasis:names:tc:opendocument:xmlns:table:1.0' );
                                     foreach ( $tableCell->children() as $tableContentNode )
                                     {
                                         $cellContent .= eZOOImport::handleNode( $tableContentNode, $sectionLevel );
                                     }
-                                    $rowContent .= "<td>" . $cellContent . "</td>";
+                                    $colSpanXML = "";
+                                    if ( is_numeric( $colSpan ) and $colSpan > 1 )
+                                    {
+                                        $colSpanXML = " xhtml:colspan='$colSpan' ";
+                                    }
+                                    $rowContent .= "<td $colSpanXML>" . $cellContent . "</td>";
                                 }
                             }
                             $tableContent .= "<tr>" . $rowContent . "</tr>";

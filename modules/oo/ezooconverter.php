@@ -149,10 +149,13 @@ class eZOOConverter
             */
 /*
             $ooGenerator->startTable();
+            $ooGenerator->setCurrentColSpan( 2 );
             $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
             $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
             $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-            $ooGenerator->nextCell();
+            $ooGenerator->nextCell(2);
+            $ooGenerator->setCurrentColSpan( 2 );
+
             $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
             $ooGenerator->nextCell();
             $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
@@ -441,6 +444,11 @@ class eZOOConverter
                 {
                     foreach ( $row->children() as $cell )
                     {
+                        $colSpan = $cell->attributeValue( "colspan" );
+                        if ( is_numeric( $colSpan ) )
+                        {
+                            $generator->setCurrentColSpan( $colSpan );
+                        }
                         foreach ( $cell->children() as $cellNode )
                         {
                             eZOOConverter::handleNode( $cellNode, $generator, $level );
