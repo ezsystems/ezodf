@@ -83,7 +83,7 @@ class eZOOImport
                 $result = fread( $fp, 1024 );
                 $result = trim( $result );
 
-                print( "client got: $result\n" );
+                //print( "client got: $result\n" );
             }
             fclose( $fp );
         }
@@ -463,7 +463,7 @@ class eZOOImport
                     }
                     else
                     {
-                        print( "Unsupported header level $level<br>" . $node->textContent() . "<br>" );
+                        eZDebug::writeError( "Unsupported header level $level<br>" . $node->textContent() . "<br>" );
                     }
                 }break;
 
@@ -750,7 +750,7 @@ class eZOOImport
 
                 default:
                 {
-                    print( "Unsupported top node " . $node->name() . "<br/>" );
+                    eZDebug::writeError( "Unsupported top node " . $node->name() . "<br/>" );
                 }break;
             }
         }
@@ -995,7 +995,7 @@ class eZOOImport
 
             default:
             {
-                print( "Unsupported node: " . $childNode->name() . "<br>" );
+                eZDebug::writeError( "Unsupported node: " . $childNode->name() . "<br>" );
             }break;
 
         }
