@@ -444,14 +444,24 @@ class eZOOConverter
                 {
                     foreach ( $row->children() as $cell )
                     {
+                        // Set the correct col span
                         $colSpan = $cell->attributeValue( "colspan" );
                         if ( is_numeric( $colSpan ) )
                         {
                             $generator->setCurrentColSpan( $colSpan );
                         }
+
                         foreach ( $cell->children() as $cellNode )
                         {
                             eZOOConverter::handleNode( $cellNode, $generator, $level );
+                        }
+                        // If the cell is empty, create a dummy so the cell is properly exported
+                        if ( count( $cell->children() ) == 0 )
+                        {
+                            $n = new eZDOMNode();
+                            $n->setType( 1 );
+                            $n->setName( "paragraph" );
+                            eZOOConverter::handleNode( $n, $generator, $level );
                         }
                         $generator->nextCell();
                     }

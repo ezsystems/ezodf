@@ -3,7 +3,7 @@
 # http://www.info-zip.org/pub/infozip/
 # enter for example c:\zip\ or /usr/local/bin/
 ZipPath=
-
+TmpDir=/tmp
 
 [OOImport]
 DefaultImportClass=article
@@ -12,8 +12,7 @@ DefaultImportBodyAttribute=body
 RegisteredClassArray[]=article
 RegisteredClassArray[]=folder
 ImportedImagesMediaNodeName=Imported images
-PlaceImagesInMedia=true
-
+PlaceImagesInMedia=false
 
 [OOExport]
 UseTemplate=true
@@ -28,4 +27,3 @@ Attribute[body]=body
 [folder]
 Attribute[title]=title
 Attribute[shortdescription]=shortdescription
-

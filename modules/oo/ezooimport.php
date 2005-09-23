@@ -94,6 +94,9 @@ class eZOOImport
     */
     function import( $file, $placeNodeID, $originalFileName, $importType = "import" )
     {
+        $ooINI =& eZINI::instance( 'oo.ini' );
+        $tmpDir = $ooINI->variable( 'OOo', 'TmpDir' );
+
         // If replacing/updating the document we need the ID.
         if ( $importType == "replace" )
              $GLOBALS["OOImportObjectID"] = $placeNodeID;
@@ -102,12 +105,12 @@ class eZOOImport
         //
         if ( substr( $originalFileName, -4, 4 ) != ".odt" )
         {
-            copy( realpath( $file ), "/tmp/convert_from.doc" );
+            copy( realpath( $file ), $tmpDir . "/convert_from.doc" );
             /// Convert document using the eZ publish document conversion deamon
-            eZOOImport::deamonConvert( "/tmp/convert_from.doc", "/tmp/ooo_converted.odt" );
+            eZOOImport::deamonConvert( $tmpDir . "/convert_from.doc", $tmpDir . "/ooo_converted.odt" );
 
             // Overwrite the file location
-            $file = "/tmp/ooo_converted.odt";
+            $file = $tmpDir . "/ooo_converted.odt";
         }
 
         $importResult = array();
