@@ -38,10 +38,13 @@ $Module = array( 'name' => 'eZOO',
 $ViewList = array();
 $ViewList['import'] = array(
     'script' => 'import.php',
-    'post_actions' => array( 'BrowseActionName' ) );
+    'post_actions' => array( 'BrowseActionName' ),
+    'unordered_params' => array( 'node_id' => 'NodeID',
+                                 'import_type' => 'ImportType' ) );
 
 $ViewList['export'] = array(
     'script' => 'export.php',
-    'post_actions' => array( 'BrowseActionName' ) );
+    'post_actions' => array( 'BrowseActionName' ),
+    'unordered_params' => array( 'node_id' => 'NodeID' ) );
 
 ?>

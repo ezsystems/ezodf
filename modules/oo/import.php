@@ -45,6 +45,8 @@ include_once( "extension/oo/modules/oo/ezooimport.php" );
 
 $http =& eZHTTPTool::instance();
 $module =& $Params["Module"];
+$NodeID = $Params['NodeID'];
+$ImportType = $Params['ImportType'];
 
 $tpl =& templateInit();
 
@@ -57,15 +59,25 @@ $replaceObject = false;
 if ( $http->hasPostVariable( "ImportType" ) )
 {
     $type = $http->postVariable( "ImportType" );
-    if ( $type = "replace" )
+    if ( $type == "replace" )
     {
         $replaceObject = true;
     }
 }
 
-if ( $http->hasPostVariable( "NodeID" ) )
+// Check import type in GET variables
+if ( $ImportType == "replace" )
 {
-    $nodeID = $http->postVariable( "NodeID" );
+    $replaceObject = true;
+}
+
+if ( $http->hasPostVariable( "NodeID" ) or is_numeric( $NodeID ) )
+{
+    if ( is_numeric( $NodeID ) )
+        $nodeID = $NodeID;
+    else
+        $nodeID = $http->postVariable( "NodeID" );
+
     $doImport = true;
     $node =& eZContentObjectTreeNode::fetch( $nodeID );
 

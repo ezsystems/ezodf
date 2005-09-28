@@ -45,6 +45,7 @@ include_once( "extension/oo/modules/oo/ezooconverter.php" );
 
 $http =& eZHTTPTool::instance();
 $module =& $Params["Module"];
+$NodeID = $Params['NodeID'];
 
 $tpl =& templateInit();
 
@@ -73,6 +74,11 @@ if ( $http->hasPostVariable( "NodeID" ) )
     $nodeID = $http->postVariable( "NodeID" );
     $doExport = true;
 }
+else if ( is_numeric( $NodeID ) )
+{
+    $nodeID = $NodeID;
+    $doExport = true;
+}
 
 $exportType = false;
 if ( $http->hasPostVariable( "ExportType" ) )
@@ -84,6 +90,9 @@ if ( $http->hasPostVariable( "ExportType" ) )
         $exportType = $type;
     }
 }
+
+$ooINI =& eZINI::instance( 'oo.ini' );
+$tmpDir = $ooINI->variable( 'OOo', 'TmpDir' );
 
 if ( $doExport == true )
 {
@@ -110,26 +119,25 @@ if ( $doExport == true )
             {
                 case "PDF" :
                 {
-                    deamonConvertPDF( realpath( $fileName ), "/tmp/ooo_converted.pdf" );
+                    deamonConvertPDF( realpath( $fileName ), $tmpDir . "/ooo_converted.pdf" );
                     $originalFileName = $nodeName . ".pdf";
                     $contentType = "application/pdf";
-                    $fileName = "/tmp/ooo_converted.pdf";
+                    $fileName = $tmpDir . "/ooo_converted.pdf";
 
                 }break;
 
                 case "Word" :
                 {
-                    deamonConvertWord( realpath( $fileName ), "/tmp/ooo_converted.doc" );
+                    deamonConvertWord( realpath( $fileName ), $tmpDir . "/ooo_converted.doc" );
                     $originalFileName = $nodeName . ".doc";
                     $contentType = "application/ms-word";
-                    $fileName = "/tmp/ooo_converted.doc";
+                    $fileName = $tmpDir . "/ooo_converted.doc";
 
                 }break;
 
             }
 
             $contentLength = filesize( $fileName );
-
 
             // Download the file
             header( "Pragma: " );
