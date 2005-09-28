@@ -45,6 +45,7 @@ $ViewList['import'] = array(
 $ViewList['export'] = array(
     'script' => 'export.php',
     'post_actions' => array( 'BrowseActionName' ),
-    'unordered_params' => array( 'node_id' => 'NodeID' ) );
+    'unordered_params' => array( 'node_id' => 'NodeID',
+                                 'export_type' => 'ExportType' ) );
 
 ?>

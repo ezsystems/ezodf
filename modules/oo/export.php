@@ -46,6 +46,7 @@ include_once( "extension/oo/modules/oo/ezooconverter.php" );
 $http =& eZHTTPTool::instance();
 $module =& $Params["Module"];
 $NodeID = $Params['NodeID'];
+$ExportType = $Params['ExportType'];
 
 $tpl =& templateInit();
 
@@ -90,6 +91,11 @@ if ( $http->hasPostVariable( "ExportType" ) )
         $exportType = $type;
     }
 }
+else if ( $ExportType == "PDF" or $ExportType == "Word" )
+{
+    $exportType = $ExportType;
+}
+
 
 $ooINI =& eZINI::instance( 'oo.ini' );
 $tmpDir = $ooINI->variable( 'OOo', 'TmpDir' );
