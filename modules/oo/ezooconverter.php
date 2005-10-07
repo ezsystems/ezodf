@@ -402,14 +402,41 @@ class eZOOConverter
             case "custom":
             {
                 $customTagName = $child->attributeValue( 'name' );
-                $GLOBALS['CustomTagStyle'] = "eZCustom_20_$customTagName";
 
-                foreach ( $child->children() as $customParagraph )
+                // Check if the custom tag is inline
+                $isInline = false;
+                include_once( "lib/ezutils/classes/ezini.php" );
+                $ini =& eZINI::instance( 'content.ini' );
+
+                $isInlineTagList =& $ini->variable( 'CustomTagSettings', 'IsInline' );
+                foreach ( array_keys ( $isInlineTagList ) as $key )
                 {
-                    eZOOConverter::handleNode( $customParagraph, $generator, $level );
+                    $isInlineTagValue =& $isInlineTagList[$key];
+                    if ( $isInlineTagValue )
+                    {
+                        if ( $customTagName == $key )
+                            $isInline = true;
+                    }
                 }
 
-                $GLOBALS['CustomTagStyle'] = false;
+                // Handle inline custom tags
+                if ( $isInline == true )
+                {
+                    $paragraphParameters[] = array( EZ_OO_STYLE_START, "eZCustominline_20_inlineliteral" );
+                    $paragraphParameters[] = array( EZ_OO_TEXT, $child->textContent() );
+                    $paragraphParameters[] = array( EZ_OO_STYLE_STOP );
+                }
+                else
+                {
+                    $GLOBALS['CustomTagStyle'] = "eZCustom_20_$customTagName";
+
+                    foreach ( $child->children() as $customParagraph )
+                    {
+                        eZOOConverter::handleNode( $customParagraph, $generator, $level );
+                    }
+
+                    $GLOBALS['CustomTagStyle'] = false;
+                }
             }break;
 
             case "ol":

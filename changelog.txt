@@ -4,6 +4,7 @@ Changes from 2.0 beta 2 to 2.0 beta 3
 - Added support for colspan in tables
 - Fixed export of empty table cells
 - Added ini setting for tmp directory
+- Added support for importing and exporting custom inline tags. The tags needs to be defined in the OOo template to be visible on export. Named "eZCustominlin tagname"
 
 Changes from 2.0 beta 1 to 2.0 beta 2
 -------------------------------------

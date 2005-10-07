@@ -321,6 +321,7 @@ class eZOOGenerator
 
         $fileName = $this->OORootDir . "ootest.odt";
 
+
         // Clean up
         eZDir::recursiveDelete( $this->OOExportDir );
         eZDir::recursiveDelete( $this->OOTemplateDir);
@@ -382,6 +383,10 @@ class eZOOGenerator
                             $paragraphArray[] = array( 'Type' => 'bold_start' );
                         if ( $paragraphElement[1] == "italic" )
                             $paragraphArray[] = array( 'Type' => 'italic_start' );
+
+                        if ( substr( $paragraphElement[1], 0, 18 ) == "eZCustominline_20_" )
+                            $paragraphArray[] = array( 'Type' => 'custom_inline_start', 'Name' => $paragraphElement[1] );
+
                     }break;
 
                     case EZ_OO_STYLE_STOP:
@@ -630,6 +635,12 @@ class eZOOGenerator
                         case "text":
                         {
                             $contentXML .=  $paragraphElement['Content'];
+                        }
+                        break;
+
+                        case "custom_inline_start":
+                        {
+                            $contentXML .=  "<text:span text:style-name='" . $paragraphElement['Name'] . "'>";
                         }
                         break;
 

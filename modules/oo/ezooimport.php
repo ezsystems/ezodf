@@ -983,6 +983,13 @@ class eZOOImport
                     }
                 }
 
+                $inlineCustomTagName = false;
+                if ( substr( $styleName, 0, 18 ) == "eZCustominline_20_" )
+                    $inlineCustomTagName = substr( $styleName, 18 );
+
+                if ( $inlineCustomTagName != false )
+                    $paragraphContent .= "<custom name='$inlineCustomTagName'>";
+
                 if ( $fontWeight == "bold" )
                     $paragraphContent .= "<strong>";
                 if ( $fontStyle == "italic" )
@@ -993,6 +1000,10 @@ class eZOOImport
                     $paragraphContent .= "</emphasize>";
                 if ( $fontWeight == "bold" )
                     $paragraphContent .= "</strong>";
+
+                if ( $inlineCustomTagName != false )
+                    $paragraphContent .= "</custom>";
+
             }break;
 
 
