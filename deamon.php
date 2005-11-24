@@ -46,12 +46,35 @@ Needs the following in PHP Configuration
 
 $host = "127.0.0.1";
 $port = 9090;
+$ooexecutable = "openoffice.org-1.9";
+$ooexecutable = "openoffice.org-2.0";
+$tmpPath = "/tmp/";
 
 set_time_limit( 0 );
 
 $socket = socket_create( AF_INET, SOCK_STREAM, 0) or die( "Could not create socket\n" );
 $result = socket_bind( $socket, $host, $port ) or die( "Could not bind to socket\n" );
 $result = socket_listen( $socket, 3 ) or die( "Could not set up socket listener\n" );
+
+print( "Started OpenOffice.org deamon\n" );
+
+function convert_to( $fileName, $convertCommand, $tmpFile )
+{
+    global $ooexecutable, $spawn, $tmpPath;
+
+    print( "Converting document with $convertCommand\n" );
+
+    $tmpFile = $tmpPath . $tmpFile;
+
+    unlink( $tmpFile );
+    $result = shell_exec( $ooexecutable . " -writer 'macro:///standard.Module1." . $convertCommand . "($fileName)'" );
+
+    if ( !file_exists( $tmpFile ) )
+        return false;
+
+    socket_write( $spawn, "FilePath: $tmpFile" );
+    return true;
+}
 
 while ( $spawn = socket_accept( $socket ))
 {
@@ -82,36 +105,25 @@ while ( $spawn = socket_accept( $socket ))
             {
                 case "convert_to_pdf":
                 {
-                    print( "Converting document to PDF\n" );
-
-                    unlink( "/tmp/ooo_converted.pdf" );
-                    $result = `openoffice.org-1.9 -writer "macro:///standard.Module1.convertToPDF($fileName)"`;
-
-                    socket_write( $spawn, "FilePath: /tmp/ooo_converted.pdf" );
+                    $result = convert_to( $fileName,  "convertToPDF", "ooo_converted.pdf" );
 
                 }break;
 
                 case "convert_to_ooo":
                 {
-                    print( "Converting document to OpenOffice.org\n" );
-                    unlink( "/tmp/ooo_converted.odt" );
-                    $result = `openoffice.org-1.9 -writer "macro:///standard.Module1.convertToOOo($fileName)"`;
-
-                    socket_write( $spawn, "FilePath: /tmp/ooo_converted.odt" );
+                    $result = convert_to( $fileName, "convertToOOo", "ooo_converted.odt" );
 
                 }break;
 
                 case "convert_to_doc":
                 {
-                    unlink( "/tmp/ooo_converted.doc" );
-                    $result = `openoffice.org-1.9 -writer "macro:///standard.Module1.convertToDoc($fileName)"`;
-
-                    socket_write( $spawn, "FilePath: /tmp/ooo_converted.doc" );
+                    $result = convert_to( $fileName, "convertToDoc", "ooo_converted.odt"  );
 
                 }break;
 
                 default:
                 {
+                    echo "unknown command";
                     socket_write( $spawn, "Error: (1)-Unknown command" );
                 }break;
             }
