@@ -66,6 +66,11 @@ function convert_to( $fileName, $convertCommand, $tmpFile )
 
     $tmpFile = $tmpPath . $tmpFile;
 
+    if( filesize( $tmpFile ) >= disk_free_space("/") )
+    {
+        socket_write( $spawn, "Error: (3)-Not Enough Disk space." );
+        return false;
+    }
     unlink( $tmpFile );
     $result = shell_exec( $ooexecutable . " -writer 'macro:///standard.Module1." . $convertCommand . "($fileName)'" );
 
