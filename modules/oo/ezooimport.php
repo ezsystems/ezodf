@@ -49,11 +49,39 @@ include_once( 'lib/ezlocale/classes/ezdatetime.php' );
 
 class eZOOImport
 {
+    var $ERROR=array();
+
     /*!
      Constructor
     */
     function eZOOImport()
     {
+        $this->ERROR['number'] = 0;
+        $this->ERROR['value'] = '';
+    }
+
+    function getError()
+    {
+        return $this->ERROR;
+    }
+
+    function getErrorNumber()
+    {
+        return $this->ERROR['number'];
+    }
+
+    function setError( $errorNumber = 0, $errorValue = "" )
+    {
+        // 0. - No error
+        // 1. - File type is not supported
+        // 2. - Could not parse XML
+        // 3. - Can not open socket/It might have used
+        // 4. - Can not convert the given document
+        // 5. - Unable to call deamon
+        // 6. - come from deamon.php
+
+        $this->ERROR['number'] = $errorNumber;
+        $this->ERROR['value'] = $errorValue;
     }
 
     /*!
@@ -63,7 +91,7 @@ class eZOOImport
     {
         $server = "127.0.0.1";
         $port = "9090";
-
+        $res = false;
         $fp = fsockopen( $server,
                          $port,
                          $errorNR,
@@ -77,16 +105,35 @@ class eZOOImport
             $welcome = trim( $welcome );
             if ( $welcome == "eZ publish document conversion deamon" )
             {
-                $commandString = "convert_to_ooo $sourceFile";
-                fputs( $fp, $commandString, strlen( $commandString ) );
-
-                $result = fread( $fp, 1024 );
-                $result = trim( $result );
-
-                //print( "client got: $result\n" );
+               $commandString = "convert_to_ooo $sourceFile";
+               fputs( $fp, $commandString, strlen( $commandString ) );
+               $result = fread( $fp, 1024 );
+               $result = trim( $result );
+//                print( "client got: $result\n" );
+               if( substr( $result, 0, 5 ) != "Error" )
+               {
+                   $res = true;
+               }
+               else
+               {
+                   $this->setError( 6, $result );
+                   $res = false;
+               }
+            }
+            else
+            {
+                $this->setError( 5, "fork can not create child process." );
+                $res = false;
             }
             fclose( $fp );
         }
+        else
+        {
+            $this->setError( 3, "Can not open socket. Please check if extension/oo/deamon.php is running." );
+            $res = false;
+        }
+
+        return $res;
     }
 
     /*!
@@ -97,17 +144,34 @@ class eZOOImport
         $ooINI =& eZINI::instance( 'oo.ini' );
         $tmpDir = $ooINI->variable( 'OOo', 'TmpDir' );
 
+        $allowedTypes = $ooINI->variable( 'DocumentType', 'AllowedTypes' );
+        $convertTypes = $ooINI->variable( 'DocumentType', 'ConvertTypes' );
+
+        $originalFileType = array_slice( explode('.',  $originalFileName), -1, 1 );
+        $originalFileType = strtolower( $originalFileType[0] );
+
+        if( !in_array( $originalFileType,$allowedTypes, false ) and !in_array( $originalFileType, $convertTypes, false ) )
+        {
+            $this->setError( 1, "File extention or type is not allowed." );
+            return false;
+        }
+
         // If replacing/updating the document we need the ID.
         if ( $importType == "replace" )
              $GLOBALS["OOImportObjectID"] = $placeNodeID;
 
         // Check if document conversion is needed
         //
-        if ( substr( $originalFileName, -4, 4 ) != ".odt" )
+        if( in_array( $originalFileType, $convertTypes, false ) )
         {
             copy( realpath( $file ), $tmpDir . "/convert_from.doc" );
             /// Convert document using the eZ publish document conversion deamon
-            eZOOImport::deamonConvert( $tmpDir . "/convert_from.doc", $tmpDir . "/ooo_converted.odt" );
+            if( !$this->deamonConvert( $tmpDir . "/convert_from.doc", $tmpDir . "/ooo_converted.odt" ) )
+            {
+                if( $this->getErrorNumber() == 0 )
+                    $this->setError( 4, "Can not convert the given document." );
+                return false;
+            }
 
             // Overwrite the file location
             $file = $tmpDir . "/ooo_converted.odt";
@@ -140,7 +204,7 @@ class eZOOImport
 
         if ( !is_object( $dom ) )
         {
-            print( "Error: could not parse XML");
+            $this->setError( 2, "Could not parse XML." );
             return false;
         }
 

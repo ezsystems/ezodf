@@ -50,6 +50,7 @@ $ImportType = $Params['ImportType'];
 
 $tpl =& templateInit();
 
+$tpl->setVariable( 'error', false );
 $sourceFile = "documents/test1.sxw";
 
 $doImport = false;
@@ -109,10 +110,26 @@ if ( $module->isCurrentAction( 'OOPlace' ) )
         {
             $import = new eZOOImport();
             $result = $import->import( $http->sessionVariable( "oo_import_filename" ), $nodeID, $http->sessionVariable( "oo_import_original_filename" ) );
-            $tpl->setVariable( 'class_identifier', $result['ClassIdentifier'] );
-            $tpl->setVariable( 'url_alias', $result['URLAlias'] );
-            $tpl->setVariable( 'node_name', $result['NodeName'] );
 
+            if( $result )
+            {
+                $tpl->setVariable( 'class_identifier', $result['ClassIdentifier'] );
+                $tpl->setVariable( 'url_alias', $result['URLAlias'] );
+                $tpl->setVariable( 'node_name', $result['NodeName'] );
+                $tpl->setVariable( 'oo_mode', 'imported' );
+            }
+            else
+            {
+                if( $import->getErrorNumber() != 0 )
+                {
+                    $tpl->setVariable( 'error', $import->getError() );
+                }
+                else
+                {
+                    $tpl->setVariable( 'error', array( 'number' => 7, 'value' => "Document is not suported" ) );
+                }
+
+            }
             $http->removeSessionVariable( 'oo_import_step' );
             $http->removeSessionVariable( 'oo_import_filename' );
             $http->removeSessionVariable( 'oo_import_original_filename' );
@@ -121,19 +138,23 @@ if ( $module->isCurrentAction( 'OOPlace' ) )
         else
         {
             eZDebug::writeError( "Cannot import. File not found. Already imported?" );
+            $tpl->setVariable( 'error', array( 'number' => 8, 'value' => "Cannot import. File not found. Already imported?" ) );
         }
     }
     else
     {
         eZDebug::writeError( "Cannot import document, supplied placement nodeID is not valid." );
+        $tpl->setVariable( 'error', array( 'number' => 9, 'value' => "Cannot import document, supplied placement nodeID is not valid." ) );
     }
 
-    $tpl->setVariable( 'oo_mode', 'imported' );
+//    $tpl->setVariable( 'oo_mode', 'imported' );
 }
 else
 {
     $tpl->setVariable( 'oo_mode', 'browse' );
 
+if( eZHTTPFile::canFetch( "oo_file" ) )
+ {
     $file = eZHTTPFile::fetch( "oo_file" );
 
     if ( $file )
@@ -153,11 +174,24 @@ else
                 $import = new eZOOImport();
                 $result = $import->import( $fileName, $nodeID, $originalFileName, $importType );
 
-                $tpl->setVariable( 'class_identifier', $result['ClassIdentifier'] );
-                $tpl->setVariable( 'url_alias', $result['URLAlias'] );
-                $tpl->setVariable( 'node_name', $result['NodeName'] );
-                $tpl->setVariable( 'oo_mode', 'imported' );
-
+                if( $result )
+                {
+                    $tpl->setVariable( 'class_identifier', $result['ClassIdentifier'] );
+                    $tpl->setVariable( 'url_alias', $result['URLAlias'] );
+                    $tpl->setVariable( 'node_name', $result['NodeName'] );
+                    $tpl->setVariable( 'oo_mode', 'imported' );
+                }
+                else
+                {
+                    if( $import->getErrorNumber() != 0 )
+                    {
+                        $tpl->setVariable( 'error', $import->getError() );
+                    }
+                    else
+                    {
+                        $tpl->setVariable( 'error', array( 'number' => 7, 'value' => "Document is not suported" ) );
+                    }
+                }
                 $http->removeSessionVariable( 'oo_direct_import_node' );
             }
             else
@@ -179,8 +213,10 @@ else
         else
         {
             eZDebug::writeError( "Cannot store uploaded file, cannot import" );
+            $tpl->setVariable( 'error', array( 'number' => 10, 'value' => "Cannot store uploaded file, cannot import" ) );
         }
     }
+ }
 
 }
 

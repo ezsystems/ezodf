@@ -27,3 +27,13 @@ Attribute[body]=body
 [folder]
 Attribute[title]=title
 Attribute[shortdescription]=shortdescription
+
+#DocumentType tells which are the supported document type by oo
+[DocumentType]
+#AllowedTypes are those documents which are supported and published directely and need not to convert for support.
+AllowedTypes[]
+AllowedTypes[]=odt
+#ConvertTypes are those documents which can be converted by oo and then it will publish it automatically.
+ConvertTyoes[]
+ConvertTypes[]=doc
+

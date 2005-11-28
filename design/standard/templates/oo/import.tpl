@@ -1,5 +1,11 @@
 <form enctype="multipart/form-data" method="post" action={"/oo/import"|ezurl}>
+{section show=$error.number|ne(0)}
+   <div class="message-warning">{$error.number}{" - "}{$error.value}</div>
+{/section}
 
+{section show=eq($oo_mode,'imported')}
+<div class="message-feedback">{"Document is now imported"|i18n("extension/oo")}</div>
+{/section}
 <div class="context-block">
 
 {* DESIGN: Header START *}<div class="box-header"><div class="box-tc"><div class="box-ml"><div class="box-mr"><div class="box-tl"><div class="box-tr">
