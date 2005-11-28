@@ -66,7 +66,7 @@ function convert_to( $fileName, $convertCommand, $tmpFile )
 
     $tmpFile = $tmpPath . $tmpFile;
 
-    if( filesize( $tmpFile ) >= disk_free_space("/") )
+    if( filesize( $tmpFile ) >= disk_free_space( $tmpPath ) )
     {
         socket_write( $spawn, "Error: (3)-Not Enough Disk space." );
         return false;
