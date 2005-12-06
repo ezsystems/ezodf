@@ -266,7 +266,7 @@ class eZOOImport
                     $sectionName = str_replace( " ", "_", strtolower( $sectionNode->attributeValueNS( 'name', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' ) ) );
                     $xmlText = "";
                     $level = 1;
-                    $childArray =& $sectionNode->children();
+                    $childArray = $sectionNode->children();
                     $nodeCount = 1;
                     foreach ( $childArray as $childNode )
                     {
@@ -932,7 +932,7 @@ class eZOOImport
                                 {
                                     // Import image
                                     $classID = 5;
-                                    $class =& eZContentClass::fetch( $classID );
+                                    $class = eZContentClass::fetch( $classID );
                                     $creatorID = 14;
 
                                     $contentObject =& $class->instantiate( $creatorID, 1 );
@@ -1011,11 +1011,11 @@ class eZOOImport
 
             case "#text" :
             {
-                $tagContent =& str_replace( "&", "&amp;", $childNode->content() );
-                $tagContent =& str_replace( ">", "&gt;", $tagContent );
-                $tagContent =& str_replace( "<", "&lt;", $tagContent );
-                $tagContent =& str_replace( "'", "&apos;", $tagContent );
-                $tagContent =& str_replace( '"', "&quot;", $tagContent );
+                $tagContent = str_replace( "&", "&amp;", $childNode->content() );
+                $tagContent = str_replace( ">", "&gt;", $tagContent );
+                $tagContent = str_replace( "<", "&lt;", $tagContent );
+                $tagContent = str_replace( "'", "&apos;", $tagContent );
+                $tagContent = str_replace( '"', "&quot;", $tagContent );
 
                 $paragraphContent .= $tagContent;
             }break;
