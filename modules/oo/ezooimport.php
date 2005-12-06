@@ -453,7 +453,7 @@ class eZOOImport
 
             $mainNode = $object->attribute( 'main_node' );
             // Create object stop.
-            $importResult['Object'] = $contentObject;
+            $importResult['Object'] = $object;
             $importResult['MainNode'] = $mainNode;
             $importResult['URLAlias'] = $mainNode->attribute( 'url_alias' );
             $importResult['NodeName'] = $object->attribute( 'name' );
