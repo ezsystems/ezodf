@@ -80,7 +80,7 @@ if ( $http->hasPostVariable( "NodeID" ) or is_numeric( $NodeID ) )
         $nodeID = $http->postVariable( "NodeID" );
 
     $doImport = true;
-    $node =& eZContentObjectTreeNode::fetch( $nodeID );
+    $node = eZContentObjectTreeNode::fetch( $nodeID );
 
     if ( $replaceObject == true )
     {
