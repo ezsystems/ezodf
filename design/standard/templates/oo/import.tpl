@@ -1,10 +1,10 @@
 <form enctype="multipart/form-data" method="post" action={"/oo/import"|ezurl}>
 {section show=$error.number|ne(0)}
-   <div class="message-warning">{$error.number}{" - "}{$error.value}</div>
+   <div class="message-warning"><h2><span class="time">[{currentdate()|l10n( shortdatetime )}]</span>{$error.number}{" - "}{$error.value}</h2></div>
 {/section}
 
 {section show=eq($oo_mode,'imported')}
-<div class="message-feedback">{"Document is now imported"|i18n("extension/oo")}</div>
+<div class="message-feedback"><h2><span class="time">[{currentdate()|l10n( shortdatetime )}]</span> {"Document is now imported"|i18n("extension/oo")}</h2></div>
 {/section}
 <div class="context-block">
 
