@@ -61,8 +61,11 @@ class eZOpenofficeUploadHandler extends eZContentUploadHandler
                          $filePath, $originalFilename, $mimeinfo,
                          $location, $existingNode )
     {
+		$ooINI =& eZINI::instance( 'oo.ini' );
+        $tmpDir = $ooINI->variable( 'OOo', 'TmpDir' );
+		
         $originalFilename = basename( $originalFilename );
-        $tmpFile = "/tmp/" . $originalFilename;
+        $tmpFile = $tmpDir . "/" . $originalFilename;
         copy( $filePath, $tmpFile );
 
         $import = new eZOOImport();
