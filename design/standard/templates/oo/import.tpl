@@ -1,6 +1,6 @@
 <form enctype="multipart/form-data" method="post" action={"/oo/import"|ezurl}>
 {section show=$error.number|ne(0)}
-   <div class="message-warning"><h2><span class="time">[{currentdate()|l10n( shortdatetime )}]</span>{$error.number}{" - "}{$error.value}</h2></div>
+   <div class="message-warning"><h2><span class="time">[{currentdate()|l10n( shortdatetime )}]</span>{$error.number}) {$error.message} </h2></div>
 {/section}
 
 {section show=eq($oo_mode,'imported')}

@@ -47,6 +47,19 @@
 include_once( 'lib/ezxml/classes/ezxml.php' );
 include_once( 'lib/ezlocale/classes/ezdatetime.php' );
 
+define( "OOIMPORT_ERROR_NOERROR", 0 );
+define( "OOIMPORT_ERROR_UNSUPPORTEDTYPE", 1 );
+define( "OOIMPORT_ERROR_PARSEXML", 2 );
+define( "OOIMPORT_ERROR_OPENSOCKET", 3 );
+define( "OOIMPORT_ERROR_CONVERT", 4 );
+define( "OOIMPORT_ERROR_DEAMONCALL", 5 );
+define( "OOIMPORT_ERROR_DEAMON", 6 );
+define( "OOIMPORT_ERROR_DOCNOTSUPPORTED", 7 );
+define( "OOIMPORT_ERROR_FILENOTFOUND", 8 );
+define( "OOIMPORT_ERROR_PLACEMENTINVALID", 9 );
+define( "OOIMPORT_ERROR_CANNOTSTORE", 10 );
+define( "OOIMPORT_ERROR_UNKNOWN", 127 );
+
 class eZOOImport
 {
     var $ERROR=array();
@@ -58,11 +71,11 @@ class eZOOImport
     {
         $this->ERROR['number'] = 0;
         $this->ERROR['value'] = '';
+        $this->ERROR['description'] = '';
     }
-
-    function getError()
+    function getErrorMessage()
     {
-        return $this->ERROR;
+        return $this->ERROR['value'] . " " . $this->ERROR['description'];
     }
 
     function getErrorNumber()
@@ -70,18 +83,51 @@ class eZOOImport
         return $this->ERROR['number'];
     }
 
-    function setError( $errorNumber = 0, $errorValue = "" )
+    function setError( $errorNumber = 0, $errorDescription = "" )
     {
-        // 0. - No error
-        // 1. - File type is not supported
-        // 2. - Could not parse XML
-        // 3. - Can not open socket/It might have used
-        // 4. - Can not convert the given document
-        // 5. - Unable to call deamon
-        // 6. - come from deamon.php
-
-        $this->ERROR['number'] = $errorNumber;
-        $this->ERROR['value'] = $errorValue;
+        switch( $errorNumber )
+        {
+            case OOIMPORT_ERROR_NOERROR :
+                $this->ERROR['number'] = $errorNumber;
+                $this->ERROR['value'] = "";
+                $this->ERROR['description'] = $errorDescription;
+                break;
+            case OOIMPORT_ERROR_UNSUPPORTEDTYPE :
+                $this->ERROR['number'] = $errorNumber;
+                $this->ERROR['value'] = ezi18n( 'extension/oo/import/error', "File extention or type is not allowed." );
+                $this->ERROR['description'] = $errorDescription;
+                break;
+            case OOIMPORT_ERROR_PARSEXML :
+                $this->ERROR['number'] = $errorNumber;
+                $this->ERROR['value'] = ezi18n( 'extension/oo/import/error', "Could not parse XML" );
+                $this->ERROR['description'] = $errorDescription;
+                break;
+            case OOIMPORT_ERROR_OPENSOCKET :
+                $this->ERROR['number'] = $errorNumber;
+                $this->ERROR['value'] = ezi18n( 'extension/oo/import/error', "Can not open socket. Please check if extension/oo/deamon.php is running." );
+                $this->ERROR['description'] = $errorDescription;
+                break;
+            case OOIMPORT_ERROR_CONVERT :
+                $this->ERROR['number'] = $errorNumber;
+                $this->ERROR['value'] = ezi18n( 'extension/oo/import/error', "Can not convert the given document" );
+                $this->ERROR['description'] = $errorDescription;
+                break;
+            case OOIMPORT_ERROR_DEAMONCALL :
+                $this->ERROR['number'] = $errorNumber;
+                $this->ERROR['value'] = ezi18n( 'extension/oo/import/error', "Unable to call deamon, Fork can not create child process." );
+                $this->ERROR['description'] = $errorDescription;
+                break;
+            case OOIMPORT_ERROR_DEAMON :
+                $this->ERROR['number'] = $errorNumber;
+                $this->ERROR['value'] = ezi18n( 'extension/oo/import/error', "Deamon reported error" );
+                $this->ERROR['description'] = $errorDescription;
+                break;
+            default :
+                $this->ERROR['number'] = $errorNumber;
+                $this->ERROR['value'] = ezi18n( 'extension/oo/import/error', "Unknown error" );
+                $this->ERROR['description'] = $errorDescription;
+                break;
+        }
     }
 
     /*!
@@ -116,20 +162,20 @@ class eZOOImport
                }
                else
                {
-                   $this->setError( 6, $result );
+                   $this->setError( OOIMPORT_ERROR_DEAMON, $result );
                    $res = false;
                }
             }
             else
             {
-                $this->setError( 5, "fork can not create child process." );
+                $this->setError( OOIMPORT_ERROR_DEAMONCALL  );
                 $res = false;
             }
             fclose( $fp );
         }
         else
         {
-            $this->setError( 3, "Can not open socket. Please check if extension/oo/deamon.php is running." );
+            $this->setError( OOIMPORT_ERROR_OPENSOCKET );
             $res = false;
         }
 
@@ -152,7 +198,7 @@ class eZOOImport
 
         if( !in_array( $originalFileType,$allowedTypes, false ) and !in_array( $originalFileType, $convertTypes, false ) )
         {
-            $this->setError( 1, "File extention or type is not allowed." );
+            $this->setError( OOIMPORT_ERROR_UNSUPPORTEDTYPE, "Filetype: ". $originalFileType );
             return false;
         }
 
@@ -169,7 +215,7 @@ class eZOOImport
             if( !$this->deamonConvert( $tmpDir . "/convert_from.doc", $tmpDir . "/ooo_converted.odt" ) )
             {
                 if( $this->getErrorNumber() == 0 )
-                    $this->setError( 4, "Can not convert the given document." );
+                    $this->setError( OOIMPORT_ERROR_CONVERT );
                 return false;
             }
 
@@ -204,7 +250,7 @@ class eZOOImport
 
         if ( !is_object( $dom ) )
         {
-            $this->setError( 2, "Could not parse XML." );
+            $this->setError( OOIMPORT_ERROR_PARSEXML );
             return false;
         }
 
