@@ -3,6 +3,7 @@
 # http://www.info-zip.org/pub/infozip/
 # enter for example c:\zip\ or /usr/local/bin/
 ZipPath=
+# Directory for storing temporary files during conversion
 TmpDir=/tmp
 
 [OOImport]

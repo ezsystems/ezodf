@@ -58,6 +58,8 @@ define( "OOIMPORT_ERROR_DOCNOTSUPPORTED", 7 );
 define( "OOIMPORT_ERROR_FILENOTFOUND", 8 );
 define( "OOIMPORT_ERROR_PLACEMENTINVALID", 9 );
 define( "OOIMPORT_ERROR_CANNOTSTORE", 10 );
+define( "OOIMPORT_ERROR_UNKNOWNNODE", 11 );
+define( "OOIMPORT_ERROR_ACCESSDENIED", 12 );
 define( "OOIMPORT_ERROR_UNKNOWN", 127 );
 
 class eZOOImport
@@ -73,16 +75,26 @@ class eZOOImport
         $this->ERROR['value'] = '';
         $this->ERROR['description'] = '';
     }
+
+    /*!
+     Get error message
+    */
     function getErrorMessage()
     {
         return $this->ERROR['value'] . " " . $this->ERROR['description'];
     }
 
+    /*!
+     Get number of the error that occured. If 0 is returned, no error occured
+    */
     function getErrorNumber()
     {
         return $this->ERROR['number'];
     }
 
+    /*!
+    Set the errormessage when one occur.
+    */
     function setError( $errorNumber = 0, $errorDescription = "" )
     {
         switch( $errorNumber )
@@ -122,6 +134,14 @@ class eZOOImport
                 $this->ERROR['value'] = ezi18n( 'extension/oo/import/error', "Deamon reported error" );
                 $this->ERROR['description'] = $errorDescription;
                 break;
+            case OOIMPORT_ERROR_UNKNOWNNODE:
+                $this->ERROR['number'] = $errorNumber;
+                $this->ERROR['value'] = ezi18n( 'extension/oo/import/error', "Unknown node" );
+                $this->ERROR['description'] = $errorDescription;
+            case OOIMPORT_ERROR_ACCESSDENIED:
+                $this->ERROR['number'] = $errorNumber;
+                $this->ERROR['value'] = ezi18n( 'extension/oo/import/error', "Access denied" );
+                $this->ERROR['description'] = $errorDescription;
             default :
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/oo/import/error', "Unknown error" );
@@ -198,13 +218,45 @@ class eZOOImport
 
         if( !in_array( $originalFileType,$allowedTypes, false ) and !in_array( $originalFileType, $convertTypes, false ) )
         {
-            $this->setError( OOIMPORT_ERROR_UNSUPPORTEDTYPE, "Filetype: ". $originalFileType );
+            $this->setError( OOIMPORT_ERROR_UNSUPPORTEDTYPE, ezi18n( 'extension/oo/import/error',"Filetype: " ). $originalFileType );
             return false;
         }
 
         // If replacing/updating the document we need the ID.
         if ( $importType == "replace" )
              $GLOBALS["OOImportObjectID"] = $placeNodeID;
+
+
+        // Check if we have access to node
+        include_once( 'kernel/content/ezcontentfunctioncollection.php' );
+        $node = eZContentObjectTreeNode::fetch( $placeNodeID );
+
+        $importClassIdentifier = $ooINI->variable( 'OOImport', 'DefaultImportClass' );
+        if (! (is_object( $node ) ) )
+        {
+            $this->setError( OOIMPORT_ERROR_UNKNOWNNODE, ezi18n( 'extension/oo/import/error',"Unable to fetch node with id  ") . $placeNodeID );
+            return false;
+        }
+        if ( $importType == "replace" )
+        {
+            // Check if we are allowed to edit the node
+            $access = eZContentFunctionCollection::checkAccess( 'edit', $node, false, false );
+            echo "edit";
+        }
+        else
+        {
+            // Check if we are allowed to create a node under the node
+            $access = eZContentFunctionCollection::checkAccess( 'create', $node, $importClassIdentifier, $node->attribute( 'class_identifier' ) );
+            echo "create";
+        }
+
+        echo "access: "; var_dump( $access['result'] );
+        if ( ! ( $access['result'] ) )
+        {
+            $this->setError( OOIMPORT_ERROR_ACCESSDENIED );
+            return false;
+        }
+        return false;
 
         // Check if document conversion is needed
         //
