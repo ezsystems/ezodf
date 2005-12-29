@@ -10,10 +10,15 @@ TmpDir=/tmp
 DefaultImportClass=article
 DefaultImportTitleAttribute=title
 DefaultImportBodyAttribute=body
+DefaultImportImageClass=image
 RegisteredClassArray[]=article
 RegisteredClassArray[]=folder
 ImportedImagesMediaNodeName=Imported images
 PlaceImagesInMedia=false
+OOConverterPort=9090
+# Currently only localhost (127.0.0.1) is allowed
+OOConverterAddress=127.0.0.1
+
 
 [OOExport]
 UseTemplate=true

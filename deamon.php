@@ -46,7 +46,6 @@ Needs the following in PHP Configuration
 
 $host = "127.0.0.1";
 $port = 9090;
-$ooexecutable = "openoffice.org-1.9";
 $ooexecutable = "openoffice.org-2.0";
 $tmpPath = "/tmp/";
 
@@ -58,28 +57,36 @@ $result = socket_listen( $socket, 3 ) or die( "Could not set up socket listener\
 
 print( "Started OpenOffice.org deamon\n" );
 
-function convert_to( $fileName, $convertCommand, $tmpFile )
+function convert_to( $sourceFileName, $convertCommand, $destinationFileName )
 {
     global $ooexecutable, $spawn, $tmpPath;
 
     print( "Converting document with $convertCommand\n" );
 
-    $tmpFile = $tmpPath . $tmpFile;
-
-    if( filesize( $tmpFile ) >= disk_free_space( $tmpPath ) )
+    switch ( $convertCommand )
     {
-        socket_write( $spawn, "Error: (3)-Not Enough Disk space." );
-        return false;
+        case "convertToPDF":
+        case "convertToOOo":
+        case "convertToDoc":
+        {
+            $result = shell_exec( $ooexecutable . " -writer 'macro:///standard.Module1." . $convertCommand . "($sourceFileName, $destinationFileName)'" );
+            //echo "running command: $ooexecutable -writer 'macro:///standard.Module1.$convertCommand .($sourceFileName, $destinationFileName)'";
+        }break;
+
+        default:
+        {
+            echo "unknown command";
+            socket_write( $spawn, "Error: (1)-Unknown command" );
+        }break;
     }
-    unlink( $tmpFile );
-    $result = shell_exec( $ooexecutable . " -writer 'macro:///standard.Module1." . $convertCommand . "($fileName)'" );
 
-    if ( !file_exists( $tmpFile ) )
+    if ( !file_exists( $destinationFileName ) )
         return false;
 
-    socket_write( $spawn, "FilePath: $tmpFile" );
+    socket_write( $spawn, "FilePath: $destinationFileName" );
     return true;
 }
+
 
 while ( $spawn = socket_accept( $socket ))
 {
@@ -100,38 +107,14 @@ while ( $spawn = socket_accept( $socket ))
 
         $inputParts = explode( " ", $input );
 
-        $command = strtolower( trim( $inputParts[0] ) );
+        $command = trim( $inputParts[0] );
         $fileName = trim( $inputParts[1] );
+        $destName = trim( $inputParts[2] );
 
 
         if ( file_exists( $fileName ) )
         {
-            switch ( $command )
-            {
-                case "convert_to_pdf":
-                {
-                    $result = convert_to( $fileName,  "convertToPDF", "ooo_converted.pdf" );
-
-                }break;
-
-                case "convert_to_ooo":
-                {
-                    $result = convert_to( $fileName, "convertToOOo", "ooo_converted.odt" );
-
-                }break;
-
-                case "convert_to_doc":
-                {
-                    $result = convert_to( $fileName, "convertToDoc", "ooo_converted.odt"  );
-
-                }break;
-
-                default:
-                {
-                    echo "unknown command";
-                    socket_write( $spawn, "Error: (1)-Unknown command" );
-                }break;
-            }
+            $result = convert_to( $fileName, $command, $destName );
         }
         else
         {

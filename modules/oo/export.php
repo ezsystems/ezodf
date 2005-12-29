@@ -105,75 +105,82 @@ if ( $doExport == true )
 
     if ( is_numeric( $nodeID ) )
     {
-        // Do the actual eZ publish export
-        $fileName = eZOOConverter::objectToOO( $nodeID );
 
-        if ( !is_array( $fileName ) )
+        $node = eZContentObjectTreeNode::fetch( $nodeID );
+
+        // Check if we have read access to this node
+        if ( $node && $node->canRead() )
         {
-            $node = eZContentObjectTreeNode::fetch( $nodeID );
-            $nodeName = $node->attribute( 'name' );
+            // Do the actual eZ publish export
+            $fileName = eZOOConverter::objectToOO( $nodeID );
 
-            $originalFileName = $nodeName . ".odt";
-            $contentType = "application/vnd.oasis.opendocument.text";
-
-            include_once( 'lib/ezi18n/classes/ezchartransform.php' );
-            $trans =& eZCharTransform::instance();
-            $nodeName = $trans->transformByGroup( $nodeName, 'urlalias' );
-
-
-            switch ( $exportType )
+            if ( !is_array( $fileName ) )
             {
-                case "PDF" :
+                $nodeName = $node->attribute( 'name' );
+
+                $originalFileName = $nodeName . ".odt";
+                $contentType = "application/vnd.oasis.opendocument.text";
+
+                include_once( 'lib/ezi18n/classes/ezchartransform.php' );
+                $trans =& eZCharTransform::instance();
+                $nodeName = $trans->transformByGroup( $nodeName, 'urlalias' );
+
+                $uniqueStamp = md5( mktime() );
+
+                switch ( $exportType )
                 {
-                    deamonConvertPDF( realpath( $fileName ), $tmpDir . "/ooo_converted.pdf" );
-                    $originalFileName = $nodeName . ".pdf";
-                    $contentType = "application/pdf";
-                    $fileName = $tmpDir . "/ooo_converted.pdf";
+                    case "PDF" :
+                    {
+                        deamonConvertPDF( realpath( $fileName ), $tmpDir . "/ooo_converted_$uniqueStamp.pdf" );
+                        $originalFileName = $nodeName . ".pdf";
+                        $contentType = "application/pdf";
+                        $fileName = $tmpDir . "/ooo_converted_$uniqueStamp.pdf";
 
-                }break;
+                    }break;
 
-                case "Word" :
+                    case "Word" :
+                    {
+                        deamonConvertWord( realpath( $fileName ), $tmpDir . "/ooo_converted_$uniqueStamp.doc" );
+                        $originalFileName = $nodeName . ".doc";
+                        $contentType = "application/ms-word";
+                        $fileName = $tmpDir . "/ooo_converted_$uniqueStamp.doc";
+
+                    }break;
+
+                }
+
+                $contentLength = filesize( $fileName );
+
+                // Download the file
+                header( "Pragma: " );
+                header( "Cache-Control: " );
+                /* Set cache time out to 10 minutes, this should be good enough to work around an IE bug */
+                header( "Expires: ". gmdate('D, d M Y H:i:s', time() + 600) . 'GMT');
+                header( "Content-Length: $contentLength" );
+                header( "Content-Type: $contentType" );
+                header( "X-Powered-By: eZ publish" );
+                header( "Content-disposition: attachment; filename=\"$originalFileName\"" );
+                header( "Content-Transfer-Encoding: binary" );
+                header( "Accept-Ranges: bytes" );
+
+                $fh = fopen( "$fileName", "rb" );
+                if ( $fileOffset )
                 {
-                    deamonConvertWord( realpath( $fileName ), $tmpDir . "/ooo_converted.doc" );
-                    $originalFileName = $nodeName . ".doc";
-                    $contentType = "application/ms-word";
-                    $fileName = $tmpDir . "/ooo_converted.doc";
+                    fseek( $fh, $fileOffset );
+                }
 
-                }break;
+                ob_end_clean();
+                fpassthru( $fh );
+                fclose( $fh );
+                fflush();
 
+                unlink( $fileName );
+                eZExecution::cleanExit();
             }
-
-            $contentLength = filesize( $fileName );
-
-            // Download the file
-            header( "Pragma: " );
-            header( "Cache-Control: " );
-            /* Set cache time out to 10 minutes, this should be good enough to work around an IE bug */
-            header( "Expires: ". gmdate('D, d M Y H:i:s', time() + 600) . 'GMT');
-            header( "Content-Length: $contentLength" );
-            header( "Content-Type: $contentType" );
-            header( "X-Powered-By: eZ publish" );
-            header( "Content-disposition: attachment; filename=\"$originalFileName\"" );
-            header( "Content-Transfer-Encoding: binary" );
-            header( "Accept-Ranges: bytes" );
-
-            $fh = fopen( "$fileName", "rb" );
-            if ( $fileOffset )
+            else
             {
-                fseek( $fh, $fileOffset );
+                $tpl->setVariable( "error_string", $fileName[1] );
             }
-
-            ob_end_clean();
-            fpassthru( $fh );
-            fclose( $fh );
-            fflush();
-
-            unlink( $fileName );
-            eZExecution::cleanExit();
-        }
-        else
-        {
-            $tpl->setVariable( "error_string", $fileName[1] );
         }
     }
 }
@@ -189,8 +196,10 @@ $Result['path'] = array( array( 'url' => '/oo/export/',
 */
 function deamonConvertPDF( $sourceFile, $destFile )
 {
-    $server = "127.0.0.1";
-    $port = "9090";
+    global $ooINI;
+
+    $server = $ooINI->variable( "OOImport", "OOConverterAddress" );
+    $port = $ooINI->variable( "OOImport", "OOConverterPort" );
 
     $fp = fsockopen( $server,
                      $port,
@@ -205,7 +214,7 @@ function deamonConvertPDF( $sourceFile, $destFile )
         $welcome = trim( $welcome );
         if ( $welcome == "eZ publish document conversion deamon" )
         {
-            $commandString = "convert_to_pdf $sourceFile";
+            $commandString = "convertToPDF $sourceFile $destFile";
             fputs( $fp, $commandString, strlen( $commandString ) );
 
             $result = fread( $fp, 1024 );
@@ -220,8 +229,10 @@ function deamonConvertPDF( $sourceFile, $destFile )
 */
 function deamonConvertWord( $sourceFile, $destFile )
 {
-    $server = "127.0.0.1";
-    $port = "9090";
+    global $ooINI;
+
+    $server = $ooINI->variable( "OOImport", "OOConverterAddress" );
+    $port = $ooINI->variable( "OOImport", "OOConverterPort" );
 
     $fp = fsockopen( $server,
                      $port,
@@ -236,7 +247,7 @@ function deamonConvertWord( $sourceFile, $destFile )
         $welcome = trim( $welcome );
         if ( $welcome == "eZ publish document conversion deamon" )
         {
-            $commandString = "convert_to_doc $sourceFile";
+            $commandString = "convertToDoc $sourceFile $destFile";
             fputs( $fp, $commandString, strlen( $commandString ) );
 
             $result = fread( $fp, 1024 );

@@ -1,39 +1,39 @@
 REM  eZ publish document conversion macros
 
-Sub convertToOOo(strFile as string) 
+Sub convertToOOo(strFile as string, strDestFile as string) 
     Dim oDoc as Object 
     Dim strFilterSubName as String 
      
     strUrl = ConvertToUrl( strFile ) 
     oDoc = StarDesktop.loadComponentFromURL( strUrl, "_blank", 0, array(MakePropertyValue("Hidden",true))) 
      
-    oDoc.storeToUrl( ConvertToUrl( "/tmp/ooo_converted.odt" ), Array()) 
+    oDoc.storeToUrl( ConvertToUrl( strDestFile ), Array()) 
      
     oDoc.close(True) 
 End Sub 
 
-Sub convertToPDF(strFile as string) 
+Sub convertToPDF(strFile as string, strDestFile as string) 
     Dim oDoc as Object 
     Dim strFilterSubName as String 
      
     strUrl = ConvertToUrl( strFile ) 
     oDoc = StarDesktop.loadComponentFromURL( strUrl, "_blank", 0, array(MakePropertyValue("Hidden",true))) 
      
-    cURL = ConvertToURL( "/tmp/ooo_converted.pdf" ) 
+    cURL = ConvertToURL( strDestFile ) 
          
     oDoc.storeToURL( cURL, Array( MakePropertyValue( "FilterName", "writer_pdf_Export" ) ) 
      
     oDoc.close(True) 
 End Sub 
  
-Sub convertToDoc(strFile as string)
+Sub convertToDoc(strFile as string, strDestFile as string)
     Dim oDoc as Object 
     Dim strFilterSubName as String 
      
     strUrl = ConvertToUrl( strFile )
     oDoc = StarDesktop.loadComponentFromURL( strUrl, "_blank", 0, array(MakePropertyValue("Hidden",true)))
      
-    cURL = ConvertToURL( "/tmp/ooo_converted.doc" )
+    cURL = ConvertToURL( strDestFile )
          
     oDoc.storeToURL( cURL, Array( MakePropertyValue( "FilterName", "MS Word 97" ) )
      

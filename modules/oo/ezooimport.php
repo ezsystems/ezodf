@@ -65,6 +65,7 @@ define( "OOIMPORT_ERROR_UNKNOWN", 127 );
 class eZOOImport
 {
     var $ERROR=array();
+    var $currentUserID;
 
     /*!
      Constructor
@@ -74,6 +75,8 @@ class eZOOImport
         $this->ERROR['number'] = 0;
         $this->ERROR['value'] = '';
         $this->ERROR['description'] = '';
+        $currentUser =& eZUser::currentUser();
+        $this->currentUserID  = $currentUser->id();
     }
 
     /*!
@@ -155,8 +158,9 @@ class eZOOImport
     */
     function deamonConvert( $sourceFile, $destFile )
     {
-        $server = "127.0.0.1";
-        $port = "9090";
+        $ooINI =& eZINI::instance( 'oo.ini' );
+        $server = $ooINI->variable( "OOImport", "OOConverterAddress" );
+        $port = $ooINI->variable( "OOImport", "OOConverterPort" );
         $res = false;
         $fp = fsockopen( $server,
                          $port,
@@ -171,27 +175,28 @@ class eZOOImport
             $welcome = trim( $welcome );
             if ( $welcome == "eZ publish document conversion deamon" )
             {
-               $commandString = "convert_to_ooo $sourceFile";
-               fputs( $fp, $commandString, strlen( $commandString ) );
-               $result = fread( $fp, 1024 );
-               $result = trim( $result );
-//                print( "client got: $result\n" );
-               if( substr( $result, 0, 5 ) != "Error" )
-               {
-                   $res = true;
-               }
-               else
-               {
-                   $this->setError( OOIMPORT_ERROR_DEAMON, $result );
-                   $res = false;
-               }
-            }
-            else
-            {
-                $this->setError( OOIMPORT_ERROR_DEAMONCALL  );
-                $res = false;
-            }
-            fclose( $fp );
+                $commandString = "convertToOOo $sourceFile $destFile";
+
+                fputs( $fp, $commandString, strlen( $commandString ) );
+                $result = fread( $fp, 1024 );
+                $result = trim( $result );
+//              print( "client got: $result\n" );
+                if( substr( $result, 0, 5 ) != "Error" )
+                {
+                    $res = true;
+                }
+                else
+                {
+                    $this->setError( OOIMPORT_ERROR_DEAMON, $result );
+                    $res = false;
+                }
+             }
+             else
+             {
+                 $this->setError( OOIMPORT_ERROR_DEAMONCALL  );
+                 $res = false;
+             }
+             fclose( $fp );
         }
         else
         {
@@ -256,15 +261,16 @@ class eZOOImport
             $this->setError( OOIMPORT_ERROR_ACCESSDENIED );
             return false;
         }
-        return false;
+        //return false;
 
         // Check if document conversion is needed
         //
         if( in_array( $originalFileType, $convertTypes, false ) )
         {
-            copy( realpath( $file ), $tmpDir . "/convert_from.doc" );
+            $uniqueStamp = md5( mktime() );
+            copy( realpath( $file ), $tmpDir . "/convert_from_$uniqueStamp.doc" );
             /// Convert document using the eZ publish document conversion deamon
-            if( !$this->deamonConvert( $tmpDir . "/convert_from.doc", $tmpDir . "/ooo_converted.odt" ) )
+            if( !$this->deamonConvert( $tmpDir . "/convert_from_$uniqueStamp.doc", $tmpDir . "/ooo_converted_$uniqueStamp.odt" ) )
             {
                 if( $this->getErrorNumber() == 0 )
                     $this->setError( OOIMPORT_ERROR_CONVERT );
@@ -272,7 +278,7 @@ class eZOOImport
             }
 
             // Overwrite the file location
-            $file = $tmpDir . "/ooo_converted.odt";
+            $file = $tmpDir . "/ooo_converted_$uniqueStamp.odt";
         }
 
         $importResult = array();
@@ -298,6 +304,9 @@ class eZOOImport
         $fileName = $this->ImportDir . "content.xml";
         $xml = new eZXML();
         $dom =& $xml->domTree( file_get_contents( $fileName ) );
+        //pk, at this point we could unlink $file
+        // unlink( $file );
+        echo "simulated removing of file $file\n";
 
 
         if ( !is_object( $dom ) )
@@ -422,7 +431,8 @@ class eZOOImport
             // Check if we should replace the current object or import a new
             if ( $importType !== "replace" )
             {
-                $creatorID = 14; // 14 == admin
+                $creatorID = $this->currentUserID;
+                //$creatorID = 14; // 14 == admin
                 $parentNodeID = $placeNodeID;
                 $object =& $class->instantiate( $creatorID, 1 );
 
@@ -493,6 +503,7 @@ class eZOOImport
                 // Convert _ to spaces and upcase the first character
                 $objectName = ucfirst( str_replace( "_", " ", $objectName ) );
 
+                var_dump( $dataMap );
                 $dataMap[$titleAttribute]->setAttribute( 'data_text', $objectName );
                 $dataMap[$titleAttribute]->store();
 
@@ -512,7 +523,9 @@ class eZOOImport
 
                 // Create image folder if it does not already exist
                 {
-                    $mediaRootNodeID = 43;
+                    $contentINI =& eZINI::instance( 'oo.ini' );
+                    $mediaRootNodeID = $contentINI->variable( "NodeSettings", "MediaRootNode" );
+                    //$mediaRootNodeID = 43;
                     $node = eZContentObjectTreeNode::fetch( $mediaRootNodeID );
 
                     $articleFolderName = $object->attribute( 'name' );
@@ -1009,6 +1022,9 @@ class eZOOImport
                                 // Calculate RemoteID based on image md5:
                                 $remoteID = "ezoo-" . md5( file_get_contents( $href ) );
 
+
+/*
+                                
                                 // Check if an image with the same remote ID already exists
                                 $db =& eZDB::instance();
                                 $imageParentNodeID = $GLOBALS["OOImportObjectID"];
@@ -1025,13 +1041,25 @@ class eZOOImport
                                     $contentObjectID = $resultArray[0]['id'];
                                 }
 
+*/
+
+                                $contentObject = false;
+                                $contentNode =& eZContentObject::fetchByRemoteID( $remoteID );
+                                if ( $contentNode )
+                                {
+                                    $contentObject =& $contentNode->object();
+                                    $contentObjectID =& $contentObject->attribute( 'id' );
+                                }
+                                
+
                                 // If image does not already exist, create it as an object
                                 if ( $contentObject == false )
                                 {
                                     // Import image
-                                    $classID = 5;
-                                    $class = eZContentClass::fetch( $classID );
-                                    $creatorID = 14;
+                                    $ooINI =& eZINI::instance( 'oo.ini' );
+                                    $imageClassIdentifier = $ooINI->variable( "OOImport", "DefaultImportImageClass" );
+                                    $class =& eZContentClass::fetchByIdentifier( $imageClassIdentifier );
+                                    $creatorID = $this->currentUserID;
 
                                     $contentObject =& $class->instantiate( $creatorID, 1 );
                                     $contentObject->setAttribute( "remote_id",  $remoteID );
@@ -1188,11 +1216,20 @@ class eZOOImport
     {
         $namedChildrenArray = $node->childrenByName( $name );
         $subNode = false;
+
+        //pk
+        if ( !$node->canCreate() )
+        {
+            $this->setError( OOIMPORT_ERROR_ACCESSDENIED, ezi18n( 'extension/oo/import/error', "Folder for images could not be created, access denied" ) );
+            return false;
+        }
+ 
         if ( count( $namedChildrenArray ) == 0 )
         {
             $class = eZContentClass::fetchByIdentifier( "folder" );
             {
-                $creatorID = 14; // 14 == admin
+                $creatorID = $this->currentUserID;
+                //$creatorID = 14; // 14 == admin
                 $parentNodeID = $placeNodeID;
                 $contentObject =& $class->instantiate( $creatorID, 1 );
 
