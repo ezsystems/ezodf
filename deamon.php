@@ -69,8 +69,8 @@ function convert_to( $sourceFileName, $convertCommand, $destinationFileName )
         case "convertToOOo":
         case "convertToDoc":
         {
-            $result = shell_exec( $ooexecutable . " -writer 'macro:///standard.Module1." . $convertCommand . "($sourceFileName, $destinationFileName)'" );
-            //echo "running command: $ooexecutable -writer 'macro:///standard.Module1.$convertCommand .($sourceFileName, $destinationFileName)'";
+            $result = shell_exec( $ooexecutable . " -writer 'macro:///standard.Module1." . $convertCommand . "(\"$sourceFileName\", \"$destinationFileName\")'" );
+            //echo "running command: ".  $ooexecutable . " -writer 'macro:///standard.Module1." . $convertCommand . "(\"$sourceFileName\", \"$destinationFileName\")'"  ;
         }break;
 
         default:
