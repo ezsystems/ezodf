@@ -141,10 +141,12 @@ class eZOOImport
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/oo/import/error', "Unknown node" );
                 $this->ERROR['description'] = $errorDescription;
+                break;
             case OOIMPORT_ERROR_ACCESSDENIED:
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/oo/import/error', "Access denied" );
                 $this->ERROR['description'] = $errorDescription;
+                break;
             default :
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/oo/import/error', "Unknown error" );
@@ -246,16 +248,13 @@ class eZOOImport
         {
             // Check if we are allowed to edit the node
             $access = eZContentFunctionCollection::checkAccess( 'edit', $node, false, false );
-            echo "edit";
         }
         else
         {
             // Check if we are allowed to create a node under the node
             $access = eZContentFunctionCollection::checkAccess( 'create', $node, $importClassIdentifier, $node->attribute( 'class_identifier' ) );
-            echo "create";
         }
 
-        echo "access: "; var_dump( $access['result'] );
         if ( ! ( $access['result'] ) )
         {
             $this->setError( OOIMPORT_ERROR_ACCESSDENIED );
@@ -326,8 +325,6 @@ class eZOOImport
         // Fetch the body section content
         $sectionNodeArray =& $dom->elementsByNameNS( 'section', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' );
 
-        $ooINI =& eZINI::instance( 'oo.ini' );
-        $importClassIdentifier = $ooINI->variable( 'OOImport', 'DefaultImportClass' );
         $customClassFound = false;
         if ( count( $sectionNodeArray ) > 0 )
         {
@@ -361,6 +358,7 @@ class eZOOImport
                     {
                         $importClassIdentifier = $className;
                         $customClassFound = true;
+                        echo "Using custom class $className<br />\n";
                         break;
                     }
                 }
@@ -427,6 +425,7 @@ class eZOOImport
 
         // Create object start
         $class = eZContentClass::fetchByIdentifier( $importClassIdentifier );
+
         {
             // Check if we should replace the current object or import a new
             if ( $importType !== "replace" )
@@ -503,7 +502,6 @@ class eZOOImport
                 // Convert _ to spaces and upcase the first character
                 $objectName = ucfirst( str_replace( "_", " ", $objectName ) );
 
-                var_dump( $dataMap );
                 $dataMap[$titleAttribute]->setAttribute( 'data_text', $objectName );
                 $dataMap[$titleAttribute]->store();
 
@@ -567,7 +565,7 @@ class eZOOImport
             $importResult['Object'] = $object;
             $importResult['MainNode'] = $mainNode;
             $importResult['URLAlias'] = $mainNode->attribute( 'url_alias' );
-            $importResult['NodeName'] = $object->attribute( 'name' );
+            $importResult['NodeName'] = $mainNode->attribute( 'name' );
             $importResult['ClassIdentifier'] = $importClassIdentifier;
         }
 
@@ -1050,8 +1048,8 @@ class eZOOImport
                                     $contentObject =& $contentNode->object();
                                     $contentObjectID =& $contentObject->attribute( 'id' );
                                 }
-                                
 
+                                
                                 // If image does not already exist, create it as an object
                                 if ( $contentObject == false )
                                 {
@@ -1223,7 +1221,7 @@ class eZOOImport
             $this->setError( OOIMPORT_ERROR_ACCESSDENIED, ezi18n( 'extension/oo/import/error', "Folder for images could not be created, access denied" ) );
             return false;
         }
- 
+
         if ( count( $namedChildrenArray ) == 0 )
         {
             $class = eZContentClass::fetchByIdentifier( "folder" );
