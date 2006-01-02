@@ -47,19 +47,19 @@ Needs the following in PHP Configuration
 $host = "127.0.0.1";
 $port = 9090;
 $ooexecutable = "openoffice.org-2.0";
-$tmpPath = "/tmp/";
+$maxClients = 3;
 
 set_time_limit( 0 );
 
 $socket = socket_create( AF_INET, SOCK_STREAM, 0) or die( "Could not create socket\n" );
 $result = socket_bind( $socket, $host, $port ) or die( "Could not bind to socket\n" );
-$result = socket_listen( $socket, 3 ) or die( "Could not set up socket listener\n" );
+$result = socket_listen( $socket, $maxClients ) or die( "Could not set up socket listener\n" );
 
 print( "Started OpenOffice.org deamon\n" );
 
 function convert_to( $sourceFileName, $convertCommand, $destinationFileName )
 {
-    global $ooexecutable, $spawn, $tmpPath;
+    global $ooexecutable, $spawn;
 
     print( "Converting document with $convertCommand\n" );
 
@@ -70,7 +70,6 @@ function convert_to( $sourceFileName, $convertCommand, $destinationFileName )
         case "convertToDoc":
         {
             $result = shell_exec( $ooexecutable . " -writer 'macro:///standard.Module1." . $convertCommand . "(\"$sourceFileName\", \"$destinationFileName\")'" );
-            //echo "running command: ".  $ooexecutable . " -writer 'macro:///standard.Module1." . $convertCommand . "(\"$sourceFileName\", \"$destinationFileName\")'"  ;
         }break;
 
         default:

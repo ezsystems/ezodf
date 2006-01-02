@@ -215,7 +215,9 @@ class eZOOImport
     function import( $file, $placeNodeID, $originalFileName, $importType = "import" )
     {
         $ooINI =& eZINI::instance( 'oo.ini' );
-        $tmpDir = $ooINI->variable( 'OOo', 'TmpDir' );
+        //$tmpDir = $ooINI->variable( 'OOo', 'TmpDir' );
+        // Use var-directory as temporary directory
+        $tmpDir = getcwd() . "/" . eZSys::cacheDirectory();
 
         $allowedTypes = $ooINI->variable( 'DocumentType', 'AllowedTypes' );
         $convertTypes = $ooINI->variable( 'DocumentType', 'ConvertTypes' );
@@ -267,17 +269,22 @@ class eZOOImport
         if( in_array( $originalFileType, $convertTypes, false ) )
         {
             $uniqueStamp = md5( mktime() );
-            copy( realpath( $file ), $tmpDir . "/convert_from_$uniqueStamp.doc" );
-            /// Convert document using the eZ publish document conversion deamon
-            if( !$this->deamonConvert( $tmpDir . "/convert_from_$uniqueStamp.doc", $tmpDir . "/ooo_converted_$uniqueStamp.odt" ) )
+            $tmpFromFile = $tmpDir . "/convert_from_$uniqueStamp.doc";
+            $tmpToFile   = $tmpDir . "/ooo_converted_$uniqueStamp.odt";
+            copy( realpath( $file ),  $tmpFromFile );
+
+           /// Convert document using the eZ publish document conversion deamon
+            if ( !$this->deamonConvert( $tmpFromFile, $tmpToFile ) )
             {
                 if( $this->getErrorNumber() == 0 )
                     $this->setError( OOIMPORT_ERROR_CONVERT );
                 return false;
             }
+            // At this point we can unlink the sourcefile for conversion
+            unlink( $tmpFromFile );
 
             // Overwrite the file location
-            $file = $tmpDir . "/ooo_converted_$uniqueStamp.odt";
+            $file = $tmpToFile;
         }
 
         $importResult = array();
@@ -303,10 +310,12 @@ class eZOOImport
         $fileName = $this->ImportDir . "content.xml";
         $xml = new eZXML();
         $dom =& $xml->domTree( file_get_contents( $fileName ) );
-        //pk, at this point we could unlink $file
-        // unlink( $file );
-        echo "simulated removing of file $file\n";
 
+        // At this point we could unlink the destination file from the conversion, if conversion was used
+        if ( isset( $tmpToFile ) )
+        {
+            unlink( $tmpToFile );
+        }
 
         if ( !is_object( $dom ) )
         {
@@ -431,7 +440,6 @@ class eZOOImport
             if ( $importType !== "replace" )
             {
                 $creatorID = $this->currentUserID;
-                //$creatorID = 14; // 14 == admin
                 $parentNodeID = $placeNodeID;
                 $object =& $class->instantiate( $creatorID, 1 );
 

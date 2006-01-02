@@ -6,6 +6,7 @@ Changes from 2.0 beta 3 to 2.1 beta 1
 - Changed direct sql statements from ezooimport to use fetch-function (should now work with other database)
 - Added access control (partially implemented, still some issues when uploading images in document)
 - Fixed concurrency problems in conversion by using unique names for each document
+- Added cleanup routines for uploaded files
 
 
 Changes from 2.0 beta 2 to 2.0 beta 3
