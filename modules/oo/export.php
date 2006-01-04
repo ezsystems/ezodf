@@ -46,7 +46,7 @@ include_once( "extension/oo/modules/oo/ezooconverter.php" );
 $http =& eZHTTPTool::instance();
 $module =& $Params["Module"];
 $NodeID = $Params['NodeID'];
-$ExportType = $Params['ExportType'];
+$exportTypeParam = $Params['ExportType'];
 
 $tpl =& templateInit();
 
@@ -91,14 +91,15 @@ if ( $http->hasPostVariable( "ExportType" ) )
         $exportType = $type;
     }
 }
-else if ( $ExportType == "PDF" or $ExportType == "Word" )
+else if ( $exportTypeParam == "PDF" or $exportTypeParam == "Word" )
 {
-    $exportType = $ExportType;
+    $exportType = $exportTypeParam;
 }
 
 
 $ooINI =& eZINI::instance( 'oo.ini' );
-$tmpDir = $ooINI->variable( 'OOo', 'TmpDir' );
+//$tmpDir = $ooINI->variable( 'OOo', 'TmpDir' );
+$tmpDir = getcwd() . "/" . eZSys::cacheDirectory();
 
 if ( $doExport == true )
 {
@@ -127,11 +128,14 @@ if ( $doExport == true )
 
                 $uniqueStamp = md5( mktime() );
 
+                $server = $ooINI->variable( "OOImport", "OOConverterAddress" );
+                $port = $ooINI->variable( "OOImport", "OOConverterPort" );
+
                 switch ( $exportType )
                 {
                     case "PDF" :
                     {
-                        deamonConvertPDF( realpath( $fileName ), $tmpDir . "/ooo_converted_$uniqueStamp.pdf" );
+                        $result = deamonConvert( $server, $port, realpath( $fileName ), "convertToPDF", $tmpDir . "/ooo_converted_$uniqueStamp.pdf" );
                         $originalFileName = $nodeName . ".pdf";
                         $contentType = "application/pdf";
                         $fileName = $tmpDir . "/ooo_converted_$uniqueStamp.pdf";
@@ -140,7 +144,7 @@ if ( $doExport == true )
 
                     case "Word" :
                     {
-                        deamonConvertWord( realpath( $fileName ), $tmpDir . "/ooo_converted_$uniqueStamp.doc" );
+                        $result = deamonConvert( $server, $port, realpath( $fileName ), "convertToWord", $tmpDir . "/ooo_converted_$uniqueStamp.pdf" );
                         $originalFileName = $nodeName . ".doc";
                         $contentType = "application/ms-word";
                         $fileName = $tmpDir . "/ooo_converted_$uniqueStamp.doc";
@@ -182,6 +186,10 @@ if ( $doExport == true )
                 $tpl->setVariable( "error_string", $fileName[1] );
             }
         }
+        else
+        {
+            $tpl->setVariable( "error_string", "Unable to fetch node, or no read access" );
+        }
     }
 }
 
@@ -192,15 +200,10 @@ $Result['path'] = array( array( 'url' => '/oo/export/',
 
 
 /*!
-      Connects to the eZ publish document conversion deamon and converts the document to PDF
+      Connects to the eZ publish document conversion deamon and converts the document to specified format
 */
-function deamonConvertPDF( $sourceFile, $destFile )
+function deamonConvert( $server, $port, $sourceFile, $conversionCommand, $destFile )
 {
-    global $ooINI;
-
-    $server = $ooINI->variable( "OOImport", "OOConverterAddress" );
-    $port = $ooINI->variable( "OOImport", "OOConverterPort" );
-
     $fp = fsockopen( $server,
                      $port,
                      $errorNR,
@@ -214,47 +217,17 @@ function deamonConvertPDF( $sourceFile, $destFile )
         $welcome = trim( $welcome );
         if ( $welcome == "eZ publish document conversion deamon" )
         {
-            $commandString = "convertToPDF $sourceFile $destFile";
+            $commandString = "$conversionCommand $sourceFile $destFile";
             fputs( $fp, $commandString, strlen( $commandString ) );
 
             $result = fread( $fp, 1024 );
             $result = trim( $result );
         }
         fclose( $fp );
+
+        return $result;
     }
-}
-
-/*!
-      Connects to the eZ publish document conversion deamon and converts the document to Word
-*/
-function deamonConvertWord( $sourceFile, $destFile )
-{
-    global $ooINI;
-
-    $server = $ooINI->variable( "OOImport", "OOConverterAddress" );
-    $port = $ooINI->variable( "OOImport", "OOConverterPort" );
-
-    $fp = fsockopen( $server,
-                     $port,
-                     $errorNR,
-                     $errorString,
-                     0 );
-
-    if ( $fp )
-    {
-        $welcome = fread( $fp, 1024 );
-
-        $welcome = trim( $welcome );
-        if ( $welcome == "eZ publish document conversion deamon" )
-        {
-            $commandString = "convertToDoc $sourceFile $destFile";
-            fputs( $fp, $commandString, strlen( $commandString ) );
-
-            $result = fread( $fp, 1024 );
-            $result = trim( $result );
-        }
-        fclose( $fp );
-    }
+    return false;
 }
 
 ?>

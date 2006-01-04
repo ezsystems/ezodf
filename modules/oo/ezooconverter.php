@@ -63,7 +63,7 @@ class eZOOConverter
     {
         $ooGenerator = new eZOOGenerator();
 
-        $node =& eZContentObjectTreeNode::fetch( $nodeID );
+        $node = eZContentObjectTreeNode::fetch( $nodeID );
 
         if ( $node )
         {
@@ -238,6 +238,9 @@ class eZOOConverter
 
             return $destFile;
         }
+
+        // Conversion failed
+        return false;
     }
 
     /*!

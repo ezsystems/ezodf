@@ -48,6 +48,8 @@ include_once( "lib/ezfile/classes/ezfilehandler.php" );
 
 define( "EZ_OO_TEXT", 1001 );
 define( "EZ_OO_LINK", 1002 );
+define( "EZ_OO_STYLE_START", 2003 );
+define( "EZ_OO_STYLE_STOP", 2004 );
 
 define( "EZ_OO_ERROR_TEMPLATE_NOT_READABLE", 1010 );
 define( "EZ_OO_ERROR_COULD_NOT_COPY", 1011 );
@@ -86,7 +88,6 @@ class eZOOGenerator
                      "  <meta:user-defined meta:name='Info 2'/>" .
                      "  <meta:user-defined meta:name='Info 3'/>" .
                      "  <meta:user-defined meta:name='Info 4'/>" .
-                     $eZMetaData .
                      " <meta:document-statistic meta:table-count='0' meta:image-count='0' meta:object-count='0' meta:page-count='1' meta:paragraph-count='1' meta:word-count='2' meta:character-count='10'/>" .
                      " </office:meta>" .
                      "</office:document-meta>";
@@ -257,7 +258,7 @@ class eZOOGenerator
         include_once( 'lib/ezi18n/classes/eztextcodec.php' );
         $charset = 'UTF-8';
         $codec =& eZTextCodec::instance( false, $charset );
-        $bodyXML =& $codec->convertString( $bodyXML );
+        $bodyXML = $codec->convertString( $bodyXML );
 
         $contentXML .= $bodyXML;
 
@@ -368,11 +369,11 @@ class eZOOGenerator
                     {
                         $tagContent = $paragraphElement[1];
 
-                        $tagContent =& str_replace( "&", "&amp;", $tagContent );
-                        $tagContent =& str_replace( ">", "&gt;", $tagContent );
-                        $tagContent =& str_replace( "<", "&lt;", $tagContent );
-                        $tagContent =& str_replace( "'", "&apos;", $tagContent );
-                        $tagContent =& str_replace( '"', "&quot;", $tagContent );
+                        $tagContent = str_replace( "&", "&amp;", $tagContent );
+                        $tagContent = str_replace( ">", "&gt;", $tagContent );
+                        $tagContent = str_replace( "<", "&lt;", $tagContent );
+                        $tagContent = str_replace( "'", "&apos;", $tagContent );
+                        $tagContent = str_replace( '"', "&quot;", $tagContent );
 
                         $paragraphArray[] = array( 'Type' => 'text', "Content" => $tagContent );
                     }break;

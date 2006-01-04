@@ -59,7 +59,7 @@ print( "Started OpenOffice.org deamon\n" );
 
 function convert_to( $sourceFileName, $convertCommand, $destinationFileName )
 {
-    global $ooexecutable, $spawn;
+    global $ooexecutable;
 
     print( "Converting document with $convertCommand\n" );
 
@@ -74,15 +74,16 @@ function convert_to( $sourceFileName, $convertCommand, $destinationFileName )
 
         default:
         {
-            echo "unknown command";
-            socket_write( $spawn, "Error: (1)-Unknown command" );
+            echo "Unknown command $convertCommand";
+            return "(1)-Unknown command $convertCommand";
         }break;
     }
 
     if ( !file_exists( $destinationFileName ) )
-        return false;
+    {
+        return "(3)-Unknown failure converting document ";
+    }
 
-    socket_write( $spawn, "FilePath: $destinationFileName" );
     return true;
 }
 
@@ -114,6 +115,14 @@ while ( $spawn = socket_accept( $socket ))
         if ( file_exists( $fileName ) )
         {
             $result = convert_to( $fileName, $command, $destName );
+            if ( !( $result === true ) )
+            {
+                socket_write( $spawn, "Error: $result" );
+            }
+            else
+            {
+                socket_write( $spawn, "FilePath: $destinationFileName" );
+            }
         }
         else
         {
