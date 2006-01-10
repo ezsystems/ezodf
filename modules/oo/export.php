@@ -50,6 +50,8 @@ $exportTypeParam = $Params['ExportType'];
 
 $tpl =& templateInit();
 
+$success = true;
+
 if ( $http->hasPostVariable( "ExportButton" ) )
 {
     eZContentBrowse::browse( array( 'action_name' => 'OOPlace',
@@ -90,12 +92,22 @@ if ( $http->hasPostVariable( "ExportType" ) )
     {
         $exportType = $type;
     }
+    else
+    {
+        $tpl->setVariable( "error_string", "Destination file format not supported" );
+        $success = false;
+    }
 }
 else if ( $exportTypeParam == "PDF" or $exportTypeParam == "Word" )
 {
     $exportType = $exportTypeParam;
 }
-
+else
+{
+    $tpl->setVariable( "error_string", "Destination file format not supported" );
+    $success = false;
+}
+        
 
 $ooINI =& eZINI::instance( 'oo.ini' );
 //$tmpDir = $ooINI->variable( 'OOo', 'TmpDir' );
@@ -110,7 +122,7 @@ if ( $doExport == true )
         $node = eZContentObjectTreeNode::fetch( $nodeID );
 
         // Check if we have read access to this node
-        if ( $node && $node->canRead() )
+        if ( $node && $node->canRead() ) // fixme more checking needed (pictures)
         {
             // Do the actual eZ publish export
             $fileName = eZOOConverter::objectToOO( $nodeID );
@@ -135,25 +147,57 @@ if ( $doExport == true )
                 {
                     case "PDF" :
                     {
-                        $result = deamonConvert( $server, $port, realpath( $fileName ), "convertToPDF", $tmpDir . "/ooo_converted_$uniqueStamp.pdf" );
-                        $originalFileName = $nodeName . ".pdf";
-                        $contentType = "application/pdf";
-                        $fileName = $tmpDir . "/ooo_converted_$uniqueStamp.pdf";
+                        if ( ( $result = deamonConvert( $server, $port, realpath( $fileName ), "convertToPDF", $tmpDir . "/ooo_converted_$uniqueStamp.pdf" ) ) )
+                        {
+                            $originalFileName = $nodeName . ".pdf";
+                            $contentType = "application/pdf";
+                            $fileName = $tmpDir . "/ooo_converted_$uniqueStamp.pdf";
+                        }
+                        else
+                        {
+                            $success = false;
+                            $tpl->setVariable( "error_string", "PDF conversion failed" ); // fixme make better error text (translation?)
+                        }
 
                     }break;
 
                     case "Word" :
                     {
-                        $result = deamonConvert( $server, $port, realpath( $fileName ), "convertToWord", $tmpDir . "/ooo_converted_$uniqueStamp.pdf" );
-                        $originalFileName = $nodeName . ".doc";
-                        $contentType = "application/ms-word";
-                        $fileName = $tmpDir . "/ooo_converted_$uniqueStamp.doc";
+                        if ( ( $result = deamonConvert( $server, $port, realpath( $fileName ), "convertToWord", $tmpDir . "/ooo_converted_$uniqueStamp.pdf" ) ) )
+                        {
+                            $originalFileName = $nodeName . ".doc";
+                            $contentType = "application/ms-word";
+                            $fileName = $tmpDir . "/ooo_converted_$uniqueStamp.doc";
+                        }
+                        else
+                        {
+                            $success = false;
+                            $tpl->setVariable( "error_string", "Word conversion failed" ); // fixme make better error text (translation?)
+                        }
 
                     }break;
 
                 }
 
-                $contentLength = filesize( $fileName );
+            }
+            else
+            {
+                $tpl->setVariable( "error_string", $fileName[1] );
+                $success = false;
+            }
+        }
+        else
+        {
+            $tpl->setVariable( "error_string", "Unable to fetch node, or no read access" );
+            $success = false;
+        }
+
+
+        if ( $success )
+        {
+            $contentLength = filesize( $fileName );
+            if ( $contentLength > 0 )
+            {
 
                 // Download the file
                 header( "Pragma: " );
@@ -183,12 +227,9 @@ if ( $doExport == true )
             }
             else
             {
-                $tpl->setVariable( "error_string", $fileName[1] );
+                $tpl->setVariable( "error_string", "Unable to open file $fileName on server side" );
             }
-        }
-        else
-        {
-            $tpl->setVariable( "error_string", "Unable to fetch node, or no read access" );
+                
         }
     }
 }
