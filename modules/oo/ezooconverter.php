@@ -321,7 +321,7 @@ class eZOOConverter
                         {
                             // Only support objects of image class for now
                             $object = eZContentObject::fetch( $lineChild->attributeValue( "object_id" ) );
-                            if ( $object )
+                            if ( $object && $object->canRead() )
                             {
 
                                 $classIdentifier = $object->attribute( "class_identifier" );
@@ -349,6 +349,10 @@ class eZOOConverter
                                                            "DisplayWidth" => $displayWidth,
                                                            "DisplayHeight" => $displayHeight );
                                 }
+                            }
+                            else
+                            {
+                                eZDebug::writeError( "Image (object_id = " . $child->attributeValue( 'object_id' ) . " ) could not be used (does not exist or due to insufficient privileges)" );
                             }
                         }break;
                     }
@@ -533,9 +537,9 @@ class eZOOConverter
 
             case "embed":
             {
-                // Only support objects of image class for now
+                // Only support objects of image class for now and those we can read
                 $object = eZContentObject::fetch( $child->attributeValue( "object_id" ) );
-                if ( $object )
+                if ( $object && $object->canRead() )
                 {
 
                     $classIdentifier = $object->attribute( "class_identifier" );
@@ -559,6 +563,10 @@ class eZOOConverter
                                                "DisplayWidth" => $displayWidth,
                                                "DisplayHeight" => $displayHeight );
                     }
+                }
+                else
+                {
+                    eZDebug::writeError( "Image (object_id = " . $child->attributeValue( 'object_id' ) . " ) could not be used (does not exist or insufficient privileges)");
                 }
             }break;
 
