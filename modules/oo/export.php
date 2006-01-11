@@ -102,7 +102,7 @@ else if ( $exportTypeParam == "PDF" or $exportTypeParam == "Word" )
 {
     $exportType = $exportTypeParam;
 }
-else
+else if ( strlen( trim ( $exportTypeParam) ) != 0 )
 {
     $tpl->setVariable( "error_string", "Destination file format not supported" );
     $success = false;
