@@ -1051,9 +1051,8 @@ class eZOOImport
                                 $contentObject =& eZContentObject::fetchByRemoteID( $remoteID );
                                 
                                 // If image does not already exist, create it as an object
-                                if ( $contentObject )
+                                if ( !$contentObject )
                                 {
-                                    $contentObjectID =& $contentObject->attribute( 'id' );
                                     
                                     // Import image
                                     $ooINI =& eZINI::instance( 'oo.ini' );
@@ -1081,8 +1080,9 @@ class eZOOImport
                                     $dataMap['image']->store();
                                     $this->RelatedImageArray[] = array( "ID" => $contentObjectID,
                                                                         "ContentObject" => $contentObject );
-
                                 }
+                                else
+                                    $contentObjectID =& $contentObject->attribute( 'id' );
 
 
                                 $frameContent .= "<embed object_id='$contentObjectID' align='$imageAlignment' size='$imageSize' />";
