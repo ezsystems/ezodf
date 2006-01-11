@@ -1049,18 +1049,13 @@ class eZOOImport
 
 */
 
-                                $contentObject = false;
-                                $contentNode =& eZContentObject::fetchByRemoteID( $remoteID );
-                                if ( $contentNode )
-                                {
-                                    $contentObject =& $contentNode->object();
-                                    $contentObjectID =& $contentObject->attribute( 'id' );
-                                }
-
+                                $contentObject =& eZContentObject::fetchByRemoteID( $remoteID );
                                 
                                 // If image does not already exist, create it as an object
-                                if ( $contentObject == false )
+                                if ( $contentObject )
                                 {
+                                    $contentObjectID =& $contentObject->attribute( 'id' );
+                                    
                                     // Import image
                                     $ooINI =& eZINI::instance( 'oo.ini' );
                                     $imageClassIdentifier = $ooINI->variable( "OOImport", "DefaultImportImageClass" );
