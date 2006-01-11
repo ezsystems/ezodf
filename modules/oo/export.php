@@ -94,7 +94,7 @@ if ( $http->hasPostVariable( "ExportType" ) )
     }
     else
     {
-        $tpl->setVariable( "error_string", "Destination file format not supported" );
+        $tpl->setVariable( "error_string", ezi18n( 'extension/oo/export/error',"Destination file format not supported" ) );
         $success = false;
     }
 }
@@ -104,10 +104,9 @@ else if ( $exportTypeParam == "PDF" or $exportTypeParam == "Word" )
 }
 else if ( strlen( trim ( $exportTypeParam) ) != 0 )
 {
-    $tpl->setVariable( "error_string", "Destination file format not supported" );
+    $tpl->setVariable( "error_string", ezi18n( 'extension/oo/export/error',"Destination file format not supported" ) );
     $success = false;
 }
-        
 
 $ooINI =& eZINI::instance( 'oo.ini' );
 //$tmpDir = $ooINI->variable( 'OOo', 'TmpDir' );
@@ -156,7 +155,7 @@ if ( $doExport == true )
                         else
                         {
                             $success = false;
-                            $tpl->setVariable( "error_string", "PDF conversion failed" ); // fixme make better error text (translation?)
+                            $tpl->setVariable( "error_string", ezi18n( 'extension/oo/export/error',"PDF conversion failed" ) );
                         }
 
                     }break;
@@ -172,7 +171,7 @@ if ( $doExport == true )
                         else
                         {
                             $success = false;
-                            $tpl->setVariable( "error_string", "Word conversion failed" ); // fixme make better error text (translation?)
+                            $tpl->setVariable( "error_string", ezi18n( 'extension/oo/export/error',"Word conversion failed" ) );
                         }
 
                     }break;
@@ -188,10 +187,9 @@ if ( $doExport == true )
         }
         else
         {
-            $tpl->setVariable( "error_string", "Unable to fetch node, or no read access" );
+            $tpl->setVariable( "error_string", ezi18n( 'extension/oo/export/error',"Unable to fetch node, or no read access" ) );
             $success = false;
         }
-
 
         if ( $success )
         {
@@ -227,9 +225,8 @@ if ( $doExport == true )
             }
             else
             {
-                $tpl->setVariable( "error_string", "Unable to open file $fileName on server side" );
+                $tpl->setVariable( "error_string", ezi18n( 'extension/oo/export/error',"Unable to open file %1 on server side", null, array( $fileName ) ) );
             }
-                
         }
     }
 }
