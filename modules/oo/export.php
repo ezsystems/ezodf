@@ -121,7 +121,7 @@ if ( $doExport == true )
         $node = eZContentObjectTreeNode::fetch( $nodeID );
 
         // Check if we have read access to this node
-        if ( $node && $node->canRead() ) // fixme more checking needed (pictures)
+        if ( $node && $node->canRead() )
         {
             // Do the actual eZ publish export
             $fileName = eZOOConverter::objectToOO( $nodeID );
