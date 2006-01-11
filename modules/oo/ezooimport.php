@@ -367,7 +367,6 @@ class eZOOImport
                     {
                         $importClassIdentifier = $className;
                         $customClassFound = true;
-                        echo "Using custom class $className<br />\n";
                         break;
                     }
                 }
