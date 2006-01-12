@@ -117,15 +117,18 @@ while ( $spawn = socket_accept( $socket ))
             $result = convert_to( $fileName, $command, $destName );
             if ( !( $result === true ) )
             {
+                echo( "Error: $result" );
                 socket_write( $spawn, "Error: $result" );
             }
             else
             {
-                socket_write( $spawn, "FilePath: $destinationFileName" );
+                echo( "Conversion ok. FilePath: $destName" );
+                socket_write( $spawn, "FilePath: $destName" );
             }
         }
         else
         {
+            echo( "Error: (2)-File not found" );
             socket_write( $spawn, "Error: (2)-File not found" );
         }
 

@@ -60,6 +60,7 @@ define( "OOIMPORT_ERROR_PLACEMENTINVALID", 9 );
 define( "OOIMPORT_ERROR_CANNOTSTORE", 10 );
 define( "OOIMPORT_ERROR_UNKNOWNNODE", 11 );
 define( "OOIMPORT_ERROR_ACCESSDENIED", 12 );
+define( "OOIMPORT_ERROR_IMPORTING", 13 );
 define( "OOIMPORT_ERROR_UNKNOWN", 127 );
 
 class eZOOImport
@@ -145,6 +146,11 @@ class eZOOImport
             case OOIMPORT_ERROR_ACCESSDENIED:
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/oo/import/error', "Access denied" );
+                $this->ERROR['description'] = $errorDescription;
+                break;
+            case OOIMPORT_ERROR_IMPORTING:
+                $this->ERROR['number'] = $errorNumber;
+                $this->ERROR['value'] = ezi18n( 'extension/oo/import/error', "Error during import" );
                 $this->ERROR['description'] = $errorDescription;
                 break;
             default :
@@ -238,10 +244,10 @@ class eZOOImport
 
         // Check if we have access to node
         include_once( 'kernel/content/ezcontentfunctioncollection.php' );
-        $node = eZContentObjectTreeNode::fetch( $placeNodeID );
+        $place_node = eZContentObjectTreeNode::fetch( $placeNodeID );
 
         $importClassIdentifier = $ooINI->variable( 'OOImport', 'DefaultImportClass' );
-        if (! (is_object( $node ) ) )
+        if (! (is_object( $place_node ) ) )
         {
             $this->setError( OOIMPORT_ERROR_UNKNOWNNODE, ezi18n( 'extension/oo/import/error',"Unable to fetch node with id  ") . $placeNodeID );
             return false;
@@ -249,12 +255,12 @@ class eZOOImport
         if ( $importType == "replace" )
         {
             // Check if we are allowed to edit the node
-            $access = eZContentFunctionCollection::checkAccess( 'edit', $node, false, false );
+            $access = eZContentFunctionCollection::checkAccess( 'edit', $place_node, false, false );
         }
         else
         {
             // Check if we are allowed to create a node under the node
-            $access = eZContentFunctionCollection::checkAccess( 'create', $node, $importClassIdentifier, $node->attribute( 'class_identifier' ) );
+            $access = eZContentFunctionCollection::checkAccess( 'create', $place_node, $importClassIdentifier, $place_node->attribute( 'class_identifier' ) );
         }
 
         if ( ! ( $access['result'] ) )
@@ -432,15 +438,18 @@ class eZOOImport
         }
 
         // Create object start
-        $class = eZContentClass::fetchByIdentifier( $importClassIdentifier );
-
         {
             // Check if we should replace the current object or import a new
             if ( $importType !== "replace" )
             {
+                $class = eZContentClass::fetchByIdentifier( $importClassIdentifier );
+
+                $place_object = $place_node->attribute( 'object' );
+                $sectionID = $place_object->attribute( 'section_id' );
+
                 $creatorID = $this->currentUserID;
                 $parentNodeID = $placeNodeID;
-                $object =& $class->instantiate( $creatorID, 1 );
+                $object =& $class->instantiate( $creatorID, $sectionID );
 
                 $nodeAssignment =& eZNodeAssignment::create( array(
                                                                  'contentobject_id' => $object->attribute( 'id' ),
@@ -459,8 +468,34 @@ class eZOOImport
             }
             else
             {
-                $node = eZContentObjectTreeNode::fetch( $placeNodeID );
-                $object = $node->attribute( 'object' );
+                // Check if class is supported before we start changing anything
+                $placeClassIdentifier = $place_node->attribute( 'class_identifier' );
+                if ( $ooINI->hasVariable( $placeClassIdentifier, 'DefaultImportTitleAttribute' ) &&
+                     $ooINI->hasVariable( $placeClassIdentifier, 'DefaultImportBodyAttribute' ) )
+                {
+                    $titleAttribute = $ooINI->variable( $placeClassIdentifier, 'DefaultImportTitleAttribute');
+                    $bodyAttribute = $ooINI->variable( $placeClassIdentifier, 'DefaultImportBodyAttribute' );
+
+                    // Extra check to see if attributes exist in dataMap (config is not wrong)
+                    $dataMap = $place_node->attribute( 'data_map' );
+                    if ( (!isset( $dataMap[ $titleAttribute ] ) ) || ( !isset( $dataMap[ $bodyAttribute ] ) ) )
+                    {
+                        $this->setError( OOIMPORT_ERROR_IMPORTING, "Error in configuration for $placeClassIdentifier, please check configuration file." );
+                        return false;
+                    }
+                    unset( $dataMap );
+                }
+                else
+                {
+                    $this->setError( OOIMPORT_ERROR_IMPORTING, "No settings for replacing node of type $placeClassIdentifier. Stopping.");
+                    return false;
+                }
+
+                // Change class for importing
+                $importClassIdentifier = $placeClassIdentifier;
+
+                // already fetched: $node = eZContentObjectTreeNode::fetch( $placeNodeID );
+                $object = $place_node->attribute( 'object' );
                 $version = $object->createNewVersion();
 
                 $dataMap = $object->fetchDataMap( $version->attribute( 'version' ) );
@@ -499,8 +534,13 @@ class eZOOImport
             }
             else
             {
-                $titleAttribute = $ooINI->variable( 'OOImport', 'DefaultImportTitleAttribute' );
-                $bodyAttribute = $ooINI->variable( 'OOImport', 'DefaultImportBodyAttribute' );
+                // Check if attributes are already fetched
+                if ( ( !isset ( $titleAttribute ) ) || ( !isset ( $bodyAttribute ) ) )
+                {
+                    // Set attributes accorring to import class
+                    $titleAttribute = $ooINI->variable( $importClassIdentifier, 'DefaultImportTitleAttribute');
+                    $bodyAttribute = $ooINI->variable( $importClassIdentifier, 'DefaultImportBodyAttribute' );
+                }
 
                 $objectName = basename( $originalFileName);
 
@@ -528,9 +568,9 @@ class eZOOImport
 
                 // Create image folder if it does not already exist
                 {
-                    $contentINI =& eZINI::instance( 'oo.ini' );
+                    $contentINI =& eZINI::instance( 'content.ini' );
                     $mediaRootNodeID = $contentINI->variable( "NodeSettings", "MediaRootNode" );
-                    //$mediaRootNodeID = 43;
+
                     $node = eZContentObjectTreeNode::fetch( $mediaRootNodeID );
 
                     $articleFolderName = $object->attribute( 'name' );
@@ -1057,7 +1097,7 @@ class eZOOImport
                                     // Import image
                                     $ooINI =& eZINI::instance( 'oo.ini' );
                                     $imageClassIdentifier = $ooINI->variable( "OOImport", "DefaultImportImageClass" );
-                                    $class =& eZContentClass::fetchByIdentifier( $imageClassIdentifier );
+                                    $class =& eZContentClass::fetchByIdentifier( $imageClassIdentifier ); //remove reference for php4.4?
                                     $creatorID = $this->currentUserID;
 
                                     $contentObject =& $class->instantiate( $creatorID, 1 );

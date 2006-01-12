@@ -3,13 +3,13 @@
 # http://www.info-zip.org/pub/infozip/
 # enter for example c:\zip\ or /usr/local/bin/
 ZipPath=
-# Directory for storing temporary files during conversion
+# Directory for storing temporary files during conversion (now stored in var/storage, so is deprecated?)
 TmpDir=/tmp
 
 [OOImport]
+# Default class for import
 DefaultImportClass=article
-DefaultImportTitleAttribute=title
-DefaultImportBodyAttribute=body
+# Default class for making an image
 DefaultImportImageClass=image
 RegisteredClassArray[]=article
 RegisteredClassArray[]=folder
@@ -25,12 +25,26 @@ UseTemplate=true
 TemplateName=ezpublish.ott
 
 # Map eZ publish attributes to OpenOffice.org section definitions
+#
+# Format:
+# [<class_identifier>]
+# DefaultImportTitleAttribute=<attribute>
+# DefaultImportBodyAttribute=<attribute>
+# Is used to content of file into attributes if there is no known sections
+# in the OO input file.
+# Attribute[]= matches sections from the OO input document with eZ publish attributes
+
 [article]
+DefaultImportTitleAttribute=title
+DefaultImportBodyAttribute=body
 Attribute[title]=title
 Attribute[intro]=intro
 Attribute[body]=body
 
 [folder]
+DefaultImportTitleAttribute=name
+DefaultImportBodyAttribute=description
+# Bård, burde det ikke stått name her?
 Attribute[title]=title
 Attribute[shortdescription]=shortdescription
 

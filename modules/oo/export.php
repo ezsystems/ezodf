@@ -162,7 +162,7 @@ if ( $doExport == true )
 
                     case "Word" :
                     {
-                        if ( ( $result = deamonConvert( $server, $port, realpath( $fileName ), "convertToWord", $tmpDir . "/ooo_converted_$uniqueStamp.pdf" ) ) )
+                        if ( ( $result = deamonConvert( $server, $port, realpath( $fileName ), "convertToDoc", $tmpDir . "/ooo_converted_$uniqueStamp.doc" ) ) )
                         {
                             $originalFileName = $nodeName . ".doc";
                             $contentType = "application/ms-word";

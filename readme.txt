@@ -6,3 +6,14 @@ as well, if you have custom modules that needs to generate OpenOffice.org Writer
 documents.
 
 For documentation look under doc/
+
+
+
+Known limitations
+-----------------
+
+- Access checking while importing documents with images in them is not complete.
+  The access to create images are not checked properly.
+- While exporting, if the user has not access to read images, they are just ignored. 
+  Should replace them with a dummy image which says "no access".
+- Importing document with images and storing the images in media does not work properly.
