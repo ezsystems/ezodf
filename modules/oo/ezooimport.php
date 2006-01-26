@@ -617,7 +617,7 @@ class eZOOImport
         }
 
         // Clean up
-        eZDir::recursiveDelete( $this->ImportDir );
+//        eZDir::recursiveDelete( $this->ImportDir );
         return $importResult;
     }
 
@@ -723,6 +723,7 @@ class eZOOImport
                     // OOo does not have tags for these styles but set the style on the whole paragraph
                     $fontWeight = false;
                     $fontStyle = false;
+                    $headerLevel = false;
                     foreach ( $this->AutomaticStyles as $style )
                     {
                         $tmpStyleName = $style->attributeValueNS( "name", "urn:oasis:names:tc:opendocument:xmlns:style:1.0" );
@@ -739,8 +740,32 @@ class eZOOImport
                                     $fontStyle = $styleChild->attributeValue( 'font-style' );
                                 }
                             }
+
+                            // Get the parent style name, it's used to see if it's a
+                            // header which comes from Word conversion
+                            $parentStyleName = $style->attributeValueNS( "parent-style-name", "urn:oasis:names:tc:opendocument:xmlns:style:1.0" );
+
+                            // Check if we've got a header definition and which level Heading_20
+                            // Header styles is either defined in style-name or parent-style-name when
+                            // converting a Word document to OOo, here we check the parent-style-name
+                            if ( substr( $parentStyleName, 0, 11 ) == "Heading_20_" )
+                            {
+                                $level = substr( $parentStyleName, 11, strlen( $parentStyleName )  );
+                                if ( is_numeric( $level ) )
+                                    $headerLevel = $level;
+                            }
+
                         }
                     }
+
+                    // Check if paragraph style is set to a header in the style-name
+                    if ( substr( $styleName, 0, 11 ) == "Heading_20_" )
+                    {
+                        $level = substr( $styleName, 11, strlen( $styleName )  );
+                        if ( is_numeric( $level ) )
+                            $headerLevel = $level;
+                    }
+
 
                     $preStyles = "";
                     if ( $fontWeight == "bold" )
@@ -760,46 +785,73 @@ class eZOOImport
                         $paragraphContent .= eZOOImport::handleInlineNode( $childNode );
                     }
 
-                    if ( $this->CollapsingTagName == false )
-                    {
-                        // Add collapsed tag, if beyond the last collapsing tag
-                        if ( $lastCollapsingTagName !== false )
-                        {
-                            $xhtmlTextContent .= '<paragraph>' . '<' . $lastCollapsingTagName . ' ' . $this->CollapsingTagAttribute . '>' . $this->CollapsingTagContent . "</" . $lastCollapsingTagName . ">\n</paragraph>\n";
-                            $this->CollapsingTagContent = false;
-                            $this->CollapsingTagAttribute = false;
-                        }
 
-                        if ( trim( $paragraphContent ) != "" )
+                    // If current paragraph is actually a header, then skip sub-formatting
+                    if ( $headerLevel !== false )
+                    {
+                        if ( $level > 6 )
+                            $level = 6;
+
+                        if ( $level >= 1 && $level <= 6 )
                         {
-                            $xhtmlTextContent .= '<paragraph>' . $preStyles . $paragraphContent . $postStyles . "</paragraph>\n";
+                            $levelDiff = $level - $sectionLevel;
+                            $sectionLevel = $level;
+
+                            if ( $levelDiff > 0 )
+                                $xhtmlTextContent .= str_repeat( "<section>", $levelDiff );
+
+                            if ( $levelDiff < 0 )
+                                $xhtmlTextContent .= str_repeat( "</section>", abs( $levelDiff ) );
+
+                            $xhtmlTextContent .= "<header>" . $paragraphContent . "</header>\n";
                         }
                     }
                     else
                     {
-                        if ( $isLastTag == true )
+                        // Handle normal paragraphs
+
+                        if ( $this->CollapsingTagName == false )
                         {
-                            if ( $this->CollapsingTagName != false )
-                                $lastCollapsingTagName = $this->CollapsingTagName;
-                            $xhtmlTextContent .= '<paragraph>' . '<' . $lastCollapsingTagName . ' ' . $this->CollapsingTagAttribute . '>' . $paragraphContent . "</" . $lastCollapsingTagName . ">\n</paragraph>\n";
-                            $this->CollapsingTagContent = false;
-                            $this->CollapsingTagAttribute = false;
-                            $this->CollapsingTagName = false;
+                            // Add collapsed tag, if beyond the last collapsing tag
+                            if ( $lastCollapsingTagName !== false )
+                            {
+                                $xhtmlTextContent .= '<paragraph>' . '<' . $lastCollapsingTagName . ' ' . $this->CollapsingTagAttribute . '>' . $this->CollapsingTagContent . "</" . $lastCollapsingTagName . ">\n</paragraph>\n";
+                                $this->CollapsingTagContent = false;
+                                $this->CollapsingTagAttribute = false;
+                            }
+
+                            if ( trim( $paragraphContent ) != "" )
+                            {
+                                $xhtmlTextContent .= '<paragraph>' . $preStyles . $paragraphContent . $postStyles . "</paragraph>\n";
+                            }
                         }
                         else
                         {
-                            if ( $this->CollapsingTagName == "custom" )
+                            if ( $isLastTag == true )
                             {
-                                if ( trim( $paragraphContent ) != "" )
-                                {
-                                    $this->CollapsingTagContent .= '<paragraph>' . $preStyles . $paragraphContent . $postStyles . "</paragraph>\n";
-                                }
+                                if ( $this->CollapsingTagName != false )
+                                    $lastCollapsingTagName = $this->CollapsingTagName;
+                                $xhtmlTextContent .= '<paragraph>' . '<' . $lastCollapsingTagName . ' ' . $this->CollapsingTagAttribute . '>' . $paragraphContent . "</" . $lastCollapsingTagName . ">\n</paragraph>\n";
+                                $this->CollapsingTagContent = false;
+                                $this->CollapsingTagAttribute = false;
+                                $this->CollapsingTagName = false;
                             }
                             else
                             {
-                                $this->CollapsingTagContent .= $paragraphContent . "\n";
+                                if ( $this->CollapsingTagName == "custom" )
+                                {
+                                    if ( trim( $paragraphContent ) != "" )
+                                    {
+                                        $this->CollapsingTagContent .= '<paragraph>' . $preStyles . $paragraphContent . $postStyles . "</paragraph>\n";
+                                    }
+                                }
+                                else
+                                {
+                                    $this->CollapsingTagContent .= $paragraphContent . "\n";
+                                }
                             }
                         }
+
                     }
                 }break;
 
