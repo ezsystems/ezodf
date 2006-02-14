@@ -617,7 +617,7 @@ class eZOOImport
         }
 
         // Clean up
-//        eZDir::recursiveDelete( $this->ImportDir );
+        eZDir::recursiveDelete( $this->ImportDir );
         return $importResult;
     }
 
