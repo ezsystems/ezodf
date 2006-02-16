@@ -296,7 +296,8 @@ class eZOOImport
         $importResult = array();
         include_once( "lib/ezfile/classes/ezdir.php" );
         $unzipResult = "";
-        eZDir::mkdir( $this->ImportDir );
+        $uniqueImportDir = $this->ImportDir . md5( mktime() );
+        eZDir::mkdir( $uniqueImportDir );
 
         $http =& eZHTTPTool::instance();
 
@@ -304,16 +305,16 @@ class eZOOImport
         // if not rely on the unzip commandline version.
         if ( !function_exists( 'gzopen' ) )
         {
-            exec( "unzip -o $file -d " . $this->ImportDir, $unzipResult );
+            exec( "unzip -o $file -d " . $uniqueImportDir, $unzipResult );
         }
         else
         {
             require_once('extension/oo/lib/pclzip.lib.php');
             $archive = new PclZip( $file );
-            $archive->extract( PCLZIP_OPT_PATH, $this->ImportDir );
+            $archive->extract( PCLZIP_OPT_PATH, $uniqueImportDir );
         }
 
-        $fileName = $this->ImportDir . "content.xml";
+        $fileName = $uniqueImportDir . "content.xml";
         $xml = new eZXML();
         $dom =& $xml->domTree( file_get_contents( $fileName ) );
 
@@ -617,7 +618,7 @@ class eZOOImport
         }
 
         // Clean up
-//        eZDir::recursiveDelete( $this->ImportDir );
+        eZDir::recursiveDelete( $uniqueImportDir );
         return $importResult;
     }
 
