@@ -314,7 +314,7 @@ class eZOOImport
             $archive->extract( PCLZIP_OPT_PATH, $uniqueImportDir );
         }
 
-        $fileName = $uniqueImportDir . "content.xml";
+        $fileName = $uniqueImportDir . "/content.xml";
         $xml = new eZXML();
         $dom =& $xml->domTree( file_get_contents( $fileName ) );
 
