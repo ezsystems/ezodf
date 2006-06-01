@@ -78,6 +78,7 @@ class eZOOImport
         $this->ERROR['description'] = '';
         $currentUser =& eZUser::currentUser();
         $this->currentUserID  = $currentUser->id();
+	$this->ImportDir .= md5( mktime() ) . "/";
     }
 
     /*!
@@ -296,7 +297,7 @@ class eZOOImport
         $importResult = array();
         include_once( "lib/ezfile/classes/ezdir.php" );
         $unzipResult = "";
-        $uniqueImportDir = $this->ImportDir . md5( mktime() );
+        $uniqueImportDir = $this->ImportDir;
         eZDir::mkdir( $uniqueImportDir );
 
         $http =& eZHTTPTool::instance();
@@ -618,7 +619,7 @@ class eZOOImport
         }
 
         // Clean up
-        eZDir::recursiveDelete( $uniqueImportDir );
+        //eZDir::recursiveDelete( $uniqueImportDir );
         return $importResult;
     }
 
@@ -1169,6 +1170,7 @@ class eZOOImport
                                     $dataMap['name']->store();
 
                                     $imageContent =& $dataMap['image']->attribute( 'content' );
+			            //echo "Initializing Image from $href<br />";
                                     $imageContent->initializeFromFile( $href );
                                     $dataMap['image']->store();
                                     $this->RelatedImageArray[] = array( "ID" => $contentObjectID,

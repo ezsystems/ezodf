@@ -115,7 +115,7 @@ if ( $module->isCurrentAction( 'OOPlace' ) )
             $import = new eZOOImport();
             $result = $import->import( $http->sessionVariable( "oo_import_filename" ), $nodeID, $http->sessionVariable( "oo_import_original_filename" ) );
             // Cleanup of uploaded file
-            unlink( $http->sessionVariable( "oo_import_filename" ) );
+            //unlink( $http->sessionVariable( "oo_import_filename" ) );
 
 
             if( $result )
@@ -184,7 +184,7 @@ if( eZHTTPFile::canFetch( "oo_file" ) )
                 $import = new eZOOImport();
                 $result = $import->import( $fileName, $nodeID, $originalFileName, $importType );
                 // Cleanup of uploaded file
-                unlink( $fileName );
+                //unlink( $fileName );
 
                 if( $result )
                 {
