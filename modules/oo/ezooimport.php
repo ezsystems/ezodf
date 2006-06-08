@@ -1053,8 +1053,34 @@ class eZOOImport
                         case "image" :
                         {
                             $href = ltrim( $imageNode->attributeValueNS( 'href', 'http://www.w3.org/1999/xlink' ), '#' );
-
-                            $href = $this->ImportDir . $href;
+                            
+                            if ( 0 < preg_match( '@^(?:http://)?([^/]+)@i', $href ) ) //if image is specified with url
+                            {
+                                eZDebug::writeDebug( "handling http url: $href", 'ezooimage::handleInlineNode()' ); 
+                                $matches = array();
+                                if ( 0 < preg_match( '/.*\/(.*)?/i', $href, $matches ) )
+                                {
+                                    $fileName = $matches[1];
+                                    if ( false != ( $imageData = file_get_contents( $href ) ) )
+                                    {
+                                        $href = $this->ImportDir . $fileName;
+                                        $fileOut = fopen( $href, "wb" );
+                                        if ( fwrite( $fileOut, $imageData ) )
+                                        {
+                                            eZDebug::writeNotice( "External image stored in $href", "ezooimage::handleInlineNode()" );
+                                        }
+                                        else
+                                            eZDebug::writeError( "Could not save file $href", "ezooimage::handleInlineNode()" );
+                                        fclose( $fileOut );
+                                    }
+                                    else
+                                        eZDebug::writeError( "Downloading external image from $href has failed, broken link?", "ezooimage::handleInlineNode()" );
+                                }
+                                else
+                                    eZDebug::writeError( "Could not match filename in $href", "ezooimage::handleInlineNode()" );
+                            }
+                            else
+                                $href = $this->ImportDir . $href;
 
                             $imageSize = "medium";
                             $imageAlignment = "center";
