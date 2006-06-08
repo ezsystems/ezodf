@@ -1054,7 +1054,7 @@ class eZOOImport
                         {
                             $href = ltrim( $imageNode->attributeValueNS( 'href', 'http://www.w3.org/1999/xlink' ), '#' );
                             
-                            if ( 0 < preg_match( '@^(?:http://)?([^/]+)@i', $href ) ) //if image is specified with url
+                            if ( 0 < preg_match( '@^(?:http://)([^/]+)@i', $href ) ) //if image is specified with url
                             {
                                 eZDebug::writeDebug( "handling http url: $href", 'ezooimage::handleInlineNode()' ); 
                                 $matches = array();
