@@ -48,4 +48,15 @@ $ViewList['export'] = array(
     'unordered_params' => array( 'node_id' => 'NodeID',
                                  'export_type' => 'ExportType' ) );
 
+
+$ViewList['upload_import'] = array(
+    'script' => 'upload_import.php' );
+
+$ViewList['authentate'] = array(
+    'script' => 'authentate.php' );
+
+$ViewList['upload_export'] = array(
+    'script' => 'upload_export.php' );
+
+
 ?>
