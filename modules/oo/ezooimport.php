@@ -451,7 +451,7 @@ class eZOOImport
 
                 $creatorID = $this->currentUserID;
                 $parentNodeID = $placeNodeID;
-                $object =& $class->instantiate( $creatorID, $sectionID );
+                $object = $class->instantiate( $creatorID, $sectionID );
 
                 $nodeAssignment =& eZNodeAssignment::create( array(
                                                                  'contentobject_id' => $object->attribute( 'id' ),
@@ -1053,10 +1053,10 @@ class eZOOImport
                         case "image" :
                         {
                             $href = ltrim( $imageNode->attributeValueNS( 'href', 'http://www.w3.org/1999/xlink' ), '#' );
-                            
+
                             if ( 0 < preg_match( '@^(?:http://)([^/]+)@i', $href ) ) //if image is specified with url
                             {
-                                eZDebug::writeDebug( "handling http url: $href", 'ezooimage::handleInlineNode()' ); 
+                                eZDebug::writeDebug( "handling http url: $href", 'ezooimage::handleInlineNode()' );
                                 $matches = array();
                                 if ( 0 < preg_match( '/.*\/(.*)?/i', $href, $matches ) )
                                 {
@@ -1149,7 +1149,7 @@ class eZOOImport
 
 
 /*
-                                
+
                                 // Check if an image with the same remote ID already exists
                                 $db =& eZDB::instance();
                                 $imageParentNodeID = $GLOBALS["OOImportObjectID"];
@@ -1169,11 +1169,11 @@ class eZOOImport
 */
 
                                 $contentObject =& eZContentObject::fetchByRemoteID( $remoteID );
-                                
+
                                 // If image does not already exist, create it as an object
                                 if ( !$contentObject )
                                 {
-                                    
+
                                     // Import image
                                     $ooINI =& eZINI::instance( 'oo.ini' );
                                     $imageClassIdentifier = $ooINI->variable( "OOImport", "DefaultImportImageClass" );
