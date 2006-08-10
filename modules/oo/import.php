@@ -172,8 +172,9 @@ if( eZHTTPFile::canFetch( "oo_file" ) )
         if ( $file->store() )
         {
             $fileName = $file->attribute( 'filename' );
+            
             $originalFileName = $file->attribute( 'original_filename' );
-
+            
             // If we have the NodeID do the import/replace directly
             if (  $http->sessionVariable( 'oo_direct_import_node' )  )
             {
@@ -184,9 +185,9 @@ if( eZHTTPFile::canFetch( "oo_file" ) )
                 $import = new eZOOImport();
                 $result = $import->import( $fileName, $nodeID, $originalFileName, $importType );
                 // Cleanup of uploaded file
-                //unlink( $fileName );
+                unlink( $fileName );
 
-                if( $result )
+                if ( $result )
                 {
                     $tpl->setVariable( 'class_identifier', $result['ClassIdentifier'] );
                     $tpl->setVariable( 'url_alias', $result['URLAlias'] );

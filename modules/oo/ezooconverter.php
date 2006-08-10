@@ -94,6 +94,8 @@ class eZOOConverter
                     {
                         $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
                         $ooGenerator->addParagraph( $attribute->content() );
+                        $ooGenerator->endSection();
+
                     }break;
 
                     case "ezxmltext":
@@ -111,7 +113,88 @@ class eZOOConverter
                             }
                         }
                         $ooGenerator->endSection( );
-                    }
+                    }break;
+                    
+                    
+                    case "ezimage":
+                    {
+                        $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
+
+                        $imageHandler = $attribute->content();
+                        $originalImage = $imageHandler->attribute( 'original' );
+                        $displayImage = $imageHandler->attribute( 'original' );
+                        $displayWidth = $displayImage['width'];
+                        $displayHeight = $displayImage['height'];
+
+                        $imageArray = array( "FileName" => $originalImage['url'],
+                                               "Alignment" => "center",
+                                               "DisplayWidth" => $displayWidth,
+                                               "DisplayHeight" => $displayHeight );
+                                               
+			            $ooGenerator->addImage( $imageArray);
+                        
+						$ooGenerator->endSection();
+
+                    }break;
+
+                    case "ezdate":
+                    {
+                        $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
+
+						$date = $attribute->content();						
+	                    $ooGenerator->addParagraph( $date->attribute( "day" ) . "/" . $date->attribute( "month" ) . "/" . $date->attribute( "year" ) );
+					
+						$ooGenerator->endSection();
+
+                    }break;
+
+
+                    case "ezdatetime":
+                    {
+                        $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
+
+						$date = $attribute->content();						
+	                    $ooGenerator->addParagraph( $date->attribute( "day" ) . "/" . $date->attribute( "month" ) . "/" . $date->attribute( "year" ) . " " . $date->attribute( "hour" )  . ":" . $date->attribute( "minute" )  );
+										
+						$ooGenerator->endSection();
+
+                    }break;
+                    
+                    case "ezmatrix":
+                    {
+                        $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
+						
+						$matrix = $attribute->content();
+						
+						$columns = $matrix->attribute( "columns" );
+						
+   					    $ooGenerator->startTable();
+   					    
+						foreach ( $columns['sequential'] as $column )
+						{
+			            	$ooGenerator->addParagraph( $column['name'] );
+			            	$ooGenerator->nextCell();           
+						}
+						
+	     	            $ooGenerator->nextRow( "defaultstyle" );
+	     	            	     	            
+						$rows = $matrix->attribute( "rows" );
+						
+						foreach ( $rows['sequential'] as $row )
+						{
+							foreach ( $row['columns'] as $cell )
+						    {
+								$ooGenerator->addParagraph( $cell );
+			            		$ooGenerator->nextCell();         
+							}
+		     	            $ooGenerator->nextRow( "defaultstyle" );
+						}
+						
+                        $ooGenerator->endTable();
+					
+						$ooGenerator->endSection();
+
+                    }break;
 
                     default:
                     {
@@ -119,6 +202,7 @@ class eZOOConverter
                     }break;
                 }
             }
+            
 
             /*
             $ooGenerator->addHeader( "Test code from here" );
