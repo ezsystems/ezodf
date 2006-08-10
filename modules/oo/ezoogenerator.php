@@ -324,8 +324,8 @@ class eZOOGenerator
 
 
         // Clean up
-   //     eZDir::recursiveDelete( $this->OOExportDir );
-    //    eZDir::recursiveDelete( $this->OOTemplateDir);
+    	eZDir::recursiveDelete( $this->OOExportDir );
+    	eZDir::recursiveDelete( $this->OOTemplateDir);
         return $fileName;
     }
 
