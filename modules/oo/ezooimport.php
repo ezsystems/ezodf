@@ -1177,10 +1177,10 @@ class eZOOImport
                                     // Import image
                                     $ooINI =& eZINI::instance( 'oo.ini' );
                                     $imageClassIdentifier = $ooINI->variable( "OOImport", "DefaultImportImageClass" );
-                                    $class =& eZContentClass::fetchByIdentifier( $imageClassIdentifier ); //remove reference for php4.4?
+                                    $class = eZContentClass::fetchByIdentifier( $imageClassIdentifier );
                                     $creatorID = $this->currentUserID;
 
-                                    $contentObject =& $class->instantiate( $creatorID, 1 );
+                                    $contentObject = $class->instantiate( $creatorID, 1 );
                                     $contentObject->setAttribute( "remote_id",  $remoteID );
                                     $contentObject->store();
 
