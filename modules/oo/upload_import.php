@@ -58,7 +58,7 @@
     unlink( $tmpFile );
 
     // End : print return string
-    print( 'done:File successfully exported with nodeID ...' );
+    print( 'done:File successfully exported with nodeID ' . $tmpResult['MainNode']->attribute('node_id') );
 
     // Don't display eZ publish page structure
     eZExecution::cleanExit();
