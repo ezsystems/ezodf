@@ -17,29 +17,27 @@
         print( 'problem:Authentication failed' );
         eZExecution::cleanExit();
     }
-
-    $node = eZContentObjectTreeNode::fetch( $nodeID );
-
+     
     // Verification : file uploaded ?
     if( !is_uploaded_file( $_FILES['file']['tmp_name'] ) )
     {
         print( 'problem:No file uploaded' );
         eZExecution::cleanExit();
     }
-
-    $originalFilename =  basename( $_FILES['file']['name'] );
-    $tmpFile = '/tmp/'.rand(10000,99999).$originalFilename;
-
-    // Storing the incoming file + verification
-    if( !move_uploaded_file( $_FILES['file']['tmp_name'], $tmpFile) )
-    {
-        print( 'problem:Problem while storing temporary file' );
-        eZExecution::cleanExit();
-    }
-
+    
+    $fileName = $_FILES['file']['tmp_name'];
+    
+    $content = base64_decode( file_get_contents( $fileName ) );
+    
+    $fd = fopen( $fileName, 'w' );
+    fwrite( $fd, $content );
+    fclose( $fd );
+    
+    $originalFilename = $_FILES['file']['name'];
+    
     // Conversion of the stored file
     $import = new eZOOImport();
-    $tmpResult = $import->import( $tmpFile, $nodeID, $originalFilename, $importType );
+    $tmpResult = $import->import( $fileName, $nodeID, $originalFilename, $importType );
 
     // Verification : conversion OK ?
     $error = $import->getErrorNumber( );

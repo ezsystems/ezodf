@@ -15,7 +15,7 @@
     $user = $userClass->loginUser( $username, $password );
     if ( !$user )
     {
-        print( 'Authentication failed' );
+        print( 'problem:Authentication failed' );
         eZExecution::cleanExit( );
     }
     else
@@ -44,7 +44,7 @@
 	//Test if not empty
 	If ( count( $array ) == 0 )
 	{
-		print( 'Empty' );
+		print( 'problem:Empty' );
 		eZExecution::cleanExit();
 	}
 
