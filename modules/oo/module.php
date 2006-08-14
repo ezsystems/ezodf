@@ -52,8 +52,8 @@ $ViewList['export'] = array(
 $ViewList['upload_import'] = array(
     'script' => 'upload_import.php' );
 
-$ViewList['authentate'] = array(
-    'script' => 'authentate.php' );
+$ViewList['authenticate'] = array(
+    'script' => 'authenticate.php' );
 
 $ViewList['upload_export'] = array(
     'script' => 'upload_export.php' );
