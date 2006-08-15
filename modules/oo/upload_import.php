@@ -1,62 +1,62 @@
 <?php
 
-    include_once( "kernel/common/template.php" );
     include_once( "extension/oo/modules/oo/ezooimport.php" );
     include_once( 'kernel/classes/datatypes/ezuser/ezuser.php' );
+    include_once( "lib/ezutils/classes/ezhttptool.php" );
+	include_once( "lib/ezutils/classes/ezhttpfile.php" );
 
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $nodeID = $_POST['nodeID'];
-    $importType = $_POST['ImportType'];
+    $http = eZHTTPTool::instance();
+
+    if ( $http->hasPostVariable( 'Username' ) );
+    	$username = $http->postVariable( 'Username' );
+
+    if ( $http->hasPostVariable( 'Password' ) );
+    	$password = $http->postVariable( 'Password' );
+
+    if ( $http->hasPostVariable( 'NodeID' ) );
+    	$nodeID = $http->postVariable( 'NodeID' );
+
+    if ( $http->hasPostVariable( 'ImportType' ) );
+    	$importType = $http->postVariable( 'ImportType' );
 
     // User authentication
-    $userClass = eZUser::currentUser();
-    $user = $userClass->loginUser( $username, $password );
+    $user = eZUser::loginUser( $username, $password );
     if ( $user == false )
     {
         print( 'problem:Authentication failed' );
         eZExecution::cleanExit();
     }
-     
-    // Verification : file uploaded ?
-    if( !is_uploaded_file( $_FILES['file']['tmp_name'] ) )
+
+    if ( !eZHTTPFile::canFetch( 'File' ) )
     {
-        print( 'problem:No file uploaded' );
-        eZExecution::cleanExit();
+    	print( 'problem:Can\'t fetch HTTP file.' );
+    	eZExecution::cleanExit();
     }
-    
-    $fileName = $_FILES['file']['tmp_name'];
-    
-    $content = base64_decode( file_get_contents( $fileName ) );
-    
-    $fd = fopen( $fileName, 'w' );
+
+	$file = eZHTTPFile::fetch('File');
+
+    $fileName = $file->attribute( 'filename' );
+	$originalFilename = $file->attribute('original_filename');
+
+	$content = base64_decode( file_get_contents( $fileName ) );
+
+    $fd = fopen( $fileName, 'a' );
     fwrite( $fd, $content );
     fclose( $fd );
-    
-    $originalFilename = $_FILES['file']['name'];
-    
+
     // Conversion of the stored file
     $import = new eZOOImport();
-    $tmpResult = $import->import( $fileName, $nodeID, $originalFilename, $importType );
+    $importResult = $import->import( $fileName, $nodeID, $originalFilename, $importType );
 
     // Verification : conversion OK ?
-    $error = $import->getErrorNumber( );
-    if ( $error != 0 )
+    if ( $import->getErrorNumber( ) != 0 )
     {
-        print( 'problem:Import : '.$import->getErrorMessage( ) );
-        eZExecution::cleanExit( );
+        print( 'problem:Import : ' . $import->getErrorMessage( ) );
+        eZExecution::cleanExit();
     }
 
-    // Store the article in the eZ publish tree diagram
-    $result['contentobject'] = $tmpResult['Object'];
-    $result['contentobject_main_node'] = $tmpResult['MainNode'];
-
-    // Delete the temporary file
-    // No verification, file is published
-    unlink( $tmpFile );
-
     // End : print return string
-    print( 'done:File successfully exported with nodeID ' . $tmpResult['MainNode']->attribute('node_id') );
+    print( 'done:File successfully exported with nodeID ' . $importResult['MainNode']->attribute('node_id') );
 
     // Don't display eZ publish page structure
     eZExecution::cleanExit();
