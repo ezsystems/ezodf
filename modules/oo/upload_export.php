@@ -2,14 +2,21 @@
 
     include_once( 'kernel/classes/datatypes/ezuser/ezuser.php' );
     include_once( "extension/oo/modules/oo/ezooconverter.php" );
+    include_once( "lib/ezutils/classes/ezhttptool.php" );
 
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $nodeID = $_POST['nodeID'];
+    $http = eZHTTPTool::instance();
+
+    if ( $http->hasPostVariable( 'Username' ) );
+    	$username = $http->postVariable( 'Username' );
+
+    if ( $http->hasPostVariable( 'Password' ) );
+    	$password = $http->postVariable( 'Password' );
+
+    if ( $http->hasPostVariable( 'NodeID' ) );
+    	$nodeID = $http->postVariable( 'NodeID' );
 
     // User authentication
-    $userClass = eZUser::currentUser( );
-    $user = $userClass->loginUser( $username, $password );
+	$user = eZUser::loginUser( $username, $password );
     if ( $user == false )
     {
         print( 'problem:Authentication failed' );
