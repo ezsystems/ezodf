@@ -4,19 +4,26 @@
     include_once ('lib/ezutils/classes/ezsys.php');
     include_once( 'kernel/common/template.php' );
     include_once( 'kernel/classes/datatypes/ezuser/ezuser.php' );
-    $tpl = templateInit();
+    include_once( "lib/ezutils/classes/ezhttptool.php" );
 
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $parentNodeID = $_POST['nodeID'];
-   
+    $tpl = templateInit();
+    $http = eZHTTPTool::instance();
+
+    if ( $http->hasPostVariable( 'Username' ) );
+    	$username = $http->postVariable( 'Username' );
+
+    if ( $http->hasPostVariable( 'Password' ) );
+    	$password = $http->postVariable( 'Password' );
+
+    if ( $http->hasPostVariable( 'NodeID' ) );
+    	$nodeID = $http->postVariable( 'NodeID' );
+
     // User authentication
-    $userClass = eZUser::currentUser();
-    $user = $userClass->loginUser( $username, $password );
-    if ( !$user )
+	$user = eZUser::loginUser( $username, $password );
+    if ( $user == false )
     {
         print( 'problem:Authentication failed' );
-        eZExecution::cleanExit( );
+        eZExecution::cleanExit();
     }
     else
     {
@@ -24,23 +31,23 @@
         //Structure : name, type, ID
 	$nodes = eZFunctionHandler::execute( 'content','list', array( 'parent_node_id' => $parentNodeID ) );
 
-	$array = array();        
+	$array = array();
 	foreach( $nodes as $node )
 	{
 		$tpl->setVariable( 'node', $node );
- 		
+
 		$nodeID = $node->attribute( 'node_id' );
 		$name = $node->attribute( 'name' );
 		$className = $node->attribute( 'class_name' );
 		$object =& $node->object();
 		$contentClass = $object->contentClass();
 		$isContainer = $contentClass->attribute( 'is_container' );
-		
+
 		preg_match( '/\/+[a-z0-9\-\._]+\/?[a-z0-9_\.\-\?\+\/~=&#;,]*[a-z0-9\/]{1}/si', $tpl->fetch( 'design:oo/icon.tpl' ), $matches );
 		$iconPath = 'http://'. eZSys::hostname(). ':' . eZSys::serverPort() . $matches[0];
 		$array[] = array( $nodeID, $name, $className, $isContainer, $iconPath );
 	}
-	
+
 	//Test if not empty
 	If ( count( $array ) == 0 )
 	{
@@ -56,7 +63,7 @@
             {
                 $display .= $element . ';';
             }
-            $display .= chr( 13 ); 
+            $display .= chr( 13 );
         }
 
         print( $display );
