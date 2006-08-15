@@ -233,7 +233,7 @@ class eZOOImport
 
         $originalFileType = array_slice( explode('.',  $originalFileName), -1, 1 );
         $originalFileType = strtolower( $originalFileType[0] );
-        
+
         if ( !in_array( $originalFileType,$allowedTypes, false ) and !in_array( $originalFileType, $convertTypes, false ) )
         {
             $this->setError( OOIMPORT_ERROR_UNSUPPORTEDTYPE, ezi18n( 'extension/oo/import/error',"Filetype: " ). $originalFileType );
@@ -318,7 +318,7 @@ class eZOOImport
             $archive->extract( PCLZIP_OPT_PATH, $uniqueImportDir );
         }
 
-        $fileName = $uniqueImportDir . "/content.xml";
+        $fileName = $uniqueImportDir . "content.xml";
         $xml = new eZXML();
         $dom =& $xml->domTree( file_get_contents( $fileName ) );
 		$sectionNodeHash = array();
@@ -412,7 +412,7 @@ class eZOOImport
 
 					// Store the original XML for each section, since some datatypes needs to handle the XML specially
 					$sectionNodeHash[$sectionName] = $sectionNode;
-					
+
                     $xmlTextArray[$sectionName] = "<?xml version='1.0' encoding='$charset' ?>" .
                          "<section xmlns:image='http://ez.no/namespaces/ezpublish3/image/' " .
                          "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'><section>" . $xmlText . $endSectionPart . "</section></section>";
@@ -533,24 +533,24 @@ class eZOOImport
                             $dataMap[$attributeIdentifier]->setAttribute( 'data_text', $xmlTextArray[$sectionName] );
                             $dataMap[$attributeIdentifier]->store();
                         }break;
-                        
-                                              
+
+
                         case "ezdate":
                         {
                         	// Only support date formats as a single paragraph in a section with the format:
                         	// day/month/year
                         	$dateString = strip_tags( $xmlTextArray[$sectionName] );
-                        	
+
                         	$dateArray = explode( "/", $dateString );
-                        	
+
                         	if ( count( $dateArray ) == 3 )
                         	{
                            			$year = $dateArray[2];
-                        			$month = $dateArray[1]; 
+                        			$month = $dateArray[1];
                         			$day = $dateArray[0];
-                        	
+
                         			$date = new eZDate();
-            				
+
             						$contentClassAttribute =& $dataMap[$attributeIdentifier];
 
 			                		$date->setMDY( $month, $day, $year );
@@ -564,24 +564,24 @@ class eZOOImport
                         	// Only support date formats as a single paragraph in a section with the format:
                         	// day/month/year 14:00
                         	$dateString = trim( strip_tags( $xmlTextArray[$sectionName] ) );
-                                                	
+
                         	$dateTimeArray = split(  " ", $dateString );
-                        	                                              	
+
                         	$dateArray = explode( "/", $dateTimeArray[0] );
                         	$timeArray = explode( ":", $dateTimeArray[1] );
 
-                        	
+
                         	if ( count( $dateArray ) == 3 and count( $timeArray ) == 2 )
                         	{
                            			$year = $dateArray[2];
-                        			$month = $dateArray[1]; 
+                        			$month = $dateArray[1];
                         			$day = $dateArray[0];
-                        			
+
                         			$hour = $timeArray[0];
                         			$minute = $timeArray[1];
-                        	
+
                         			$dateTime = new eZDateTime();
-            				
+
             						$contentClassAttribute =& $dataMap[$attributeIdentifier];
 
 			                		$dateTime->setMDYHMS( $month, $day, $year, $hour, $minute, 0 );
@@ -589,9 +589,9 @@ class eZOOImport
                             		$dataMap[$attributeIdentifier]->store();
                             }
                         }break;
-                                                
+
                         case "ezimage":
-                        {        					
+                        {
                         	// Images are treated as an image object inside a paragrah.
                         	// We fetch the first image object if there are multiple and ignore the rest
         					if ( is_object( $sectionNodeHash[$sectionName] ) )
@@ -604,14 +604,14 @@ class eZOOImport
         							{
         								// finally look for the image node
         								$children = $frame->children();
-        								
+
         								if ( $children[0]->name() == "image" )
         								{
         									$imageNode = $children[0];
         									$fileName = $imageNode->attributeValue( "href" );
-        									
+
         									$filePath = $this->ImportDir . $fileName;
-        									
+
         									if ( file_exists( $filePath ) )
         									{
         									 	$imageContent =& $dataMap[$attributeIdentifier]->attribute( 'content' );
@@ -619,28 +619,28 @@ class eZOOImport
         									   	$imageContent->store( $dataMap[$attributeIdentifier] );
         									 	$dataMap[$attributeIdentifier]->store();
         									}
-        							 
+
         								}
         							}
-        						}                        
+        						}
                         	}
-                            
+
                         }break;
 
                 		case "ezmatrix":
-                        {	
+                        {
                            	$matrixHeaderArray = array();
                            	// Fetch the current defined columns in the matrix
                            	$matrix = $dataMap[$attributeIdentifier]->content();
 							$columns = $matrix->attribute( "columns" );
-						   						
+
 							foreach ( $columns['sequential'] as $column )
 							{
 								$matrixHeaderArray[] = $column['name'];
 							}
-						
+
                            	$headersValid = true;
-							$originalHeaderCount = count( $matrixHeaderArray );						
+							$originalHeaderCount = count( $matrixHeaderArray );
                         	$headerCount = 0;
                         	$rowCount = 0;
                         	$cellArray = array();
@@ -666,7 +666,7 @@ class eZOOImport
         												if ( $headerCell->name() == "table-cell" )
         												{
         													$paragraphArray = $headerCell->children();
-        													
+
         													if ( count( $paragraphArray ) == 1 )
         													{
         														$headerName = $paragraphArray[0]->textContent();
@@ -674,7 +674,7 @@ class eZOOImport
         														{
         															$headersValid = false;
         														}
-        														$headerCount++;        														
+        														$headerCount++;
         													}
         												}
         											}
@@ -691,18 +691,18 @@ class eZOOImport
         												$firstParagraph = $cell->children();
         												$firstParagraph = $firstParagraph[0];
         												$cellContent = $firstParagraph->textContent();
-        												
+
         												$cellArray[] = $cellContent;
-       												
+
         											}
         										}
    												$rowCount++;
-        									}        									
+        									}
         								}
         							}
-        						}        						
+        						}
         					}
-        					
+
         					if ( $headerCount == $originalHeaderCount and
         					     $headersValid == true )
         					{
@@ -711,18 +711,18 @@ class eZOOImport
         						{
         							$matrix->removeRow( $i );
         						}
-        						
+
         						// Insert new rows
         						$matrix->addRow( false, $rowCount );
         						$matrix->Cells = $cellArray;
-        						
+
                             	$dataMap[$attributeIdentifier]->setAttribute( 'data_text', $matrix->xmlString() );
-                            	                            	
+
             					$matrix->decodeXML( $dataMap[$attributeIdentifier]->attribute( 'data_text' ) );
-            					$dataMap[$attributeIdentifier]->setContent( $matrix );                            	
+            					$dataMap[$attributeIdentifier]->setContent( $matrix );
                             	$dataMap[$attributeIdentifier]->store();
         					}
-        					
+
                         }break;
 
                         default:

@@ -40,7 +40,7 @@
 
 	$content = base64_decode( file_get_contents( $fileName ) );
 
-    $fd = fopen( $fileName, 'a' );
+    $fd = fopen( $fileName, 'w' );
     fwrite( $fd, $content );
     fclose( $fd );
 

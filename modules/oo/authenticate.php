@@ -16,7 +16,7 @@
     	$password = $http->postVariable( 'Password' );
 
     if ( $http->hasPostVariable( 'NodeID' ) );
-    	$nodeID = $http->postVariable( 'NodeID' );
+    	$parentNodeID = $http->postVariable( 'NodeID' );
 
     // User authentication
 	$user = eZUser::loginUser( $username, $password );
@@ -51,7 +51,7 @@
 	//Test if not empty
 	If ( count( $array ) == 0 )
 	{
-		print( 'problem:Empty' );
+		print( 'problem:No Items' );
 		eZExecution::cleanExit();
 	}
 
