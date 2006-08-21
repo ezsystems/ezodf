@@ -63,6 +63,7 @@ define( "OOIMPORT_ERROR_CANNOTSTORE", 10 );
 define( "OOIMPORT_ERROR_UNKNOWNNODE", 11 );
 define( "OOIMPORT_ERROR_ACCESSDENIED", 12 );
 define( "OOIMPORT_ERROR_IMPORTING", 13 );
+define( "OOIMPORT_ERROR_UNKNOWNCLASS", 14 );
 define( "OOIMPORT_ERROR_UNKNOWN", 127 );
 
 class eZOOImport
@@ -154,6 +155,11 @@ class eZOOImport
             case OOIMPORT_ERROR_IMPORTING:
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/oo/import/error', "Error during import" );
+                $this->ERROR['description'] = $errorDescription;
+                break;
+            case OOIMPORT_ERROR_UNKNOWNCLASS:
+                $this->ERROR['number'] = $errorNumber;
+                $this->ERROR['value'] = ezi18n( 'extension/oo/import/error', "Unknown content class specified in oo.ini:" );
                 $this->ERROR['description'] = $errorDescription;
                 break;
             default :
@@ -249,6 +255,16 @@ class eZOOImport
         $place_node = eZContentObjectTreeNode::fetch( $placeNodeID );
 
         $importClassIdentifier = $ooINI->variable( 'OOImport', 'DefaultImportClass' );
+
+        // Check if class exist
+        $class = eZContentClass::fetchByIdentifier( $importClassIdentifier );
+        if ( !is_object( $class ) )
+        {
+            eZDebug::writeError( "Content class <strong>$importClassIdentifier</strong> specified in oo.ini does not exist." );
+            $this->setError( OOIMPORT_ERROR_UNKNOWNCLASS, $importClassIdentifier );
+            return false;
+        }
+
         if (! (is_object( $place_node ) ) )
         {
             $this->setError( OOIMPORT_ERROR_UNKNOWNNODE, ezi18n( 'extension/oo/import/error',"Unable to fetch node with id  ") . $placeNodeID );
