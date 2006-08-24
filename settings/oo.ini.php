@@ -13,6 +13,7 @@ DefaultImportClass=article
 DefaultImportImageClass=image
 RegisteredClassArray[]=article
 RegisteredClassArray[]=folder
+RegisteredClassArray[]=image
 ImportedImagesMediaNodeName=Imported images
 PlaceImagesInMedia=false
 OOConverterPort=9090
@@ -44,9 +45,16 @@ Attribute[body]=body
 [folder]
 DefaultImportTitleAttribute=name
 DefaultImportBodyAttribute=description
-# Bård, burde det ikke stått name her?
-Attribute[title]=title
-Attribute[shortdescription]=shortdescription
+Attribute[name]=name
+Attribute[short_description]=short_description
+Attribute[description]=description
+
+[image]
+DefaultImportTitleAttribute=name
+DefaultImportBodyAttribute=image
+Attribute[name]=name
+Attribute[caption]=caption
+Attribute[image]=image
 
 # DocumentType tells which are the supported document type by oo
 [DocumentType]
@@ -56,4 +64,3 @@ AllowedTypes[]=odt
 # ConvertTypes are those documents which can be converted by oo and then it will publish it automatically.
 ConvertTypes[]
 ConvertTypes[]=doc
-
