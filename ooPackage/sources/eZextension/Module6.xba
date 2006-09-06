@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Module6" script:language="StarBasic">option explicit
+
+
+
+function getNode( url as string, username as string, password as string, nodeID as integer ) as string 
+	dim oGetNodeService
+	oGetNodeService = createUnoService( &quot;org.openoffice.pyuno.eZsystems.getNode&quot; )
+	oGetNodeService.run( Array( url, username, password, nodeID ) )
+	getNode = oGetNodeService.getServiceName( )
+end function
+
+
+
+function receive( url as string, username as string, password as string, nodeID as integer, filename as string ) as string 
+	dim oReceiveService as object
+	oReceiveService = createUnoService( &quot;org.openoffice.pyuno.eZsystems.receive&quot; )
+	oReceiveService.run( Array( url, username, password, nodeID, filename ) )
+	receive = oReceiveService.getServiceName( )
+end function
+
+
+
+function send( url as string, username as string, password as string, nodeID as integer, filename as string, importType as string ) as string 
+	dim oSendService as object
+	oSendService = createUnoService( &quot;org.openoffice.pyuno.eZsystems.send&quot; )
+	oSendService.run( Array( url, username, password, nodeID, filename, importType ) )
+	send = oSendService.getServiceName( )
+end function
+
+
+
+function rectangle( x as integer, y as integer, width as integer, height as integer ) as object 
+	dim rect as new com.sun.star.awt.Rectangle
+	with rect
+		.X = x
+		.Y = y
+		.Width = width
+		.Height = height
+	end with
+	rectangle = rect
+end function
+
+function size( width as integer, height as integer ) as object 
+	dim oSize as new com.sun.star.awt.Size
+	with oSize
+		.Width = width
+		.Height = height
+	end with
+	size = oSize
+end function
+
+
+
+function createTopWindow( oToolKit as object, X as integer, Y as integer, Width as integer, Height as integer ) as object 
+	dim topWindowAttributes, oTopWindowDescriptor, oTopWindow
+
+&apos;Define the top window attributes
+	with com.sun.star.awt.WindowAttribute
+		topWindowAttributes = .SHOW + .BORDER + .MOVEABLE + .CLOSEABLE
+	end with
+
+&apos;Create the top window descriptor
+	oTopWindowDescriptor = createUnoStruct( &quot;com.sun.star.awt.WindowDescriptor&quot; )
+	with oTopWindowDescriptor
+		.Type = com.sun.star.awt.WindowClass.TOP
+		.ParentIndex = -1 &apos;No parent, window is on top
+		.Bounds = rectangle( X, Y, Width, Height )
+		.WindowAttributes = topWindowAttributes
+	end with
+
+&apos;Create the top window
+	oTopWindow = oToolkit.createWindow( oTopWindowDescriptor )
+	oTopWindow.setVisible( false )
+	oTopWindow.Background = RGB( 231, 231, 231 )
+
+	createTopWindow = oTopWindow
+end function
+
+
+
+function createFrame( oWindow as object, oCreatorFrame as object, frameName as string, optional title as string ) as object 
+	dim oFrame
+
+&apos;Create the top frame
+	oFrame = createUnoService( &quot;com.sun.star.frame.Frame&quot; )
+	with oFrame
+		.setName( frameName )
+		.initialize( oWindow )
+		.setCreator( oCreatorFrame )
+		if not isMissing( title$ ) then .Title = title$
+	end with
+	&apos;Give access to the newly created frame
+	oCreatorFrame.getFrames( ).append( oFrame )
+
+	createFrame = oFrame
+end function
+
+
+
+function createSubWindow( oToolKit as object, oParentWindow as object, X as string, Y as string, Width as string, Height as string ) as object 
+	dim subWindowAttributes, oSubWindowDescriptor, oSubWindow
+
+&apos;Create the scroll window descriptor
+	with com.sun.star.awt.WindowAttribute
+		subWindowAttributes = .SHOW
+	end with
+	oSubWindowDescriptor = createUnoStruct( &quot;com.sun.star.awt.WindowDescriptor&quot; )
+	with oSubWindowDescriptor
+		.Type = com.sun.star.awt.WindowClass.CONTAINER
+		.WindowServiceName = &quot;&quot;
+		.Parent = oParentWindow
+		.Bounds = rectangle( X, Y, Width, Height )
+		.WindowAttributes = subWindowAttributes
+	end with
+
+&apos;Create the scroll window
+	oSubWindow = oToolkit.createWindow( oSubWindowDescriptor )
+	oSubWindow.Background = RGB( 255, 255, 255 )
+
+	createSubWindow = oSubWindow
+end function
+
+
+
+function createControlContainer( oToolKit as object, oParentWindow as object, oSize as object, optional color as string ) as object 
+	dim oContainerModel
+	dim oContainer
+
+&apos;Build a container with some controls
+	oContainerModel = createUnoService( &quot;com.sun.star.awt.UnoControlContainerModel&quot; )
+	if color = &quot;grey&quot; then
+		oContainerModel.BackgroundColor = RGB( 231, 231, 231 )
+	end if
+	oContainer = createUnoService( &quot;com.sun.star.awt.UnoControlContainer&quot; )
+	oContainer.setModel( oContainerModel )
+	oContainer.setContext( oParentWindow )
+	oContainer.createPeer( oToolKit, oParentWindow )
+	oContainer.setPosSize( oSize.X, oSize.Y, oSize.Width, oSize.Height, com.sun.star.awt.PosSize.POSSIZE )
+	createControlContainer = oContainer
+end function
+
+
+
+sub addLink( oSourceContainer as object, oTargetContainer as object, linkName as string )
+	dim oControl, oControlModel
+	oControlModel = createUnoService( &quot;com.sun.star.awt.UnoControlFixedTextModel&quot; )
+	oControl = createUnoService( oControlModel.defaultControl )
+	oControl.setModel( oControlModel )
+	oControl.setVisible( false )
+	oSourceContainer.addControl( linkName, oControl )
+	oControl.setContext( oTargetContainer )
+end sub
+
+
+
+function getContainerFromEvent( oEvent as object ) as object 
+	getContainerFromEvent = oEvent.Source.getContext( )
+end function
+
+
+
+function getObjectFromLink( oContainer as object, linkName as string ) as object 
+	getObjectFromLink = oContainer.getControl( linkName ).getContext( )
+end function
+
+
+&apos;Stores the current document to a temporary file
+&apos;Returns the path of the temporary file
+function saveToTmpFile( )
+	dim option0 as new com.sun.star.beans.PropertyValue
+	dim option1 as new com.sun.star.beans.PropertyValue
+	dim tmpFilePath as string
+	
+	&apos;Saving options :
+	&apos;- save to .odt file
+	&apos;- overwrite existing file
+	option0.Name = &quot;FilterName&quot;
+	option0.Value = &quot;writer8&quot;
+	option1.Name = &quot;Overwrite&quot;
+	option1.Value = True
+	
+	&apos;Temporary file name :
+	&apos;eZtmp-[random number].odt
+	tmpFilePath = getTempPath( ) &amp; &quot;eZtmp-&quot; &amp; getRandomNumber( 6 ) &amp; &quot;.odt&quot;
+	
+	thisComponent.storeToURL( convertToURL( tmpFilePath ), Array( option0, option1 ) )
+	
+	saveToTmpFile = tmpFilePath
+end function
+
+
+&apos;Returns a random number 
+&apos;Parameters:
+&apos;- digitNumber : number of digits
+function getRandomNumber( digitNumber as integer ) as string
+	dim lowerBound, upperBound, randomNumber as long
+
+	lowerBound = exp( ( digitNumber - 1 ) * log( 10 ) )
+	upperBound = exp( digitNumber * log( 10 ) ) - 1
+	randomNumber = lowerBound + rnd( ) * ( upperBound - lowerBound )
+	getRandomNumber = cStr( randomNumber )
+end function
+
+
+function displayWait( ) as object 
+	dim WindowAttributes, oWindowDescriptor, oWindow
+	dim oToolKit, oFrame
+	dim oModel, oControl
+	
+	oToolKit = createUnoService( &quot;com.sun.star.awt.Toolkit&quot; )
+	
+	with com.sun.star.awt.WindowAttribute
+		WindowAttributes = .SHOW + .BORDER
+	end with
+
+	oWindowDescriptor = createUnoStruct( &quot;com.sun.star.awt.WindowDescriptor&quot; )
+	with oWindowDescriptor
+		.Type = com.sun.star.awt.WindowClass.TOP
+		.ParentIndex = -1 &apos;No parent, window is on top
+		.Bounds = rectangle( 100, 100, 200, 100 )
+		.WindowAttributes = WindowAttributes
+	end with
+
+	oWindow = oToolkit.createWindow( oWindowDescriptor )
+	oWindow.setVisible( false )
+	oWindow.Background = RGB( 231, 231, 231 )
+
+	oFrame = createFrame( oWindow, starDesktop, &quot;Frame&quot;, &quot;Wait&quot; )
+
+	oModel = createUnoService( &quot;com.sun.star.awt.UnoControlFixedTextModel&quot; )
+	oModel.Label = &quot;Processing ...&quot;
+	oControl = createUnoService( &quot;com.sun.star.awt.UnoControlFixedText&quot; )
+	with oControl
+		.setModel( oModel )
+		.setPosSize( 0, 0, 200, 100, com.sun.star.awt.PosSize.POSSIZE )
+		.createPeer( oToolKit, oWindow )
+	end with
+	
+	oWindow.setVisible( true )
+	displayWait = oWindow
+end function
+
+sub hideWait( oWindow as object )
+	oWindow.setVisible( false )
+end sub
+
+function parseServerIni( ) as variant
+	&apos;open the ini file
+	dim service
+	dim fileName
+	dim userDataDir
+	dim servers
+	dim s
+	dim n, x
+	dim path as variant
+	
+	service = createUnoService( &quot;com.sun.star.util.OfficeInstallationDirectories&quot; )
+	userDataDir = convertFromURL( service.getOfficeUserDataDirectoryURL( ) )
+	path = array( &quot;&quot;, &quot;user&quot;, &quot;config&quot;, &quot;eZ.ini&quot; )
+	fileName = userDataDir &amp; join( path, getPathSeparator( ) )
+
+	if not fileExists( fileName ) then
+		msgBox( &quot;eZ.ini file missing&quot;, 16, &quot;eZ extension&quot; )
+		stop
+	end if
+
+	servers = DimArray( 0, 3 )
+
+	n = FreeFile( )
+	open fileName for input as #n
+	do while not EOF( n )
+		input #n, s
+		if left( s, 1 ) &lt;&gt; &quot;#&quot; then
+			if left( s, 6 ) = &quot;Server&quot; then
+				x = getServerNumber( s )
+				if x &lt;&gt; UBound( servers, 1 ) then
+					dim max
+					max = UBound( servers, 1 ) + 1
+					redim preserve servers( max, 3 )
+				end if
+			end if
+			if mid( s, 7, 5 ) = &quot;Alias&quot; then
+				servers( x, 0 ) = getArgument( s )
+			elseif mid( s, 7, 3 ) = &quot;URL&quot; then
+				servers( x, 1 ) = getArgument( s )
+			elseif mid( s, 7, 8 ) = &quot;Username&quot; then
+				servers( x, 2 ) = getArgument( s )
+			elseif mid( s, 7, 8 ) = &quot;Password&quot; then
+				servers( x, 3 ) = getArgument( s )
+			end if
+		end if
+	loop
+
+	parseServerIni = servers( )
+end function
+
+function getServerNumber( s as string ) as integer
+	dim x1, x2
+	dim start, len
+	
+	x1 = inStr( s, &quot;[&quot; )
+	x2 = inStr( s, &quot;]&quot; )
+	start = x1 + 1
+	len = x2 - start
+	getServerNumber = val( mid( s, start, len ) )
+end function
+
+function getArgument( s as string ) as string 
+	dim start
+	
+	start = inStr( s, &quot;=&quot; ) + 1
+	getArgument = mid( s, start )
+end function
+
+function getTempPath( ) as string 
+	select case GetGUIType( )
+		case 1 &apos;Windows
+			getTempPath = &quot;C:\Windows\Temp\&quot;
+		case 3 &apos;Mac OS
+			getTempPath = &quot;/tmp/&quot;
+		case 4 &apos;Linux
+			getTempPath = &quot;/tmp/&quot;
+		case else
+			msgBox( &quot;Unable to detect Operating System&quot;, 16, &quot;eZ extension&quot; )
+			stop
+	end select
+end function
+
+function splitDirectoryString( locations as string, nodeName as variant, nodeID as variant, iconURL as variant ) as string 
+	dim index as integer
+	dim nodeNumber as integer
+	dim nameLength as integer
+	dim typeLength as integer
+	dim tmpArray1 as variant
+	dim tmpArray2 as variant
+	dim nameArray as variant
+	dim typeArray as variant
+	dim longestLabel as string
+
+	&apos;Split the locations in lines -&gt; 1 line pro node
+	tmpArray1 = split( locations, CHR$( 13 ) )
+
+	&apos;Number of lines ( -1 because there is one carriage return at the end )
+	nodeNumber = UBound( tmpArray1 )
+
+	nameArray = DimArray( nodeNumber )
+	typeArray = DimArray( nodeNumber )
+	nodeName = DimArray( nodeNumber )
+	nodeID = DimArray( nodeNumber )
+	iconURL = DimArray( nodeNumber )
+
+	for index = 0 to nodeNumber
+		&apos;Split each line :
+		&apos;	0 -&gt; nodeID
+		&apos;	1 -&gt; node name
+		&apos;	2 -&gt; node type
+		&apos;	3 -&gt; boolean isFolder
+		&apos;	4 -&gt; iconURl
+		tmpArray2 = split( tmpArray1( index ), &quot;;&quot; )
+
+		nameArray( index ) = tmpArray2( 1 )
+		if nameLength &lt; len( nameArray( index ) ) then nameLength = len( nameArray( index ) )
+
+		typeArray( index ) = tmpArray2( 2 )
+		if typeLength &lt; len( typeArray( index ) ) then typeLength = len( typeArray( index ) )
+
+		&apos;String &apos;nodeID/isFolder&apos;
+		nodeID( index ) = tmpArray2( 0 ) &amp; &quot;/&quot; &amp; tmpArray2( 3 )
+
+		iconURL( index ) = tmpArray2( 4 )
+	next index
+
+	for index = 0 to nodeNumber
+		nodeName( index ) = nameArray( index ) &amp; &quot;  [&quot; &amp; typeArray( index ) &amp; &quot;]&quot;
+		if len( longestLabel ) &lt; len( nodeName( index ) ) then longestLabel = nodeName( index )
+	next index
+	
+	splitDirectoryString = getLabelWidth( longestLabel )
+end function
+
+&apos;function getArrayLine( inputArray, line )
+&apos;	dim outputArray
+&apos;	dim index
+&apos;	
+&apos;	outputArray = dimArray( uBound( inputArray, 2 ) )
+&apos;	for index = lBound( inputArray, 2 ) to uBound( inputArray, 2 )
+&apos;		outputArray( index ) = inputArray( line, index )
+&apos;	next index
+&apos;	getArrayLine = outputArray
+&apos;end function
+
+</script:module>

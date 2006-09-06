@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Module2" script:language="StarBasic">option explicit
+
+function serverBoxCreate( oToolKit as object, oParentWindow as object ) as object 
+	dim index as integer
+	dim oContainer as object
+	dim oControl as object
+	dim oControlModel as object
+	dim oSize as new com.sun.star.awt.Rectangle
+	dim servers as variant
+
+	&apos;Create the server container
+	oSize = rectangle( 75, 15, 300, 25 )
+	oContainer = createControlContainer( oToolKit, oParentWindow, oSize, &quot;grey&quot; )
+	
+	servers = parseServerIni( )
+
+	&apos;Label
+	oControlModel = createUnoService( &quot;com.sun.star.awt.UnoControlFixedTextModel&quot; )
+	with oControlModel
+		.Label = &quot;Server : &quot;
+		.VerticalAlign = com.sun.star.style.VerticalAlignment.MIDDLE
+	end with
+	oControl = createUnoService( oControlModel.defaultControl )
+	with oControl
+		.setModel( oControlModel )
+		.setPosSize( 0, 0, 70, 25, com.sun.star.awt.PosSize.POSSIZE )
+	end with
+	oContainer.addControl( &quot;Label&quot;, oControl )
+
+	&apos;Create the list box with dropdown
+	oControlModel = createUnoService( &quot;com.sun.star.awt.UnoControlListBoxModel&quot; )
+	with oControlModel
+		.Dropdown = true
+		.MultiSelection = false
+	end with
+	oControl = createUnoService( oControlModel.defaultControl )
+	with oControl
+		.setModel( oControlModel )
+		.setPosSize( 70, 0, 230, oContainer.PosSize.Height, com.sun.star.awt.PosSize.POSSIZE )
+		&apos;Add the items to the listBox
+		for index = 0 to UBound( servers, 1 )
+			.addItem( servers( index, 0 ), index )
+		next index
+		.addActionListener( createUnoListener( &quot;server&quot;, &quot;com.sun.star.awt.XActionListener&quot; ) )
+	end with
+	oContainer.addControl( &quot;serverListBox&quot;, oControl )
+
+	&apos;Specify the default server
+	oControl.selectItemPos( 0, true )
+
+	&apos;Add hidden labels containing the server configurations
+	for index = LBound( servers, 1 ) to UBound( servers, 1 )
+		oControlModel = createUnoService( &quot;com.sun.star.awt.UnoControlFixedTextModel&quot; )
+		oControlModel.Label = servers( index, 1 ) &amp; &quot;__;__&quot; &amp; servers( index, 2 ) &amp; &quot;__;__&quot; &amp; servers( index, 3 )
+&apos;		oControlModel.Label = Join( getArrayLine( servers, index ), &quot;__;__&quot; )
+		oControl = createUnoService( oControlModel.defaultControl )
+		oControl.setModel( oControlModel )
+		oControl.setVisible( false )
+		oContainer.addControl( &quot;Server_&quot; &amp; index, oControl )
+	next index
+
+	serverBoxCreate = oContainer
+end function
+
+function getServer( oServerContainer as object ) as variant
+	dim serverNumber, serverString
+	dim serverArray
+	
+	serverArray = DimArray( 2 )
+	serverNumber = oServerContainer.getControl( &quot;serverListBox&quot; ).getSelectedItemPos( )
+	serverString = oServerContainer.getControl( &quot;Server_&quot; &amp; serverNumber ).Model.Label
+	serverArray = Split( serverString, &quot;__;__&quot; )
+	redim preserve serverArray( 3 )
+	serverArray( 3 ) = oServerContainer.getControl( &quot;serverListBox&quot; ).getSelectedItem( )
+	getServer = serverArray( )
+end function
+
+sub serverActionPerformed( oEvent as object )
+	dim oServerContainer, oPathContainer, oDirContainer, oButtonContainer
+	dim server, directory as string 
+	dim pathGlobalVars
+	dim oControl
+	dim i
+
+	oServerContainer = getContainerFromEvent( oEvent )
+	oPathContainer = getObjectFromLink( oServerContainer, &quot;linkToPath&quot; )
+	oDirContainer = getObjectFromLink( oServerContainer, &quot;linkToDir&quot; )
+	oButtonContainer = getObjectFromLink( oServerContainer, &quot;linkToButton&quot; )
+
+	&apos;getServer
+	server = getServer( oServerContainer )
+	directory = getNode( server( 0 ), server( 1 ), server( 2 ), &quot;2&quot; )
+
+	&apos;initialize Path
+	pathGlobalVars = getPathGlobalVars( oPathContainer )
+	if pathGlobalVars( 2 ) &lt;&gt; 0 then
+		for i = 1 to pathGlobalVars( 2 )
+			oControl = oPathContainer.getControl( &quot;Path_&quot; &amp; i )
+			oControl.setVisible( false )
+			oPathContainer.removeControl( oControl )
+		next i
+	end if
+	oControl = oPathContainer.getControl( &quot;Path_0&quot; )
+	setX( oControl, 21 + 5 )
+	updatePathGlobalVars( oPathContainer, 0, 0, 0 )
+
+	&apos;Initialize Dir
+	if updateDirContainer( oDirContainer, directory ) then
+		updateDirGlobalVars( oDirContainer, 0, &quot;2&quot; )
+		enableOKButton( oButtonContainer )
+	else
+		updateDirGlobalVars( oDirContainer, -1, &quot;2&quot; )
+		disableOKButton( oButtonContainer )
+	end if
+end sub
+
+</script:module>

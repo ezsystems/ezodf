@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest:manifest>
+ <manifest:file-entry manifest:full-path="send.py" manifest:media-type="application/vnd.sun.star.uno-component;type=Python"/>
+ <manifest:file-entry manifest:full-path="addon.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/>
+ <manifest:file-entry manifest:full-path="getNode.py" manifest:media-type="application/vnd.sun.star.uno-component;type=Python"/>
+ <manifest:file-entry manifest:full-path="receive.py" manifest:media-type="application/vnd.sun.star.uno-component;type=Python"/>
+ <manifest:file-entry manifest:full-path="eZextension/" manifest:media-type="application/vnd.sun.star.basic-library"/>
+</manifest:manifest>

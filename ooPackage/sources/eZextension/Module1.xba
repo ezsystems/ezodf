@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Module1" script:language="StarBasic">option explicit
+option compatible
+
+sub openNode( )
+	importExport( &quot;Open&quot; )
+end sub
+
+sub saveNode( )
+	dim nodeID as integer
+	dim oDocInfo as object
+	dim password as string
+	dim result as string
+	dim serverName as string
+	dim tmpFilePath as string
+	dim url as string
+	dim username as string
+	
+	oDocInfo = starDesktop.getCurrentComponent( ).getDocumentInfo( )
+	serverName = oDocInfo.getPropertyValue( &quot;serverName&quot; )
+	url = oDocInfo.getPropertyValue( &quot;url&quot; )
+	username = oDocInfo.getPropertyValue( &quot;username&quot; )
+	password = oDocInfo.getPropertyValue( &quot;password&quot; )
+	nodeID = val( oDocInfo.getPropertyValue( &quot;nodeID&quot; ) )
+	tmpFilePath = saveToTmpFile( )
+	result = send( url, username, password, nodeID, tmpFilePath, &quot;replace&quot; )
+	if inStr( result, &quot;problem:&quot; ) &lt;&gt; 0 then
+		result = right( result, len( result ) - len( &quot;problem:&quot; ) )
+		msgBox( result, 16, &quot;eZ extension&quot; )
+	else
+		result = right( result, len( result ) - len( &quot;done:&quot; ) )
+		msgBox( &quot;File successfully replaced&quot;, 64, &quot;eZ extension&quot; )
+	end if
+end sub
+
+sub saveAsNode( )
+	importExport( &quot;Save&quot; )
+end sub
+
+sub importExport( action as string )
+	dim directory as string
+	dim oButtonContainer as object
+	dim oDirContainer as object
+	dim oPathContainer as object
+	dim oServerContainer as object
+	dim oToolKit as object
+	dim oTopWindow as object
+	dim server as variant
+
+	oToolKit = createUnoService( &quot;com.sun.star.awt.Toolkit&quot; )
+
+	oTopWindow = createTopWindow( oToolKit, 400, 400, 450, 345 )
+
+	createFrame( oTopWindow, starDesktop, &quot;TopFrame&quot;, action )
+
+	oServerContainer = serverBoxCreate( oToolKit, oTopWindow )
+
+	oPathContainer = pathBoxCreate( oToolKit, oTopWindow )
+
+	oDirContainer = dirBoxCreate( oToolKit, oTopWindow )
+
+	server = getServer( oServerContainer )
+
+	directory = getNode( server( 0 ), server( 1 ), server( 2 ), &quot;2&quot; )
+
+	fillDirContainer( oDirContainer, directory )
+
+	oButtonContainer = buttonBoxCreate( oToolKit, oTopWindow, action )
+
+	addLink( oServerContainer, oPathContainer, &quot;linkToPath&quot; )
+	addLink( oServerContainer, oDirContainer, &quot;linkToDir&quot; )
+	addLink( oServerContainer, oButtonContainer, &quot;linkToButton&quot; )
+	addLink( oPathContainer, oServerContainer, &quot;linkToServer&quot; )
+	addLink( oPathContainer, oDirContainer, &quot;linkToDir&quot; )
+	addLink( oPathContainer, oButtonContainer, &quot;linkToButton&quot; )
+	addLink( oDirContainer, oServerContainer, &quot;linkToServer&quot; )
+	addLink( oDirContainer, oPathContainer, &quot;linkToPath&quot; )
+	addLink( oDirContainer, oButtonContainer, &quot;linkToButton&quot; )
+	addLink( oButtonContainer, oServerContainer, &quot;linkToServer&quot; )
+	addLink( oButtonContainer, oDirContainer, &quot;linkToDir&quot; )
+
+	&apos;Display the dialog
+	oTopWindow.setVisible( true )
+
+end sub
+
+</script:module>

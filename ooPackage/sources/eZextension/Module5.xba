@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Module5" script:language="StarBasic">option explicit
+
+
+
+function buttonBoxCreate( oToolKit as object, oParentWindow as object, action as string ) as object 
+	dim oContainer, oControl, oControlModel
+	dim oSize as new com.sun.star.awt.Rectangle
+
+	oSize = rectangle( 125, 305, 200, 25 )
+	oContainer = createControlContainer( oToolKit, oParentWindow, oSize, &quot;grey&quot; )
+
+	oControlModel = createUnoService( &quot;com.sun.star.awt.UnoControlButtonModel&quot; )
+	with oControlModel
+		.Label = action
+	end with
+	oControl = createUnoService( oControlModel.defaultControl )
+	with oControl
+		.setModel( oControlModel )
+		.setContext( oToolKit.getTopWindow( 1 ) )
+		.setPosSize( 0, 0, 70, 25, com.sun.star.awt.PosSize.POSSIZE )
+		.setActionCommand( action )
+		.addActionListener( createUnoListener( &quot;buttonBox&quot;, &quot;com.sun.star.awt.XActionListener&quot; ) )
+	end with
+	oContainer.addControl( &quot;OK&quot;, oControl )
+
+	oControlModel = createUnoService( &quot;com.sun.star.awt.UnoControlButtonModel&quot; )
+	with oControlModel
+		.Label = &quot;Cancel&quot;
+	end with
+	oControl = createUnoService( oControlModel.defaultControl )
+	with oControl
+		.setModel( oControlModel )
+		.setContext( oToolKit.getTopWindow( 1 ) )
+		.setPosSize( 130, 0, 70, 25, com.sun.star.awt.PosSize.POSSIZE )
+		.setActionCommand( &quot;Cancel&quot; )
+		.addActionListener( createUnoListener( &quot;buttonBox&quot;, &quot;com.sun.star.awt.XActionListener&quot; ) )
+	end with
+	oContainer.addControl( &quot;Cancel&quot;, oControl )
+
+	buttonBoxCreate = oContainer
+end function
+
+
+
+sub buttonBoxActionPerformed( oEvent as object )
+	dim oButtonContainer, oDirContainer, oServerContainer
+	dim dirGlobalVars
+	dim oControl
+	dim nodeID
+	dim result
+	dim oTopWindow
+	dim server
+	dim arg as new com.sun.star.beans.PropertyValue
+	dim oDocInfo
+	dim tmpFilePath
+
+	oTopWindow = oEvent.Source.getContext( ).getContext( )
+
+	&apos;Get containers
+	oButtonContainer = getContainerFromEvent( oEvent )
+	oServerContainer = getObjectFromLink( oButtonContainer, &quot;linkToServer&quot; )
+	oDirContainer = getObjectFromLink( oButtonContainer, &quot;linkToDir&quot; )
+
+	if oEvent.ActionCommand = &quot;Cancel&quot; then
+		oTopWindow.setVisible( false )
+
+	elseif oEvent.ActionCommand = &quot;Open&quot; then
+		dirGlobalVars = getDirGlobalVars( oDirContainer )
+		&apos;Test if the line is really highlighted
+		oControl = oDirContainer.getControl( &quot;Label_&quot; &amp; val( dirGlobalVars( 2 ) ) )
+		if oControl.Model.BackgroundColor = RGB( 223, 223, 223 ) then
+			oTopWindow.setVisible( false )
+		 	server = getServer( oServerContainer )
+			oControl = oDirContainer.getControl( &quot;nodeDescription_&quot; &amp; val( dirGlobalVars( 2 ) ) )
+			dirGlobalVars = Split( oControl.Model.Label, &quot;/&quot; )
+			nodeID = val( dirGlobalVars( 0 ) )
+			result = receive( server( 0 ), server( 1 ), server( 2 ), nodeID, getTempPath( ) &amp; &quot;eZ_imported.odt&quot; )
+			if inStr( result, &quot;problem:&quot; ) &lt;&gt; 0 then
+				result = right( result, len( result ) - len( &quot;problem:&quot; ) )
+				msgBox( result, 16, &quot;eZ extension&quot; )
+			else
+
+				arg.Name = &quot;AsTemplate&quot;
+				arg.Value = &quot;True&quot;
+				starDesktop.loadComponentFromURL( convertToURL( getTempPath( ) &amp; &quot;eZ_imported.odt&quot; ), &quot;_default&quot;, 0, Array( arg ) )
+				oDocInfo = starDesktop.getCurrentComponent( ).getDocumentInfo( )
+				oDocInfo.addProperty( &quot;serverName&quot;, 0, server( 3 ) )
+				oDocInfo.addProperty( &quot;url&quot;, 0, server( 0 ) )
+				oDocInfo.addProperty( &quot;username&quot;, 0, server( 1 ) )
+				oDocInfo.addProperty( &quot;password&quot;, 0, server( 2 ) )
+				oDocInfo.addProperty( &quot;nodeID&quot;, 0, nodeID )
+			end if
+		else
+			msgBox( &quot;Please choose a node to open&quot;, 48, &quot;eZ extension&quot; )
+		end if
+
+	elseif oEvent.ActionCommand = &quot;Save&quot; then
+		oTopWindow.setVisible( false )
+		&apos;Get the current folder nodeID
+		dirGlobalVars = getDirGlobalVars( oDirContainer )
+		nodeID = dirGlobalVars( 3 )
+		server = getServer( oServerContainer )
+		
+		tmpFilePath = saveToTmpFile( )
+		result = send( server( 0 ), server( 1 ), server( 2 ), nodeID, tmpFilePath, &quot;import&quot; )
+		if inStr( result, &quot;problem:&quot; ) &lt;&gt; 0 then
+			result = right( result, len( result ) - len( &quot;problem:&quot; ) )
+			msgBox( result, 16, &quot;eZ extension&quot; )
+		else
+			result = right( result, len( result ) - len( &quot;done:&quot; ) )
+			msgBox( result, 64, &quot;eZ extension&quot; )
+		end if
+	else
+		msgBox( &quot;Should not print this : bad ActionCommand -&gt; &quot; &amp; oEvent.ActionCommand, 16, &quot;eZ extension&quot; )
+	end if
+
+end sub
+
+sub enableOKButton( oContainer as object )
+	if oContainer.getControl( &quot;OK&quot; ).Model.Label = &quot;Open&quot; then
+		oContainer.getControl( &quot;OK&quot; ).setEnable( true )
+	end if
+end sub
+
+sub disableOKButton( oContainer as object )
+	if oContainer.getControl( &quot;OK&quot; ).Model.Label = &quot;Open&quot; then
+		oContainer.getControl( &quot;OK&quot; ).setEnable( false )
+	end if
+end sub
+
+</script:module>

@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Module4" script:language="StarBasic">option explicit
+
+
+&apos;main function of the dirBox module
+
+function dirBoxCreate( oToolKit as object, oParentWindow as object, Locations as variant ) as object 
+	dim oWindow
+	dim oContainer
+	dim oControlsSize
+	dim oSize as new com.sun.star.awt.Rectangle
+	dim oVertScrollBar, oHorizScrollBar
+
+	&apos;Creates a window in the given parent window
+	oWindow = createSubWindow( oToolKit, oParentWindow, 25, 90, 400, 200 )
+	oWindow.Background = RGB( 231, 231, 231 )
+
+
+	oSize = rectangle( 0, 0, oWindow.PosSize.Width - 16, oWindow.PosSize.Height - 16 )
+
+	&apos;Creates the control container
+	&apos;This control container will contain the directory structure
+	oContainer = createControlContainer( oToolKit, oWindow, oSize )
+
+	addGlobalVars( oContainer )
+
+	oVertScrollBar = addVertScrollBarToWindow( oToolKit, oWindow, oContainer )
+	oHorizScrollBar = addHorizScrollBarToWindow( oToolKit, oWindow, oContainer )
+
+	addLink( oContainer, oVertScrollBar, &quot;linkToVertScrollBar&quot; )
+	addLink( oContainer, oHorizScrollBar, &quot;linkToHorizScrollBar&quot; )
+
+	dirBoxCreate = oContainer
+end function
+
+
+
+sub addGlobalVars( oContainer as object )
+	dim oFixedTextControlModel, oFixedTextControl
+	
+	&apos;Store global variables in a label
+	&apos;0 -&gt; doubleclick time [doubleClickTime is the equivalent in system ticks for 400 ms]
+	&apos;1 -&gt; last click time
+	&apos;2 -&gt; current highlighted line (-1 if error message)
+	&apos;3 -&gt; current nodeID
+	oFixedTextControlModel = createUnoService( &quot;com.sun.star.awt.UnoControlFixedTextModel&quot; )
+	oFixedTextControlModel.Label = getDoubleClickTime( ) &amp; &quot;/&quot; &amp; getSystemTicks( ) &amp; &quot;/-1/2&quot;
+	oFixedTextControl = createUnoService( &quot;com.sun.star.awt.UnoControlFixedText&quot; )
+	oFixedTextControl.setModel( oFixedTextControlModel )
+	oFixedTextControl.setVisible( false )
+	oContainer.addControl( &quot;globalVars&quot;, oFixedTextControl )
+end sub
+
+
+
+sub dirBoxAdjustmentValueChanged( oEvent as object )
+	dim oSize
+	
+	oSize = oEvent.Source.Context.PosSize
+
+	if oEvent.Source.Orientation = com.sun.star.awt.ScrollBarOrientation.VERTICAL then
+		with oSize
+			.Y = - oEvent.Value
+			.Height = oEvent.Value + oEvent.Source.Size.Height
+		end with
+	elseif oEvent.Source.Orientation = com.sun.star.awt.ScrollBarOrientation.HORIZONTAL then
+		with oSize
+			.X = - oEvent.Value
+			.Width = oEvent.Value + oEvent.Source.Size.Width
+		end with
+	end if
+	oEvent.Source.Context.setPosSize( oSize.X, oSize.Y, oSize.Width, oSize.Height, com.sun.star.awt.PosSize.POSSIZE )
+end sub
+
+
+
+function addControlsToDirContainer( oContainer as object, locations as string ) as object 
+	dim i
+	dim nodeName, nodeID, iconURL
+	dim oControlModel, oControl
+	dim oMouseListener
+	dim labelWidth
+	dim delta
+	dim lineHeight
+	dim posX
+	dim posY
+	dim imageWidth
+	
+	delta = 5
+	lineHeight = 22
+	posX = delta
+	posY = delta
+	imageWidth = 30
+	
+	oMouseListener = createUnoListener( &quot;mouse&quot;, &quot;com.sun.star.awt.XMouseListener&quot; )
+	
+	&apos;Split the locations string in arrays
+	labelWidth = splitDirectoryString( locations, nodeName, nodeID, iconURL )
+
+	&apos;for each node, create a line with an image and a label
+	for i = 0 to UBound( nodeName )
+			&apos;Create the image model
+			oControlModel = createUnoService( &quot;com.sun.star.awt.UnoControlImageControlModel&quot; )
+			with oControlModel
+				.ImageURL = iconURL( i )
+				.Border = 0
+				.ScaleImage = false
+			end with
+			oControl = createUnoService( &quot;com.sun.star.awt.UnoControlImageControl&quot; )
+			with oControl
+				.setContext( oContainer )
+				.setPosSize( posX, posY, imageWidth, lineHeight, com.sun.star.awt.PosSize.POSSIZE)
+				.setModel( oControlModel )
+			end with
+			oContainer.addControl( &quot;Icon_&quot; &amp; i, oControl )
+
+			&apos;Label
+			oControlModel = createUnoService( &quot;com.sun.star.awt.UnoControlFixedTextModel&quot; )
+			with oControlModel
+&apos;				.FontName = &quot;Monospace&quot;
+				.VerticalAlign = com.sun.star.style.VerticalAlignment.MIDDLE
+				.Label = nodeName( i )
+			end with
+			oControl = createUnoService( &quot;com.sun.star.awt.UnoControlFixedText&quot; )
+			with oControl
+				.setPosSize( delta + imageWidth, posY, labelWidth, lineHeight, com.sun.star.awt.PosSize.POSSIZE)
+				.setModel( oControlModel )
+				.setVisible( true )
+			end with
+			oContainer.addControl( &quot;Label_&quot; &amp; i, oControl )
+
+			&apos;Add an hidden label containing the nodeID and the isFolder boolean
+			oControlModel = createUnoService( &quot;com.sun.star.awt.UnoControlFixedTextModel&quot; )
+			oControlModel.Label = nodeID( i )
+			oControl = createUnoService( &quot;com.sun.star.awt.UnoControlFixedText&quot; )
+			with oControl
+				.setModel( oControlModel )
+				.setVisible( false )
+			end with
+			oContainer.addControl( &quot;nodeDescription_&quot; &amp; i, oControl )
+			posY = PosY + lineHeight
+	next i
+
+	for i = 0 to UBound( nodeName )
+		oContainer.getControl( &quot;Label_&quot; &amp; i ).addMouseListener( oMouseListener )
+	next i
+
+	addControlsToDirContainer = size( delta + imageWidth + labelWidth + delta, delta + UBound( nodeName ) * lineHeight + delta )
+end function
+
+
+function leftJustify( str1 as string, length as integer ) as string 
+	dim str2 as string
+	
+	str2 = string ( length, &quot;*&quot; )
+	LSet str2 = str1
+	leftJustify = str2
+end function
+
+
+
+function addVertScrollBarToWindow( oToolKit as object, oWindow as object, oContainer as object ) as object 
+	dim i
+	dim oScrollBar
+	dim oScrollBarModel
+	dim oAdjustmentListener
+	dim orientation, posSize
+	
+	oAdjustmentListener = createUnoListener( &quot;dirBox&quot;, &quot;com.sun.star.awt.XAdjustmentListener&quot; )
+
+
+	orientation = com.sun.star.awt.ScrollBarOrientation.VERTICAL
+	posSize = rectangle( oWindow.PosSize.Width - 16, 0, 16, oWindow.PosSize.Height - 16 )
+
+
+	oScrollBarModel = createUnoService( &quot;com.sun.star.awt.UnoControlScrollBarModel&quot; )
+	with oScrollBarModel
+		.Border = 0
+		.LiveScroll = true
+		.Orientation = orientation
+	end with
+	oScrollBar = createUnoService( &quot;com.sun.star.awt.UnoControlScrollBar&quot; )
+	with oScrollBar
+		.setModel( oScrollBarModel )
+		.setContext( oContainer )
+		.setPosSize( posSize.X, posSize.Y, posSize.Width, posSize.Height, com.sun.star.awt.PosSize.POSSIZE )
+		.Model.LiveScroll = true
+		.createPeer( oToolKit, oWindow )
+		.addAdjustmentListener( oAdjustmentListener )
+	end with
+
+	addVertScrollBarToWindow = oScrollBar
+end function
+
+
+
+function addHorizScrollBarToWindow( oToolKit as object, oWindow as object, oContainer as object ) as object 
+	dim i
+	dim oScrollBar
+	dim oScrollBarModel
+	dim oAdjustmentListener
+	dim orientation, posSize
+
+	oAdjustmentListener = createUnoListener( &quot;dirBox&quot;, &quot;com.sun.star.awt.XAdjustmentListener&quot; )
+
+	orientation = com.sun.star.awt.ScrollBarOrientation.HORIZONTAL
+	posSize = rectangle( 0, oWindow.PosSize.Height - 16, oWindow.PosSize.Width - 16, 16 )
+
+	oScrollBarModel = createUnoService( &quot;com.sun.star.awt.UnoControlScrollBarModel&quot; )
+	with oScrollBarModel
+		.Border = 0
+		.LiveScroll = true
+		.Orientation = orientation
+	end with
+	oScrollBar = createUnoService( &quot;com.sun.star.awt.UnoControlScrollBar&quot; )
+	with oScrollBar
+		.setModel( oScrollBarModel )
+		.setContext( oContainer )
+		.setPosSize( posSize.X, posSize.Y, posSize.Width, posSize.Height, com.sun.star.awt.PosSize.POSSIZE )
+		.Model.LiveScroll = true
+		.createPeer( oToolKit, oWindow )
+		.addAdjustmentListener( oAdjustmentListener )
+	end with
+
+	addHorizScrollBarToWindow = oScrollBar
+end function
+
+&apos;Returns the time of a double click (400 ms)
+function getDoubleClickTime( ) as integer
+	dim systemTicksRef as double
+	
+	systemTicksRef = getSystemTicks( )
+	wait( 50 )
+	getDoubleClickTime = 8 * ( getSystemTicks( ) - systemTicksRef )
+end function
+
+
+
+sub mouseMousePressed( oEvent as object )
+	dim nodeClicked as integer
+	dim oDirContainer as object
+	dim globalVars as variant
+	dim pathButtonName as string 
+	dim doubleClick as boolean
+
+	oDirContainer = getContainerFromEvent( oEvent )
+
+	&apos;Get the number of the clicked node ( using its Y-position )
+	nodeClicked = ( oEvent.Source.PosSize.Y - 5 ) / 22
+
+	&apos;Get the globalVars array
+	&apos; 0 -&gt; doubleClick Time
+	&apos; 1 -&gt; last System Tick Time
+	&apos; 2 -&gt; highlighted line
+	globalVars = getDirGlobalVars( oDirContainer )
+	doubleClick = getSystemTicks( ) - globalVars( 1 ) &lt; globalVars( 0 )
+
+	&apos;Test if user double-clicked
+	if doubleClick AND nodeClicked = globalVars( 2 ) then
+		&apos;if user double-clicked then get the path button name ( = name of the folder clicked )
+		&apos; and call the actionOnDoubleClick( ) sub
+&apos;		removeListeners( oPathContainer, oDirContainer )
+		pathButtonName = oEvent.Source.Model.Label
+		pathButtonName = trim( left( pathButtonName, inStr( pathButtonName, &quot;  &quot; ) - 1 ) )
+		actionOnDoubleClick( oDirContainer, nodeClicked, pathButtonName )
+&apos;		addListeners( oPathContainer, oDirContainer )
+	else
+		&apos;if not, highlight the clicked line and &quot;down&quot;light the previous highlighted line
+		oDirContainer.getControl( &quot;Label_&quot; &amp; globalVars( 2 ) ).Model.BackgroundColor = RGB( 255, 255, 255 )
+		oDirContainer.getControl( &quot;Label_&quot; &amp; nodeClicked ).Model.BackgroundColor = RGB( 223, 223, 223 )
+		updateDirGlobalVars( oDirContainer, nodeClicked, globalVars( 3 ) )
+	end if
+end sub
+
+
+sub actionOnDoubleClick( oDirContainer as object, nodeClicked as integer, buttonName as string )
+	dim nodeDescription
+	dim globalVars
+	dim directory as string
+	dim oPathContainer as object
+	dim oServerContainer as object	
+	dim oButtonContainer as object
+	dim server
+	
+	oPathContainer = getObjectFromLink( oDirContainer, &quot;linkToPath&quot; )
+	oServerContainer = getObjectFromLink( oDirContainer, &quot;linkToServer&quot; )
+	oButtonContainer = getObjectFromLink( oDirContainer, &quot;linkToButton&quot; )
+	
+	&apos;Get the description of the clicked node
+	nodeDescription = Split( oDirContainer.getControl( &quot;nodeDescription_&quot; &amp; nodeClicked ).Model.Label, &quot;/&quot; )
+
+	if nodeDescription( 1 ) = &quot;1&quot; then
+
+		server = getServer( oServerContainer )
+		directory = getNode( server( 0 ), server( 1 ), server( 2 ), nodeDescription( 0 ) )
+		updatePathContainer( oPathContainer, buttonName, nodeDescription( 0 ) )
+
+		globalVars = getDirGlobalVars( oDirContainer )
+		if updateDirContainer( oDirContainer, directory ) then
+			updateDirGlobalVars( oDirContainer, 0, nodeDescription( 0 ) )
+			enableOKButton( oButtonContainer )
+		else
+			updateDirGlobalVars( oDirContainer, -1, nodeDescription( 0 ) )
+			disableOKButton( oButtonContainer )
+		end if
+	end if
+end sub
+
+
+&apos;The three functions have to exist because they
+&apos;are called by the mouse listener
+sub mouseMouseReleased( )
+end sub
+
+sub mouseMouseEntered( )
+end sub
+
+sub mouseMouseExited( )
+end sub
+
+function updateDirContainer( oContainer as object, directory as string ) as boolean
+	dim oControl, oControlModel
+	dim i, j as integer
+	dim controlNames
+	dim nodeName, nodeID, iconURL
+	dim globalVars
+	dim oScrollBar
+	dim labelWidth
+	dim imageWidth
+	dim delta
+	dim posY
+	dim lineHeight
+	dim oSize
+	
+	&apos;Test if there was an error message on the precedent directory
+	globalVars = getDirGlobalVars( oContainer )
+	if globalVars( 2 ) &lt;&gt; -1 then
+		&apos;Remove the old nodes
+		controlNames = Array( &quot;Icon_&quot;, &quot;Label_&quot;, &quot;nodeDescription_&quot; )
+		&apos;4 is the number of links in oContainer
+		&apos;We don&apos;t want to delete them
+		for i = 0 to ( UBound( oContainer.getControls( ) ) - 5 ) / 3 - 1
+			for j = 0 to 2
+				oControl = oContainer.getControl( controlNames( j ) &amp; i )
+				oControl.setVisible( false )
+				oContainer.removeControl( oControl )
+			next j
+		next i
+	else
+		oControl = oContainer.getControl( &quot;Message&quot; )
+		oControl.setVisible( false )
+		oContainer.removeControl( oControl )
+	end if
+
+	&apos;Test if the new directory has an error
+	if inStr( directory, &quot;problem:&quot; ) = 1 then
+		&apos;Add an &quot;Server unrechable label&quot; abd disable the scrollbars
+		oControlModel = createUnoService( &quot;com.sun.star.awt.UnoControlFixedTextModel&quot; )
+		oControlModel.Label = mid( directory, 9, len( directory ) )
+		oControlModel.BackgroundColor = RGB( 231, 231, 231 ) &apos;grey
+		oControlModel.Align = 1 &apos;center
+		oControlModel.VerticalAlign = com.sun.star.style.VerticalAlignment.MIDDLE
+		oControl = createUnoService( oControlModel.defaultControl )
+		oControl.setModel( oControlModel )
+		dim x, y
+		x = ( oContainer.PosSize.Width - 200 ) / 2
+		y = ( oContainer.PosSize.Height - 20 ) / 2
+		oControl.setPosSize( x, y, 200, 20, com.sun.star.awt.PosSize.POSSIZE)
+		oContainer.addControl( &quot;Message&quot;, oControl )
+
+		oScrollBar = getObjectFromLink( oContainer, &quot;linkToVertScrollBar&quot; )
+		oScrollBar.setVisibleSize( oContainer.PosSize.Height )
+		oScrollBar.setEnable( false )
+		oScrollBar = getObjectFromLink( oContainer, &quot;linkToHorizScrollBar&quot; )
+		oScrollBar.setVisibleSize( oContainer.PosSize.Width )
+		oScrollBar.setEnable( false )
+	else
+		&apos;Add the new nodes
+		oSize = addControlsToDirContainer( oContainer, directory )
+
+		oScrollBar = getObjectFromLink( oContainer, &quot;linkToVertScrollBar&quot; )
+		oScrollBar.setVisibleSize( oContainer.PosSize.Height )
+		oScrollBar.setMaximum( oSize.Height )
+		oScrollBar.setBlockIncrement( oContainer.PosSize.Height )
+		oScrollBar.setLineIncrement( CLng( oSize.Height / oContainer.PosSize.Height ) )
+		oScrollBar.setEnable( oSize.Height &gt; oContainer.PosSize.Height )
+
+		oScrollBar = getObjectFromLink( oContainer, &quot;linkToHorizScrollBar&quot; )
+		oScrollBar.setVisibleSize( oContainer.PosSize.Width )
+		oScrollBar.setMaximum( oSize.Width )
+		oScrollBar.setBlockIncrement( oContainer.PosSize.Width )
+		oScrollBar.setLineIncrement( CLng( oSize.Width / oContainer.PosSize.Width ) )
+		oScrollBar.setEnable( oSize.Width / oContainer.PosSize.Width )
+
+		updateDirContainer = true
+	end if
+end function
+
+
+
+function getDirGlobalVars( oContainer as object ) as variant
+	dim i, globalVars
+	
+	globalVars = Split( oContainer.getControl( &quot;globalVars&quot; ).Model.Label, &quot;/&quot; )
+	for i = LBound( globalVars ) to UBound( globalVars )
+		globalVars( i ) = val( globalVars( i ) )
+	next i
+	getDirGlobalVars = globalVars
+end function
+
+
+
+sub updateDirGlobalVars( oContainer as object, currentHighlightedLine as integer, currentNodeID as integer )
+	dim gV
+	
+	gV = getDirGlobalVars( oContainer )
+	gv( 1 ) = getSystemTicks( )
+	gv( 2 ) = currentHighlightedLine
+	gv( 3 ) = currentNodeID
+	oContainer.getControl( &quot;globalVars&quot; ).Model.Label = Join( gV, &quot;/&quot; )
+end sub
+
+
+
+sub fillDirContainer( oContainer as object, directory as string )
+	dim oControl, oControlModel
+	dim x, y
+	dim oScrollBar
+	dim globalVars
+		
+	if inStr( directory, &quot;problem:&quot; ) = 1 then
+		&apos;Add an &quot;Server unrechable label&quot; abd disable the scrollbars
+		oControlModel = createUnoService( &quot;com.sun.star.awt.UnoControlFixedTextModel&quot; )
+		oControlModel.Label = mid( directory, 9, len( directory ) )
+		oControlModel.BackgroundColor = RGB( 231, 231, 231 ) &apos;grey
+		oControlModel.Align = 1 &apos;center
+		oControlModel.VerticalAlign = com.sun.star.style.VerticalAlignment.MIDDLE
+		oControl = createUnoService( oControlModel.defaultControl )
+		oControl.setModel( oControlModel )
+
+		x = ( oContainer.PosSize.Width - 200 ) / 2
+		y = ( oContainer.PosSize.Height - 20 ) / 2
+		oControl.setPosSize( x, y, 200, 20, com.sun.star.awt.PosSize.POSSIZE)
+		oContainer.addControl( &quot;Message&quot;, oControl )
+		&apos;Disable the scrollbars
+
+		oScrollBar = getObjectFromLink( oContainer, &quot;linkToVertScrollBar&quot; )
+		oScrollBar.setEnable( false )
+		oScrollBar = getObjectFromLink( oContainer, &quot;linkToHorizScrollBar&quot; )
+		oScrollBar.setEnable( false )
+	else
+		&apos;Normally add the labels and resize the scrollbars
+		addControlsToDirContainer( oContainer, directory )
+
+		globalVars = getDirGlobalVars( oContainer )
+		updateDirGlobalVars( oContainer, 0, globalVars( 3 ) )
+	end if
+end sub
+
+function getLabelWidth( label as string ) as integer
+	dim oControl as object
+	dim oControlModel as object
+	dim oSize as new com.sun.star.awt.Size
+	
+	oControlModel = createUnoService( &quot;com.sun.star.awt.UnoControlButtonModel&quot; )
+	oControlModel.Label = label
+	oControl = createUnoService( oControlModel.defaultControl )
+	oControl.setModel( oControlModel )
+	oSize = oControl.calcAdjustedSize( oSize )
+	getLabelWidth = oSize.Width
+end function
+
+</script:module>

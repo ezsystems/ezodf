@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Module3" script:language="StarBasic">option explicit
+
+
+
+function pathBoxCreate( oToolKit as object, oParentWindow as object ) as object 
+	dim oContainer
+	dim oSize as new com.sun.star.awt.Rectangle
+
+	oSize = rectangle( 25, 50, 400, 25 )
+	oContainer = createControlContainer( oToolKit, oParentWindow, oSize, &quot;grey&quot; )
+
+	pathBoxAddControlsToContainer( oContainer )
+
+	pathBoxCreate = oContainer
+end function
+
+
+
+sub pathBoxAddControlsToContainer( oContainer as object )
+	dim i
+	dim oControl, oControlModel
+	dim posX, label, actionCommand, controlName
+	dim oSize as new com.sun.star.awt.Size
+	dim oActionListener
+
+	oActionListener = createUnoListener( &quot;path&quot;, &quot;com.sun.star.awt.XActionListener&quot; )
+
+	label = Array( &quot;&lt;&quot;, &quot;&gt;&quot;, &quot; / &quot; )
+	actionCommand = Array( &quot;&lt;&quot;, &quot;&gt;&quot;, &quot;2&quot; )
+	controlName = Array( &quot;&lt;&quot;, &quot;&gt;&quot;, &quot;Path_0&quot; )
+	posX = Array( 0, oContainer.PosSize.Width - 21, 21 + 5 )
+
+	for i = 0 to 2
+		&apos;Create the button control model
+		oControlModel = createUnoService( &quot;com.sun.star.awt.UnoControlButtonModel&quot; )
+		oControlModel.Label = label( i )
+		if i = 2 then oControlModel.FontWeight = com.sun.star.awt.FontWeight.BOLD
+		&apos;Link the control with the control model
+		oControl = createUnoService( oControlModel.defaultControl )
+		oControl.setModel( oControlModel )
+		oControl.setPosSize( posX( i ), 0, 0, 25, com.sun.star.awt.PosSize.POSSIZE )
+		adjustWidth( oControl )
+		oControl.setActionCommand( actionCommand( i ) )
+		oControl.addActionListener( oActionListener )
+		if i &lt;&gt; 2 then
+			oControl.setEnable( false )
+		end if
+		oContainer.addControl( controlName( i ), oControl )
+	next i
+
+	oControlModel = createUnoService( &quot;com.sun.star.awt.UnoControlFixedTextModel&quot; )
+	&apos;First Visible Button / Last Visible Button / Last Button
+	oControlModel.Label = &quot;0/0/0&quot;
+	oControl = createUnoService( oControlModel.defaultControl )
+	oControl.setModel( oControlModel )
+	oControl.setVisible( false )
+	oContainer.addControl( &quot;globalVars&quot;, oControl )
+
+end sub
+
+
+
+function buttonWidth( buttonName as string ) as integer
+	buttonWidth = 7 * len( buttonName ) + 10
+end function
+
+
+
+sub updatePathContainer( oPathContainer as object, buttonName as string, nodeID as integer )
+	dim i, posX, maxPosX, firstButton as integer
+	dim globalVars
+	dim oControlModel, oControl
+	dim oPosSize as new com.sun.star.awt.Rectangle
+	dim oSize as new com.sun.star.awt.Size
+	dim newControlName
+	dim lastButton
+
+	&apos;First Visible Button / Last Visible Button / Last Button
+	globalVars = getPathGlobalVars( oPathContainer )
+	lastButton = &quot;Path_&quot; &amp; globalVars( 2 )
+	newControlName = &quot;Path_&quot; &amp; globalVars( 2 ) + 1
+
+	&apos;Change the fontWeight of the last button to NORMAL and recalculate its size
+	oControl = oPathContainer.getControl( lastButton )
+	oControl.Model.FontWeight = com.sun.star.awt.FontWeight.NORMAL
+	adjustWidth( oControl )
+
+	&apos;Calculate the X-position of the new button
+	posX = oPathContainer.getControl( lastButton ).PosSize.X +_
+		oPathContainer.getControl( lastButton ).PosSize.Width + 5
+
+	&apos;Calculate the maximum X position of the button
+	maxPosX = oPathContainer.getControl( &quot;&gt;&quot; ).PosSize.X - 5
+
+	&apos;Create the new button and hide it
+	oControlModel = createUnoService( &quot;com.sun.star.awt.UnoControlButtonModel&quot; )
+	with oControlModel
+		.Label = buttonName
+		.FontWeight = com.sun.star.awt.FontWeight.BOLD
+	end with
+	oControl = createUnoService( oControlModel.defaultControl )
+	with oControl
+		.setModel( oControlModel )
+		.setVisible( false )
+		.setActionCommand( nodeID )
+		.addActionListener( createUnoListener( &quot;path&quot;, &quot;com.sun.star.awt.XActionListener&quot; ) )
+	end with
+	oPathContainer.addControl( newControlName, oControl )
+
+	&apos;Place the new button
+	if posX + adjustWidth( oControl ) + 5 &lt; maxPosX then
+		&apos;if the new button does have enough space, simply add it
+		oControl.setPosSize( posX, 0, adjustWidth( oControl ), 25, com.sun.star.awt.PosSize.POSSIZE )
+		oControl.setVisible( true )
+		&apos;Update the globalVars label
+		updatePathGlobalVars( oPathContainer, globalVars( 0 ), globalVars( 1 ) + 1, globalVars( 2 ) + 1 )
+	else
+		&apos;if the last button visible is the last button AND if the new button
+		&apos;doesn&apos;t have enough space, find the new first button and shift the others
+		firstButton = globalVars( 0 ) + 1
+		do while posX + adjustWidth( oPathContainer.getControl( newControlName ) ) + 5 &gt; maxPosX
+			&apos;Init posX to the posX of the first visible Button
+			posX = oPathContainer.getControl( &quot;Path_&quot; &amp; globalVars( 0 ) ).PosSize.X
+			for i = firstButton to globalVars( 2 )
+				oControl = oPathContainer.getControl( &quot;Path_&quot; &amp; i )
+				posX = posX + adjustWidth( oControl ) + 5
+			next i
+			firstButton = firstButton + 1
+		loop
+		firstButton = firstButton - 1
+
+		for i = 0 to firstButton - 1
+			oControl = oPathContainer.getControl( &quot;Path_&quot; &amp; i )
+			oControl.setVisible( false )
+		next i
+
+		posX = oPathContainer.getControl( &quot;Path_&quot; &amp; globalVars( 0 ) ).PosSize.X
+		for i = firstButton to globalVars( 2 ) + 1
+			oControl = oPathContainer.getControl( &quot;Path_&quot; &amp; i )
+			oControl.setPosSize( posX, 0, adjustWidth( oControl ), 25, com.sun.star.awt.PosSize.POSSIZE )
+			oControl.setVisible( true )
+			posX = posX + adjustWidth( oControl ) + 5
+		next i
+
+		oPathContainer.getControl( &quot;&lt;&quot; ).setEnable( true )
+
+		updatePathGlobalVars( oPathContainer, firstButton, globalVars( 2 ) + 1, globalVars( 2 ) + 1 )
+	end if
+end sub
+
+
+
+sub pathActionPerformed( oEvent as object )
+	dim oPathContainer, oDirContainer, oServerContainer
+	dim oControlsArray, i, oControl, oContainer, posX
+	dim globalVars
+	dim oButtonContainer
+	dim directory
+	dim server
+
+	&apos;Get the containers
+	oPathContainer = getContainerFromEvent( oEvent )
+	oDirContainer = getObjectFromLink( oPathContainer, &quot;linkToDir&quot; )
+	oServerContainer = getObjectFromLink( oPathContainer, &quot;linkToServer&quot; )
+	oButtonContainer = getObjectFromLink( oPathContainer, &quot;linkToButton&quot; )
+
+	if oEvent.ActionCommand = &quot;&lt;&quot; then
+		shiftLeft( oPathContainer )
+	elseif oEvent.ActionCommand = &quot;&gt;&quot; then
+		shiftRight( oPathContainer )
+	else
+		&apos;Update the dir container
+		server = getServer( oServerContainer )
+		directory = getNode( server( 0 ), server( 1 ), server( 2 ), oEvent.ActionCommand )
+		removePathButtons( oPathContainer, oEvent.Source )
+
+		globalVars = getDirGlobalVars( oDirContainer )
+		if updateDirContainer( oDirContainer, directory ) then
+			updateDirGlobalVars( oDirContainer, 0, oEvent.ActionCommand )
+			enableOKButton( oButtonContainer )
+		else
+			updateDirGlobalVars( oDirContainer, -1, oEvent.ActionCommand )
+			disableOKButton( oButtonContainer )
+		end if
+
+		removePathButtons( oPathContainer, oEvent.Source )
+	end if
+end sub
+
+
+
+sub shiftLeft( oPathContainer as object )
+	dim posX, maxPosX, i as integer
+	dim oSize as new com.sun.star.awt.Rectangle
+	dim globalVars
+	dim oControl
+
+	globalVars = getPathGlobalVars( oPathContainer )
+
+	&apos;Hide the last visible button
+	oPathContainer.getControl( &quot;Path_&quot; &amp; globalVars( 1 ) ).setVisible( false )
+
+	posX = oPathContainer.getControl( &quot;Path_&quot; &amp; globalVars( 0 ) ).PosSize.X
+	maxPosX = oPathContainer.getControl( &quot;&gt;&quot; ).PosSize.X - 5
+
+	i = globalVars( 0 ) - 1
+	&apos;Disable the left arrow
+	if i = 0 then oPathContainer.getControl( &quot;&lt;&quot; ).setEnable( false )
+
+	do while posX &lt; maxPosX
+		oControl = oPathContainer.getControl( &quot;Path_&quot; &amp; i )
+		oSize = oControl.getPosSize( )
+		oControl.setPosSize( posX, oSize.Y, oSize.Width, oSize.Height, com.sun.star.awt.PosSize.POSSIZE )
+		oControl.setVisible( true )
+		posX = posX + oSize.Width + 5
+		if i = GlobalVars( 2 ) then exit do
+		i = i + 1
+	loop
+	if oControl.PosSize.X + oControl.PosSize.Width + 5 &gt; maxPosX then
+		oControl.setVisible( false )
+		i = i - 1
+	end if
+
+	&apos;Disable the right arrow
+	if i = globalVars( 2 ) then
+		oPathContainer.getControl( &quot;&gt;&quot; ).setEnable( false )
+	else
+		oPathContainer.getControl( &quot;&gt;&quot; ).setEnable( true )
+	end if
+
+	&apos;change the globalVars
+	updatePathGlobalVars( oPathContainer, globalVars( 0 ) - 1, i, globalVars( 2 ) )
+end sub
+
+
+
+sub shiftRight( oPathContainer as object )
+	dim posX, maxPosX, i as integer
+	dim oSize as new com.sun.star.awt.Rectangle
+	dim globalVars
+	dim oControl
+
+	globalVars = getPathGlobalVars( oPathContainer )
+
+	&apos;Hide the first visible button
+	oPathContainer.getControl( &quot;Path_&quot; &amp; globalVars( 0 ) ).setVisible( false )
+
+	posX = oPathContainer.getControl( &quot;Path_&quot; &amp; globalVars( 0 ) ).PosSize.X
+	maxPosX = oPathContainer.getControl( &quot;&gt;&quot; ).PosSize.X - 5
+
+	i = globalVars( 0 ) + 1
+	&apos;Enable the left arrow
+	oPathContainer.getControl( &quot;&lt;&quot; ).setEnable( true )
+
+	do while posX &lt; maxPosX
+		oControl = oPathContainer.getControl( &quot;Path_&quot; &amp; i )
+		oSize = oControl.getPosSize( )
+		oControl.setPosSize( posX, oSize.Y, oSize.Width, oSize.Height, com.sun.star.awt.PosSize.POSSIZE )
+		oControl.setVisible( true )
+		posX = posX + oSize.Width + 5
+		if i = globalVars( 2 ) then exit do
+		i = i + 1
+	loop
+	if oControl.PosSize.X + oControl.PosSize.Width + 5 &gt; maxPosX then
+		oControl.setVisible( false )
+		i = i - 1
+	end if
+
+	&apos;Disable the right arrow
+	if i = globalVars( 2 ) then
+		oPathContainer.getControl( &quot;&gt;&quot; ).setEnable( false )
+	else
+		oPathContainer.getControl( &quot;&gt;&quot; ).setEnable( true )
+	end if
+
+	&apos;change the globalVars
+	updatePathGlobalVars( oPathContainer, globalVars( 0 ) + 1, i, globalVars( 2 ) )
+end sub
+
+
+
+sub removePathButtons( oPathContainer as object, source as object )
+	dim i
+	dim globalVars
+	dim oControl
+	dim oSize as new com.sun.star.awt.Size
+	dim oPos
+
+	globalVars = getPathGlobalVars( oPathContainer )
+
+	for i = globalVars( 0 ) to globalVars( 1 )
+		if oPathContainer.getControl( &quot;Path_&quot; &amp; i ).PosSize.X = source.PosSize.X then
+			exit for
+		end if
+	next i
+
+	oPathContainer.getControl( &quot;&gt;&quot; ).setEnable( false )
+
+	updatePathGlobalVars( oPathContainer, globalVars( 0 ), i, i )
+
+	source.Model.FontWeight = com.sun.star.awt.FontWeight.BOLD
+	adjustWidth( source )
+
+	for i = i + 1 to globalVars( 2 )
+		oControl = oPathContainer.getControl( &quot;Path_&quot; &amp; i )
+		oControl.setVisible( false )
+		oPathContainer.removeControl( oControl )
+	next i
+end sub
+
+
+
+function adjustWidth( oButton as object ) as integer
+	dim oSize as new com.sun.star.awt.Size
+	dim oPosSize as new com.sun.star.awt.Rectangle
+
+	oPosSize = oButton.getPosSize( )
+	oSize = oButton.calcAdjustedSize( oSize )
+
+	oButton.setPosSize( oPosSize.X, oPosSize.Y, oSize.Width + 8, oPosSize.Height, com.sun.star.awt.PosSize.POSSIZE )
+
+	adjustWidth = oSize.Width + 8
+end function
+
+
+
+function getPathGlobalVars( oContainer as object ) as variant
+	dim i, globalVars
+	globalVars = Split( oContainer.getControl( &quot;globalVars&quot; ).Model.Label, &quot;/&quot; )
+	for i = LBound( globalVars ) to UBound( globalVars )
+		globalVars( i ) = val( globalVars( i ) )
+	next i
+	getPathGlobalVars = globalVars
+end function
+
+
+
+sub updatePathGlobalVars( oContainer as object, firstVisibleButton as integer, lastVisibleButton as integer, lastButton as integer )
+	dim gV
+	gV = Array( firstVisibleButton, lastVisibleButton, lastButton )
+	oContainer.getControl( &quot;globalVars&quot; ).Model.Label = Join( gV, &quot;/&quot; )
+end sub
+
+
+
+sub setX( oControl as object, X as integer )
+	dim oPosSize
+	oPosSize = oControl.getPosSize( )
+	oControl.setPosSize( X, oPosSize.Y, oPosSize.Width, oPosSize.Height, com.sun.star.awt.PosSize.POSSIZE )
+end sub
+
+
+</script:module>
