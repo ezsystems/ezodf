@@ -49,14 +49,9 @@ $ViewList['export'] = array(
                                  'export_type' => 'ExportType' ) );
 
 
-$ViewList['upload_import'] = array(
-    'script' => 'upload_import.php' );
-
 $ViewList['authenticate'] = array(
     'script' => 'authenticate.php' );
 
-$ViewList['upload_export'] = array(
-    'script' => 'upload_export.php' );
 
 
 ?>
