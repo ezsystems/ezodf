@@ -210,7 +210,7 @@ class eZOOImport
              }
              else
              {
-                 $this->setError( OOIMPORT_ERROR_DEAMONCALL  );
+                 $this->setError( OOIMPORT_ERROR_DEAMONCALL );
                  $res = false;
              }
              fclose( $fp );
@@ -1031,7 +1031,15 @@ class eZOOImport
                             // Add collapsed tag, if beyond the last collapsing tag
                             if ( $lastCollapsingTagName !== false )
                             {
-                                $xhtmlTextContent .= '<paragraph>' . '<' . $lastCollapsingTagName . ' ' . $this->CollapsingTagAttribute . '>' . $this->CollapsingTagContent . "</" . $lastCollapsingTagName . ">\n</paragraph>\n";
+                                // Content should be quoted because it breaks the XML.
+                                $tagContent = str_replace( "&", "&amp;", $this->CollapsingTagContent );
+                                $tagContent = str_replace( ">", "&gt;", $tagContent );
+                                $tagContent = str_replace( "<", "&lt;", $tagContent );
+                                $tagContent = str_replace( "'", "&apos;", $tagContent );
+                                $tagContent = str_replace( '"', "&quot;", $tagContent );
+
+                                $collapsingTagAttrText = $this->CollapsingTagAttribute ? ' ' . $this->CollapsingTagAttribute : '';
+                                $xhtmlTextContent .= '<paragraph>' . '<' . $lastCollapsingTagName . $collapsingTagAttrText . '>' . $tagContent . "</" . $lastCollapsingTagName . ">\n</paragraph>\n";
                                 $this->CollapsingTagContent = false;
                                 $this->CollapsingTagAttribute = false;
                             }
