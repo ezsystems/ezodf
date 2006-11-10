@@ -40,7 +40,7 @@ include_once( 'lib/ezlocale/classes/ezdatetime.php' );
 
 include_once( "kernel/classes/ezcontentbrowse.php" );
 
-include_once( "extension/oo/modules/oo/ezooconverter.php" );
+include_once( "extension/ezodf/modules/oo/ezooconverter.php" );
 
 
 $http =& eZHTTPTool::instance();
@@ -94,7 +94,7 @@ if ( $http->hasPostVariable( "ExportType" ) )
     }
     else
     {
-        $tpl->setVariable( "error_string", ezi18n( 'extension/oo/export/error',"Destination file format not supported" ) );
+        $tpl->setVariable( "error_string", ezi18n( 'extension/ezodf/export/error',"Destination file format not supported" ) );
         $success = false;
     }
 }
@@ -104,7 +104,7 @@ else if ( $exportTypeParam == "PDF" or $exportTypeParam == "Word" )
 }
 else if ( strlen( trim ( $exportTypeParam) ) != 0 )
 {
-    $tpl->setVariable( "error_string", ezi18n( 'extension/oo/export/error',"Destination file format not supported" ) );
+    $tpl->setVariable( "error_string", ezi18n( 'extension/ezodf/export/error',"Destination file format not supported" ) );
     $success = false;
 }
 
@@ -155,7 +155,7 @@ if ( $doExport == true )
                         else
                         {
                             $success = false;
-                            $tpl->setVariable( "error_string", ezi18n( 'extension/oo/export/error',"PDF conversion failed" ) );
+                            $tpl->setVariable( "error_string", ezi18n( 'extension/ezodf/export/error',"PDF conversion failed" ) );
                         }
 
                     }break;
@@ -171,7 +171,7 @@ if ( $doExport == true )
                         else
                         {
                             $success = false;
-                            $tpl->setVariable( "error_string", ezi18n( 'extension/oo/export/error',"Word conversion failed" ) );
+                            $tpl->setVariable( "error_string", ezi18n( 'extension/ezodf/export/error',"Word conversion failed" ) );
                         }
 
                     }break;
@@ -187,7 +187,7 @@ if ( $doExport == true )
         }
         else
         {
-            $tpl->setVariable( "error_string", ezi18n( 'extension/oo/export/error',"Unable to fetch node, or no read access" ) );
+            $tpl->setVariable( "error_string", ezi18n( 'extension/ezodf/export/error',"Unable to fetch node, or no read access" ) );
             $success = false;
         }
 
@@ -225,7 +225,7 @@ if ( $doExport == true )
             }
             else
             {
-                $tpl->setVariable( "error_string", ezi18n( 'extension/oo/export/error',"Unable to open file %1 on server side", null, array( $fileName ) ) );
+                $tpl->setVariable( "error_string", ezi18n( 'extension/ezodf/export/error',"Unable to open file %1 on server side", null, array( $fileName ) ) );
             }
         }
     }

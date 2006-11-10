@@ -1,6 +1,7 @@
-#?ini charset="iso-8859-1"?
+<?php /* #?ini charset="iso-8859-1"?
+
 # eZ publish configuration file for designs
-
 [ExtensionSettings]
-DesignExtensions[]=oo
+DesignExtensions[]=ezodf
 
+*/ ?>

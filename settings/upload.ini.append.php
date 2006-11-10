@@ -1,3 +1,4 @@
+<?php /* #?ini charset="iso-8859-1"?
 
 [CreateSettings]
 
@@ -8,3 +9,4 @@ MimeUploadHandlerMap[application/vnd.oasis.opendocument.text]=ezopenofficeupload
 MimeUploadHandlerMap[application/msword]=ezopenofficeuploadhandler
 MimeUploadHandlerMap[application/rtf]=ezopenofficeuploadhandler
 
+*/ ?>
