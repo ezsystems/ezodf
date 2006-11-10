@@ -45,7 +45,7 @@
 */
 
 include_once( 'kernel/classes/ezcontentuploadhandler.php' );
-include_once( "extension/oo/modules/oo/ezooimport.php" );
+include_once( "extension/ezodf/modules/oo/ezooimport.php" );
 
 class eZOpenofficeUploadHandler extends eZContentUploadHandler
 {

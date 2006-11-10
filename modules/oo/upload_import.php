@@ -1,6 +1,6 @@
 <?php
 
-    include_once( "extension/oo/modules/oo/ezooimport.php" );
+    include_once( "extension/ezodf/modules/oo/ezooimport.php" );
     include_once( 'kernel/classes/datatypes/ezuser/ezuser.php' );
     include_once( "lib/ezutils/classes/ezhttptool.php" );
 	include_once( "lib/ezutils/classes/ezhttpfile.php" );

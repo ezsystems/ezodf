@@ -37,7 +37,7 @@
 
 /*! \file ezooconverter.php
 */
-include_once( "extension/oo/modules/oo/ezoogenerator.php" );
+include_once( "extension/ezodf/modules/oo/ezoogenerator.php" );
 include_once( "lib/ezxml/classes/ezxml.php" );
 
 /*!

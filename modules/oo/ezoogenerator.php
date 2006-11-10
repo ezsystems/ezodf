@@ -114,7 +114,7 @@ class eZOOGenerator
         $templateName = $ooINI->variable( 'OOExport', 'TemplateName' );
         if ( $useTemplate == true )
         {
-            $templateFile = "extension/oo/templates/" . $templateName;
+            $templateFile = "extension/ezodf/templates/" . $templateName;
             // Check if zlib extension is loaded, if it's loaded use bundled ZIP library,
             // if not rely on the unzip commandline version.
             if ( !function_exists( 'gzopen' ) )
@@ -123,7 +123,7 @@ class eZOOGenerator
             }
             else
             {
-                require_once('extension/oo/lib/pclzip.lib.php');
+                require_once('extension/ezodf/lib/pclzip.lib.php');
                 $templateArchive = new PclZip( $templateFile );
                 $templateArchive->extract( PCLZIP_OPT_PATH, $this->OOTemplateDir );
 
@@ -313,7 +313,7 @@ class eZOOGenerator
         }
         else
         {
-            require_once('extension/oo/lib/pclzip.lib.php');
+            require_once('extension/ezodf/lib/pclzip.lib.php');
             $archive = new PclZip( $this->OORootDir . "ootest.odt" );
 
             $archive->create( $this->OOExportDir,
