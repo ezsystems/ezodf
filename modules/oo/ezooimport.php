@@ -114,12 +114,12 @@ class eZOOImport
                 break;
             case OOIMPORT_ERROR_UNSUPPORTEDTYPE :
                 $this->ERROR['number'] = $errorNumber;
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "File extention or type is not allowed." );
+                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "File extension or type is not allowed." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
             case OOIMPORT_ERROR_PARSEXML :
                 $this->ERROR['number'] = $errorNumber;
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Could not parse XML" );
+                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Could not parse XML." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
             case OOIMPORT_ERROR_OPENSOCKET :
@@ -129,32 +129,32 @@ class eZOOImport
                 break;
             case OOIMPORT_ERROR_CONVERT :
                 $this->ERROR['number'] = $errorNumber;
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Can not convert the given document" );
+                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Can not convert the given document." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
             case OOIMPORT_ERROR_DEAMONCALL :
                 $this->ERROR['number'] = $errorNumber;
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unable to call deamon, Fork can not create child process." );
+                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unable to call deamon. Fork can not create child process." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
             case OOIMPORT_ERROR_DEAMON :
                 $this->ERROR['number'] = $errorNumber;
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Deamon reported error" );
+                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Deamon reported error." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
             case OOIMPORT_ERROR_UNKNOWNNODE:
                 $this->ERROR['number'] = $errorNumber;
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unknown node" );
+                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unknown node." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
             case OOIMPORT_ERROR_ACCESSDENIED:
                 $this->ERROR['number'] = $errorNumber;
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Access denied" );
+                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Access denied." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
             case OOIMPORT_ERROR_IMPORTING:
                 $this->ERROR['number'] = $errorNumber;
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Error during import" );
+                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Error during import." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
             case OOIMPORT_ERROR_UNKNOWNCLASS:
@@ -164,7 +164,7 @@ class eZOOImport
                 break;
             default :
                 $this->ERROR['number'] = $errorNumber;
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unknown error" );
+                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unknown error." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
         }
@@ -1563,7 +1563,7 @@ class eZOOImport
         //pk
         if ( !$node->canCreate() )
         {
-            $this->setError( OOIMPORT_ERROR_ACCESSDENIED, ezi18n( 'extension/ezodf/import/error', "Folder for images could not be created, access denied" ) );
+            $this->setError( OOIMPORT_ERROR_ACCESSDENIED, ezi18n( 'extension/ezodf/import/error', "Folder for images could not be created, access denied." ) );
             return false;
         }
 

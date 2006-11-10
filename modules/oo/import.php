@@ -134,7 +134,7 @@ if ( $module->isCurrentAction( 'OOPlace' ) )
                 else
                 {
                     $tpl->setVariable( 'error', makeErrorArray( OOIMPORT_ERROR_DOCNOTSUPPORTED,
-                                                                ezi18n( 'extension/ezodf/import/error', "Document is not suported" ) ) );
+                                                                ezi18n( 'extension/ezodf/import/error', "Document is not suported." ) ) );
                 }
 
             }
@@ -203,7 +203,7 @@ if( eZHTTPFile::canFetch( "oo_file" ) )
                     else
                     {
                         $tpl->setVariable( 'error', makeErrorArray( OOIMPORT_ERROR_DOCNOTSUPPORTED,
-                                                                    ezi18n( 'extension/ezodf/import/error',"Document is not suported" ) ) );
+                                                                    ezi18n( 'extension/ezodf/import/error',"Document is not suported." ) ) );
                     }
                 }
                 $http->removeSessionVariable( 'oo_direct_import_node' );
@@ -228,7 +228,7 @@ if( eZHTTPFile::canFetch( "oo_file" ) )
         {
             eZDebug::writeError( "Cannot store uploaded file, cannot import" );
             $tpl->setVariable( 'error', makeErrorArray( OOIMPORT_ERROR_CANNOTSTORE,
-                                                        ezi18n( 'extension/ezodf/import/error',"Cannot store uploaded file, cannot import" ) ) );
+                                                        ezi18n( 'extension/ezodf/import/error',"Cannot store uploaded file, cannot import." ) ) );
         }
     }
  }
@@ -240,7 +240,7 @@ if( eZHTTPFile::canFetch( "oo_file" ) )
 $Result = array();
 $Result['content'] =& $tpl->fetch( "design:oo/import.tpl" );
 $Result['path'] = array( array( 'url' => '/oo/import/',
-                                'text' => ezi18n( 'extension/oo', 'OpenOffice.org import' ) ));
+                                'text' => ezi18n( 'extension/ezodf', 'OpenOffice.org import' ) ));
 
 
 
