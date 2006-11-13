@@ -8,5 +8,4 @@
     <a id="menu-import-ooo" href="#" onmouseover="ezpopmenu_mouseOver( 'SubitemsContextMenu' )"
        onclick="ezpopmenu_submitForm( 'menu-form-import-ooo' ); return false;">{"Import OpenOffice.org"|i18n("extension/ezodf/popupmenu")}</a>
     <a id="menu-import-ooo" href="#" onmouseover="ezpopmenu_mouseOver( 'SubitemsContextMenu' )"
-       onclick="ezpopmenu_submitForm( 'menu-form-import-ooo' ); return false;">{"Replace OpenOffice.org"|i18n("extension/ezodf/popupmenu")}</a>
-
+       onclick="ezpopmenu_submitForm( 'menu-form-replace-ooo' ); return false;">{"Replace OpenOffice.org"|i18n("extension/ezodf/popupmenu")}</a>
