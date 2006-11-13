@@ -1,4 +1,4 @@
-<form enctype="multipart/form-data" method="post" action={"/oo/export"|ezurl}>
+<form enctype="multipart/form-data" method="post" action={"/odf/export"|ezurl}>
 
 <div class="context-block">
 
