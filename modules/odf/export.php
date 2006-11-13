@@ -40,7 +40,7 @@ include_once( 'lib/ezlocale/classes/ezdatetime.php' );
 
 include_once( "kernel/classes/ezcontentbrowse.php" );
 
-include_once( "extension/ezodf/modules/oo/ezooconverter.php" );
+include_once( "extension/ezodf/modules/odf/ezooconverter.php" );
 
 
 $http =& eZHTTPTool::instance();
@@ -55,10 +55,10 @@ $success = true;
 if ( $http->hasPostVariable( "ExportButton" ) )
 {
     eZContentBrowse::browse( array( 'action_name' => 'OOPlace',
-                                    'description_template' => 'design:oo/browse_place.tpl',
+                                    'description_template' => 'design:odf/browse_place.tpl',
                                     'content' => array(),
-                                    'from_page' => '/oo/export/',
-                                    'cancel_page' => '/oo/export/' ),
+                                    'from_page' => '/odf/export/',
+                                    'cancel_page' => '/odf/export/' ),
                              $module );
     return;
 }
@@ -108,8 +108,8 @@ else if ( strlen( trim ( $exportTypeParam) ) != 0 )
     $success = false;
 }
 
-$ooINI =& eZINI::instance( 'oo.ini' );
-//$tmpDir = $ooINI->variable( 'OOo', 'TmpDir' );
+$ooINI =& eZINI::instance( 'odf.ini' );
+//$tmpDir = $ooINI->variable( 'ODFSettings', 'TmpDir' );
 $tmpDir = getcwd() . "/" . eZSys::cacheDirectory();
 
 if ( $doExport == true )
@@ -139,8 +139,8 @@ if ( $doExport == true )
 
                 $uniqueStamp = md5( mktime() );
 
-                $server = $ooINI->variable( "OOImport", "OOConverterAddress" );
-                $port = $ooINI->variable( "OOImport", "OOConverterPort" );
+                $server = $ooINI->variable( "ODFImport", "OOConverterAddress" );
+                $port = $ooINI->variable( "ODFImport", "OOConverterPort" );
 
                 switch ( $exportType )
                 {
@@ -232,8 +232,8 @@ if ( $doExport == true )
 }
 
 $Result = array();
-$Result['content'] =& $tpl->fetch( "design:oo/export.tpl" );
-$Result['path'] = array( array( 'url' => '/oo/export/',
+$Result['content'] =& $tpl->fetch( "design:odf/export.tpl" );
+$Result['path'] = array( array( 'url' => '/odf/export/',
                                 'text' => ezi18n( 'extension/ezodf', 'OpenOffice.org export' ) ) );
 
 

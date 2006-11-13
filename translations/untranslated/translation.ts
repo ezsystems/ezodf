@@ -2,6 +2,18 @@
 <context>
     <name>extension/ezodf</name>
     <message>
+        <source>Import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Replace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Choose document placement</source>
         <translation type="unfinished"></translation>
     </message>
@@ -177,11 +189,7 @@ Images are placed in the media library so you can re-use them in other articles.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Unknown content class specified in oo.ini:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unknown content class specified in oo.ini:</source>
+        <source>Unknown content class specified in odf.ini:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

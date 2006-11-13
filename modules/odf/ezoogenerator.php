@@ -65,7 +65,7 @@ class eZOOGenerator
 
     function writeDocument( )
     {
-        $ooINI =& eZINI::instance( 'oo.ini' );
+        $ooINI =& eZINI::instance( 'odf.ini' );
 
         // Initalize directories
         include_once( "lib/ezfile/classes/ezdir.php" );
@@ -110,8 +110,8 @@ class eZOOGenerator
         fwrite( $fp, $settingsXML );
         fclose( $fp );
 
-        $useTemplate = ( $ooINI->variable( 'OOExport', 'UseTemplate' ) == "true" );
-        $templateName = $ooINI->variable( 'OOExport', 'TemplateName' );
+        $useTemplate = ( $ooINI->variable( 'ODFExport', 'UseTemplate' ) == "true" );
+        $templateName = $ooINI->variable( 'ODFExport', 'TemplateName' );
         if ( $useTemplate == true )
         {
             $templateFile = "extension/ezodf/templates/" . $templateName;
@@ -305,7 +305,7 @@ class eZOOGenerator
         {
             $currentDir = getcwd();
             chdir( $this->OOExportDir );
-            $zipPath = $ooINI->variable( 'OOo', 'ZipPath' );
+            $zipPath = $ooINI->variable( 'ODFSettings', 'ZipPath' );
             $execStr = $zipPath . "zip -r ../ootest.odt *";
 
             exec(  $execStr, $result );
@@ -855,9 +855,9 @@ class eZOOGenerator
 
     var $ImageFileArray = array();
 
-    var $OORootDir = "var/cache/oo/";
-    var $OOExportDir = "var/cache/oo/export/";
-    var $OOTemplateDir = "var/cache/oo/template/";
+    var $OORootDir = "var/cache/odf/";
+    var $OOExportDir = "var/cache/odf/export/";
+    var $OOTemplateDir = "var/cache/odf/template/";
 }
 
 ?>
