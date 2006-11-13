@@ -1,7 +1,7 @@
 <?php
 
     include_once( 'kernel/classes/datatypes/ezuser/ezuser.php' );
-    include_once( "extension/ezodf/modules/oo/ezooconverter.php" );
+    include_once( "extension/ezodf/modules/odf/ezooconverter.php" );
     include_once( "lib/ezutils/classes/ezhttptool.php" );
 
     $http = eZHTTPTool::instance();

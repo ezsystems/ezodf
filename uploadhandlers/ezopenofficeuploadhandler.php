@@ -44,8 +44,9 @@
 
 */
 
-include_once( 'kernel/classes/ezcontentuploadhandler.php' );
-include_once( "extension/ezodf/modules/oo/ezooimport.php" );
+include_once( "kernel/classes/ezcontentuploadhandler.php" );
+include_once( "extension/ezodf/modules/odf/ezooimport.php" );
+include_once( "lib/ezutils/classes/ezsys.php" );
 
 class eZOpenofficeUploadHandler extends eZContentUploadHandler
 {
@@ -61,8 +62,9 @@ class eZOpenofficeUploadHandler extends eZContentUploadHandler
                          $filePath, $originalFilename, $mimeinfo,
                          $location, $existingNode )
     {
-		$ooINI =& eZINI::instance( 'oo.ini' );
-        $tmpDir = $ooINI->variable( 'OOo', 'TmpDir' );
+		//$ooINI =& eZINI::instance( 'odf.ini' );
+        //$tmpDir = $ooINI->variable( 'ODFSettings', 'TmpDir' );
+		$tmpDir = getcwd() . "/" . eZSys::cacheDirectory();
 		
         $originalFilename = basename( $originalFilename );
         $tmpFile = $tmpDir . "/" . $originalFilename;

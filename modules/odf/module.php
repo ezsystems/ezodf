@@ -32,7 +32,7 @@
 // you.
 //
 
-$Module = array( 'name' => 'eZOO',
+$Module = array( 'name' => 'eZODF',
                  'variable_params' => true );
 
 $ViewList = array();

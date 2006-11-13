@@ -41,7 +41,7 @@ include_once( 'lib/ezlocale/classes/ezdatetime.php' );
 
 include_once( "kernel/classes/ezcontentbrowse.php" );
 
-include_once( "extension/ezodf/modules/oo/ezooimport.php" );
+include_once( "extension/ezodf/modules/odf/ezooimport.php" );
 
 function makeErrorArray( $num, $msg )
 {
@@ -216,10 +216,10 @@ if( eZHTTPFile::canFetch( "oo_file" ) )
                 $http->setSessionVariable( 'oo_import_original_filename', $originalFileName );
 
                 eZContentBrowse::browse( array( 'action_name' => 'OOPlace',
-                                                'description_template' => 'design:oo/browse_place.tpl',
+                                                'description_template' => 'design:odf/browse_place.tpl',
                                                 'content' => array(),
-                                                'from_page' => '/oo/import/',
-                                                'cancel_page' => '/oo/import/' ),
+                                                'from_page' => '/odf/import/',
+                                                'cancel_page' => '/odf/import/' ),
                                          $module );
                 return;
             }
@@ -238,8 +238,8 @@ if( eZHTTPFile::canFetch( "oo_file" ) )
 
 
 $Result = array();
-$Result['content'] =& $tpl->fetch( "design:oo/import.tpl" );
-$Result['path'] = array( array( 'url' => '/oo/import/',
+$Result['content'] =& $tpl->fetch( "design:odf/import.tpl" );
+$Result['path'] = array( array( 'url' => '/odf/import/',
                                 'text' => ezi18n( 'extension/ezodf', 'OpenOffice.org import' ) ));
 
 

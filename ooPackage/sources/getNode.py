@@ -25,7 +25,7 @@ class getNode( unohelper.Base, XServiceName, XMain ):
             url = url + '/'
         try:
             params = urllib.urlencode( { "Username": username, "Password": password, "NodeID": nodeID } )
-            f = urllib.urlopen( url + "oo/authenticate", params )
+            f = urllib.urlopen( url + "odf/authenticate", params )
             output = f.read( ).strip( )
             if output.find( '<!DOCTYPE' ) == 0:
                 self.output = 'problem:Server unreachable'

@@ -26,7 +26,7 @@ class receive( unohelper.Base, XServiceName, XMain ):
             url = 'http://' + url
         if url[len( url ) - 1] != '/':
             url = url + '/'
-        url = url + 'oo/upload_export'
+        url = url + 'odf/upload_export'
 
         # send the request to the server
         try:

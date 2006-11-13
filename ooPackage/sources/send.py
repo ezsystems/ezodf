@@ -27,7 +27,7 @@ class send( unohelper.Base, XServiceName, XMain ):
         # keep only the server name
         url = url.split( '/' )[0]
 
-        page = '/oo/upload_import'
+        page = '/odf/upload_import'
 
         # try to read the content of the file
         try:

@@ -159,7 +159,7 @@ class eZOOImport
                 break;
             case OOIMPORT_ERROR_UNKNOWNCLASS:
                 $this->ERROR['number'] = $errorNumber;
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unknown content class specified in oo.ini:" );
+                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unknown content class specified in odf.ini:" );
                 $this->ERROR['description'] = $errorDescription;
                 break;
             default :
@@ -175,9 +175,9 @@ class eZOOImport
     */
     function deamonConvert( $sourceFile, $destFile )
     {
-        $ooINI =& eZINI::instance( 'oo.ini' );
-        $server = $ooINI->variable( "OOImport", "OOConverterAddress" );
-        $port = $ooINI->variable( "OOImport", "OOConverterPort" );
+        $ooINI =& eZINI::instance( 'odf.ini' );
+        $server = $ooINI->variable( "ODFImport", "OOConverterAddress" );
+        $port = $ooINI->variable( "ODFImport", "OOConverterPort" );
         $res = false;
         $fp = fsockopen( $server,
                          $port,
@@ -229,8 +229,8 @@ class eZOOImport
     */
     function import( $file, $placeNodeID, $originalFileName, $importType = "import" )
     {
-        $ooINI =& eZINI::instance( 'oo.ini' );
-        //$tmpDir = $ooINI->variable( 'OOo', 'TmpDir' );
+        $ooINI =& eZINI::instance( 'odf.ini' );
+        //$tmpDir = $ooINI->variable( 'ODFSettings', 'TmpDir' );
         // Use var-directory as temporary directory
         $tmpDir = getcwd() . "/" . eZSys::cacheDirectory();
 
@@ -254,13 +254,13 @@ class eZOOImport
         include_once( 'kernel/content/ezcontentfunctioncollection.php' );
         $place_node = eZContentObjectTreeNode::fetch( $placeNodeID );
 
-        $importClassIdentifier = $ooINI->variable( 'OOImport', 'DefaultImportClass' );
+        $importClassIdentifier = $ooINI->variable( 'ODFImport', 'DefaultImportClass' );
 
         // Check if class exist
         $class = eZContentClass::fetchByIdentifier( $importClassIdentifier );
         if ( !is_object( $class ) )
         {
-            eZDebug::writeError( "Content class <strong>$importClassIdentifier</strong> specified in oo.ini does not exist." );
+            eZDebug::writeError( "Content class <strong>$importClassIdentifier</strong> specified in odf.ini does not exist." );
             $this->setError( OOIMPORT_ERROR_UNKNOWNCLASS, $importClassIdentifier );
             return false;
         }
@@ -365,7 +365,7 @@ class eZOOImport
         $customClassFound = false;
         if ( count( $sectionNodeArray ) > 0 )
         {
-            $registeredClassArray = $ooINI->variable( 'OOImport', 'RegisteredClassArray' );
+            $registeredClassArray = $ooINI->variable( 'ODFImport', 'RegisteredClassArray' );
 
             // Check the defined sections in OO document
             $sectionNameArray = array();
@@ -776,7 +776,7 @@ class eZOOImport
             $operationResult = eZOperationHandler::execute( 'content', 'publish', array( 'object_id' => $contentObjectID,
                                                                                          'version' => $version->attribute( 'version' ) ) );
 
-            $storeImagesInMedia = $ooINI->variable( "OOImport", "PlaceImagesInMedia" ) == "true";
+            $storeImagesInMedia = $ooINI->variable( "ODFImport", "PlaceImagesInMedia" ) == "true";
             if ( $storeImagesInMedia == true )
             {
                 // Fetch object to get correct name
@@ -790,7 +790,7 @@ class eZOOImport
                     $node = eZContentObjectTreeNode::fetch( $mediaRootNodeID );
 
                     $articleFolderName = $object->attribute( 'name' );
-                    $importFolderName = $ooINI->variable( 'OOImport', 'ImportedImagesMediaNodeName' );
+                    $importFolderName = $ooINI->variable( 'ODFImport', 'ImportedImagesMediaNodeName' );
                     $importNode = eZOOImport::createSubNode( $node, $importFolderName );
 
                     $articleNode = eZOOImport::createSubNode( $importNode, $articleFolderName );
@@ -1397,8 +1397,8 @@ class eZOOImport
                                 {
 
                                     // Import image
-                                    $ooINI =& eZINI::instance( 'oo.ini' );
-                                    $imageClassIdentifier = $ooINI->variable( "OOImport", "DefaultImportImageClass" );
+                                    $ooINI =& eZINI::instance( 'odf.ini' );
+                                    $imageClassIdentifier = $ooINI->variable( "ODFImport", "DefaultImportImageClass" );
                                     $class = eZContentClass::fetchByIdentifier( $imageClassIdentifier );
                                     $creatorID = $this->currentUserID;
 
@@ -1639,8 +1639,8 @@ class eZOOImport
 
     var $RelatedImageArray = array();
     var $AutomaticStyles = array();
-    var $ImportDir = "var/cache/oo/import/";
-    var $ImportBaseDir = "var/cache/oo/import/";
+    var $ImportDir = "var/cache/odf/import/";
+    var $ImportBaseDir = "var/cache/odf/import/";
     var $InsideListType = false;
 
     var $IsSubList = false;
