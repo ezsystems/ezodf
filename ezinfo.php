@@ -1,5 +1,5 @@
 <?
-class ezdhtmlInfo
+class ezodfInfo
 {
     function info()
     {
