@@ -855,9 +855,9 @@ class eZOOGenerator
 
     var $ImageFileArray = array();
 
-    var $OORootDir = "var/cache/odf/";
-    var $OOExportDir = "var/cache/odf/export/";
-    var $OOTemplateDir = "var/cache/odf/template/";
+    var $OORootDir = "var/cache/ezodf/";
+    var $OOExportDir = "var/cache/ezodf/export/";
+    var $OOTemplateDir = "var/cache/ezodf/template/";
 }
 
 ?>

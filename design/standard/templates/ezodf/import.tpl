@@ -1,4 +1,4 @@
-<form enctype="multipart/form-data" method="post" action={"/odf/import"|ezurl}>
+<form enctype="multipart/form-data" method="post" action={"/ezodf/import"|ezurl}>
 {section show=$error.number|ne(0)}
    <div class="message-warning"><h2><span class="time">[{currentdate()|l10n( shortdatetime )}]</span>{$error.number}) {$error.message} </h2></div>
 {/section}
@@ -29,7 +29,7 @@
   <li>{"The object was imported as: %class_name"|i18n('extension/ezodf','', hash( '%class_name', $class_identifier ) )}</li>
   <li>{"Document imported as"|i18n("extension/ezodf")} <a href={$url_alias|ezurl}>{$node_name}</a>.</li>
   <li>{"The images are placed in the media and can be re-used."|i18n("extension/ezodf")}</li>
-  <li><a href={"/odf/import"|ezurl}>{"Import another document"|i18n("extension/ezodf")}</a></li>
+  <li><a href={"/ezodf/import"|ezurl}>{"Import another document"|i18n("extension/ezodf")}</a></li>
 </ul>
 
 </div>

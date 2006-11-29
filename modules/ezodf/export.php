@@ -40,7 +40,7 @@ include_once( 'lib/ezlocale/classes/ezdatetime.php' );
 
 include_once( "kernel/classes/ezcontentbrowse.php" );
 
-include_once( "extension/ezodf/modules/odf/ezooconverter.php" );
+include_once( "extension/ezodf/modules/ezodf/ezooconverter.php" );
 
 
 $http =& eZHTTPTool::instance();
@@ -55,10 +55,10 @@ $success = true;
 if ( $http->hasPostVariable( "ExportButton" ) )
 {
     eZContentBrowse::browse( array( 'action_name' => 'OOPlace',
-                                    'description_template' => 'design:odf/browse_place.tpl',
+                                    'description_template' => 'design:ezodf/browse_place.tpl',
                                     'content' => array(),
-                                    'from_page' => '/odf/export/',
-                                    'cancel_page' => '/odf/export/' ),
+                                    'from_page' => '/ezodf/export/',
+                                    'cancel_page' => '/ezodf/export/' ),
                              $module );
     return;
 }
@@ -232,8 +232,8 @@ if ( $doExport == true )
 }
 
 $Result = array();
-$Result['content'] =& $tpl->fetch( "design:odf/export.tpl" );
-$Result['path'] = array( array( 'url' => '/odf/export/',
+$Result['content'] =& $tpl->fetch( "design:ezodf/export.tpl" );
+$Result['path'] = array( array( 'url' => '/ezodf/export/',
                                 'text' => ezi18n( 'extension/ezodf', 'OpenOffice.org export' ) ) );
 
 
