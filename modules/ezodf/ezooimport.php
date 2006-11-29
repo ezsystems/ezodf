@@ -1639,8 +1639,8 @@ class eZOOImport
 
     var $RelatedImageArray = array();
     var $AutomaticStyles = array();
-    var $ImportDir = "var/cache/odf/import/";
-    var $ImportBaseDir = "var/cache/odf/import/";
+    var $ImportDir = "var/cache/ezodf/import/";
+    var $ImportBaseDir = "var/cache/ezodf/import/";
     var $InsideListType = false;
 
     var $IsSubList = false;

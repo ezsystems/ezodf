@@ -43,7 +43,7 @@
 		$contentClass = $object->contentClass();
 		$isContainer = $contentClass->attribute( 'is_container' );
 
-		preg_match( '/\/+[a-z0-9\-\._]+\/?[a-z0-9_\.\-\?\+\/~=&#;,]*[a-z0-9\/]{1}/si', $tpl->fetch( 'design:odf/icon.tpl' ), $matches );
+		preg_match( '/\/+[a-z0-9\-\._]+\/?[a-z0-9_\.\-\?\+\/~=&#;,]*[a-z0-9\/]{1}/si', $tpl->fetch( 'design:ezodf/icon.tpl' ), $matches );
 		$iconPath = 'http://'. eZSys::hostname(). ':' . eZSys::serverPort() . $matches[0];
 		$array[] = array( $nodeID, $name, $className, $isContainer, $iconPath );
 	}
