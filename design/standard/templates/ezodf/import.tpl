@@ -48,9 +48,9 @@
 <h2>{"Import OpenOffice.org document"|i18n("extension/ezodf")}</h2>
 
 {section show=$import_type|eq( "replace" )}
-<h3>{"Replace document"|i18n("extension/ezodf")}: {$import_node.name}</h3>
+<h3>{"Replace document"|i18n("extension/ezodf")}: {$import_node.name|wash}</h3>
 {section-else}
-<h3>{"Import to"|i18n("extension/ezodf")}: {$import_node.name}</h3>
+<h3>{"Import to"|i18n("extension/ezodf")}: {$import_node.name|wash}</h3>
 {/section}
 
 
