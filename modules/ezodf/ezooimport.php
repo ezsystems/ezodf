@@ -608,6 +608,8 @@ class eZOOImport
 
                         case "ezimage":
                         {
+                            $hasImage = false;
+
                         	// Images are treated as an image object inside a paragrah.
                         	// We fetch the first image object if there are multiple and ignore the rest
         					if ( is_object( $sectionNodeHash[$sectionName] ) )
@@ -636,9 +638,17 @@ class eZOOImport
         									 	$dataMap[$attributeIdentifier]->store();
         									}
 
+        									$hasImage = true;
         								}
         							}
         						}
+                        	}
+
+                        	if ( !$hasImage )
+                        	{
+                        	    $imageHandler =& $dataMap[$attributeIdentifier]->attribute( 'content' );
+                                if ( $imageHandler )
+                                    $imageHandler->removeAliases( $dataMap[$attributeIdentifier] );
                         	}
 
                         }break;
