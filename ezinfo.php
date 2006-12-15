@@ -1,7 +1,5 @@
 <?php
 //
-// Created on: <17-Aug-2004 12:57:54 bf>
-//
 // ## BEGIN COPYRIGHT, LICENSE AND WARRANTY NOTICE ##
 // SOFTWARE NAME: eZ publish
 // SOFTWARE RELEASE: 3.9.x
@@ -26,31 +24,19 @@
 // ## END COPYRIGHT, LICENSE AND WARRANTY NOTICE ##
 //
 
-$Module = array( 'name' => 'eZODF',
-                 'variable_params' => true );
-
-$ViewList = array();
-$ViewList['import'] = array(
-    'script' => 'import.php',
-    'post_actions' => array( 'BrowseActionName' ),
-    'unordered_params' => array( 'node_id' => 'NodeID',
-                                 'import_type' => 'ImportType' ) );
-
-$ViewList['export'] = array(
-    'script' => 'export.php',
-    'post_actions' => array( 'BrowseActionName' ),
-    'unordered_params' => array( 'node_id' => 'NodeID',
-                                 'export_type' => 'ExportType' ) );
-
-
-$ViewList['upload_import'] = array(
-    'script' => 'upload_import.php' );
-
-$ViewList['authenticate'] = array(
-    'script' => 'authenticate.php' );
-
-$ViewList['upload_export'] = array(
-    'script' => 'upload_export.php' );
-
-
+class ezodfInfo
+{
+    function info()
+    {
+        return array( 'Name' => "eZ OpenOffice.org extension",
+                      'Version' => "2.0.0",
+                      'Copyright' => "Copyright (C) 1999-2006 eZ systems AS",
+                      'License' => "GNU General Public License v2.0",
+                      'Includes the following third-party software' => array( 'Name' => 'PhpConcept Library - Zip Module',
+                                                                              'Version' => '2.4',
+                                                                              'License' => 'GNU/LGPL - Vincent Blavet - November 2004',
+                                                                              'For more information' => 'http://www.phpconcept.net' )
+                      );
+    }
+}
 ?>
