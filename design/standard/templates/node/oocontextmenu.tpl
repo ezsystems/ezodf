@@ -1,14 +1,11 @@
+<script language="JavaScript1.2" type="text/javascript">
+menuArray['OpenOffice'] = new Array();
+menuArray['OpenOffice']['depth'] = 1; // this is a first level submenu of ContextMenu
+menuArray['OpenOffice']['elements'] = new Array();
+</script>
+
  <hr/>
-    <a id="menu-export-ooo" href="#" onmouseover="ezpopmenu_mouseOver( 'ContextMenu' )"
-       onclick="ezpopmenu_submitForm( 'menu-form-export-ooo' ); return false;">{"Export OpenOffice.org"|i18n("extension/ezodf/popupmenu")}</a>
-    <a id="menu-export-ooo" href="#" onmouseover="ezpopmenu_mouseOver( 'ContextMenu' )"
-       onclick="ezpopmenu_submitForm( 'menu-form-export-pdf' ); return false;">{"Export PDF"|i18n("extension/ezodf/popupmenu")}</a>
-    <a id="menu-export-ooo" href="#" onmouseover="ezpopmenu_mouseOver( 'ContextMenu' )"
-       onclick="ezpopmenu_submitForm( 'menu-form-export-word' ); return false;">{"Export Word"|i18n("extension/ezodf/popupmenu")}</a>
-    <a id="menu-import-ooo" href="#" onmouseover="ezpopmenu_mouseOver( 'ContextMenu' )"
-       onclick="ezpopmenu_submitForm( 'menu-form-import-ooo' ); return false;">{"Import OpenOffice.org"|i18n("extension/ezodf/popupmenu")}</a>
-    <a id="menu-import-ooo" href="#" onmouseover="ezpopmenu_mouseOver( 'ContextMenu' )"
-       onclick="ezpopmenu_submitForm( 'menu-form-replace-ooo' ); return false;">{"Replace OpenOffice.org"|i18n("extension/ezodf/popupmenu")}</a>
+    <a id="menu-openoffice" class="more" href="#" onmouseover="ezpopmenu_showSubLevel( event, 'OpenOffice', 'menu-openoffice' ); return false;">{'OpenOffice.org'|i18n( 'extension/ezodf/popupmenu' )}</a>
 
 {* Export to OOo / OASIS document *}
 <form id="menu-form-export-ooo" method="post" action={"/ezodf/export/"|ezurl}>
