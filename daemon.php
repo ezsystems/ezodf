@@ -41,6 +41,8 @@ $host = "127.0.0.1";
 $port = 9090;
 $ooexecutable = "openoffice.org-2.0";
 $maxClients = 3;
+$display = ':0';
+
 
 set_time_limit( 0 );
 
@@ -53,6 +55,7 @@ print( "Started OpenOffice.org deamon\n" );
 function convert_to( $sourceFileName, $convertCommand, $destinationFileName )
 {
     global $ooexecutable;
+    global $display;
 
     print( "Converting document with $convertCommand\n" );
 
@@ -62,7 +65,8 @@ function convert_to( $sourceFileName, $convertCommand, $destinationFileName )
         case "convertToOOo":
         case "convertToDoc":
         {
-            $result = shell_exec( $ooexecutable . " -writer 'macro:///standard.Module1." . $convertCommand . "(\"$sourceFileName\", \"$destinationFileName\")'" );
+            $result = shell_exec( $ooexecutable . " -writer -invisible -display " . $display . " 'macro:///eZconversion.Module1." . $convertCommand . "(\"$sourceFileName\", \"$destinationFileName\")'" );
+            echo "$result\n";
         }break;
 
         default:
@@ -74,7 +78,7 @@ function convert_to( $sourceFileName, $convertCommand, $destinationFileName )
 
     if ( !file_exists( $destinationFileName ) )
     {
-        return "(3)-Unknown failure converting document ";
+        return "(3) - Unknown failure converting document \n $result";
     }
 
     return true;
