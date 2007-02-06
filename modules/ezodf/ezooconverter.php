@@ -107,8 +107,8 @@ class eZOOConverter
                         }
                         $ooGenerator->endSection( );
                     }break;
-                    
-                    
+
+
                     case "ezimage":
                     {
                         $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
@@ -123,9 +123,9 @@ class eZOOConverter
                                                "Alignment" => "center",
                                                "DisplayWidth" => $displayWidth,
                                                "DisplayHeight" => $displayHeight );
-                                               
+
 			            $ooGenerator->addImage( $imageArray);
-                        
+
 						$ooGenerator->endSection();
 
                     }break;
@@ -152,7 +152,7 @@ class eZOOConverter
 						$ooGenerator->endSection();
 
                     }break;
-                    
+
                     case "ezmatrix":
                     {
                         $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
@@ -162,15 +162,15 @@ class eZOOConverter
 						$columns = $matrix->attribute( "columns" );
 						
    					    $ooGenerator->startTable();
-   					    
+   					
 						foreach ( $columns['sequential'] as $column )
 						{
 			            	$ooGenerator->addParagraph( $column['name'] );
-			            	$ooGenerator->nextCell();           
+			            	$ooGenerator->nextCell();
 						}
 						
 	     	            $ooGenerator->nextRow( "defaultstyle" );
-	     	            	     	            
+	     	            	     	
 						$rows = $matrix->attribute( "rows" );
 						
 						foreach ( $rows['sequential'] as $row )
@@ -178,7 +178,7 @@ class eZOOConverter
 							foreach ( $row['columns'] as $cell )
 						    {
 								$ooGenerator->addParagraph( $cell );
-			            		$ooGenerator->nextCell();         
+			            		$ooGenerator->nextCell();
 							}
 		     	            $ooGenerator->nextRow( "defaultstyle" );
 						}
@@ -195,7 +195,7 @@ class eZOOConverter
                     }break;
                 }
             }
-            
+
 
             /*
             $ooGenerator->addHeader( "Test code from here" );
@@ -550,7 +550,7 @@ class eZOOConverter
             case "table":
             {
                 $generator->startTable();
-
+                $rows = 1;
                 foreach ( $child->children() as $row )
                 {
                     foreach ( $row->children() as $cell )
@@ -560,6 +560,12 @@ class eZOOConverter
                         if ( is_numeric( $colSpan ) )
                         {
                             $generator->setCurrentColSpan( $colSpan );
+                        }
+                        // Check for table header
+                        $rowName = $cell->name();
+                        if ( $rowName == 'th' and $rows == 1 )
+                        {
+                            $generator->setIsInsideTableHeading( true );
                         }
 
                         foreach ( $cell->children() as $cellNode )
@@ -577,6 +583,7 @@ class eZOOConverter
                         $generator->nextCell();
                     }
                     $generator->nextRow();
+                    ++$rows;
                 }
                 $generator->endTable();
             }break;
