@@ -561,6 +561,14 @@ class eZOOGenerator
     }
 
     /*!
+      Sets the inside table heading
+     */
+    function setIsInsideTableHeading( $heading )
+    {
+        $this->IsInsideTableHeading = $heading;
+    }
+
+    /*!
       Starts a new table row.
     */
     function nextRow()
@@ -785,9 +793,8 @@ class eZOOGenerator
                     {
                         $currentCellCount += 1;
                         $cellElementContent = "";
-                        if ( $rowCount == 1 )
-                            $this->IsInsideTableHeading = true;
-                        else
+
+                        if ( $rowCount > 1 )
                             $this->IsInsideTableHeading = false;
 
                         $colSpan = false;
