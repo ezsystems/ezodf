@@ -74,7 +74,7 @@ class eZOOImport
         $this->ERROR['description'] = '';
         $currentUser =& eZUser::currentUser();
         $this->currentUserID  = $currentUser->id();
-		$this->ImportDir .= md5( mktime() ) . "/";
+        $this->ImportDir .= md5( mktime() ) . "/";
     }
 
     /*!
@@ -220,7 +220,7 @@ class eZOOImport
     /*!
       Imports an OpenOffice.org document from the given file.
     */
-    function import( $file, $placeNodeID, $originalFileName, $importType = "import" )
+    function import( $file, $placeNodeID, $originalFileName, $importType = "import", $upload = null )
     {
         $ooINI =& eZINI::instance( 'odf.ini' );
         //$tmpDir = $ooINI->variable( 'ODFSettings', 'TmpDir' );
@@ -258,10 +258,25 @@ class eZOOImport
             return false;
         }
 
-        if (! (is_object( $place_node ) ) )
+        if ( !is_object( $place_node ) )
         {
-            $this->setError( OOIMPORT_ERROR_UNKNOWNNODE, ezi18n( 'extension/ezodf/import/error',"Unable to fetch node with id  ") . $placeNodeID );
-            return false;
+            $locationOK = false;
+
+            if ( $upload !== null )
+            {
+                $parentNodes = false;
+                $parentMainNode = false;
+                $locationOK = $upload->detectLocations( $importClassIdentifier, $class, $placeNodeID, $parentNodes, $parentMainNode );
+            }
+
+            if ( $locationOK === false || $locationOK === null )
+            {
+                $this->setError( OOIMPORT_ERROR_UNKNOWNNODE, ezi18n( 'extension/ezodf/import/error',"Unable to fetch node with id  ") . $placeNodeID );
+                return false;
+            }
+
+            $placeNodeID = $parentMainNode;
+            $place_node = eZContentObjectTreeNode::fetch( $placeNodeID );
         }
         if ( $importType == "replace" )
         {
@@ -330,7 +345,7 @@ class eZOOImport
         $fileName = $uniqueImportDir . "content.xml";
         $xml = new eZXML();
         $dom =& $xml->domTree( file_get_contents( $fileName ) );
-		$sectionNodeHash = array();
+        $sectionNodeHash = array();
 
         // At this point we could unlink the destination file from the conversion, if conversion was used
         if ( isset( $tmpToFile ) )
@@ -419,8 +434,8 @@ class eZOOImport
                         $endSectionPart = str_repeat( "</section>", abs( $levelDiff ) );
                     $charset = eZTextCodec::internalCharset();
 
-					// Store the original XML for each section, since some datatypes needs to handle the XML specially
-					$sectionNodeHash[$sectionName] = $sectionNode;
+                    // Store the original XML for each section, since some datatypes needs to handle the XML specially
+                    $sectionNodeHash[$sectionName] = $sectionNode;
 
                     $xmlTextArray[$sectionName] = "<?xml version='1.0' encoding='$charset' ?>" .
                          "<section xmlns:image='http://ez.no/namespaces/ezpublish3/image/' " .
@@ -546,56 +561,56 @@ class eZOOImport
 
                         case "ezdate":
                         {
-                        	// Only support date formats as a single paragraph in a section with the format:
-                        	// day/month/year
-                        	$dateString = strip_tags( $xmlTextArray[$sectionName] );
+                            // Only support date formats as a single paragraph in a section with the format:
+                            // day/month/year
+                            $dateString = strip_tags( $xmlTextArray[$sectionName] );
 
-                        	$dateArray = explode( "/", $dateString );
+                            $dateArray = explode( "/", $dateString );
 
-                        	if ( count( $dateArray ) == 3 )
-                        	{
-                           			$year = $dateArray[2];
-                        			$month = $dateArray[1];
-                        			$day = $dateArray[0];
+                            if ( count( $dateArray ) == 3 )
+                            {
+                                    $year = $dateArray[2];
+                                    $month = $dateArray[1];
+                                    $day = $dateArray[0];
 
-                        			$date = new eZDate();
+                                    $date = new eZDate();
 
-            						$contentClassAttribute =& $dataMap[$attributeIdentifier];
+                                    $contentClassAttribute =& $dataMap[$attributeIdentifier];
 
-			                		$date->setMDY( $month, $day, $year );
-                            		$dataMap[$attributeIdentifier]->setAttribute( 'data_int', $date->timeStamp()  );
-                            		$dataMap[$attributeIdentifier]->store();
+                                    $date->setMDY( $month, $day, $year );
+                                    $dataMap[$attributeIdentifier]->setAttribute( 'data_int', $date->timeStamp()  );
+                                    $dataMap[$attributeIdentifier]->store();
                             }
                         }break;
 
- 						case "ezdatetime":
+                        case "ezdatetime":
                         {
-                        	// Only support date formats as a single paragraph in a section with the format:
-                        	// day/month/year 14:00
-                        	$dateString = trim( strip_tags( $xmlTextArray[$sectionName] ) );
+                            // Only support date formats as a single paragraph in a section with the format:
+                            // day/month/year 14:00
+                            $dateString = trim( strip_tags( $xmlTextArray[$sectionName] ) );
 
-                        	$dateTimeArray = split(  " ", $dateString );
+                            $dateTimeArray = split(  " ", $dateString );
 
-                        	$dateArray = explode( "/", $dateTimeArray[0] );
-                        	$timeArray = explode( ":", $dateTimeArray[1] );
+                            $dateArray = explode( "/", $dateTimeArray[0] );
+                            $timeArray = explode( ":", $dateTimeArray[1] );
 
 
-                        	if ( count( $dateArray ) == 3 and count( $timeArray ) == 2 )
-                        	{
-                           			$year = $dateArray[2];
-                        			$month = $dateArray[1];
-                        			$day = $dateArray[0];
+                            if ( count( $dateArray ) == 3 and count( $timeArray ) == 2 )
+                            {
+                                    $year = $dateArray[2];
+                                    $month = $dateArray[1];
+                                    $day = $dateArray[0];
 
-                        			$hour = $timeArray[0];
-                        			$minute = $timeArray[1];
+                                    $hour = $timeArray[0];
+                                    $minute = $timeArray[1];
 
-                        			$dateTime = new eZDateTime();
+                                    $dateTime = new eZDateTime();
 
-            						$contentClassAttribute =& $dataMap[$attributeIdentifier];
+                                    $contentClassAttribute =& $dataMap[$attributeIdentifier];
 
-			                		$dateTime->setMDYHMS( $month, $day, $year, $hour, $minute, 0 );
-                            		$dataMap[$attributeIdentifier]->setAttribute( 'data_int', $dateTime->timeStamp()  );
-                            		$dataMap[$attributeIdentifier]->store();
+                                    $dateTime->setMDYHMS( $month, $day, $year, $hour, $minute, 0 );
+                                    $dataMap[$attributeIdentifier]->setAttribute( 'data_int', $dateTime->timeStamp()  );
+                                    $dataMap[$attributeIdentifier]->store();
                             }
                         }break;
 
@@ -603,144 +618,144 @@ class eZOOImport
                         {
                             $hasImage = false;
 
-                        	// Images are treated as an image object inside a paragrah.
-                        	// We fetch the first image object if there are multiple and ignore the rest
-        					if ( is_object( $sectionNodeHash[$sectionName] ) )
-        					{
-        						// Look for paragraphs in the section
-        						foreach ( $sectionNodeHash[$sectionName]->children() as $paragraph )
-        						{
-									// Look for frame node
-									foreach ( $paragraph->children() as $frame )
-        							{
-        								// finally look for the image node
-        								$children = $frame->children();
+                            // Images are treated as an image object inside a paragrah.
+                            // We fetch the first image object if there are multiple and ignore the rest
+                            if ( is_object( $sectionNodeHash[$sectionName] ) )
+                            {
+                                // Look for paragraphs in the section
+                                foreach ( $sectionNodeHash[$sectionName]->children() as $paragraph )
+                                {
+                                    // Look for frame node
+                                    foreach ( $paragraph->children() as $frame )
+                                    {
+                                        // finally look for the image node
+                                        $children = $frame->children();
 
-        								if ( $children[0]->name() == "image" )
-        								{
-        									$imageNode = $children[0];
-        									$fileName = $imageNode->attributeValue( "href" );
+                                        if ( $children[0]->name() == "image" )
+                                        {
+                                            $imageNode = $children[0];
+                                            $fileName = $imageNode->attributeValue( "href" );
 
-        									$filePath = $this->ImportDir . $fileName;
+                                            $filePath = $this->ImportDir . $fileName;
 
-        									if ( file_exists( $filePath ) )
-        									{
-        									 	$imageContent =& $dataMap[$attributeIdentifier]->attribute( 'content' );
-        									   	$imageContent->initializeFromFile( $filePath, false, basename( $filePath ) );
-        									   	$imageContent->store( $dataMap[$attributeIdentifier] );
-        									 	$dataMap[$attributeIdentifier]->store();
-        									}
+                                            if ( file_exists( $filePath ) )
+                                            {
+                                                $imageContent =& $dataMap[$attributeIdentifier]->attribute( 'content' );
+                                                $imageContent->initializeFromFile( $filePath, false, basename( $filePath ) );
+                                                $imageContent->store( $dataMap[$attributeIdentifier] );
+                                                $dataMap[$attributeIdentifier]->store();
+                                            }
 
-        									$hasImage = true;
-        								}
-        							}
-        						}
-                        	}
+                                            $hasImage = true;
+                                        }
+                                    }
+                                }
+                            }
 
-                        	if ( !$hasImage )
-                        	{
-                        	    $imageHandler =& $dataMap[$attributeIdentifier]->attribute( 'content' );
+                            if ( !$hasImage )
+                            {
+                                $imageHandler =& $dataMap[$attributeIdentifier]->attribute( 'content' );
                                 if ( $imageHandler )
                                     $imageHandler->removeAliases( $dataMap[$attributeIdentifier] );
-                        	}
+                            }
 
                         }break;
 
-                		case "ezmatrix":
+                        case "ezmatrix":
                         {
-                           	$matrixHeaderArray = array();
-                           	// Fetch the current defined columns in the matrix
-                           	$matrix = $dataMap[$attributeIdentifier]->content();
-							$columns = $matrix->attribute( "columns" );
+                            $matrixHeaderArray = array();
+                            // Fetch the current defined columns in the matrix
+                            $matrix = $dataMap[$attributeIdentifier]->content();
+                            $columns = $matrix->attribute( "columns" );
 
-							foreach ( $columns['sequential'] as $column )
-							{
-								$matrixHeaderArray[] = $column['name'];
-							}
+                            foreach ( $columns['sequential'] as $column )
+                            {
+                                $matrixHeaderArray[] = $column['name'];
+                            }
 
-                           	$headersValid = true;
-							$originalHeaderCount = count( $matrixHeaderArray );
-                        	$headerCount = 0;
-                        	$rowCount = 0;
-                        	$cellArray = array();
-							// A matrix is supported as a table inside sections. If multiple tables are present we take the first.
-                          	if ( is_object( $sectionNodeHash[$sectionName] ) )
-        					{
-        						// Look for paragraphs in the section
-        						foreach ( $sectionNodeHash[$sectionName]->children() as $table )
-        						{
-        							if ( $table->name() == "table" )
-        							{
-        								// Loop the rows in the table
-        								foreach ( $table->children() as $row )
-        								{
-        									// Check the headers and compare with the defined matrix
-        									if ( $row->name() == "table-header-rows" )
-        									{
-        										$rowArray = $row->children();
-        										if ( count( $rowArray ) == 1  )
-        										{
-        											foreach ( $rowArray[0]->children() as $headerCell )
-        											{
-        												if ( $headerCell->name() == "table-cell" )
-        												{
-        													$paragraphArray = $headerCell->children();
+                            $headersValid = true;
+                            $originalHeaderCount = count( $matrixHeaderArray );
+                            $headerCount = 0;
+                            $rowCount = 0;
+                            $cellArray = array();
+                            // A matrix is supported as a table inside sections. If multiple tables are present we take the first.
+                            if ( is_object( $sectionNodeHash[$sectionName] ) )
+                            {
+                                // Look for paragraphs in the section
+                                foreach ( $sectionNodeHash[$sectionName]->children() as $table )
+                                {
+                                    if ( $table->name() == "table" )
+                                    {
+                                        // Loop the rows in the table
+                                        foreach ( $table->children() as $row )
+                                        {
+                                            // Check the headers and compare with the defined matrix
+                                            if ( $row->name() == "table-header-rows" )
+                                            {
+                                                $rowArray = $row->children();
+                                                if ( count( $rowArray ) == 1  )
+                                                {
+                                                    foreach ( $rowArray[0]->children() as $headerCell )
+                                                    {
+                                                        if ( $headerCell->name() == "table-cell" )
+                                                        {
+                                                            $paragraphArray = $headerCell->children();
 
-        													if ( count( $paragraphArray ) == 1 )
-        													{
-        														$headerName = $paragraphArray[0]->textContent();
-        														if ( $matrixHeaderArray[$headerCount] != $headerName )
-        														{
-        															$headersValid = false;
-        														}
-        														$headerCount++;
-        													}
-        												}
-        											}
-        										}
-        									}
+                                                            if ( count( $paragraphArray ) == 1 )
+                                                            {
+                                                                $headerName = $paragraphArray[0]->textContent();
+                                                                if ( $matrixHeaderArray[$headerCount] != $headerName )
+                                                                {
+                                                                    $headersValid = false;
+                                                                }
+                                                                $headerCount++;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
 
-											// Check the rows
-        									if ( $row->name() == "table-row" )
-        									{
-        										foreach ( $row->children() as $cell )
-        										{
-        											if ( count( $cell->children() ) >= 1 )
-        											{
-        												$firstParagraph = $cell->children();
-        												$firstParagraph = $firstParagraph[0];
-        												$cellContent = $firstParagraph->textContent();
+                                            // Check the rows
+                                            if ( $row->name() == "table-row" )
+                                            {
+                                                foreach ( $row->children() as $cell )
+                                                {
+                                                    if ( count( $cell->children() ) >= 1 )
+                                                    {
+                                                        $firstParagraph = $cell->children();
+                                                        $firstParagraph = $firstParagraph[0];
+                                                        $cellContent = $firstParagraph->textContent();
 
-        												$cellArray[] = $cellContent;
+                                                        $cellArray[] = $cellContent;
 
-        											}
-        										}
-   												$rowCount++;
-        									}
-        								}
-        							}
-        						}
-        					}
+                                                    }
+                                                }
+                                                $rowCount++;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
 
-        					if ( $headerCount == $originalHeaderCount and
-        					     $headersValid == true )
-        					{
-        						// Remove all existing rows
-        						for ( $i=0; $i < $matrix->attribute( "rowCount" ); $i++ )
-        						{
-        							$matrix->removeRow( $i );
-        						}
+                            if ( $headerCount == $originalHeaderCount and
+                                 $headersValid == true )
+                            {
+                                // Remove all existing rows
+                                for ( $i=0; $i < $matrix->attribute( "rowCount" ); $i++ )
+                                {
+                                    $matrix->removeRow( $i );
+                                }
 
-        						// Insert new rows
-        						$matrix->addRow( false, $rowCount );
-        						$matrix->Cells = $cellArray;
+                                // Insert new rows
+                                $matrix->addRow( false, $rowCount );
+                                $matrix->Cells = $cellArray;
 
-                            	$dataMap[$attributeIdentifier]->setAttribute( 'data_text', $matrix->xmlString() );
+                                $dataMap[$attributeIdentifier]->setAttribute( 'data_text', $matrix->xmlString() );
 
-            					$matrix->decodeXML( $dataMap[$attributeIdentifier]->attribute( 'data_text' ) );
-            					$dataMap[$attributeIdentifier]->setContent( $matrix );
-                            	$dataMap[$attributeIdentifier]->store();
-        					}
+                                $matrix->decodeXML( $dataMap[$attributeIdentifier]->attribute( 'data_text' ) );
+                                $dataMap[$attributeIdentifier]->setContent( $matrix );
+                                $dataMap[$attributeIdentifier]->store();
+                            }
 
                         }break;
 
@@ -1421,7 +1436,7 @@ class eZOOImport
                                     $dataMap['name']->store();
 
                                     $imageContent =& $dataMap['image']->attribute( 'content' );
-			            //echo "Initializing Image from $href<br />";
+                        //echo "Initializing Image from $href<br />";
                                     $imageContent->initializeFromFile( $href, false, basename( $href ) );
                                     $dataMap['image']->store();
                                     $this->RelatedImageArray[] = array( "ID" => $contentObjectID,
