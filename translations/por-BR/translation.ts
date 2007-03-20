@@ -15,7 +15,7 @@
     </message>
     <message>
         <source>Choose document placement</source>
-        <translation>Escolher localização do documento</translation>
+        <translation>Escolher colocação do documento</translation>
     </message>
     <message>
         <source>Upload file</source>
@@ -43,7 +43,7 @@
     </message>
     <message>
         <source>Here you can export any eZ publish content object to an OpenOffice.org Writer document format.</source>
-        <translation>Aqui você pode exportar qualquer conteúdo de objeto do eZ Publish para um documento de formato escrito OpenOffice.org.</translation>
+        <translation>Aqui você pode exportar qualquer objeto de conteúdo do eZ Publish para um documento OpenOffice.org Writer.</translation>
     </message>
     <message>
         <source>Document is now imported</source>
@@ -82,14 +82,17 @@
 asked where to place the document and eZ publish does the rest. The document is converted into
 the appropriate class during the import, you get a notice about this after the import is done.
 Images are placed in the media library so you can re-use them in other articles.</source>
-        <translation type="unfinished">Você pode importar </translation>
+        <translation>Você pode importar documentos OpenOffice.org Writer diretamente para o eZ Publish a partir desta página.(new line)
+Você escolherá onde colocar o documento e o eZ Publish fará o resto. O documento é convertido para(new line)
+a classe apropriada durante a importação, você receberá um aviso sobre isto após concluída a importação(new line)
+As imagens são colocadas na biblioteca de mídia e você poderá reutilizá-las em outros artigos.</translation>
     </message>
 </context>
 <context>
     <name>extension/ezodf/browse</name>
     <message>
         <source>Choose document placement</source>
-        <translation type="unfinished"></translation>
+        <translation>Escolher colocação do documento</translation>
     </message>
     <message>
         <source>Please choose the placement for the OpenOffice.org object.
@@ -97,132 +100,136 @@ Images are placed in the media library so you can re-use them in other articles.
     Select the placements and click the %buttonname button.
     Using the recent and bookmark items for quick placement is also possible.
     Click on placement names to change the browse listing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Favor escolher a colocação do objeto OpenOffice.org.(new line)
+(new line)
+(sp)(sp)(sp)(sp)Selecione as colocações e clique no botão %buttonname.(new line)
+sp)(sp)(sp)(sp)Também é possível usar os recentes itens do bookmark para rápida colocação.(new line)
+(sp)(sp)(sp)(sp)Clique nos nomes das colocações para modificar a lista de procura.</translation>
     </message>
     <message>
         <source>Select</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecionar</translation>
     </message>
 </context>
 <context>
     <name>extension/ezodf/export/error</name>
     <message>
         <source>Destination file format not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Formato de documento de destino não é suportado</translation>
     </message>
     <message>
         <source>PDF conversion failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Conversão de PDF falhou</translation>
     </message>
     <message>
         <source>Word conversion failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Conversão de Word falhou</translation>
     </message>
     <message>
         <source>Unable to fetch node, or no read access</source>
-        <translation type="unfinished"></translation>
+        <translation>Incapaz de alcançar nó, ou nenhum acesso lido</translation>
     </message>
     <message>
         <source>Unable to open file %1 on server side</source>
-        <translation type="unfinished"></translation>
+        <translation>Incapaz de abrir o documento %1 no lado do servidor</translation>
     </message>
 </context>
 <context>
     <name>extension/ezodf/import/error</name>
     <message>
         <source>File extension or type is not allowed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Extensão ou tipo de documento não é permitido.</translation>
     </message>
     <message>
         <source>Could not parse XML.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível processar XML.</translation>
     </message>
     <message>
         <source>Can not open socket. Please check if extension/ezodf/deamon.php is running.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível abrir o socket. Favor checar se a extensão extension/ezodf/deamon.php está rodando.</translation>
     </message>
     <message>
         <source>Can not convert the given document.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não é possível converter o documento dado.</translation>
     </message>
     <message>
         <source>Unable to call deamon. Fork can not create child process.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível comunicar-se com deamon, então nenhum processo de conversão pôde ser iniciado.</translation>
     </message>
     <message>
         <source>Deamon reported error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Deamon reportou erro.</translation>
     </message>
     <message>
         <source>Unknown node.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nó desconhecido.</translation>
     </message>
     <message>
         <source>Access denied.</source>
-        <translation type="unfinished"></translation>
+        <translation>Acesso negado.</translation>
     </message>
     <message>
         <source>Error during import.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro durante a importação.</translation>
     </message>
     <message>
         <source>Unknown content class specified in odf.ini:</source>
-        <translation type="unfinished"></translation>
+        <translation>Classe de conteúdo especificada em odf.ini é desconhecida:</translation>
     </message>
     <message>
         <source>Unknown error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro desconhecido.</translation>
     </message>
     <message>
         <source>Filetype: </source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de documento:</translation>
     </message>
     <message>
         <source>Unable to fetch node with id  </source>
-        <translation type="unfinished"></translation>
+        <translation>Incapaz de alcançar o nó com o id(sp)(sp)</translation>
     </message>
     <message>
         <source>Folder for images could not be created, access denied.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pasta para imagens não pôde ser criada, acesso negado.</translation>
     </message>
     <message>
         <source>Document is not suported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Documento não é suportado.</translation>
     </message>
     <message>
         <source>Cannot import. File not found. Already imported?</source>
-        <translation type="unfinished"></translation>
+        <translation>Não é possível importar. Arquivo não encontrado. Este já foi importado?</translation>
     </message>
     <message>
         <source>Cannot import document, supplied placement nodeID is not valid.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não é possível importar documento, colocação de nodeID fornecido é inválido.</translation>
     </message>
     <message>
         <source>Cannot store uploaded file, cannot import.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não é possível armazenar documento carregado, não é possível importar.</translation>
     </message>
 </context>
 <context>
     <name>extension/ezodf/popupmenu</name>
     <message>
         <source>Export OpenOffice.org</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar OpenOffice.org</translation>
     </message>
     <message>
         <source>Export PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar PDF</translation>
     </message>
     <message>
         <source>Export Word</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar Word</translation>
     </message>
     <message>
         <source>Import OpenOffice.org</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar OpenOffice.org</translation>
     </message>
     <message>
         <source>Replace OpenOffice.org</source>
-        <translation type="unfinished"></translation>
+        <translation>Substituir OpenOffice.org</translation>
     </message>
 </context>
 </TS>
