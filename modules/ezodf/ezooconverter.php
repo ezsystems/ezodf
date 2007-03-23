@@ -134,9 +134,9 @@ class eZOOConverter
                     {
                         $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
 
-						$date = $attribute->content();						
+						$date = $attribute->content();
 	                    $ooGenerator->addParagraph( $date->attribute( "day" ) . "/" . $date->attribute( "month" ) . "/" . $date->attribute( "year" ) );
-					
+
 						$ooGenerator->endSection();
 
                     }break;
@@ -146,9 +146,9 @@ class eZOOConverter
                     {
                         $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
 
-						$date = $attribute->content();						
+						$date = $attribute->content();
 	                    $ooGenerator->addParagraph( $date->attribute( "day" ) . "/" . $date->attribute( "month" ) . "/" . $date->attribute( "year" ) . " " . $date->attribute( "hour" )  . ":" . $date->attribute( "minute" )  );
-										
+
 						$ooGenerator->endSection();
 
                     }break;
@@ -156,23 +156,23 @@ class eZOOConverter
                     case "ezmatrix":
                     {
                         $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
-						
+
 						$matrix = $attribute->content();
-						
+
 						$columns = $matrix->attribute( "columns" );
-						
+
    					    $ooGenerator->startTable();
-   					
+
 						foreach ( $columns['sequential'] as $column )
 						{
 			            	$ooGenerator->addParagraph( $column['name'] );
 			            	$ooGenerator->nextCell();
 						}
-						
+
 	     	            $ooGenerator->nextRow( "defaultstyle" );
-	     	            	     	
+
 						$rows = $matrix->attribute( "rows" );
-						
+
 						foreach ( $rows['sequential'] as $row )
 						{
 							foreach ( $row['columns'] as $cell )
@@ -182,9 +182,9 @@ class eZOOConverter
 							}
 		     	            $ooGenerator->nextRow( "defaultstyle" );
 						}
-						
+
                         $ooGenerator->endTable();
-					
+
 						$ooGenerator->endSection();
 
                     }break;
@@ -506,7 +506,7 @@ class eZOOConverter
                 // Handle inline custom tags
                 if ( $isInline == true )
                 {
-                    $paragraphParameters[] = array( EZ_OO_STYLE_START, "eZCustominline_20_inlineliteral" );
+                    $paragraphParameters[] = array( EZ_OO_STYLE_START, "eZCustominline_20_$customTagName" );
                     $paragraphParameters[] = array( EZ_OO_TEXT, $child->textContent() );
                     $paragraphParameters[] = array( EZ_OO_STYLE_STOP );
                 }
