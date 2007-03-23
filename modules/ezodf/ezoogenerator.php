@@ -210,8 +210,16 @@ class eZOOGenerator
              " <office:font-face-decls/>" .
              " <office:automatic-styles>" .
              "  <text:list-style style:name='bulletlist'>" .
-             "   <text:list-level-style-bullet text:level='1' text:style-name='Bullet_20_Symbols' style:num-suffix='.' text:bullet-char='•'>" .
+             "   <text:list-level-style-bullet text:level='1' text:style-name='Bullet_20_Symbols' style:num-suffix='.' text:bullet-char='●'>" .
              "      <style:list-level-properties text:space-before='0.25in' text:min-label-width='0.25in'/>" .
+             "       <style:text-properties style:font-name='StarSymbol'/>" .
+             "   </text:list-level-style-bullet>" .
+             "   <text:list-level-style-bullet text:level='2' text:style-name='Bullet_20_Symbols' style:num-suffix='.' text:bullet-char='○'>" .
+             "      <style:list-level-properties text:space-before='0.5in' text:min-label-width='0.25in'/>" .
+             "       <style:text-properties style:font-name='StarSymbol'/>" .
+             "   </text:list-level-style-bullet>" .
+             "   <text:list-level-style-bullet text:level='3' text:style-name='Bullet_20_Symbols' style:num-suffix='.' text:bullet-char='■'>" .
+             "      <style:list-level-properties text:space-before='0.75in' text:min-label-width='0.25in'/>" .
              "       <style:text-properties style:font-name='StarSymbol'/>" .
              "   </text:list-level-style-bullet>" .
              "  </text:list-style>" .
