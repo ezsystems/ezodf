@@ -443,7 +443,22 @@ class eZOOConverter
 
             case "link":
             {
-                $paragraphParameters[] = array( EZ_OO_LINK, $child->attributeValue( "href" ), $child->textContent() );
+                $href = $child->attributeValue( 'href' );
+                if ( !$href )
+                {
+                    $url_id = $child->attributeValue( 'url_id' );
+                    if ( $url_id )
+                    {
+                        include_once( 'kernel/classes/datatypes/ezurl/ezurl.php' );
+                        $eZUrl = eZURL::fetch( $url_id );
+                        if ( is_object( $eZUrl ) )
+                        {
+                            $href = $eZUrl->attribute( 'url' );
+                        }
+                    }
+                }
+
+                $paragraphParameters[] = array( EZ_OO_LINK, $href, $child->textContent() );
             }break;
 
             case "emphasize":
