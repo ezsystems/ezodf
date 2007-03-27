@@ -191,7 +191,7 @@ class eZOOConverter
 
                     default:
                     {
-                        eZDebug::writeError( "Unsupported attribute for OO conversion" . $attribute->attribute( 'data_type_string' ) );
+                        eZDebug::writeError( "Unsupported attribute for OO conversion: '" . $attribute->attribute( 'data_type_string' ) . "'" );
                     }break;
                 }
             }
