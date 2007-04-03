@@ -189,6 +189,7 @@ if ( $doExport == true )
             $contentLength = filesize( $fileName );
             if ( $contentLength > 0 )
             {
+                $escapedOriginalFileName = addslashes( $originalFileName );
 
                 // Download the file
                 header( "Pragma: " );
@@ -198,7 +199,7 @@ if ( $doExport == true )
                 header( "Content-Length: $contentLength" );
                 header( "Content-Type: $contentType" );
                 header( "X-Powered-By: eZ publish" );
-                header( "Content-disposition: attachment; filename=\"$originalFileName\"" );
+                header( "Content-disposition: attachment; filename=\"$escapedOriginalFileName\"" );
                 header( "Content-Transfer-Encoding: binary" );
                 header( "Accept-Ranges: bytes" );
 
