@@ -300,9 +300,7 @@ class eZOOGenerator
 
         // Check if zlib extension is loaded, if it's loaded use bundled ZIP library,
         // if not rely on the zip commandline version.
-            // Todo: fix support for PclZip and correct zip of images.
-        if ( true )
-//        if ( !function_exists( 'gzopen' ) )
+        if ( !function_exists( 'gzopen' ) )
         {
             $currentDir = getcwd();
             chdir( $this->OOExportDir );
@@ -316,16 +314,17 @@ class eZOOGenerator
         {
             require_once('extension/ezodf/lib/pclzip.lib.php');
             $archive = new PclZip( $this->OORootDir . "ootest.odt" );
+            $archSourcePath = rtrim( $this->OOExportDir, "/" );
 
-            $archive->create( $this->OOExportDir,
-                              PCLZIP_OPT_REMOVE_PATH, $this->OOExportDir );
+            $archive->create( $archSourcePath,
+                              PCLZIP_OPT_REMOVE_PATH, $archSourcePath );
         }
 
         $fileName = $this->OORootDir . "ootest.odt";
 
 
         // Clean up
-    	eZDir::recursiveDelete( $this->OOExportDir );
+        eZDir::recursiveDelete( $this->OOExportDir );
     	eZDir::recursiveDelete( $this->OOTemplateDir);
         return $fileName;
     }
