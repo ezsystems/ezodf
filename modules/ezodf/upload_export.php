@@ -31,16 +31,16 @@
     $http = eZHTTPTool::instance();
 
     if ( $http->hasPostVariable( 'Username' ) );
-    	$username = $http->postVariable( 'Username' );
+        $username = $http->postVariable( 'Username' );
 
     if ( $http->hasPostVariable( 'Password' ) );
-    	$password = $http->postVariable( 'Password' );
+        $password = $http->postVariable( 'Password' );
 
     if ( $http->hasPostVariable( 'NodeID' ) );
-    	$nodeID = $http->postVariable( 'NodeID' );
+        $nodeID = $http->postVariable( 'NodeID' );
 
     // User authentication
-	$user = eZUser::loginUser( $username, $password );
+    $user = eZUser::loginUser( $username, $password );
     if ( $user == false )
     {
         print( 'problem:Authentication failed' );

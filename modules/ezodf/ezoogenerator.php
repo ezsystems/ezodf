@@ -325,7 +325,7 @@ class eZOOGenerator
 
         // Clean up
         eZDir::recursiveDelete( $this->OOExportDir );
-    	eZDir::recursiveDelete( $this->OOTemplateDir);
+        eZDir::recursiveDelete( $this->OOTemplateDir);
         return $fileName;
     }
 
@@ -633,9 +633,7 @@ class eZOOGenerator
                     {
                         $contentXML .= "<text:p text:style-name='" . $element['Style'] . "'>";
                     }
-
                 }
-
 
                 foreach ( $element['Content'] as $paragraphElement )
                 {
@@ -644,38 +642,32 @@ class eZOOGenerator
                         case "text":
                         {
                             $contentXML .=  $paragraphElement['Content'];
-                        }
-                        break;
+                        }break;
 
                         case "custom_inline_start":
                         {
                             $contentXML .=  "<text:span text:style-name='" . $paragraphElement['Name'] . "'>";
-                        }
-                        break;
+                        }break;
 
                         case "bold_start":
                         {
                             $contentXML .=  "<text:span text:style-name='T1'>";
-                        }
-                        break;
+                        }break;
 
                         case "italic_start":
                         {
                             $contentXML .=  "<text:span text:style-name='T2'>";
-                        }
-                        break;
+                        }break;
 
                         case "style_stop":
                         {
                             $contentXML .=  "</text:span>";
-                        }
-                        break;
+                        }break;
 
                         case "link":
                         {
                             $contentXML .= "<text:a xlink:type='simple' xlink:href='" . $paragraphElement['HREF']. "'>" . $paragraphElement['Content'] . "</text:a>";
-                        }
-                        break;
+                        }break;
 
                         default:
                         {

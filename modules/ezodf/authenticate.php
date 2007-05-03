@@ -35,16 +35,16 @@
     $http = eZHTTPTool::instance();
 
     if ( $http->hasPostVariable( 'Username' ) );
-    	$username = $http->postVariable( 'Username' );
+        $username = $http->postVariable( 'Username' );
 
     if ( $http->hasPostVariable( 'Password' ) );
-    	$password = $http->postVariable( 'Password' );
+        $password = $http->postVariable( 'Password' );
 
     if ( $http->hasPostVariable( 'NodeID' ) );
-    	$parentNodeID = $http->postVariable( 'NodeID' );
+        $parentNodeID = $http->postVariable( 'NodeID' );
 
     // User authentication
-	$user = eZUser::loginUser( $username, $password );
+    $user = eZUser::loginUser( $username, $password );
     if ( $user == false )
     {
         print( 'problem:Authentication failed' );
@@ -54,33 +54,33 @@
     {
         // Print the list of ID nodes..
         //Structure : name, type, ID
-	$nodes = eZFunctionHandler::execute( 'content','list', array( 'parent_node_id' => $parentNodeID ) );
+        $nodes = eZFunctionHandler::execute( 'content','list', array( 'parent_node_id' => $parentNodeID ) );
 
-	$array = array();
-	foreach( $nodes as $node )
-	{
-		$tpl->setVariable( 'node', $node );
+        $array = array();
+        foreach( $nodes as $node )
+        {
+            $tpl->setVariable( 'node', $node );
 
-		$nodeID = $node->attribute( 'node_id' );
-		$name = $node->attribute( 'name' );
-		$className = $node->attribute( 'class_name' );
-		$object =& $node->object();
-		$contentClass = $object->contentClass();
-		$isContainer = $contentClass->attribute( 'is_container' );
+            $nodeID = $node->attribute( 'node_id' );
+            $name = $node->attribute( 'name' );
+            $className = $node->attribute( 'class_name' );
+            $object =& $node->object();
+            $contentClass = $object->contentClass();
+            $isContainer = $contentClass->attribute( 'is_container' );
 
-		preg_match( '/\/+[a-z0-9\-\._]+\/?[a-z0-9_\.\-\?\+\/~=&#;,]*[a-z0-9\/]{1}/si', $tpl->fetch( 'design:ezodf/icon.tpl' ), $matches );
-		$iconPath = 'http://'. eZSys::hostname(). ':' . eZSys::serverPort() . $matches[0];
-		$array[] = array( $nodeID, $name, $className, $isContainer, $iconPath );
-	}
+            preg_match( '/\/+[a-z0-9\-\._]+\/?[a-z0-9_\.\-\?\+\/~=&#;,]*[a-z0-9\/]{1}/si', $tpl->fetch( 'design:ezodf/icon.tpl' ), $matches );
+            $iconPath = 'http://'. eZSys::hostname(). ':' . eZSys::serverPort() . $matches[0];
+            $array[] = array( $nodeID, $name, $className, $isContainer, $iconPath );
+        }
 
-	//Test if not empty
-	If ( count( $array ) == 0 )
-	{
-		print( 'problem:No Items' );
-		eZExecution::cleanExit();
-	}
+        //Test if not empty
+        if ( count( $array ) == 0 )
+        {
+            print( 'problem:No Items' );
+            eZExecution::cleanExit();
+        }
 
-	//Convert the array into a string and display it
+        //Convert the array into a string and display it
         $display = '';
         foreach( $array as $line )
         {

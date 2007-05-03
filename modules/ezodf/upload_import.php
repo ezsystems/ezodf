@@ -27,21 +27,21 @@
     include_once( "extension/ezodf/modules/ezodf/ezooimport.php" );
     include_once( 'kernel/classes/datatypes/ezuser/ezuser.php' );
     include_once( "lib/ezutils/classes/ezhttptool.php" );
-	include_once( "lib/ezutils/classes/ezhttpfile.php" );
+    include_once( "lib/ezutils/classes/ezhttpfile.php" );
 
     $http = eZHTTPTool::instance();
 
     if ( $http->hasPostVariable( 'Username' ) );
-    	$username = $http->postVariable( 'Username' );
+        $username = $http->postVariable( 'Username' );
 
     if ( $http->hasPostVariable( 'Password' ) );
-    	$password = $http->postVariable( 'Password' );
+        $password = $http->postVariable( 'Password' );
 
     if ( $http->hasPostVariable( 'NodeID' ) );
-    	$nodeID = $http->postVariable( 'NodeID' );
+        $nodeID = $http->postVariable( 'NodeID' );
 
     if ( $http->hasPostVariable( 'ImportType' ) );
-    	$importType = $http->postVariable( 'ImportType' );
+        $importType = $http->postVariable( 'ImportType' );
 
     // User authentication
     $user = eZUser::loginUser( $username, $password );
@@ -53,16 +53,16 @@
 
     if ( !eZHTTPFile::canFetch( 'File' ) )
     {
-    	print( 'problem:Can\'t fetch HTTP file.' );
-    	eZExecution::cleanExit();
+        print( 'problem:Can\'t fetch HTTP file.' );
+        eZExecution::cleanExit();
     }
 
-	$file = eZHTTPFile::fetch('File');
+    $file = eZHTTPFile::fetch('File');
 
     $fileName = $file->attribute( 'filename' );
-	$originalFilename = $file->attribute('original_filename');
+    $originalFilename = $file->attribute('original_filename');
 
-	$content = base64_decode( file_get_contents( $fileName ) );
+    $content = base64_decode( file_get_contents( $fileName ) );
 
     $fd = fopen( $fileName, 'w' );
     fwrite( $fd, $content );
