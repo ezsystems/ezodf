@@ -124,9 +124,9 @@ class eZOOConverter
                                                "DisplayWidth" => $displayWidth,
                                                "DisplayHeight" => $displayHeight );
 
-			            $ooGenerator->addImage( $imageArray);
+                        $ooGenerator->addImage( $imageArray);
 
-						$ooGenerator->endSection();
+                        $ooGenerator->endSection();
 
                     }break;
 
@@ -134,10 +134,10 @@ class eZOOConverter
                     {
                         $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
 
-						$date = $attribute->content();
-	                    $ooGenerator->addParagraph( $date->attribute( "day" ) . "/" . $date->attribute( "month" ) . "/" . $date->attribute( "year" ) );
+                        $date = $attribute->content();
+                        $ooGenerator->addParagraph( $date->attribute( "day" ) . "/" . $date->attribute( "month" ) . "/" . $date->attribute( "year" ) );
 
-						$ooGenerator->endSection();
+                        $ooGenerator->endSection();
 
                     }break;
 
@@ -146,10 +146,10 @@ class eZOOConverter
                     {
                         $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
 
-						$date = $attribute->content();
-	                    $ooGenerator->addParagraph( $date->attribute( "day" ) . "/" . $date->attribute( "month" ) . "/" . $date->attribute( "year" ) . " " . $date->attribute( "hour" )  . ":" . $date->attribute( "minute" )  );
+                        $date = $attribute->content();
+                        $ooGenerator->addParagraph( $date->attribute( "day" ) . "/" . $date->attribute( "month" ) . "/" . $date->attribute( "year" ) . " " . $date->attribute( "hour" )  . ":" . $date->attribute( "minute" )  );
 
-						$ooGenerator->endSection();
+                        $ooGenerator->endSection();
 
                     }break;
 
@@ -157,35 +157,35 @@ class eZOOConverter
                     {
                         $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
 
-						$matrix = $attribute->content();
+                        $matrix = $attribute->content();
 
-						$columns = $matrix->attribute( "columns" );
+                        $columns = $matrix->attribute( "columns" );
 
-   					    $ooGenerator->startTable();
+                        $ooGenerator->startTable();
 
-						foreach ( $columns['sequential'] as $column )
-						{
-			            	$ooGenerator->addParagraph( $column['name'] );
-			            	$ooGenerator->nextCell();
-						}
+                        foreach ( $columns['sequential'] as $column )
+                        {
+                            $ooGenerator->addParagraph( $column['name'] );
+                            $ooGenerator->nextCell();
+                        }
 
-	     	            $ooGenerator->nextRow( "defaultstyle" );
+                        $ooGenerator->nextRow( "defaultstyle" );
 
-						$rows = $matrix->attribute( "rows" );
+                        $rows = $matrix->attribute( "rows" );
 
-						foreach ( $rows['sequential'] as $row )
-						{
-							foreach ( $row['columns'] as $cell )
-						    {
-								$ooGenerator->addParagraph( $cell );
-			            		$ooGenerator->nextCell();
-							}
-		     	            $ooGenerator->nextRow( "defaultstyle" );
-						}
+                        foreach ( $rows['sequential'] as $row )
+                        {
+                            foreach ( $row['columns'] as $cell )
+                            {
+                                $ooGenerator->addParagraph( $cell );
+                                $ooGenerator->nextCell();
+                            }
+                            $ooGenerator->nextRow( "defaultstyle" );
+                        }
 
                         $ooGenerator->endTable();
 
-						$ooGenerator->endSection();
+                        $ooGenerator->endSection();
 
                     }break;
 

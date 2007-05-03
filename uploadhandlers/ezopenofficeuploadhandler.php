@@ -55,10 +55,10 @@ class eZOpenofficeUploadHandler extends eZContentUploadHandler
                          $filePath, $originalFilename, $mimeinfo,
                          $location, $existingNode )
     {
-		//$ooINI =& eZINI::instance( 'odf.ini' );
+        //$ooINI =& eZINI::instance( 'odf.ini' );
         //$tmpDir = $ooINI->variable( 'ODFSettings', 'TmpDir' );
-		$tmpDir = getcwd() . "/" . eZSys::cacheDirectory();
-		
+        $tmpDir = getcwd() . "/" . eZSys::cacheDirectory();
+
         $originalFilename = basename( $originalFilename );
         $tmpFile = $tmpDir . "/" . $originalFilename;
         copy( $filePath, $tmpFile );
