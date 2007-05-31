@@ -479,8 +479,8 @@ class eZOOConverter
                     // Todo: read class identifiers from configuration
                     if( $classIdentifier == "image" )
                     {
-                        $imageSize = $child->attributeValue( 'size' );
-                        $imageAlignment = $child->attributeValue( 'align' );
+                        $imageSize = $node->attributeValue( 'size' );
+                        $imageAlignment = $node->attributeValue( 'align' );
 
                         $dataMap = $object->dataMap();
                         $imageAttribute = $dataMap['image'];
@@ -498,7 +498,7 @@ class eZOOConverter
                 }
                 else
                 {
-                    eZDebug::writeError( "Image (object_id = " . $child->attributeValue( 'object_id' ) . " ) could not be used (does not exist or insufficient privileges)", 'eZOOConverter::handleNode');
+                    eZDebug::writeError( "Image (object_id = " . $node->attributeValue( 'object_id' ) . " ) could not be used (does not exist or insufficient privileges)", 'eZOOConverter::handleNode');
                 }
 
                 foreach( $imageArray as $image )
