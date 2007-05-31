@@ -466,45 +466,9 @@ class eZOOConverter
 
             case "embed":
             {
-                // Only support objects of image class for now and those we can read
+                // Only support objects of image class for now
+                $generator->addImage( eZOOConverter::handleImageNode( $node ) );
 
-                $imageArray = array();
-
-                $object = eZContentObject::fetch( $node->attributeValue( "object_id" ) );
-                if( $object && $object->canRead() )
-                {
-
-                    $classIdentifier = $object->attribute( "class_identifier" );
-
-                    // Todo: read class identifiers from configuration
-                    if( $classIdentifier == "image" )
-                    {
-                        $imageSize = $node->attributeValue( 'size' );
-                        $imageAlignment = $node->attributeValue( 'align' );
-
-                        $dataMap = $object->dataMap();
-                        $imageAttribute = $dataMap['image'];
-
-                        $imageHandler = $imageAttribute->content();
-                        $originalImage = $imageHandler->attribute( 'original' );
-                        $displayImage = $imageHandler->attribute( $imageSize );
-                        $displayWidth = $displayImage['width'];
-                        $displayHeight = $displayImage['height'];
-                        $imageArray[] = array( "FileName" => $originalImage['url'],
-                                               "Alignment" => $imageAlignment,
-                                               "DisplayWidth" => $displayWidth,
-                                               "DisplayHeight" => $displayHeight );
-                    }
-                }
-                else
-                {
-                    eZDebug::writeError( "Image (object_id = " . $node->attributeValue( 'object_id' ) . " ) could not be used (does not exist or insufficient privileges)", 'eZOOConverter::handleNode');
-                }
-
-                foreach( $imageArray as $image )
-                {
-                    $generator->addImage( $image );
-                }
             }break;
 
             case "custom":
@@ -592,35 +556,17 @@ class eZOOConverter
                 $paragraphParameters[] = array( EZ_OO_STYLE_STOP );
             }break;
 
+            case "embed":
+                // NOTE: <embed> is actually block-tag, but its marked as 'inline' for backward-compatibility => process 'embed' here as well
+            case "embed-inline":
             case "object":
+                // NOTE: <object> is depricated since 3.9
             {
                 // Only support objects of image class for now
-                $object = eZContentObject::fetch( $node->attributeValue( "id" ) );
-                if( $object )
-                {
-                    $classIdentifier = $object->attribute( "class_identifier" );
+                $imageArray[] = eZOOConverter::handleImageNode( $node );
 
-                    // Todo: read class identifiers from configuration
-                    if( $classIdentifier == "image" )
-                    {
-                        $imageSize = $node->attributeValue( 'size' );
-                        $imageAlignment = $node->attributeValue( 'align' );
-
-                        $dataMap = $object->dataMap();
-                        $imageAttribute = $dataMap['image'];
-
-                        $imageHandler = $imageAttribute->content();
-                        $originalImage = $imageHandler->attribute( 'original' );
-                        $displayImage = $imageHandler->attribute( $imageSize );
-                        $displayWidth = $displayImage['width'];
-                        $displayHeight = $displayImage['height'];
-                        $imageArray[] = array( "FileName" => $originalImage['url'],
-                                               "Alignment" => $imageAlignment,
-                                               "DisplayWidth" => $displayWidth,
-                                               "DisplayHeight" => $displayHeight );
-                    }
-                }
             }break;
+
 
             default:
             {
@@ -632,6 +578,71 @@ class eZOOConverter
 
         return array( "paragraph_parameters" => $paragraphParameters,
                       "image_array" =>  $imageArray );
+    }
+
+    function handleImageNode( $node )
+    {
+        $imageArray = array();
+
+        $objectID = false;
+        switch( $node->name() )
+        {
+            case 'embed-inline':
+            case 'embed':
+            {
+                $objectID = $node->attributeValue( "object_id" );
+            }break;
+
+            case 'object':
+            {
+                $objectID = $node->attributeValue( "id" );
+            }break;
+
+            default:
+            {
+                $objectID = false;
+            }break;
+        }
+
+
+        $object = eZContentObject::fetch( $objectID );
+
+        if( $object && $object->canRead() )
+        {
+            $classIdentifier = $object->attribute( "class_identifier" );
+
+            // Todo: read class identifiers from configuration
+            if( $classIdentifier == "image" )
+            {
+                $imageSize = $node->attributeValue( 'size' );
+                if( !$imageSize )
+                    $imageSize = 'medium';
+
+                $imageAlignment = $node->attributeValue( 'align' );
+                if( !$imageAlignment )
+                    $imageAlignment = 'center';
+
+                $dataMap = $object->dataMap();
+                $imageAttribute = $dataMap['image'];
+
+                $imageHandler = $imageAttribute->content();
+                $originalImage = $imageHandler->attribute( 'original' );
+
+                $displayImage = $imageHandler->attribute( $imageSize );
+                $displayWidth = $displayImage['width'];
+                $displayHeight = $displayImage['height'];
+                $imageArray = array( "FileName" => $originalImage['url'],
+                                     "Alignment" => $imageAlignment,
+                                     "DisplayWidth" => $displayWidth,
+                                     "DisplayHeight" => $displayHeight );
+            }
+        }
+        else
+        {
+            eZDebug::writeError( "Image (object_id = " . $objectID . " ) could not be used (does not exist or insufficient privileges)", 'eZOOConverter::handleImageObject');
+        }
+
+        return $imageArray;
     }
 }
 
