@@ -26,7 +26,7 @@
 
 class ezodfInfo
 {
-    function info()
+    static function info()
     {
         return array( 'Name' => "eZ OpenOffice.org extension",
                       'Version' => "2.0.1",
