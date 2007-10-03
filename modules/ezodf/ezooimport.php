@@ -505,7 +505,7 @@ class eZOOImport
 
                 $version = $object->version( 1 );
                 $version->setAttribute( 'modified', eZDateTime::currentTimeStamp() );
-                $version->setAttribute( 'status', EZ_VERSION_STATUS_DRAFT );
+                $version->setAttribute( 'status', eZContentObjectVersion::STATUS_DRAFT );
                 $version->store();
                 $dataMap = $object->dataMap();
             }
