@@ -259,11 +259,11 @@ class eZOOConverter
             /*
             $ooGenerator->addHeader( "This is generated from PHP!!" );
 
-            $ooGenerator->addParagraph( array( EZ_OO_STYLE_START, "bold" ),
-                                        array( EZ_OO_TEXT, "Pent vaaaar i dag"),
-                                        array( EZ_OO_STYLE_STOP ),
-                                        array( EZ_OO_LINK, "eZ systems", "http://ez.no"),
-                                        array( EZ_OO_TEXT, "Test" ) );
+            $ooGenerator->addParagraph( array( eZOOGenerator::STYLE_START, "bold" ),
+                                        array( eZOOGenerator::TEXT, "Pent vaaaar i dag"),
+                                        array( eZOOGenerator::STYLE_STOP ),
+                                        array( eZOOGenerator::LINK, "eZ systems", "http://ez.no"),
+                                        array( eZOOGenerator::TEXT, "Test" ) );
 
             $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
             $ooGenerator->addHeader( "This is generated from PHP!!" );
@@ -305,7 +305,7 @@ class eZOOConverter
 
             $ooGenerator->endTable();
 
-            $ooGenerator->addParagraph( "Preformatted_20_Text", array( EZ_OO_TEXT, "This is just a sample paragraph. And it's of course added via PHP." ) );
+            $ooGenerator->addParagraph( "Preformatted_20_Text", array( eZOOGenerator::TEXT, "This is just a sample paragraph. And it's of course added via PHP." ) );
             $ooGenerator->addParagraph( "eZ_PRE_style", "Normal text here." );
 
             */
@@ -388,7 +388,7 @@ class eZOOConverter
             case "line":
             {
                 // Todo: support inline tags
-                $paragraphParameters[] = array( EZ_OO_TEXT, $child->textContent() );
+                $paragraphParameters[] = array( eZOOGenerator::TEXT, $child->textContent() );
 
                 foreach ( $child->children() as $lineChild )
                 {
@@ -438,7 +438,7 @@ class eZOOConverter
 
             case "#text":
             {
-                $paragraphParameters[] = array( EZ_OO_TEXT, $child->content() );
+                $paragraphParameters[] = array( eZOOGenerator::TEXT, $child->content() );
             }break;
 
             case "link":
@@ -458,12 +458,12 @@ class eZOOConverter
                     }
                 }
 
-                $paragraphParameters[] = array( EZ_OO_LINK, $href, $child->textContent() );
+                $paragraphParameters[] = array( eZOOGenerator::LINK, $href, $child->textContent() );
             }break;
 
             case "emphasize":
             {
-                $paragraphParameters[] = array( EZ_OO_STYLE_START, "italic" );
+                $paragraphParameters[] = array( eZOOGenerator::STYLE_START, "italic" );
 
                 foreach ( $child->children() as $inlineNode )
                 {
@@ -471,19 +471,19 @@ class eZOOConverter
                     $paragraphParameters = array_merge( $paragraphParameters, $return['paragraph_parameters'] );
                 }
 
-                $paragraphParameters[] = array( EZ_OO_STYLE_STOP );
+                $paragraphParameters[] = array( eZOOGenerator::STYLE_STOP );
             }break;
 
             case "strong":
             {
-                $paragraphParameters[] = array( EZ_OO_STYLE_START, "bold" );
+                $paragraphParameters[] = array( eZOOGenerator::STYLE_START, "bold" );
 
                 foreach ( $child->children() as $inlineNode )
                 {
                     $return = eZOOConverter::handleInlineNode( $inlineNode );
                     $paragraphParameters = array_merge( $paragraphParameters, $return['paragraph_parameters'] );
                 }
-                $paragraphParameters[] = array( EZ_OO_STYLE_STOP );
+                $paragraphParameters[] = array( eZOOGenerator::STYLE_STOP );
             }break;
 
             case "literal":
@@ -521,9 +521,9 @@ class eZOOConverter
                 // Handle inline custom tags
                 if ( $isInline == true )
                 {
-                    $paragraphParameters[] = array( EZ_OO_STYLE_START, "eZCustominline_20_$customTagName" );
-                    $paragraphParameters[] = array( EZ_OO_TEXT, $child->textContent() );
-                    $paragraphParameters[] = array( EZ_OO_STYLE_STOP );
+                    $paragraphParameters[] = array( eZOOGenerator::STYLE_START, "eZCustominline_20_$customTagName" );
+                    $paragraphParameters[] = array( eZOOGenerator::TEXT, $child->textContent() );
+                    $paragraphParameters[] = array( eZOOGenerator::STYLE_STOP );
                 }
                 else
                 {

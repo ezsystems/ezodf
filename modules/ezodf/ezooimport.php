@@ -41,27 +41,26 @@ include_once( 'lib/ezxml/classes/ezxml.php' );
 include_once( 'lib/ezlocale/classes/ezdatetime.php' );
 include_once( 'lib/ezfile/classes/ezdir.php' );
 
-
-define( "OOIMPORT_ERROR_NOERROR", 0 );
-define( "OOIMPORT_ERROR_UNSUPPORTEDTYPE", 1 );
-define( "OOIMPORT_ERROR_PARSEXML", 2 );
-define( "OOIMPORT_ERROR_OPENSOCKET", 3 );
-define( "OOIMPORT_ERROR_CONVERT", 4 );
-define( "OOIMPORT_ERROR_DEAMONCALL", 5 );
-define( "OOIMPORT_ERROR_DEAMON", 6 );
-define( "OOIMPORT_ERROR_DOCNOTSUPPORTED", 7 );
-define( "OOIMPORT_ERROR_FILENOTFOUND", 8 );
-define( "OOIMPORT_ERROR_PLACEMENTINVALID", 9 );
-define( "OOIMPORT_ERROR_CANNOTSTORE", 10 );
-define( "OOIMPORT_ERROR_UNKNOWNNODE", 11 );
-define( "OOIMPORT_ERROR_ACCESSDENIED", 12 );
-define( "OOIMPORT_ERROR_IMPORTING", 13 );
-define( "OOIMPORT_ERROR_UNKNOWNCLASS", 14 );
-define( "OOIMPORT_ERROR_UNKNOWN", 127 );
-
 class eZOOImport
 {
-    var $ERROR=array();
+    const ERROR_NOERROR = 0;
+    const ERROR_UNSUPPORTEDTYPE = 1;
+    const ERROR_PARSEXML = 2;
+    const ERROR_OPENSOCKET = 3;
+    const ERROR_CONVERT = 4;
+    const ERROR_DEAMONCALL = 5;
+    const ERROR_DEAMON = 6;
+    const ERROR_DOCNOTSUPPORTED = 7;
+    const ERROR_FILENOTFOUND = 8;
+    const ERROR_PLACEMENTINVALID = 9;
+    const ERROR_CANNOTSTORE = 10;
+    const ERROR_UNKNOWNNODE = 11;
+    const ERROR_ACCESSDENIED = 12;
+    const ERROR_IMPORTING = 13;
+    const ERROR_UNKNOWNCLASS = 14;
+    const ERROR_UNKNOWN = 127;
+
+    var $ERROR = array();
     var $currentUserID;
 
     /*!
@@ -100,57 +99,57 @@ class eZOOImport
     {
         switch( $errorNumber )
         {
-            case OOIMPORT_ERROR_NOERROR :
+            case self::ERROR_NOERROR :
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = "";
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case OOIMPORT_ERROR_UNSUPPORTEDTYPE :
+            case self::ERROR_UNSUPPORTEDTYPE :
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "File extension or type is not allowed." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case OOIMPORT_ERROR_PARSEXML :
+            case self::ERROR_PARSEXML :
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Could not parse XML." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case OOIMPORT_ERROR_OPENSOCKET :
+            case self::ERROR_OPENSOCKET :
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Can not open socket. Please check if extension/ezodf/deamon.php is running." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case OOIMPORT_ERROR_CONVERT :
+            case self::ERROR_CONVERT :
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Can not convert the given document." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case OOIMPORT_ERROR_DEAMONCALL :
+            case self::ERROR_DEAMONCALL :
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unable to call deamon. Fork can not create child process." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case OOIMPORT_ERROR_DEAMON :
+            case self::ERROR_DEAMON :
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Deamon reported error." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case OOIMPORT_ERROR_UNKNOWNNODE:
+            case self::ERROR_UNKNOWNNODE:
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unknown node." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case OOIMPORT_ERROR_ACCESSDENIED:
+            case self::ERROR_ACCESSDENIED:
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Access denied." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case OOIMPORT_ERROR_IMPORTING:
+            case self::ERROR_IMPORTING:
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Error during import." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case OOIMPORT_ERROR_UNKNOWNCLASS:
+            case self::ERROR_UNKNOWNCLASS:
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unknown content class specified in odf.ini:" );
                 $this->ERROR['description'] = $errorDescription;
@@ -197,20 +196,20 @@ class eZOOImport
                 }
                 else
                 {
-                    $this->setError( OOIMPORT_ERROR_DEAMON, $result );
+                    $this->setError( self::ERROR_DEAMON, $result );
                     $res = false;
                 }
              }
              else
              {
-                 $this->setError( OOIMPORT_ERROR_DEAMONCALL );
+                 $this->setError( self::ERROR_DEAMONCALL );
                  $res = false;
              }
              fclose( $fp );
         }
         else
         {
-            $this->setError( OOIMPORT_ERROR_OPENSOCKET );
+            $this->setError( self::ERROR_OPENSOCKET );
             $res = false;
         }
 
@@ -235,7 +234,7 @@ class eZOOImport
 
         if ( !in_array( $originalFileType,$allowedTypes, false ) and !in_array( $originalFileType, $convertTypes, false ) )
         {
-            $this->setError( OOIMPORT_ERROR_UNSUPPORTEDTYPE, ezi18n( 'extension/ezodf/import/error',"Filetype: " ). $originalFileType );
+            $this->setError( self::ERROR_UNSUPPORTEDTYPE, ezi18n( 'extension/ezodf/import/error',"Filetype: " ). $originalFileType );
             return false;
         }
 
@@ -254,7 +253,7 @@ class eZOOImport
         if ( !is_object( $class ) )
         {
             eZDebug::writeError( "Content class <strong>$importClassIdentifier</strong> specified in odf.ini does not exist." );
-            $this->setError( OOIMPORT_ERROR_UNKNOWNCLASS, $importClassIdentifier );
+            $this->setError( self::ERROR_UNKNOWNCLASS, $importClassIdentifier );
             return false;
         }
 
@@ -271,7 +270,7 @@ class eZOOImport
 
             if ( $locationOK === false || $locationOK === null )
             {
-                $this->setError( OOIMPORT_ERROR_UNKNOWNNODE, ezi18n( 'extension/ezodf/import/error',"Unable to fetch node with id  ") . $placeNodeID );
+                $this->setError( self::ERROR_UNKNOWNNODE, ezi18n( 'extension/ezodf/import/error',"Unable to fetch node with id  ") . $placeNodeID );
                 return false;
             }
 
@@ -291,7 +290,7 @@ class eZOOImport
 
         if ( ! ( $access['result'] ) )
         {
-            $this->setError( OOIMPORT_ERROR_ACCESSDENIED );
+            $this->setError( self::ERROR_ACCESSDENIED );
             return false;
         }
         //return false;
@@ -309,7 +308,7 @@ class eZOOImport
             if ( !$this->deamonConvert( $tmpFromFile, $tmpToFile ) )
             {
                 if( $this->getErrorNumber() == 0 )
-                    $this->setError( OOIMPORT_ERROR_CONVERT );
+                    $this->setError( self::ERROR_CONVERT );
                 return false;
             }
             // At this point we can unlink the sourcefile for conversion
@@ -355,7 +354,7 @@ class eZOOImport
 
         if ( !is_object( $dom ) )
         {
-            $this->setError( OOIMPORT_ERROR_PARSEXML );
+            $this->setError( self::ERROR_PARSEXML );
             return false;
         }
 
@@ -513,14 +512,14 @@ class eZOOImport
                     $dataMap = $place_node->attribute( 'data_map' );
                     if ( (!isset( $dataMap[ $titleAttribute ] ) ) || ( !isset( $dataMap[ $bodyAttribute ] ) ) )
                     {
-                        $this->setError( OOIMPORT_ERROR_IMPORTING, "Error in configuration for $placeClassIdentifier, please check configuration file." );
+                        $this->setError( self::ERROR_IMPORTING, "Error in configuration for $placeClassIdentifier, please check configuration file." );
                         return false;
                     }
                     unset( $dataMap );
                 }
                 else
                 {
-                    $this->setError( OOIMPORT_ERROR_IMPORTING, "No settings for replacing node of type $placeClassIdentifier. Stopping.");
+                    $this->setError( self::ERROR_IMPORTING, "No settings for replacing node of type $placeClassIdentifier. Stopping.");
                     return false;
                 }
 
@@ -1581,7 +1580,7 @@ class eZOOImport
         //pk
         if ( !$node->canCreate() )
         {
-            $this->setError( OOIMPORT_ERROR_ACCESSDENIED, ezi18n( 'extension/ezodf/import/error', "Folder for images could not be created, access denied." ) );
+            $this->setError( self::ERROR_ACCESSDENIED, ezi18n( 'extension/ezodf/import/error', "Folder for images could not be created, access denied." ) );
             return false;
         }
 
