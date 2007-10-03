@@ -7,7 +7,7 @@ It communicates with OpenOffice.org and does the actual conversion of documents.
 The script needs to be started with the command-line version of PHP, which means 
 that you need to execute the following command from the command line:
 
-$ php extension/ezodf/deamon.php
+$ php extension/ezodf/daemon.php
 
 
 Note: The document conversion daemon will only run under Linux since the socket support in PHP does not work under Windows.
@@ -69,7 +69,7 @@ $homeDir = "/home/sp";
 and 
 $display = ':1';  
 (display here has the same meaning as for daemon.php)
-variable. To be sure that openoffice will start  from conversion script login to the system with user 
+variable. To be sure that openoffice will start from conversion script login to the system with user 
 from whom convert daemon will run and then:
 $ export DISPLAY=[display you set above]
 $ export HOME=[home dir from above]

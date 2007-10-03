@@ -50,7 +50,7 @@ $socket = socket_create( AF_INET, SOCK_STREAM, 0) or die( "Could not create sock
 $result = socket_bind( $socket, $host, $port ) or die( "Could not bind to socket\n" );
 $result = socket_listen( $socket, $maxClients ) or die( "Could not set up socket listener\n" );
 
-print( "Started OpenOffice.org deamon\n" );
+print( "Started OpenOffice.org daemon\n" );
 
 function convert_to( $sourceFileName, $convertCommand, $destinationFileName )
 {
@@ -97,7 +97,7 @@ while ( $spawn = socket_accept( $socket ))
     else
     {
         // We are in the forked child process
-        socket_write( $spawn, "eZ publish document conversion deamon\n");
+        socket_write( $spawn, "eZ publish document conversion daemon\n");
 
         // Parse input
         $input = socket_read( $spawn, 1024 );

@@ -48,8 +48,8 @@ class eZOOImport
     const ERROR_PARSEXML = 2;
     const ERROR_OPENSOCKET = 3;
     const ERROR_CONVERT = 4;
-    const ERROR_DEAMONCALL = 5;
-    const ERROR_DEAMON = 6;
+    const ERROR_DAEMONCALL = 5;
+    const ERROR_DAEMON = 6;
     const ERROR_DOCNOTSUPPORTED = 7;
     const ERROR_FILENOTFOUND = 8;
     const ERROR_PLACEMENTINVALID = 9;
@@ -124,12 +124,12 @@ class eZOOImport
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Can not convert the given document." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case self::ERROR_DEAMONCALL :
+            case self::ERROR_DAEMONCALL :
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unable to call deamon. Fork can not create child process." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case self::ERROR_DEAMON :
+            case self::ERROR_DAEMON :
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Deamon reported error." );
                 $this->ERROR['description'] = $errorDescription;
@@ -163,9 +163,18 @@ class eZOOImport
     }
 
     /*!
-      Connects to the eZ publish document conversion deamon and converts the document to OpenOffice.org Writer
+      \deprecated
+      Left for backward compatibility. Use the daemonconvert function instead.
     */
     function deamonConvert( $sourceFile, $destFile )
+    {
+        $this->daemonConvert( $sourceFile, $destFile );
+    }
+
+    /*!
+      Connects to the eZ publish document conversion daemon and converts the document to OpenOffice.org Writer
+    */
+    function daemonConvert( $sourceFile, $destFile )
     {
         $ooINI =& eZINI::instance( 'odf.ini' );
         $server = $ooINI->variable( "ODFImport", "OOConverterAddress" );
@@ -182,7 +191,7 @@ class eZOOImport
             $welcome = fread( $fp, 1024 );
 
             $welcome = trim( $welcome );
-            if ( $welcome == "eZ publish document conversion deamon" )
+            if ( $welcome == "eZ publish document conversion daemon" )
             {
                 $commandString = "convertToOOo $sourceFile $destFile";
 
@@ -196,13 +205,13 @@ class eZOOImport
                 }
                 else
                 {
-                    $this->setError( self::ERROR_DEAMON, $result );
+                    $this->setError( self::ERROR_DAEMON, $result );
                     $res = false;
                 }
              }
              else
              {
-                 $this->setError( self::ERROR_DEAMONCALL );
+                 $this->setError( self::ERROR_DAEMONCALL );
                  $res = false;
              }
              fclose( $fp );
@@ -304,8 +313,8 @@ class eZOOImport
             $tmpToFile   = $tmpDir . "/ooo_converted_$uniqueStamp.odt";
             copy( realpath( $file ),  $tmpFromFile );
 
-           /// Convert document using the eZ publish document conversion deamon
-            if ( !$this->deamonConvert( $tmpFromFile, $tmpToFile ) )
+           /// Convert document using the eZ publish document conversion daemon
+            if ( !$this->daemonConvert( $tmpFromFile, $tmpToFile ) )
             {
                 if( $this->getErrorNumber() == 0 )
                     $this->setError( self::ERROR_CONVERT );
