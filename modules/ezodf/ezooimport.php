@@ -71,9 +71,9 @@ class eZOOImport
         $this->ERROR['number'] = 0;
         $this->ERROR['value'] = '';
         $this->ERROR['description'] = '';
-        $currentUser =& eZUser::currentUser();
+        $currentUser = eZUser::currentUser();
         $this->currentUserID  = $currentUser->id();
-        $this->ImportDir .= md5( mktime() ) . "/";
+        $this->ImportDir .= md5( time() ) . "/";
     }
 
     /*!
@@ -176,7 +176,7 @@ class eZOOImport
     */
     function daemonConvert( $sourceFile, $destFile )
     {
-        $ooINI =& eZINI::instance( 'odf.ini' );
+        $ooINI = eZINI::instance( 'odf.ini' );
         $server = $ooINI->variable( "ODFImport", "OOConverterAddress" );
         $port = $ooINI->variable( "ODFImport", "OOConverterPort" );
         $res = false;
@@ -230,7 +230,7 @@ class eZOOImport
     */
     function import( $file, $placeNodeID, $originalFileName, $importType = "import", $upload = null )
     {
-        $ooINI =& eZINI::instance( 'odf.ini' );
+        $ooINI = eZINI::instance( 'odf.ini' );
         //$tmpDir = $ooINI->variable( 'ODFSettings', 'TmpDir' );
         // Use var-directory as temporary directory
         $tmpDir = getcwd() . "/" . eZSys::cacheDirectory();
@@ -289,12 +289,14 @@ class eZOOImport
         if ( $importType == "replace" )
         {
             // Check if we are allowed to edit the node
-            $access = eZContentFunctionCollection::checkAccess( 'edit', $place_node, false, false );
+            $functionCollection = new eZContentFunctionCollection();
+            $access = $functionCollection->checkAccess( 'edit', $place_node, false, false );
         }
         else
         {
             // Check if we are allowed to create a node under the node
-            $access = eZContentFunctionCollection::checkAccess( 'create', $place_node, $importClassIdentifier, $place_node->attribute( 'class_identifier' ) );
+            $functionCollection = new eZContentFunctionCollection();
+            $access = $functionCollection->checkAccess( 'create', $place_node, $importClassIdentifier, $place_node->attribute( 'class_identifier' ) );
         }
 
         if ( ! ( $access['result'] ) )
@@ -335,7 +337,7 @@ class eZOOImport
         eZDir::mkdir( $this->ImportBaseDir );
         eZDir::mkdir( $uniqueImportDir );
 
-        $http =& eZHTTPTool::instance();
+        $http = eZHTTPTool::instance();
 
         // Check if zlib extension is loaded, if it's loaded use bundled ZIP library,
         // if not rely on the unzip commandline version.
@@ -352,7 +354,7 @@ class eZOOImport
 
         $fileName = $uniqueImportDir . "content.xml";
         $xml = new eZXML();
-        $dom =& $xml->domTree( file_get_contents( $fileName ) );
+        $dom = $xml->domTree( file_get_contents( $fileName ) );
         $sectionNodeHash = array();
 
         // At this point we could unlink the destination file from the conversion, if conversion was used
@@ -369,14 +371,14 @@ class eZOOImport
 
 
         // Fetch the automatic document styles
-        $automaticStyleArray =& $dom->elementsByNameNS( 'automatic-styles', 'urn:oasis:names:tc:opendocument:xmlns:office:1.0' );
+        $automaticStyleArray = $dom->elementsByNameNS( 'automatic-styles', 'urn:oasis:names:tc:opendocument:xmlns:office:1.0' );
         if ( count( $automaticStyleArray ) == 1 )
         {
             $this->AutomaticStyles = $automaticStyleArray[0]->children();
         }
 
         // Fetch the body section content
-        $sectionNodeArray =& $dom->elementsByNameNS( 'section', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' );
+        $sectionNodeArray = $dom->elementsByNameNS( 'section', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' );
 
         $customClassFound = false;
         if ( count( $sectionNodeArray ) > 0 )
@@ -455,7 +457,7 @@ class eZOOImport
         if ( $customClassFound == false )
         {
             // No defined sections. Do default import.
-            $bodyNodeArray =& $dom->elementsByNameNS( 'text', 'urn:oasis:names:tc:opendocument:xmlns:office:1.0' );
+            $bodyNodeArray = $dom->elementsByNameNS( 'text', 'urn:oasis:names:tc:opendocument:xmlns:office:1.0' );
 
             if ( count( $bodyNodeArray ) == 1 )
             {
@@ -501,11 +503,11 @@ class eZOOImport
                                                              );
                 $nodeAssignment->store();
 
-                $version =& $object->version( 1 );
+                $version = $object->version( 1 );
                 $version->setAttribute( 'modified', eZDateTime::currentTimeStamp() );
                 $version->setAttribute( 'status', EZ_VERSION_STATUS_DRAFT );
                 $version->store();
-                $dataMap =& $object->dataMap();
+                $dataMap = $object->dataMap();
             }
             else
             {
@@ -554,7 +556,7 @@ class eZOOImport
                         case "ezstring":
                         case "eztext":
                         {
-                            $dom =& $xml->domTree( $xmlTextArray[$sectionName] );
+                            $dom = $xml->domTree( $xmlTextArray[$sectionName] );
                             $text = eZOOImport::domToText( $dom->root() );
                             $dataMap[$attributeIdentifier]->setAttribute( 'data_text', trim( $text ) );
                             $dataMap[$attributeIdentifier]->store();
@@ -583,7 +585,7 @@ class eZOOImport
 
                                     $date = new eZDate();
 
-                                    $contentClassAttribute =& $dataMap[$attributeIdentifier];
+                                    $contentClassAttribute = $dataMap[$attributeIdentifier];
 
                                     $date->setMDY( $month, $day, $year );
                                     $dataMap[$attributeIdentifier]->setAttribute( 'data_int', $date->timeStamp()  );
@@ -614,7 +616,7 @@ class eZOOImport
 
                                     $dateTime = new eZDateTime();
 
-                                    $contentClassAttribute =& $dataMap[$attributeIdentifier];
+                                    $contentClassAttribute = $dataMap[$attributeIdentifier];
 
                                     $dateTime->setMDYHMS( $month, $day, $year, $hour, $minute, 0 );
                                     $dataMap[$attributeIdentifier]->setAttribute( 'data_int', $dateTime->timeStamp()  );
@@ -648,7 +650,7 @@ class eZOOImport
 
                                             if ( file_exists( $filePath ) )
                                             {
-                                                $imageContent =& $dataMap[$attributeIdentifier]->attribute( 'content' );
+                                                $imageContent = $dataMap[$attributeIdentifier]->attribute( 'content' );
                                                 $imageContent->initializeFromFile( $filePath, false, basename( $filePath ) );
                                                 $imageContent->store( $dataMap[$attributeIdentifier] );
                                                 $dataMap[$attributeIdentifier]->store();
@@ -662,7 +664,7 @@ class eZOOImport
 
                             if ( !$hasImage )
                             {
-                                $imageHandler =& $dataMap[$attributeIdentifier]->attribute( 'content' );
+                                $imageHandler = $dataMap[$attributeIdentifier]->attribute( 'content' );
                                 if ( $imageHandler )
                                     $imageHandler->removeAliases( $dataMap[$attributeIdentifier] );
                             }
@@ -1416,14 +1418,14 @@ class eZOOImport
 
 */
 
-                                $contentObject =& eZContentObject::fetchByRemoteID( $remoteID );
+                                $contentObject = eZContentObject::fetchByRemoteID( $remoteID );
 
                                 // If image does not already exist, create it as an object
                                 if ( !$contentObject )
                                 {
 
                                     // Import image
-                                    $ooINI =& eZINI::instance( 'odf.ini' );
+                                    $ooINI = eZINI::instance( 'odf.ini' );
                                     $imageClassIdentifier = $ooINI->variable( "ODFImport", "DefaultImportImageClass" );
                                     $class = eZContentClass::fetchByIdentifier( $imageClassIdentifier );
                                     $creatorID = $this->currentUserID;
@@ -1432,18 +1434,18 @@ class eZOOImport
                                     $contentObject->setAttribute( "remote_id",  $remoteID );
                                     $contentObject->store();
 
-                                    $version =& $contentObject->version( 1 );
+                                    $version = $contentObject->version( 1 );
                                     $version->setAttribute( 'modified', eZDateTime::currentTimeStamp() );
-                                    $version->setAttribute( 'status', EZ_VERSION_STATUS_DRAFT );
+                                    $version->setAttribute( 'status', eZContentObjectVersion::STATUS_DRAFT );
                                     $version->store();
 
                                     $contentObjectID = $contentObject->attribute( 'id' );
-                                    $dataMap =& $contentObject->dataMap();
+                                    $dataMap = $contentObject->dataMap();
 
                                     $dataMap['name']->setAttribute( 'data_text', "Imported Image" );
                                     $dataMap['name']->store();
 
-                                    $imageContent =& $dataMap['image']->attribute( 'content' );
+                                    $imageContent = $dataMap['image']->attribute( 'content' );
                         //echo "Initializing Image from $href<br />";
                                     $imageContent->initializeFromFile( $href, false, basename( $href ) );
                                     $dataMap['image']->store();
@@ -1451,7 +1453,7 @@ class eZOOImport
                                                                         "ContentObject" => $contentObject );
                                 }
                                 else
-                                    $contentObjectID =& $contentObject->attribute( 'id' );
+                                    $contentObjectID = $contentObject->attribute( 'id' );
 
 
                                 $frameContent .= "<embed object_id='$contentObjectID' align='$imageAlignment' size='$imageSize' />";
@@ -1600,9 +1602,9 @@ class eZOOImport
                 $creatorID = $this->currentUserID;
                 //$creatorID = 14; // 14 == admin
                 $parentNodeID = $placeNodeID;
-                $contentObject =& $class->instantiate( $creatorID, 1 );
+                $contentObject = $class->instantiate( $creatorID, 1 );
 
-                $nodeAssignment =& eZNodeAssignment::create( array(
+                $nodeAssignment = eZNodeAssignment::create( array(
                                                                  'contentobject_id' => $contentObject->attribute( 'id' ),
                                                                  'contentobject_version' => $contentObject->attribute( 'current_version' ),
                                                                  'parent_node' => $node->attribute( 'node_id' ),
@@ -1611,13 +1613,13 @@ class eZOOImport
                                                              );
                 $nodeAssignment->store();
 
-                $version =& $contentObject->version( 1 );
+                $version = $contentObject->version( 1 );
                 $version->setAttribute( 'modified', eZDateTime::currentTimeStamp() );
-                $version->setAttribute( 'status', EZ_VERSION_STATUS_DRAFT );
+                $version->setAttribute( 'status', eZContentObjectVersion::STATUS_DRAFT );
                 $version->store();
 
                 $contentObjectID = $contentObject->attribute( 'id' );
-                $dataMap =& $contentObject->dataMap();
+                $dataMap = $contentObject->dataMap();
 
                 $titleAttribudeIdentifier = 'name';
 

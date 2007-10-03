@@ -42,12 +42,12 @@ function makeErrorArray( $num, $msg )
     return array( 'number' => $num, 'message' => $msg );
 }
 
-$http =& eZHTTPTool::instance();
-$module =& $Params["Module"];
+$http = eZHTTPTool::instance();
+$module = $Params["Module"];
 $NodeID = $Params['NodeID'];
 $ImportType = $Params['ImportType'];
 
-$tpl =& templateInit();
+$tpl = templateInit();
 
 $tpl->setVariable( 'error', false );
 
@@ -232,7 +232,7 @@ if( eZHTTPFile::canFetch( "oo_file" ) )
 
 
 $Result = array();
-$Result['content'] =& $tpl->fetch( "design:ezodf/import.tpl" );
+$Result['content'] = $tpl->fetch( "design:ezodf/import.tpl" );
 $Result['path'] = array( array( 'url' => '/ezodf/import/',
                                 'text' => ezi18n( 'extension/ezodf', 'OpenOffice.org import' ) ));
 
