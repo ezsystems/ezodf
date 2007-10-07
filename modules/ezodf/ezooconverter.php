@@ -560,7 +560,7 @@ class eZOOConverter
                 // NOTE: <embed> is actually block-tag, but its marked as 'inline' for backward-compatibility => process 'embed' here as well
             case "embed-inline":
             case "object":
-                // NOTE: <object> is depricated since 3.9
+                // NOTE: <object> is deprecated since 3.9
             {
                 // Only support objects of image class for now
                 $imageArray[] = eZOOConverter::handleImageNode( $node );
