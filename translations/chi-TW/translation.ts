@@ -166,19 +166,19 @@ Images are placed in the media library so you can re-use them in other articles.
         <translation>無法解析 XML。</translation>
     </message>
     <message>
-        <source>Can not open socket. Please check if extension/ezodf/deamon.php is running.</source>
-        <translation>無法開啟通訊端。請檢查 extension/ezodf/deamon.php 是否正在運行。</translation>
+        <source>Can not open socket. Please check if extension/ezodf/daemon.php is running.</source>
+        <translation>無法開啟通訊端。請檢查 extension/ezodf/daemon.php 是否正在運行。</translation>
     </message>
     <message>
         <source>Can not convert the given document.</source>
         <translation>無法轉換所給的文件。</translation>
     </message>
     <message>
-        <source>Unable to call deamon. Fork can not create child process.</source>
+        <source>Unable to call daemon. Fork can not create child process.</source>
         <translation>無法呼叫守護程式。無法藉由衍生建立子程序。</translation>
     </message>
     <message>
-        <source>Deamon reported error.</source>
+        <source>Daemon reported error.</source>
         <translation>守護程式回報錯誤。</translation>
     </message>
     <message>

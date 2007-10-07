@@ -82,7 +82,7 @@ function convert_to( $sourceFileName, $convertCommand, $destinationFileName )
 }
 
 
-print( "eZ publish document conversion deamon\n");
+print( "eZ publish document conversion daemon\n");
 // Parse input
 $input = fread( STDIN, 1024 );
 

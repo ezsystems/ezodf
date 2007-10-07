@@ -139,7 +139,7 @@ if ( $doExport == true )
                 {
                     case "PDF" :
                     {
-                        if ( ( $result = deamonConvert( $server, $port, realpath( $fileName ), "convertToPDF", $tmpDir . "/ooo_converted_$uniqueStamp.pdf" ) ) )
+                        if ( ( $result = daemonConvert( $server, $port, realpath( $fileName ), "convertToPDF", $tmpDir . "/ooo_converted_$uniqueStamp.pdf" ) ) )
                         {
                             $originalFileName = $nodeName . ".pdf";
                             $contentType = "application/pdf";
@@ -155,7 +155,7 @@ if ( $doExport == true )
 
                     case "Word" :
                     {
-                        if ( ( $result = deamonConvert( $server, $port, realpath( $fileName ), "convertToDoc", $tmpDir . "/ooo_converted_$uniqueStamp.doc" ) ) )
+                        if ( ( $result = daemonConvert( $server, $port, realpath( $fileName ), "convertToDoc", $tmpDir . "/ooo_converted_$uniqueStamp.doc" ) ) )
                         {
                             $originalFileName = $nodeName . ".doc";
                             $contentType = "application/ms-word";
@@ -232,9 +232,9 @@ $Result['path'] = array( array( 'url' => '/ezodf/export/',
 
 
 /*!
-      Connects to the eZ publish document conversion deamon and converts the document to specified format
+ Connects to the eZ publish document conversion daemon and converts the document to specified format
 */
-function deamonConvert( $server, $port, $sourceFile, $conversionCommand, $destFile )
+function daemonConvert( $server, $port, $sourceFile, $conversionCommand, $destFile )
 {
     $fp = fsockopen( $server,
                      $port,
@@ -247,7 +247,7 @@ function deamonConvert( $server, $port, $sourceFile, $conversionCommand, $destFi
         $welcome = fread( $fp, 1024 );
 
         $welcome = trim( $welcome );
-        if ( $welcome == "eZ publish document conversion deamon" )
+        if ( $welcome == "eZ publish document conversion daemon" )
         {
             $commandString = "$conversionCommand $sourceFile $destFile";
             fputs( $fp, $commandString, strlen( $commandString ) );

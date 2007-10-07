@@ -145,20 +145,20 @@ sp)(sp)(sp)(sp)Também é possível usar os recentes itens do bookmark para ráp
         <translation>Não foi possível processar XML.</translation>
     </message>
     <message>
-        <source>Can not open socket. Please check if extension/ezodf/deamon.php is running.</source>
-        <translation>Não foi possível abrir o socket. Favor checar se a extensão extension/ezodf/deamon.php está rodando.</translation>
+        <source>Can not open socket. Please check if extension/ezodf/daemon.php is running.</source>
+        <translation>Não foi possível abrir o socket. Favor checar se a extensão extension/ezodf/daemon.php está rodando.</translation>
     </message>
     <message>
         <source>Can not convert the given document.</source>
         <translation>Não é possível converter o documento dado.</translation>
     </message>
     <message>
-        <source>Unable to call deamon. Fork can not create child process.</source>
-        <translation>Não foi possível comunicar-se com deamon, então nenhum processo de conversão pôde ser iniciado.</translation>
+        <source>Unable to call daemon. Fork can not create child process.</source>
+        <translation>Não foi possível comunicar-se com daemon, então nenhum processo de conversão pôde ser iniciado.</translation>
     </message>
     <message>
-        <source>Deamon reported error.</source>
-        <translation>Deamon reportou erro.</translation>
+        <source>Daemon reported error.</source>
+        <translation>Daemon reportou erro.</translation>
     </message>
     <message>
         <source>Unknown node.</source>

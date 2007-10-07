@@ -144,19 +144,19 @@ Le immagini saranno collocate nella sezione Media in modo da poterle riusare.</t
         <translation>Impossibile elaborare la parte XML.</translation>
     </message>
     <message>
-        <source>Can not open socket. Please check if extension/ezodf/deamon.php is running.</source>
-        <translation>Impossibile aprire il socket. Controllare che il demone extension/ezodf/deamon.php stia funzionando.</translation>
+        <source>Can not open socket. Please check if extension/ezodf/daemon.php is running.</source>
+        <translation>Impossibile aprire il socket. Controllare che il demone extension/ezodf/daemon.php stia funzionando.</translation>
     </message>
     <message>
         <source>Can not convert the given document.</source>
         <translation>Impossibile convertire il documento.</translation>
     </message>
     <message>
-        <source>Unable to call deamon. Fork can not create child process.</source>
+        <source>Unable to call daemon. Fork can not create child process.</source>
         <translation>Impossibile chiamare il demone. Fork non riesce a careare il processo figlio.</translation>
     </message>
     <message>
-        <source>Deamon reported error.</source>
+        <source>Daemon reported error.</source>
         <translation>Il demone ha riportato un errore.</translation>
     </message>
     <message>

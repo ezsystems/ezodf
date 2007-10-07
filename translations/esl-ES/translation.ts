@@ -139,20 +139,20 @@ Images are placed in the media library so you can re-use them in other articles.
         <translation>No puede alanizar el XML.</translation>
     </message>
     <message>
-        <source>Can not open socket. Please check if extension/ezodf/deamon.php is running.</source>
-        <translation>No puede abrirse e socket. Compruebe si extension/ezodf/deamon.php está funcionando.</translation>
+        <source>Can not open socket. Please check if extension/ezodf/daemon.php is running.</source>
+        <translation>No puede abrirse e socket. Compruebe si extension/ezodf/daemon.php está funcionando.</translation>
     </message>
     <message>
         <source>Can not convert the given document.</source>
         <translation>No puede convertirse el documento. </translation>
     </message>
     <message>
-        <source>Unable to call deamon. Fork can not create child process.</source>
-        <translation>Incapaz de llamar el deamon. La bifurcación no puede crear un proceso hijo. </translation>
+        <source>Unable to call daemon. Fork can not create child process.</source>
+        <translation>Incapaz de llamar el daemon. La bifurcación no puede crear un proceso hijo. </translation>
     </message>
     <message>
-        <source>Deamon reported error.</source>
-        <translation>Error divulgado Deamon. </translation>
+        <source>Daemon reported error.</source>
+        <translation>Error divulgado Daemon. </translation>
     </message>
     <message>
         <source>Unknown node.</source>
