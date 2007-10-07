@@ -83,8 +83,8 @@
 asked where to place the document and eZ publish does the rest. The document is converted into
 the appropriate class during the import, you get a notice about this after the import is done.
 Images are placed in the media library so you can re-use them in other articles.</source>
-        <translation>Sie können OpenOffice.org Writer Dokumente direkt in eZ publish importieren. 
-Sie werden gefragt wo das Dokument gespeichert werden soll und eZ publish startet die Verarbeitung. Das Dokument wird in eine passende Klasse konvertiert, 
+        <translation>Sie können OpenOffice.org Writer Dokumente direkt in eZ publish importieren.
+Sie werden gefragt wo das Dokument gespeichert werden soll und eZ publish startet die Verarbeitung. Das Dokument wird in eine passende Klasse konvertiert,
 Sie erhalten eine Benachrichtigung darüber, wenn der Import abgeschlossen ist. Bilder werden im Media Bereich gespeichert und können somit weiter verwendet werden.</translation>
     </message>
 </context>
@@ -156,8 +156,8 @@ Klicken Sie auf den Namen der Plazierung um die Auflistung des Browsers zu ände
     </message>
     <message>
         <location filename="" line="0"/>
-        <source>Can not open socket. Please check if extension/ezodf/deamon.php is running.</source>
-        <translation>Konnte Socket nicht öffnen. Bitte prüfen Sie ob der Dienst extension/ezodf/deamon.php aktiv ist.</translation>
+        <source>Can not open socket. Please check if extension/ezodf/daemon.php is running.</source>
+        <translation>Konnte Socket nicht öffnen. Bitte prüfen Sie ob der Dienst extension/ezodf/daemon.php aktiv ist.</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -166,12 +166,12 @@ Klicken Sie auf den Namen der Plazierung um die Auflistung des Browsers zu ände
     </message>
     <message>
         <location filename="" line="0"/>
-        <source>Unable to call deamon. Fork can not create child process.</source>
+        <source>Unable to call daemon. Fork can not create child process.</source>
         <translation>Kann den Dienst nicht aufrufen. Die Verzweigung kann den Prozess nicht erstellen.</translation>
     </message>
     <message>
         <location filename="" line="0"/>
-        <source>Deamon reported error.</source>
+        <source>Daemon reported error.</source>
         <translation>Der Dienst hat einen Fehler gemeldet.</translation>
     </message>
     <message>

@@ -39,7 +39,7 @@ Changes from 2.0 beta 1 to 2.0 beta 2
 Changes from 1.0 stable to 2.0 beta 1
 -------------------------------------
 - Added WebDAV import support for OpenOffice 2 documents
-- Added deamon script and macros for document conversion, so you can import Word, RTF files etc.
+- Added daemon script and macros for document conversion, so you can import Word, RTF files etc.
 - Added OpenOffice.org export link directly in the popup menu in the admin interface (3.6+ only)
 - Added OpenOffice.org import link directly in the popup menu in the admin interface (3.6+ only)
 - Changed document format from OpenOffice.org Writer 1.x to OASIS OpenDocument Text format

@@ -161,7 +161,7 @@ Images are placed in the media library so you can re-use them in other articles.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Can not open socket. Please check if extension/ezodf/deamon.php is running.</source>
+        <source>Can not open socket. Please check if extension/ezodf/daemon.php is running.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -169,11 +169,11 @@ Images are placed in the media library so you can re-use them in other articles.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Unable to call deamon. Fork can not create child process.</source>
+        <source>Unable to call daemon. Fork can not create child process.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Deamon reported error.</source>
+        <source>Daemon reported error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

@@ -116,7 +116,7 @@ class eZOOImport
                 break;
             case self::ERROR_OPENSOCKET :
                 $this->ERROR['number'] = $errorNumber;
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Can not open socket. Please check if extension/ezodf/deamon.php is running." );
+                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Can not open socket. Please check if extension/ezodf/daemon.php is running." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
             case self::ERROR_CONVERT :
@@ -126,12 +126,12 @@ class eZOOImport
                 break;
             case self::ERROR_DAEMONCALL :
                 $this->ERROR['number'] = $errorNumber;
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unable to call deamon. Fork can not create child process." );
+                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unable to call daemon. Fork can not create child process." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
             case self::ERROR_DAEMON :
                 $this->ERROR['number'] = $errorNumber;
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Deamon reported error." );
+                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Daemon reported error." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
             case self::ERROR_UNKNOWNNODE:
@@ -160,15 +160,6 @@ class eZOOImport
                 $this->ERROR['description'] = $errorDescription;
                 break;
         }
-    }
-
-    /*!
-      \deprecated
-      Left for backward compatibility. Use the daemonconvert function instead.
-    */
-    function deamonConvert( $sourceFile, $destFile )
-    {
-        $this->daemonConvert( $sourceFile, $destFile );
     }
 
     /*!
@@ -223,6 +214,16 @@ class eZOOImport
         }
 
         return $res;
+    }
+
+    /*!
+     \deprecated
+     Deprecated due to spelling mistake in the name. Left for backward compatibility. Should be removed in the future versions.
+     Please use eZOOImport::daemonConvert() method instead.
+    */
+    function deamonConvert( $sourceFile, $destFile )
+    {
+        return $this->daemonConvert( $sourceFile, $destFile );
     }
 
     /*!
