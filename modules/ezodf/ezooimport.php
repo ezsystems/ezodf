@@ -218,13 +218,13 @@ class eZOOImport
     }
 
     /*
-     \depricated
-     Depricated due to spelling mistake in the name. Should be removed in the future versions.
+     \deprecated
+     Deprecated due to spelling mistake in the name. Should be removed in the future versions.
      Please use eZOOImport::daemonConvert() method instead.
     */
     function deamonConvert( $sourceFile, $destFile )
     {
-        return daemonConvert( $sourceFile, $destFile );
+        return $this->daemonConvert( $sourceFile, $destFile );
     }
 
     /*!
