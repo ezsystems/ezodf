@@ -50,6 +50,7 @@ $ImportType = $Params['ImportType'];
 $tpl = templateInit();
 
 $tpl->setVariable( 'error', false );
+$tpl->setVariable( 'import_type', 'inport' );
 
 $doImport = false;
 $replaceObject = false;
