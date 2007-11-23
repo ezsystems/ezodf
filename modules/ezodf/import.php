@@ -158,76 +158,75 @@ else
 {
     $tpl->setVariable( 'oo_mode', 'browse' );
 
-if( eZHTTPFile::canFetch( "oo_file" ) )
- {
-    $file = eZHTTPFile::fetch( "oo_file" );
-
-    if ( $file )
+    if( eZHTTPFile::canFetch( "oo_file" ) )
     {
-        if ( $file->store() )
+        $file = eZHTTPFile::fetch( "oo_file" );
+
+        if ( $file )
         {
-            $fileName = $file->attribute( 'filename' );
-
-            $originalFileName = $file->attribute( 'original_filename' );
-
-            // If we have the NodeID do the import/replace directly
-            if (  $http->sessionVariable( 'oo_direct_import_node' )  )
+            if ( $file->store() )
             {
-                $nodeID = $http->sessionVariable( 'oo_direct_import_node' );
-                $importType = $http->sessionVariable( 'oo_import_type' );
-                if ( $importType != "replace" )
-                    $importType = "import";
-                $import = new eZOOImport();
-                $result = $import->import( $fileName, $nodeID, $originalFileName, $importType );
-                // Cleanup of uploaded file
-                unlink( $fileName );
+                $fileName = $file->attribute( 'filename' );
 
-                if ( $result )
+                $originalFileName = $file->attribute( 'original_filename' );
+
+                // If we have the NodeID do the import/replace directly
+                if (  $http->sessionVariable( 'oo_direct_import_node' )  )
                 {
-                    $tpl->setVariable( 'class_identifier', $result['ClassIdentifier'] );
-                    $tpl->setVariable( 'url_alias', $result['URLAlias'] );
-                    $tpl->setVariable( 'node_name', $result['NodeName'] );
-                    $tpl->setVariable( 'oo_mode', 'imported' );
-                }
-                else
-                {
-                    if( $import->getErrorNumber() != 0 )
+                    $nodeID = $http->sessionVariable( 'oo_direct_import_node' );
+                    $importType = $http->sessionVariable( 'oo_import_type' );
+                    if ( $importType != "replace" )
+                        $importType = "import";
+                    $import = new eZOOImport();
+                    $result = $import->import( $fileName, $nodeID, $originalFileName, $importType );
+                    // Cleanup of uploaded file
+                    unlink( $fileName );
+
+                    if ( $result )
                     {
-                        $tpl->setVariable( 'error', makeErrorArray( $import->getErrorNumber(), $import->getErrorMessage() ) );
+                        $tpl->setVariable( 'class_identifier', $result['ClassIdentifier'] );
+                        $tpl->setVariable( 'url_alias', $result['URLAlias'] );
+                        $tpl->setVariable( 'node_name', $result['NodeName'] );
+                        $tpl->setVariable( 'oo_mode', 'imported' );
                     }
                     else
                     {
-                        $tpl->setVariable( 'error', makeErrorArray( eZOOImport::ERROR_DOCNOTSUPPORTED,
-                                                                    ezi18n( 'extension/ezodf/import/error',"Document is not suported." ) ) );
+                        if( $import->getErrorNumber() != 0 )
+                        {
+                            $tpl->setVariable( 'error', makeErrorArray( $import->getErrorNumber(), $import->getErrorMessage() ) );
+                        }
+                        else
+                        {
+                            $tpl->setVariable( 'error', makeErrorArray( eZOOImport::ERROR_DOCNOTSUPPORTED,
+                                                                        ezi18n( 'extension/ezodf/import/error',"Document is not suported." ) ) );
+                        }
                     }
+                    $http->removeSessionVariable( 'oo_direct_import_node' );
                 }
-                $http->removeSessionVariable( 'oo_direct_import_node' );
+                else
+                {
+                    // Make the user browser for document placement
+                    $http->setSessionVariable( 'oo_import_step', 'browse' );
+                    $http->setSessionVariable( 'oo_import_filename', $fileName );
+                    $http->setSessionVariable( 'oo_import_original_filename', $originalFileName );
+
+                    eZContentBrowse::browse( array( 'action_name' => 'OOPlace',
+                                                    'description_template' => 'design:ezodf/browse_place.tpl',
+                                                    'content' => array(),
+                                                    'from_page' => '/ezodf/import/',
+                                                    'cancel_page' => '/ezodf/import/' ),
+                                             $module );
+                    return;
+                }
             }
             else
             {
-                // Make the user browser for document placement
-                $http->setSessionVariable( 'oo_import_step', 'browse' );
-                $http->setSessionVariable( 'oo_import_filename', $fileName );
-                $http->setSessionVariable( 'oo_import_original_filename', $originalFileName );
-
-                eZContentBrowse::browse( array( 'action_name' => 'OOPlace',
-                                                'description_template' => 'design:ezodf/browse_place.tpl',
-                                                'content' => array(),
-                                                'from_page' => '/ezodf/import/',
-                                                'cancel_page' => '/ezodf/import/' ),
-                                         $module );
-                return;
+                eZDebug::writeError( "Cannot store uploaded file, cannot import" );
+                $tpl->setVariable( 'error', makeErrorArray( eZOOImport::ERROR_CANNOTSTORE,
+                                                            ezi18n( 'extension/ezodf/import/error',"Cannot store uploaded file, cannot import." ) ) );
             }
         }
-        else
-        {
-            eZDebug::writeError( "Cannot store uploaded file, cannot import" );
-            $tpl->setVariable( 'error', makeErrorArray( eZOOImport::ERROR_CANNOTSTORE,
-                                                        ezi18n( 'extension/ezodf/import/error',"Cannot store uploaded file, cannot import." ) ) );
-        }
     }
- }
-
 }
 
 
