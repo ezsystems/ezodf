@@ -1333,6 +1333,15 @@ class eZOOImport
                             else
                                 $href = $this->ImportDir . $href;
 
+                            // Check image name
+                            $imageName = $childNode->attributeValueNS( 'name', 'urn:oasis:names:tc:opendocument:xmlns:drawing:1.0' );
+                            if ( !$imageName )
+                            {
+                                // set default image name
+                                $imageName = "Imported Image";
+                            }
+
+
                             $imageSize = "medium";
                             $imageAlignment = "center";
 
@@ -1443,11 +1452,36 @@ class eZOOImport
                                     $contentObjectID = $contentObject->attribute( 'id' );
                                     $dataMap = $contentObject->dataMap();
 
-                                    $dataMap['name']->setAttribute( 'data_text', "Imported Image" );
+                                    // set image name
+                                    $dataMap['name']->setAttribute( 'data_text', $imageName );
                                     $dataMap['name']->store();
 
+                                    // set image caption
+                                    if ( isset( $dataMap['caption'] ) )
+                                    {
+                                        $captionContentAttibute = $dataMap['caption'];
+                                        $captionText = "$imageName";
+
+                                        // create new xml for caption
+                                        $xmlInputParser = new eZXMLInputParser();
+                                        $dom = $xmlInputParser->createRootNode();
+
+                                        $captionNode = $dom->createElement( 'paragraph', $captionText );
+                                        $dom->documentElement->appendChild( $captionNode );
+
+                                        $xmlString = $dom->saveXML();
+
+                                        $captionContentAttibute->setAttribute( 'data_text', $xmlString );
+                                        $captionContentAttibute->store();
+                                    }
+                                    else
+                                    {
+                                        eZDebug::writeWarning( "The image class does not have 'caption' attribute", 'ODF import' );
+                                    }
+
+                                    // set image
                                     $imageContent = $dataMap['image']->attribute( 'content' );
-                        //echo "Initializing Image from $href<br />";
+                                    //echo "Initializing Image from $href<br />";
                                     $imageContent->initializeFromFile( $href, false, basename( $href ) );
                                     $dataMap['image']->store();
                                     $this->RelatedImageArray[] = array( "ID" => $contentObjectID,
