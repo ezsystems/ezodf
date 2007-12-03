@@ -52,7 +52,7 @@ class eZOOConverter
       Converts the eZ publish object with the given node id into an OpenOffice.org Writer document.
       The filename to the generated file is returned.
     */
-    function objectToOO( $nodeID )
+    static function objectToOO( $nodeID )
     {
         $ooGenerator = new eZOOGenerator();
 
@@ -96,7 +96,7 @@ class eZOOConverter
                         $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
 
                         $xmlData = $attribute->attribute( 'data_text' );
-                        $domTree =& $xml->domTree( $xmlData );
+                        $domTree = $xml->domTree( $xmlData );
                         if ( $domTree )
                         {
                             $root = $domTree->root();
@@ -324,7 +324,7 @@ class eZOOConverter
      \private
      Internal function to handle an eZXMLText node and convert it to OO format
     */
-    function handleNode( $node, &$generator, $level = 0 )
+    static function handleNode( $node, &$generator, $level = 0 )
     {
         switch ( $node->name() )
         {
@@ -378,7 +378,7 @@ class eZOOConverter
         }
     }
 
-    function handleInlineNode( $child, &$generator )
+    static function handleInlineNode( $child, &$generator )
     {
         $paragraphParameters = array();
         $imageArray = array();

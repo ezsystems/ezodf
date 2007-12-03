@@ -58,7 +58,7 @@ class eZOOGenerator
 
     function writeDocument( )
     {
-        $ooINI =& eZINI::instance( 'odf.ini' );
+        $ooINI = eZINI::instance( 'odf.ini' );
 
         // Initalize directories
         include_once( "lib/ezfile/classes/ezdir.php" );
@@ -258,7 +258,7 @@ class eZOOGenerator
         // Handle charset conversion if needed
         include_once( 'lib/ezi18n/classes/eztextcodec.php' );
         $charset = 'UTF-8';
-        $codec =& eZTextCodec::instance( false, $charset );
+        $codec = eZTextCodec::instance( false, $charset );
         $bodyXML = $codec->convertString( $bodyXML );
 
         $contentXML .= $bodyXML;
@@ -697,7 +697,7 @@ class eZOOGenerator
 
             case "image" :
             {
-                $uniquePart = substr( md5( mktime() . rand( 0, 20000 ) ), 6 );
+                $uniquePart = substr( md5( time() . rand( 0, 20000 ) ), 6 );
                 $fileName = $element['SRC'];
                 $destFile = $this->OOExportDir . "Pictures/" . $uniquePart . basename( $fileName );
                 $relativeFile = "Pictures/" . $uniquePart . basename( $fileName );

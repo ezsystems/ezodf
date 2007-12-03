@@ -257,7 +257,7 @@
     // ----- Look for arguments
     if ($v_size > 1) {
       // ----- Get the arguments
-      $v_arg_list = &func_get_args();
+      $v_arg_list = func_get_args();
 
       // ----- Remove form the options list the first argument
       array_shift($v_arg_list);
