@@ -42,12 +42,12 @@ function makeErrorArray( $num, $msg )
     return array( 'number' => $num, 'message' => $msg );
 }
 
-$http =& eZHTTPTool::instance();
-$module =& $Params["Module"];
+$http = eZHTTPTool::instance();
+$module = $Params["Module"];
 $NodeID = $Params['NodeID'];
 $ImportType = $Params['ImportType'];
 
-$tpl =& templateInit();
+$tpl = templateInit();
 
 $tpl->setVariable( 'error', false );
 $tpl->setVariable( 'import_type', 'import' );
@@ -128,7 +128,7 @@ if ( $module->isCurrentAction( 'OOPlace' ) )
                 }
                 else
                 {
-                    $tpl->setVariable( 'error', makeErrorArray( OOIMPORT_ERROR_DOCNOTSUPPORTED,
+                    $tpl->setVariable( 'error', makeErrorArray( eZOOImport::ERROR_DOCNOTSUPPORTED,
                                                                 ezi18n( 'extension/ezodf/import/error', "Document is not suported." ) ) );
                 }
 
@@ -141,14 +141,14 @@ if ( $module->isCurrentAction( 'OOPlace' ) )
         else
         {
             eZDebug::writeError( "Cannot import. File not found. Already imported?" );
-            $tpl->setVariable( 'error', makeErrorArray( OOIMPORT_ERROR_FILENOTFOUND,
+            $tpl->setVariable( 'error', makeErrorArray( eZOOImport::ERROR_FILENOTFOUND,
                                                         ezi18n( 'extension/ezodf/import/error', "Cannot import. File not found. Already imported?" ) ) );
         }
     }
     else
     {
         eZDebug::writeError( "Cannot import document, supplied placement nodeID is not valid." );
-        $tpl->setVariable( 'error', makeErrorArray( OOIMPORT_ERROR_PLACEMENTINVALID,
+        $tpl->setVariable( 'error', makeErrorArray( eZOOImport::ERROR_PLACEMENTINVALID,
                                                     ezi18n( 'extension/ezodf/import/error', "Cannot import document, supplied placement nodeID is not valid." ) ) );
     }
 
@@ -197,7 +197,7 @@ else
                         }
                         else
                         {
-                            $tpl->setVariable( 'error', makeErrorArray( OOIMPORT_ERROR_DOCNOTSUPPORTED,
+                            $tpl->setVariable( 'error', makeErrorArray( eZOOImport::ERROR_DOCNOTSUPPORTED,
                                                                         ezi18n( 'extension/ezodf/import/error',"Document is not suported." ) ) );
                         }
                     }
@@ -222,7 +222,7 @@ else
             else
             {
                 eZDebug::writeError( "Cannot store uploaded file, cannot import" );
-                $tpl->setVariable( 'error', makeErrorArray( OOIMPORT_ERROR_CANNOTSTORE,
+                $tpl->setVariable( 'error', makeErrorArray( eZOOImport::ERROR_CANNOTSTORE,
                                                             ezi18n( 'extension/ezodf/import/error',"Cannot store uploaded file, cannot import." ) ) );
             }
         }
@@ -232,7 +232,7 @@ else
 
 
 $Result = array();
-$Result['content'] =& $tpl->fetch( "design:ezodf/import.tpl" );
+$Result['content'] = $tpl->fetch( "design:ezodf/import.tpl" );
 $Result['path'] = array( array( 'url' => '/ezodf/import/',
                                 'text' => ezi18n( 'extension/ezodf', 'OpenOffice.org import' ) ));
 

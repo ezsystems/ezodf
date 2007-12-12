@@ -41,27 +41,26 @@ include_once( 'lib/ezxml/classes/ezxml.php' );
 include_once( 'lib/ezlocale/classes/ezdatetime.php' );
 include_once( 'lib/ezfile/classes/ezdir.php' );
 
-
-define( "OOIMPORT_ERROR_NOERROR", 0 );
-define( "OOIMPORT_ERROR_UNSUPPORTEDTYPE", 1 );
-define( "OOIMPORT_ERROR_PARSEXML", 2 );
-define( "OOIMPORT_ERROR_OPENSOCKET", 3 );
-define( "OOIMPORT_ERROR_CONVERT", 4 );
-define( "OOIMPORT_ERROR_DAEMONCALL", 5 );
-define( "OOIMPORT_ERROR_DAEMON", 6 );
-define( "OOIMPORT_ERROR_DOCNOTSUPPORTED", 7 );
-define( "OOIMPORT_ERROR_FILENOTFOUND", 8 );
-define( "OOIMPORT_ERROR_PLACEMENTINVALID", 9 );
-define( "OOIMPORT_ERROR_CANNOTSTORE", 10 );
-define( "OOIMPORT_ERROR_UNKNOWNNODE", 11 );
-define( "OOIMPORT_ERROR_ACCESSDENIED", 12 );
-define( "OOIMPORT_ERROR_IMPORTING", 13 );
-define( "OOIMPORT_ERROR_UNKNOWNCLASS", 14 );
-define( "OOIMPORT_ERROR_UNKNOWN", 127 );
-
 class eZOOImport
 {
-    var $ERROR=array();
+    const ERROR_NOERROR = 0;
+    const ERROR_UNSUPPORTEDTYPE = 1;
+    const ERROR_PARSEXML = 2;
+    const ERROR_OPENSOCKET = 3;
+    const ERROR_CONVERT = 4;
+    const ERROR_DAEMONCALL = 5;
+    const ERROR_DAEMON = 6;
+    const ERROR_DOCNOTSUPPORTED = 7;
+    const ERROR_FILENOTFOUND = 8;
+    const ERROR_PLACEMENTINVALID = 9;
+    const ERROR_CANNOTSTORE = 10;
+    const ERROR_UNKNOWNNODE = 11;
+    const ERROR_ACCESSDENIED = 12;
+    const ERROR_IMPORTING = 13;
+    const ERROR_UNKNOWNCLASS = 14;
+    const ERROR_UNKNOWN = 127;
+
+    var $ERROR = array();
     var $currentUserID;
 
     /*!
@@ -72,9 +71,9 @@ class eZOOImport
         $this->ERROR['number'] = 0;
         $this->ERROR['value'] = '';
         $this->ERROR['description'] = '';
-        $currentUser =& eZUser::currentUser();
+        $currentUser = eZUser::currentUser();
         $this->currentUserID  = $currentUser->id();
-        $this->ImportDir .= md5( mktime() ) . "/";
+        $this->ImportDir .= md5( time() ) . "/";
     }
 
     /*!
@@ -100,57 +99,57 @@ class eZOOImport
     {
         switch( $errorNumber )
         {
-            case OOIMPORT_ERROR_NOERROR :
+            case self::ERROR_NOERROR :
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = "";
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case OOIMPORT_ERROR_UNSUPPORTEDTYPE :
+            case self::ERROR_UNSUPPORTEDTYPE :
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "File extension or type is not allowed." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case OOIMPORT_ERROR_PARSEXML :
+            case self::ERROR_PARSEXML :
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Could not parse XML." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case OOIMPORT_ERROR_OPENSOCKET :
+            case self::ERROR_OPENSOCKET :
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Can not open socket. Please check if extension/ezodf/daemon.php is running." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case OOIMPORT_ERROR_CONVERT :
+            case self::ERROR_CONVERT :
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Can not convert the given document." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case OOIMPORT_ERROR_DAEMONCALL :
+            case self::ERROR_DAEMONCALL :
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unable to call daemon. Fork can not create child process." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case OOIMPORT_ERROR_DAEMON :
+            case self::ERROR_DAEMON :
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Daemon reported error." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case OOIMPORT_ERROR_UNKNOWNNODE:
+            case self::ERROR_UNKNOWNNODE:
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unknown node." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case OOIMPORT_ERROR_ACCESSDENIED:
+            case self::ERROR_ACCESSDENIED:
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Access denied." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case OOIMPORT_ERROR_IMPORTING:
+            case self::ERROR_IMPORTING:
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Error during import." );
                 $this->ERROR['description'] = $errorDescription;
                 break;
-            case OOIMPORT_ERROR_UNKNOWNCLASS:
+            case self::ERROR_UNKNOWNCLASS:
                 $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unknown content class specified in odf.ini:" );
                 $this->ERROR['description'] = $errorDescription;
@@ -168,7 +167,7 @@ class eZOOImport
     */
     function daemonConvert( $sourceFile, $destFile )
     {
-        $ooINI =& eZINI::instance( 'odf.ini' );
+        $ooINI = eZINI::instance( 'odf.ini' );
         $server = $ooINI->variable( "ODFImport", "OOConverterAddress" );
         $port = $ooINI->variable( "ODFImport", "OOConverterPort" );
         $res = false;
@@ -197,34 +196,34 @@ class eZOOImport
                 }
                 else
                 {
-                    $this->setError( OOIMPORT_ERROR_DAEMON, $result );
+                    $this->setError( self::ERROR_DAEMON, $result );
                     $res = false;
                 }
              }
              else
              {
-                 $this->setError( OOIMPORT_ERROR_DAEMONCALL );
+                 $this->setError( self::ERROR_DAEMONCALL );
                  $res = false;
              }
              fclose( $fp );
         }
         else
         {
-            $this->setError( OOIMPORT_ERROR_OPENSOCKET );
+            $this->setError( self::ERROR_OPENSOCKET );
             $res = false;
         }
 
         return $res;
     }
 
-    /*
+    /*!
      \deprecated
-     Deprecated due to spelling mistake in the name. Should be removed in the future versions.
+     Deprecated due to spelling mistake in the name. Left for backward compatibility. Should be removed in the future versions.
      Please use eZOOImport::daemonConvert() method instead.
-     */
+    */
     function deamonConvert( $sourceFile, $destFile )
     {
-        return daemonConvert( $sourceFile, $destFile );
+        return $this->daemonConvert( $sourceFile, $destFile );
     }
 
     /*!
@@ -232,7 +231,7 @@ class eZOOImport
     */
     function import( $file, $placeNodeID, $originalFileName, $importType = "import", $upload = null )
     {
-        $ooINI =& eZINI::instance( 'odf.ini' );
+        $ooINI = eZINI::instance( 'odf.ini' );
         //$tmpDir = $ooINI->variable( 'ODFSettings', 'TmpDir' );
         // Use var-directory as temporary directory
         $tmpDir = getcwd() . "/" . eZSys::cacheDirectory();
@@ -245,7 +244,7 @@ class eZOOImport
 
         if ( !in_array( $originalFileType,$allowedTypes, false ) and !in_array( $originalFileType, $convertTypes, false ) )
         {
-            $this->setError( OOIMPORT_ERROR_UNSUPPORTEDTYPE, ezi18n( 'extension/ezodf/import/error',"Filetype: " ). $originalFileType );
+            $this->setError( self::ERROR_UNSUPPORTEDTYPE, ezi18n( 'extension/ezodf/import/error',"Filetype: " ). $originalFileType );
             return false;
         }
 
@@ -264,7 +263,7 @@ class eZOOImport
         if ( !is_object( $class ) )
         {
             eZDebug::writeError( "Content class <strong>$importClassIdentifier</strong> specified in odf.ini does not exist." );
-            $this->setError( OOIMPORT_ERROR_UNKNOWNCLASS, $importClassIdentifier );
+            $this->setError( self::ERROR_UNKNOWNCLASS, $importClassIdentifier );
             return false;
         }
 
@@ -281,7 +280,7 @@ class eZOOImport
 
             if ( $locationOK === false || $locationOK === null )
             {
-                $this->setError( OOIMPORT_ERROR_UNKNOWNNODE, ezi18n( 'extension/ezodf/import/error',"Unable to fetch node with id  ") . $placeNodeID );
+                $this->setError( self::ERROR_UNKNOWNNODE, ezi18n( 'extension/ezodf/import/error',"Unable to fetch node with id  ") . $placeNodeID );
                 return false;
             }
 
@@ -291,17 +290,19 @@ class eZOOImport
         if ( $importType == "replace" )
         {
             // Check if we are allowed to edit the node
-            $access = eZContentFunctionCollection::checkAccess( 'edit', $place_node, false, false );
+            $functionCollection = new eZContentFunctionCollection();
+            $access = $functionCollection->checkAccess( 'edit', $place_node, false, false );
         }
         else
         {
             // Check if we are allowed to create a node under the node
-            $access = eZContentFunctionCollection::checkAccess( 'create', $place_node, $importClassIdentifier, $place_node->attribute( 'class_identifier' ) );
+            $functionCollection = new eZContentFunctionCollection();
+            $access = $functionCollection->checkAccess( 'create', $place_node, $importClassIdentifier, $place_node->attribute( 'class_identifier' ) );
         }
 
         if ( ! ( $access['result'] ) )
         {
-            $this->setError( OOIMPORT_ERROR_ACCESSDENIED );
+            $this->setError( self::ERROR_ACCESSDENIED );
             return false;
         }
         //return false;
@@ -319,7 +320,7 @@ class eZOOImport
             if ( !$this->daemonConvert( $tmpFromFile, $tmpToFile ) )
             {
                 if( $this->getErrorNumber() == 0 )
-                    $this->setError( OOIMPORT_ERROR_CONVERT );
+                    $this->setError( self::ERROR_CONVERT );
                 return false;
             }
             // At this point we can unlink the sourcefile for conversion
@@ -337,7 +338,7 @@ class eZOOImport
         eZDir::mkdir( $this->ImportBaseDir );
         eZDir::mkdir( $uniqueImportDir );
 
-        $http =& eZHTTPTool::instance();
+        $http = eZHTTPTool::instance();
 
         // Check if zlib extension is loaded, if it's loaded use bundled ZIP library,
         // if not rely on the unzip commandline version.
@@ -354,7 +355,7 @@ class eZOOImport
 
         $fileName = $uniqueImportDir . "content.xml";
         $xml = new eZXML();
-        $dom =& $xml->domTree( file_get_contents( $fileName ) );
+        $dom = $xml->domTree( file_get_contents( $fileName ) );
         $sectionNodeHash = array();
 
         // At this point we could unlink the destination file from the conversion, if conversion was used
@@ -365,20 +366,20 @@ class eZOOImport
 
         if ( !is_object( $dom ) )
         {
-            $this->setError( OOIMPORT_ERROR_PARSEXML );
+            $this->setError( self::ERROR_PARSEXML );
             return false;
         }
 
 
         // Fetch the automatic document styles
-        $automaticStyleArray =& $dom->elementsByNameNS( 'automatic-styles', 'urn:oasis:names:tc:opendocument:xmlns:office:1.0' );
+        $automaticStyleArray = $dom->elementsByNameNS( 'automatic-styles', 'urn:oasis:names:tc:opendocument:xmlns:office:1.0' );
         if ( count( $automaticStyleArray ) == 1 )
         {
             $this->AutomaticStyles = $automaticStyleArray[0]->children();
         }
 
         // Fetch the body section content
-        $sectionNodeArray =& $dom->elementsByNameNS( 'section', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' );
+        $sectionNodeArray = $dom->elementsByNameNS( 'section', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' );
 
         $customClassFound = false;
         if ( count( $sectionNodeArray ) > 0 )
@@ -457,7 +458,7 @@ class eZOOImport
         if ( $customClassFound == false )
         {
             // No defined sections. Do default import.
-            $bodyNodeArray =& $dom->elementsByNameNS( 'text', 'urn:oasis:names:tc:opendocument:xmlns:office:1.0' );
+            $bodyNodeArray = $dom->elementsByNameNS( 'text', 'urn:oasis:names:tc:opendocument:xmlns:office:1.0' );
 
             if ( count( $bodyNodeArray ) == 1 )
             {
@@ -503,11 +504,11 @@ class eZOOImport
                                                              );
                 $nodeAssignment->store();
 
-                $version =& $object->version( 1 );
+                $version = $object->version( 1 );
                 $version->setAttribute( 'modified', eZDateTime::currentTimeStamp() );
-                $version->setAttribute( 'status', EZ_VERSION_STATUS_DRAFT );
+                $version->setAttribute( 'status', eZContentObjectVersion::STATUS_DRAFT );
                 $version->store();
-                $dataMap =& $object->dataMap();
+                $dataMap = $object->dataMap();
             }
             else
             {
@@ -523,14 +524,14 @@ class eZOOImport
                     $dataMap = $place_node->attribute( 'data_map' );
                     if ( (!isset( $dataMap[ $titleAttribute ] ) ) || ( !isset( $dataMap[ $bodyAttribute ] ) ) )
                     {
-                        $this->setError( OOIMPORT_ERROR_IMPORTING, "Error in configuration for $placeClassIdentifier, please check configuration file." );
+                        $this->setError( self::ERROR_IMPORTING, "Error in configuration for $placeClassIdentifier, please check configuration file." );
                         return false;
                     }
                     unset( $dataMap );
                 }
                 else
                 {
-                    $this->setError( OOIMPORT_ERROR_IMPORTING, "No settings for replacing node of type $placeClassIdentifier. Stopping.");
+                    $this->setError( self::ERROR_IMPORTING, "No settings for replacing node of type $placeClassIdentifier. Stopping.");
                     return false;
                 }
 
@@ -556,7 +557,7 @@ class eZOOImport
                         case "ezstring":
                         case "eztext":
                         {
-                            $dom =& $xml->domTree( $xmlTextArray[$sectionName] );
+                            $dom = $xml->domTree( $xmlTextArray[$sectionName] );
                             $text = eZOOImport::domToText( $dom->root() );
                             $dataMap[$attributeIdentifier]->setAttribute( 'data_text', trim( $text ) );
                             $dataMap[$attributeIdentifier]->store();
@@ -585,7 +586,7 @@ class eZOOImport
 
                                     $date = new eZDate();
 
-                                    $contentClassAttribute =& $dataMap[$attributeIdentifier];
+                                    $contentClassAttribute = $dataMap[$attributeIdentifier];
 
                                     $date->setMDY( $month, $day, $year );
                                     $dataMap[$attributeIdentifier]->setAttribute( 'data_int', $date->timeStamp()  );
@@ -616,7 +617,7 @@ class eZOOImport
 
                                     $dateTime = new eZDateTime();
 
-                                    $contentClassAttribute =& $dataMap[$attributeIdentifier];
+                                    $contentClassAttribute = $dataMap[$attributeIdentifier];
 
                                     $dateTime->setMDYHMS( $month, $day, $year, $hour, $minute, 0 );
                                     $dataMap[$attributeIdentifier]->setAttribute( 'data_int', $dateTime->timeStamp()  );
@@ -650,7 +651,7 @@ class eZOOImport
 
                                             if ( file_exists( $filePath ) )
                                             {
-                                                $imageContent =& $dataMap[$attributeIdentifier]->attribute( 'content' );
+                                                $imageContent = $dataMap[$attributeIdentifier]->attribute( 'content' );
                                                 $imageContent->initializeFromFile( $filePath, false, basename( $filePath ) );
                                                 $imageContent->store( $dataMap[$attributeIdentifier] );
                                                 $dataMap[$attributeIdentifier]->store();
@@ -664,7 +665,7 @@ class eZOOImport
 
                             if ( !$hasImage )
                             {
-                                $imageHandler =& $dataMap[$attributeIdentifier]->attribute( 'content' );
+                                $imageHandler = $dataMap[$attributeIdentifier]->attribute( 'content' );
                                 if ( $imageHandler )
                                     $imageHandler->removeAliases( $dataMap[$attributeIdentifier] );
                             }
@@ -1427,14 +1428,14 @@ class eZOOImport
 
 */
 
-                                $contentObject =& eZContentObject::fetchByRemoteID( $remoteID );
+                                $contentObject = eZContentObject::fetchByRemoteID( $remoteID );
 
                                 // If image does not already exist, create it as an object
                                 if ( !$contentObject )
                                 {
 
                                     // Import image
-                                    $ooINI =& eZINI::instance( 'odf.ini' );
+                                    $ooINI = eZINI::instance( 'odf.ini' );
                                     $imageClassIdentifier = $ooINI->variable( "ODFImport", "DefaultImportImageClass" );
                                     $class = eZContentClass::fetchByIdentifier( $imageClassIdentifier );
                                     $creatorID = $this->currentUserID;
@@ -1443,13 +1444,13 @@ class eZOOImport
                                     $contentObject->setAttribute( "remote_id",  $remoteID );
                                     $contentObject->store();
 
-                                    $version =& $contentObject->version( 1 );
+                                    $version = $contentObject->version( 1 );
                                     $version->setAttribute( 'modified', eZDateTime::currentTimeStamp() );
-                                    $version->setAttribute( 'status', EZ_VERSION_STATUS_DRAFT );
+                                    $version->setAttribute( 'status', eZContentObjectVersion::STATUS_DRAFT );
                                     $version->store();
 
                                     $contentObjectID = $contentObject->attribute( 'id' );
-                                    $dataMap =& $contentObject->dataMap();
+                                    $dataMap = $contentObject->dataMap();
 
                                     // set image name
                                     $dataMap['name']->setAttribute( 'data_text', $imageName );
@@ -1458,19 +1459,17 @@ class eZOOImport
                                     // set image caption
                                     if ( isset( $dataMap['caption'] ) )
                                     {
-                                        $captionContentAttibute =& $dataMap['caption'];
+                                        $captionContentAttibute = $dataMap['caption'];
                                         $captionText = "$imageName";
 
                                         // create new xml for caption
                                         $xmlInputParser = new eZXMLInputParser();
                                         $dom = $xmlInputParser->createRootNode();
-                                        $domRoot =& $dom->root();
 
-                                        $captionNode =& $dom->createElement( 'paragraph' );
-                                        $captionNode->appendChild( $dom->createTextNode( $captionText ) );
-                                        $domRoot->appendChild( $captionNode );
+                                        $captionNode = $dom->createElement( 'paragraph', $captionText );
+                                        $dom->documentElement->appendChild( $captionNode );
 
-                                        $xmlString = $dom->toString();
+                                        $xmlString = $dom->saveXML();
 
                                         $captionContentAttibute->setAttribute( 'data_text', $xmlString );
                                         $captionContentAttibute->store();
@@ -1481,8 +1480,7 @@ class eZOOImport
                                     }
 
                                     // set image
-                                    $imageContent =& $dataMap['image']->attribute( 'content' );
-
+                                    $imageContent = $dataMap['image']->attribute( 'content' );
                                     //echo "Initializing Image from $href<br />";
                                     $imageContent->initializeFromFile( $href, false, basename( $href ) );
                                     $dataMap['image']->store();
@@ -1490,7 +1488,7 @@ class eZOOImport
                                                                         "ContentObject" => $contentObject );
                                 }
                                 else
-                                    $contentObjectID =& $contentObject->attribute( 'id' );
+                                    $contentObjectID = $contentObject->attribute( 'id' );
 
 
                                 $frameContent .= "<embed object_id='$contentObjectID' align='$imageAlignment' size='$imageSize' />";
@@ -1628,7 +1626,7 @@ class eZOOImport
         //pk
         if ( !$node->canCreate() )
         {
-            $this->setError( OOIMPORT_ERROR_ACCESSDENIED, ezi18n( 'extension/ezodf/import/error', "Folder for images could not be created, access denied." ) );
+            $this->setError( self::ERROR_ACCESSDENIED, ezi18n( 'extension/ezodf/import/error', "Folder for images could not be created, access denied." ) );
             return false;
         }
 
@@ -1639,9 +1637,9 @@ class eZOOImport
                 $creatorID = $this->currentUserID;
                 //$creatorID = 14; // 14 == admin
                 $parentNodeID = $placeNodeID;
-                $contentObject =& $class->instantiate( $creatorID, 1 );
+                $contentObject = $class->instantiate( $creatorID, 1 );
 
-                $nodeAssignment =& eZNodeAssignment::create( array(
+                $nodeAssignment = eZNodeAssignment::create( array(
                                                                  'contentobject_id' => $contentObject->attribute( 'id' ),
                                                                  'contentobject_version' => $contentObject->attribute( 'current_version' ),
                                                                  'parent_node' => $node->attribute( 'node_id' ),
@@ -1650,13 +1648,13 @@ class eZOOImport
                                                              );
                 $nodeAssignment->store();
 
-                $version =& $contentObject->version( 1 );
+                $version = $contentObject->version( 1 );
                 $version->setAttribute( 'modified', eZDateTime::currentTimeStamp() );
-                $version->setAttribute( 'status', EZ_VERSION_STATUS_DRAFT );
+                $version->setAttribute( 'status', eZContentObjectVersion::STATUS_DRAFT );
                 $version->store();
 
                 $contentObjectID = $contentObject->attribute( 'id' );
-                $dataMap =& $contentObject->dataMap();
+                $dataMap = $contentObject->dataMap();
 
                 $titleAttribudeIdentifier = 'name';
 

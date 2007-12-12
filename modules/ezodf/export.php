@@ -36,12 +36,12 @@ include_once( "kernel/classes/ezcontentbrowse.php" );
 include_once( "extension/ezodf/modules/ezodf/ezooconverter.php" );
 
 
-$http =& eZHTTPTool::instance();
-$module =& $Params["Module"];
+$http = eZHTTPTool::instance();
+$module = $Params["Module"];
 $NodeID = $Params['NodeID'];
 $exportTypeParam = $Params['ExportType'];
 
-$tpl =& templateInit();
+$tpl = templateInit();
 
 $success = true;
 
@@ -101,7 +101,7 @@ else if ( strlen( trim ( $exportTypeParam) ) != 0 )
     $success = false;
 }
 
-$ooINI =& eZINI::instance( 'odf.ini' );
+$ooINI = eZINI::instance( 'odf.ini' );
 //$tmpDir = $ooINI->variable( 'ODFSettings', 'TmpDir' );
 $tmpDir = getcwd() . "/" . eZSys::cacheDirectory();
 
@@ -127,10 +127,10 @@ if ( $doExport == true )
                 $contentType = "application/vnd.oasis.opendocument.text";
 
                 include_once( 'lib/ezi18n/classes/ezchartransform.php' );
-                $trans =& eZCharTransform::instance();
+                $trans = eZCharTransform::instance();
                 $nodeName = $trans->transformByGroup( $nodeName, 'urlalias' );
 
-                $uniqueStamp = md5( mktime() );
+                $uniqueStamp = md5( time() );
 
                 $server = $ooINI->variable( "ODFImport", "OOConverterAddress" );
                 $port = $ooINI->variable( "ODFImport", "OOConverterPort" );

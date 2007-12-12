@@ -39,16 +39,16 @@ include_once( "lib/ezfile/classes/ezfilehandler.php" );
 
 */
 
-define( "EZ_OO_TEXT", 1001 );
-define( "EZ_OO_LINK", 1002 );
-define( "EZ_OO_STYLE_START", 2003 );
-define( "EZ_OO_STYLE_STOP", 2004 );
-
-define( "EZ_OO_ERROR_TEMPLATE_NOT_READABLE", 1010 );
-define( "EZ_OO_ERROR_COULD_NOT_COPY", 1011 );
-
 class eZOOGenerator
 {
+    const TEXT = 1001;
+    const LINK = 1002;
+    const STYLE_START = 2003;
+    const STYLE_STOP = 2004;
+
+    const ERROR_TEMPLATE_NOT_READABLE = 1010;
+    const ERROR_COULD_NOT_COPY = 1011;
+
     /*!
      Constructor
     */
@@ -58,7 +58,7 @@ class eZOOGenerator
 
     function writeDocument( )
     {
-        $ooINI =& eZINI::instance( 'odf.ini' );
+        $ooINI = eZINI::instance( 'odf.ini' );
 
         // Initalize directories
         include_once( "lib/ezfile/classes/ezdir.php" );
@@ -122,14 +122,14 @@ class eZOOGenerator
 
                 if ( $templateArchive->errorCode() <> 0 )
                 {
-                    return array( EZ_OO_ERROR_TEMPLATE_NOT_READABLE, "Could not read template file" );
+                    return array( self::ERROR_TEMPLATE_NOT_READABLE, "Could not read template file" );
                 }
             }
 
             // Copy styles.xml and images, if any to the document beeing generated
             if ( !copy( $this->OOTemplateDir . "styles.xml", $this->OOExportDir . "styles.xml" ) )
             {
-                return array( EZ_OO_ERROR_COULD_NOT_COPY, "Could not copy the styles.xml file." );
+                return array( self::ERROR_COULD_NOT_COPY, "Could not copy the styles.xml file." );
             }
 
             $sourceDir = $this->OOTemplateDir . "Pictures";
@@ -258,7 +258,7 @@ class eZOOGenerator
         // Handle charset conversion if needed
         include_once( 'lib/ezi18n/classes/eztextcodec.php' );
         $charset = 'UTF-8';
-        $codec =& eZTextCodec::instance( false, $charset );
+        $codec = eZTextCodec::instance( false, $charset );
         $bodyXML = $codec->convertString( $bodyXML );
 
         $contentXML .= $bodyXML;
@@ -365,7 +365,7 @@ class eZOOGenerator
             {
                 switch ( $paragraphElement[0] )
                 {
-                    case EZ_OO_TEXT:
+                    case self::TEXT:
                     {
                         $tagContent = $paragraphElement[1];
 
@@ -378,7 +378,7 @@ class eZOOGenerator
                         $paragraphArray[] = array( 'Type' => 'text', "Content" => $tagContent );
                     }break;
 
-                    case EZ_OO_STYLE_START:
+                    case self::STYLE_START:
                     {
                         if ( $paragraphElement[1] == "bold" )
                             $paragraphArray[] = array( 'Type' => 'bold_start' );
@@ -390,12 +390,12 @@ class eZOOGenerator
 
                     }break;
 
-                    case EZ_OO_STYLE_STOP:
+                    case self::STYLE_STOP:
                     {
                         $paragraphArray[] = array( 'Type' => 'style_stop' );
                     }break;
 
-                    case EZ_OO_LINK:
+                    case self::LINK:
                     {
                         $paragraphArray[] = array( 'Type' => 'link',
                                                    "Content" => $content = $paragraphElement[2],
@@ -697,7 +697,7 @@ class eZOOGenerator
 
             case "image" :
             {
-                $uniquePart = substr( md5( mktime() . rand( 0, 20000 ) ), 6 );
+                $uniquePart = substr( md5( time() . rand( 0, 20000 ) ), 6 );
                 $fileName = $element['SRC'];
                 $destFile = $this->OOExportDir . "Pictures/" . $uniquePart . basename( $fileName );
                 $relativeFile = "Pictures/" . $uniquePart . basename( $fileName );

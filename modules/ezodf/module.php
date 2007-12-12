@@ -32,25 +32,29 @@ $Module = array( 'name' => 'eZODF',
 $ViewList = array();
 $ViewList['import'] = array(
     'script' => 'import.php',
+    'params' => array(),
     'post_actions' => array( 'BrowseActionName' ),
     'unordered_params' => array( 'node_id' => 'NodeID',
                                  'import_type' => 'ImportType' ) );
 
 $ViewList['export'] = array(
     'script' => 'export.php',
+    'params' => array(),
     'post_actions' => array( 'BrowseActionName' ),
     'unordered_params' => array( 'node_id' => 'NodeID',
                                  'export_type' => 'ExportType' ) );
 
 
 $ViewList['upload_import'] = array(
-    'script' => 'upload_import.php' );
+    'script' => 'upload_import.php',
+    'params' => array() );
 
 $ViewList['authenticate'] = array(
-    'script' => 'authenticate.php' );
+    'script' => 'authenticate.php',
+    'params' => array() );
 
 $ViewList['upload_export'] = array(
-    'script' => 'upload_export.php' );
-
+    'script' => 'upload_export.php',
+    'params' => array() );
 
 ?>

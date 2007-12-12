@@ -2,6 +2,5 @@
 
 [ModuleSettings]
 ExtensionRepositories[]=ezodf
-ModuleList[]=ezodf
 
 */ ?>
