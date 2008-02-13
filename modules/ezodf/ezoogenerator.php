@@ -666,7 +666,7 @@ class eZOOGenerator
 
                         case "link":
                         {
-                            $contentXML .= "<text:a xlink:type='simple' xlink:href='" . $paragraphElement['HREF']. "'>" . $paragraphElement['Content'] . "</text:a>";
+                            $contentXML .= "<text:a xlink:type='simple' xlink:href='" . htmlspecialchars( $paragraphElement['HREF'] ) . "'>" . htmlspecialchars( $paragraphElement['Content'] ) . "</text:a>";
                         }break;
 
                         default:
@@ -692,7 +692,7 @@ class eZOOGenerator
 
             case "header":
             {
-                $contentXML .= "\n<text:h text:style-name='Heading " . $element['Level'] . "' text:outline-level='" . $element['Level'] . "'>" . $element['Text'] . "</text:h>\n";
+                $contentXML .= "\n<text:h text:style-name='Heading " . $element['Level'] . "' text:outline-level='" . $element['Level'] . "'>" . htmlspecialchars( $element['Text'] ) . "</text:h>\n";
             }break;
 
             case "image" :
