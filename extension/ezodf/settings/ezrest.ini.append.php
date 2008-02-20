@@ -1,0 +1,6 @@
+<?php /*
+
+[RESTSettings]
+HandlerList[]=eZRESTODFHandler
+
+*/ ?>
