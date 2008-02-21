@@ -1,3 +1,5 @@
+<?php /*
+
 [ODFSettings]
 # Path to zip program on windows you can use:
 # http://www.info-zip.org/pub/infozip/
@@ -71,3 +73,14 @@ AllowedTypes[]=odt
 # ConvertTypes are those documents which can be converted by oo and then it will publish it automatically.
 ConvertTypes[]
 ConvertTypes[]=doc
+
+# OO Menu related setting
+[OOMenuSettings]
+# Name of top nodes.
+TopNodeNameList[]
+TopNodeNameList[]=RootNode
+TopNodeNameList[]=UserRootNode
+TopNodeNameList[]=MediaRootNode
+
+
+*/ ?>

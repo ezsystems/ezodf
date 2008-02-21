@@ -87,8 +87,21 @@ class eZRESTODFHandler extends eZRESTBaseHandler
         $domDocument = new DOMDocument( '1.0', 'utf-8' );
         $nodeListElement = $domDocument->createElement( 'TopNodeList' );
 
-        
+        $contentINI = eZINI::instance( 'content.ini' );
+        $odfINI = eZINI::instance( 'odf.ini' );
 
+        foreach( $odfINI->variable( 'OOMenuSettings', 'TopNodeNameList' ) as $topNodeName )
+        {
+            $nodeID = $contentINI->variable( 'NodeSettings', $topNodeName );
+            $node = eZContentObjectTreeNode::fetch( $nodeID );
+            if ( !$node )
+            {
+                throw new Exception( 'Could not fetch node: "' . $topNodeName . '", ID: ', $nodeID );
+            }
+            $nodeListElement->appendChild( $this->createTreeNodeDOMElement( $domDocument, $node ) );
+        }
+
+        return $nodeListElement;
     }
 
     /**
@@ -128,7 +141,6 @@ class eZRESTODFHandler extends eZRESTBaseHandler
         $languageCode = $getOptions['languageCode'];
 
         $domDocument = new DOMDocument( '1.0', 'utf-8' );
-        $nodeElement = $domDocument->createElement( 'Node' );
 
         $node = eZContentObjectTreeNode::fetch( $nodeID, $languageCode );
 
@@ -136,6 +148,21 @@ class eZRESTODFHandler extends eZRESTBaseHandler
         {
             throw new Exception( 'Could not fetch node: ' . $nodeID );
         }
+
+        return $this->createTreeNodeDOMElement( $domDocument, $node );
+    }
+
+    /**
+     * Create Node element
+     *
+     * @param DOMDocument Owner DOMDocument
+     * @param eZContentObject eZContentObject node.
+     *
+     * @return DOMElement Node DOMDocument.
+     */
+    protected function createTreeNodeDOMElement( DOMDocument $domDocument, eZContentObjectTreeNode $node )
+    {
+        $nodeElement = $domDocument->createElement( 'Node' );
 
         // Set attributes.
         $nodeElement->setAttribute( 'nodeID', $node->attribute( 'node_id' ) );
@@ -258,7 +285,7 @@ class eZRESTODFHandler extends eZRESTBaseHandler
      *
      * @return DOMElement Class DOMDocument, example:
      *
-     *     <Class ID="12" primaryLanguage="eng-GB">
+     *     <Class ID="12" identifier="comment" primaryLanguage="eng-GB">
      *         <NameList>
      *             <Name locale="eng-GB">eZ Publish rocks</Name>
      *         </NameList>
@@ -271,6 +298,7 @@ class eZRESTODFHandler extends eZRESTBaseHandler
         // Set attributes
         $classElement->setAttribute( 'ID', $class->attribute( 'id' ) );
         $classElement->setAttribute( 'primaryLanguage', $class->attribute( 'top_priority_language_locale' ) );
+        $classElement->setAttribute( 'identifier', $class->attribute( 'identifier' ) );
 
         // Add Language list.
         $classElement->appendChild( $this->createNameListDOMElement( $domDocument, $class->NameList ) );
