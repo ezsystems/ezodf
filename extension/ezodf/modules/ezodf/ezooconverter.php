@@ -30,8 +30,6 @@
 
 /*! \file ezooconverter.php
 */
-include_once( "extension/ezodf/modules/ezodf/ezoogenerator.php" );
-include_once( "lib/ezxml/classes/ezxml.php" );
 
 /*!
   \class eZOoconverter ezooconverter.php
@@ -65,7 +63,6 @@ class eZOOConverter
             $xml = new eZXML();
 
             // Clear the view cache when exporting, for some reason images are re-generated and the resolution is becomming poor
-            include_once( "kernel/classes/ezcontentcachemanager.php" );
             eZContentCacheManager::clearObjectViewCache( $object->attribute( "id" ) );
 
             foreach ( $attributes as $attribute )
@@ -454,7 +451,6 @@ class eZOOConverter
                     $url_id = $child->attributeValue( 'url_id' );
                     if ( $url_id )
                     {
-                        include_once( 'kernel/classes/datatypes/ezurl/ezurl.php' );
                         $eZUrl = eZURL::fetch( $url_id );
                         if ( is_object( $eZUrl ) )
                         {
@@ -509,7 +505,6 @@ class eZOOConverter
 
                 // Check if the custom tag is inline
                 $isInline = false;
-                include_once( "lib/ezutils/classes/ezini.php" );
                 $ini = eZINI::instance( 'content.ini' );
 
                 $isInlineTagList = $ini->variable( 'CustomTagSettings', 'IsInline' );

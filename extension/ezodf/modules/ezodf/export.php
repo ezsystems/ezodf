@@ -28,14 +28,6 @@
 
 include_once( "kernel/common/template.php" );
 
-include_once( 'kernel/classes/ezcontentobject.php' );
-include_once( 'lib/ezlocale/classes/ezdatetime.php' );
-
-include_once( "kernel/classes/ezcontentbrowse.php" );
-
-include_once( "extension/ezodf/modules/ezodf/ezooconverter.php" );
-
-
 $http = eZHTTPTool::instance();
 $module = $Params["Module"];
 $NodeID = $Params['NodeID'];
@@ -126,7 +118,6 @@ if ( $doExport == true )
                 $originalFileName = $nodeName . ".odt";
                 $contentType = "application/vnd.oasis.opendocument.text";
 
-                include_once( 'lib/ezi18n/classes/ezchartransform.php' );
                 $trans = eZCharTransform::instance();
                 $nodeName = $trans->transformByGroup( $nodeName, 'urlalias' );
 

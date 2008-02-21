@@ -24,10 +24,6 @@
 // ## END COPYRIGHT, LICENSE AND WARRANTY NOTICE ##
 //
 
-    include_once( 'kernel/classes/datatypes/ezuser/ezuser.php' );
-    include_once( "extension/ezodf/modules/ezodf/ezooconverter.php" );
-    include_once( "lib/ezutils/classes/ezhttptool.php" );
-
     $http = eZHTTPTool::instance();
 
     if ( $http->hasPostVariable( 'Username' ) );

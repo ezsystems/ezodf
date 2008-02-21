@@ -25,11 +25,7 @@
 //
 
 
-    include_once ('lib/ezutils/classes/ezfunctionhandler.php');
-    include_once ('lib/ezutils/classes/ezsys.php');
     include_once( 'kernel/common/template.php' );
-    include_once( 'kernel/classes/datatypes/ezuser/ezuser.php' );
-    include_once( "lib/ezutils/classes/ezhttptool.php" );
 
     $tpl = templateInit();
     $http = eZHTTPTool::instance();
