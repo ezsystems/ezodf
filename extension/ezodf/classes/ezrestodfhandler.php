@@ -44,10 +44,13 @@ class eZRESTODFHandler extends eZRESTBaseHandler
         $moduleDefinition = new eZRESTModuleDefinition();
 
         // Add views for eZRESTODFHandler
-        $moduleDefinition->addView( 'getTreeStructure', array( 'method' => 'getTreeStructure',
-                                                               'functions' => 'client',
-                                                               'getParams' => array( 'parentNodeID', 'depth', 'limit' ) ) );
-        $moduleDefinition->addView( 'getNodeInfo', array( 'method' => 'getNodeInfo',
+        $moduleDefinition->addView( 'ezodfGetTopNodeList', array( 'method' => 'ezodfGetTopNodeList',
+                                                                  'functions' => 'client' ) );
+        $moduleDefinition->addView( 'getChildrenList', array( 'method' => 'ezodfGetNodeInfo',
+                                                              'functions' => 'client',
+                                                              'getParams' => array( 'nodeID' ),
+                                                              'getOptions' => array( 'languageCode' => false ) ) );
+        $moduleDefinition->addView( 'ezodfGetNodeInfo', array( 'method' => 'ezodfGetNodeInfo',
                                                           'functions' => 'client',
                                                           'getParams' => array( 'nodeID' ),
                                                           'getOptions' => array( 'languageCode' => false ) ) );
@@ -67,6 +70,25 @@ class eZRESTODFHandler extends eZRESTBaseHandler
         // Add access functions for eZRESTODFHandler
         $moduleDefinition->addFunction( 'client', array() );
         return $moduleDefinition;
+    }
+
+    /**
+     * Get top node list.
+     *
+     * @param Array getParameters.
+     * @param Array getOptions.
+     * @param Array postParameters.
+     * @param Array postOptions.
+     *
+     * @return DOMElement DOMElement contating top node information.
+     */
+    public function ezodfGetTopNodeList( $getParams, $getOptions, $postParams, $postOptions )
+    {
+        $domDocument = new DOMDocument( '1.0', 'utf-8' );
+        $nodeListElement = $domDocument->createElement( 'TopNodeList' );
+
+        
+
     }
 
     /**
@@ -100,7 +122,7 @@ class eZRESTODFHandler extends eZRESTBaseHandler
      * </Node>
      *
      */
-    public function getNodeInfo( $getParams, $getOptions, $postParams, $postOptions )
+    public function ezodfGetNodeInfo( $getParams, $getOptions, $postParams, $postOptions )
     {
         $nodeID = $getParams['nodeID'];
         $languageCode = $getOptions['languageCode'];
@@ -109,6 +131,11 @@ class eZRESTODFHandler extends eZRESTBaseHandler
         $nodeElement = $domDocument->createElement( 'Node' );
 
         $node = eZContentObjectTreeNode::fetch( $nodeID, $languageCode );
+
+        if ( !$node )
+        {
+            throw new Exception( 'Could not fetch node: ' . $nodeID );
+        }
 
         // Set attributes.
         $nodeElement->setAttribute( 'nodeID', $node->attribute( 'node_id' ) );
