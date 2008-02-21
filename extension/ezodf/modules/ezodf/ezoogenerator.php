@@ -798,7 +798,8 @@ class eZOOGenerator
                         foreach ( $cellArray as $cellElement )
                         {
                             // Check for colspan
-                            if ( is_numeric( $cellElement['ColSpan'] ) )
+                            if ( isset( $cellElement['ColSpan'] ) &&
+                                 is_numeric( $cellElement['ColSpan'] ) )
                             {
                                 $colSpan = $cellElement['ColSpan'];
                                 // Increase cell count with 1-colspan
@@ -831,7 +832,7 @@ class eZOOGenerator
                 $numberLetter = "A";
                 $numberOfColumns = $columnCount;
 
-                $columnDefinition .= "<table:table-column table:style-name='Table$tableCounter.$numberLetter' table:number-columns-repeated='$numberOfColumns' />\n";
+                $columnDefinition = "<table:table-column table:style-name='Table$tableCounter.$numberLetter' table:number-columns-repeated='$numberOfColumns' />\n";
 
                 $contentXML .= "<table:table table:name='Table$tableCounter' table:style-name='Table$tableCounter'>\n" . $columnDefinition . $rowContent . "</table:table>";
 

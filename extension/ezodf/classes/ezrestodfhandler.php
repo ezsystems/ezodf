@@ -59,11 +59,11 @@ class eZRESTODFHandler extends eZRESTBaseHandler
         $moduleDefinition->addView( 'ezodfFetchOONode', array( 'method' => 'ezodfFetchOONode',
                                                                'functions' => 'client',
                                                                'getParams' => array( 'nodeID' ),
-                                                               'postOptions' => array( 'languageCode' => false ) ) );
-        $moduleDefinition->addView( 'putOONode', array( 'method' => 'putOONode',
-                                                        'functions' => 'client',
-                                                        'postParams' => array( 'nodeID', 'data' ),
-                                                        'postOptions' => array( 'languageCode' => false ) ) );
+                                                               'getOptions' => array( 'languageCode' => false ) ) );
+        $moduleDefinition->addView( 'ezodfPutOONode', array( 'method' => 'putOONode',
+                                                             'functions' => 'client',
+                                                             'postParams' => array( 'nodeID', 'data' ),
+                                                             'postOptions' => array( 'languageCode' => false ) ) );
         $moduleDefinition->addView( 'replaceOONode', array( 'method' => 'replaceOONode',
                                                             'functions' => 'client',
                                                             'getParams' => array( 'nodeID', 'data' ),
@@ -103,7 +103,7 @@ class eZRESTODFHandler extends eZRESTBaseHandler
         $ooElement->appendChild( $this->createTreeNodeDOMElement( $domDocument, $node ) );
 
         // Add binary data element.
-        $ooElement->appendChild( $this->createOODOMElement( $domDocument, $node->attribute( 'object' ) ) );
+        $ooElement->appendChild( $this->createOODOMElement( $domDocument, $node ) );
 
         return $ooElement;
     }
@@ -431,18 +431,33 @@ class eZRESTODFHandler extends eZRESTBaseHandler
      * Create OO document element.
      *
      * @param DOMDocument Owner DOMDocument
-     * @param eZContentObjectTreeNode eZContentObjectTreeNode.
+     * @param eZContentObjectTreeNode eZContentObjectTreeNode object.
      *
      * @return DOMElement NameList DOMDocument, example:
      *
-     *     <OODocument base64Encoded="1">
+     *     <OODocument base64Encoded="1" filename="My article.odt">
      *         <![CDATA[ ad lkøjsdaølfhadsø fiuancfivn søgsbdnvsahfø ]]>
      *     </OODocument>
      */
-    protected function createOODOMElement( DOMDocument $domDocument, eZContentObject $object )
+    protected function createOODOMElement( DOMDocument $domDocument, eZContentObjectTreeNode $node )
     {
         $ooDocumentElement = $domDocument->createElement( 'OODocument' );
-        
+
+        $fileName = eZOOConverter::objectToOO( $node->attribute( 'node_id' ) );
+
+        if ( is_array( $fileName ) )
+        {
+            throw new Exception( 'Could not generate OO document, ID: ' . $node->attribute( 'node_id' ) . ', Description: ' . $fileName[0] );
+        }
+
+        // Add odt document to DOMElement
+        $ooDocumentElement->setAttribute( 'base64Encoded', '1' );
+        $ooDocumentElement->setAttribute( 'filename', $node->attribute( 'name' ) . '.odt' );
+        $ooDocumentElement->appendChild( $domDocument->createCDATASection( base64_encode( eZFile::getContents( $fileName ) ) ) );
+
+        unlink( $fileName );
+
+        return $ooDocumentElement;
     }
 
     /**
