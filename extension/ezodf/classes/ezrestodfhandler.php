@@ -56,10 +56,10 @@ class eZRESTODFHandler extends eZRESTBaseHandler
                                                                'functions' => 'client',
                                                                'getParams' => array( 'nodeID' ),
                                                                'getOptions' => array( 'languageCode' => false ) ) );
-        $moduleDefinition->addView( 'fetchOONode', array( 'method' => 'fetchOONode',
-                                                          'functions' => 'client',
-                                                          'getParams' => array( 'nodeID' ),
-                                                          'postOptions' => array( 'languageCode' => false ) ) );
+        $moduleDefinition->addView( 'ezodfFetchOONode', array( 'method' => 'ezodfFetchOONode',
+                                                               'functions' => 'client',
+                                                               'getParams' => array( 'nodeID' ),
+                                                               'postOptions' => array( 'languageCode' => false ) ) );
         $moduleDefinition->addView( 'putOONode', array( 'method' => 'putOONode',
                                                         'functions' => 'client',
                                                         'postParams' => array( 'nodeID', 'data' ),
@@ -72,6 +72,40 @@ class eZRESTODFHandler extends eZRESTBaseHandler
         // Add access functions for eZRESTODFHandler
         $moduleDefinition->addFunction( 'client', array() );
         return $moduleDefinition;
+    }
+
+    /**
+     * Fetch Node for editing in OpenOffice.org
+     *
+     * @param Array getParameters.
+     * @param Array getOptions.
+     * @param Array postParameters.
+     * @param Array postOptions.
+     *
+     * @return DOMElement DOMElement containing OO document.
+     */
+    public function ezodfFetchOONode( $getParams, $getOptions, $postParams, $postOptions )
+    {
+        $nodeID = $getParams['nodeID'];
+        $languageCode = $getOptions['languageCode'];
+
+        $node = eZContentObjectTreeNode::fetch( $nodeID, $languageCode );
+
+        if ( !$node )
+        {
+            throw new Exception( 'Could not fetch node: ' . $nodeID );
+        }
+
+        $domDocument = new DOMDocument( '1.0', 'utf-8' );
+        $ooElement = $domDocument->createElement( 'OONode' );
+
+        // Add node information.
+        $ooElement->appendChild( $this->createTreeNodeDOMElement( $domDocument, $node ) );
+
+        // Add binary data element.
+        $ooElement->appendChild( $this->createOODOMElement( $domDocument, $node->attribute( 'object' ) ) );
+
+        return $ooElement;
     }
 
     /**
@@ -391,6 +425,24 @@ class eZRESTODFHandler extends eZRESTBaseHandler
         }
 
         return $languageListElement;
+    }
+
+    /**
+     * Create OO document element.
+     *
+     * @param DOMDocument Owner DOMDocument
+     * @param eZContentObjectTreeNode eZContentObjectTreeNode.
+     *
+     * @return DOMElement NameList DOMDocument, example:
+     *
+     *     <OODocument base64Encoded="1">
+     *         <![CDATA[ ad lkøjsdaølfhadsø fiuancfivn søgsbdnvsahfø ]]>
+     *     </OODocument>
+     */
+    protected function createOODOMElement( DOMDocument $domDocument, eZContentObject $object )
+    {
+        $ooDocumentElement = $domDocument->createElement( 'OODocument' );
+        
     }
 
     /**
