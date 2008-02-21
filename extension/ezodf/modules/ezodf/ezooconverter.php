@@ -324,7 +324,7 @@ class eZOOConverter
      \private
      Internal function to handle an eZXMLText node and convert it to OO format
     */
-    static function handleNode( $node, &$generator, $level = 0 )
+    static function handleNode( $node, $generator, $level = 0 )
     {
         switch ( $node->name() )
         {
@@ -364,10 +364,15 @@ class eZOOConverter
                     $generator->addImage( $image );
                 }
 
-                if ( isset( $GLOBALS['CustomTagStyle'] ) and $GLOBALS['CustomTagStyle'] != false )
-                    call_user_func_array( array( &$generator, "addParagraph" ), array_merge( $GLOBALS['CustomTagStyle'], $paragraphParameters ) );
+                if ( isset( $GLOBALS['CustomTagStyle'] ) &&
+                     $GLOBALS['CustomTagStyle'] != false )
+                {
+                    call_user_func_array( array( $generator, "addParagraph" ), array_merge( array( $GLOBALS['CustomTagStyle'] ), $paragraphParameters ) );
+                }
                 else
-                    call_user_func_array( array( &$generator, "addParagraph" ), $paragraphParameters );
+                {
+                    call_user_func_array( array( $generator, "addParagraph" ), $paragraphParameters );
+                }
             }break;
 
             default:
@@ -378,7 +383,7 @@ class eZOOConverter
         }
     }
 
-    static function handleInlineNode( $child, &$generator )
+    static function handleInlineNode( $child, $generator, $level = 0 )
     {
         $paragraphParameters = array();
         $imageArray = array();
@@ -467,7 +472,7 @@ class eZOOConverter
 
                 foreach ( $child->children() as $inlineNode )
                 {
-                    $return = eZOOConverter::handleInlineNode( $inlineNode );
+                    $return = eZOOConverter::handleInlineNode( $inlineNode, $generator );
                     $paragraphParameters = array_merge( $paragraphParameters, $return['paragraph_parameters'] );
                 }
 
@@ -480,7 +485,7 @@ class eZOOConverter
 
                 foreach ( $child->children() as $inlineNode )
                 {
-                    $return = eZOOConverter::handleInlineNode( $inlineNode );
+                    $return = eZOOConverter::handleInlineNode( $inlineNode, $generator );
                     $paragraphParameters = array_merge( $paragraphParameters, $return['paragraph_parameters'] );
                 }
                 $paragraphParameters[] = array( eZOOGenerator::STYLE_STOP );
@@ -505,12 +510,12 @@ class eZOOConverter
                 // Check if the custom tag is inline
                 $isInline = false;
                 include_once( "lib/ezutils/classes/ezini.php" );
-                $ini =& eZINI::instance( 'content.ini' );
+                $ini = eZINI::instance( 'content.ini' );
 
-                $isInlineTagList =& $ini->variable( 'CustomTagSettings', 'IsInline' );
+                $isInlineTagList = $ini->variable( 'CustomTagSettings', 'IsInline' );
                 foreach ( array_keys ( $isInlineTagList ) as $key )
                 {
-                    $isInlineTagValue =& $isInlineTagList[$key];
+                    $isInlineTagValue = $isInlineTagList[$key];
                     if ( $isInlineTagValue )
                     {
                         if ( $customTagName == $key )

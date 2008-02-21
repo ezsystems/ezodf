@@ -107,7 +107,7 @@ class eZOOGenerator
         $templateName = $ooINI->variable( 'ODFExport', 'TemplateName' );
         if ( $useTemplate == true )
         {
-            $templateFile = "extension/ezodf/templates/" . $templateName;
+            $templateFile = eZExtension::baseDirectory() . '/ezodf/share/templates/' . $templateName;
             // Check if zlib extension is loaded, if it's loaded use bundled ZIP library,
             // if not rely on the unzip commandline version.
             if ( !function_exists( 'gzopen' ) )
@@ -411,7 +411,8 @@ class eZOOGenerator
         }
         else
         {
-            $paragraphArray = array( array( 'Type' => 'text', "Content" => $argArray[0] ) );
+            $paragraphArray = array( array( 'Type' => 'text',
+                                            'Content' => isset( $argArray[0] ) ? $argArray[0] : '' ) );
         }
 
         $elementArray = array( 'Type' => 'paragraph',
@@ -444,7 +445,8 @@ class eZOOGenerator
                 // Add the paragraph inside a table cell
                 $currentRow = $this->DocumentStack[$this->CurrentStackNumber]['CurrentRow'];
                 $currentCell = $this->DocumentStack[$this->CurrentStackNumber]['CurrentCell'];
-                if ( is_numeric( $this->DocumentStack[$this->CurrentStackNumber]['CurrentColSpan'] ) )
+                if ( isset( $this->DocumentStack[$this->CurrentStackNumber]['CurrentColSpan'] ) &&
+                     is_numeric( $this->DocumentStack[$this->CurrentStackNumber]['CurrentColSpan'] ) )
                     $elementArray = array_merge( $elementArray, array( "ColSpan" => $this->DocumentStack[$this->CurrentStackNumber]['CurrentColSpan'] ) );
                 $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'][$currentRow][$currentCell][] = $elementArray;
 
