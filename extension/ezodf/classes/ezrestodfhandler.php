@@ -46,14 +46,16 @@ class eZRESTODFHandler extends eZRESTBaseHandler
         // Add views for eZRESTODFHandler
         $moduleDefinition->addView( 'ezodfGetTopNodeList', array( 'method' => 'ezodfGetTopNodeList',
                                                                   'functions' => 'client' ) );
-        $moduleDefinition->addView( 'getChildrenList', array( 'method' => 'ezodfGetNodeInfo',
+        $moduleDefinition->addView( 'ezodfGetChildren', array( 'method' => 'ezodfGetChildren',
                                                               'functions' => 'client',
                                                               'getParams' => array( 'nodeID' ),
-                                                              'getOptions' => array( 'languageCode' => false ) ) );
+                                                              'getOptions' => array( 'languageCode' => false,
+                                                                                     'offset' => 0,
+                                                                                     'limit' => 10 ) ) );
         $moduleDefinition->addView( 'ezodfGetNodeInfo', array( 'method' => 'ezodfGetNodeInfo',
-                                                          'functions' => 'client',
-                                                          'getParams' => array( 'nodeID' ),
-                                                          'getOptions' => array( 'languageCode' => false ) ) );
+                                                               'functions' => 'client',
+                                                               'getParams' => array( 'nodeID' ),
+                                                               'getOptions' => array( 'languageCode' => false ) ) );
         $moduleDefinition->addView( 'fetchOONode', array( 'method' => 'fetchOONode',
                                                           'functions' => 'client',
                                                           'getParams' => array( 'nodeID' ),
@@ -82,6 +84,57 @@ class eZRESTODFHandler extends eZRESTBaseHandler
      *
      * @return DOMElement DOMElement contating top node information.
      */
+    public function ezodfGetChildren( $getParams, $getOptions, $postParams, $postOptions )
+    {
+        $nodeID = $getParams['nodeID'];
+        $languageCode = $getOptions['languageCode'];
+        $offset = $getOptions['offset'];
+        $limit = $getOptions['limit'];
+
+        $domDocument = new DOMDocument( '1.0', 'utf-8' );
+        $childrenElement = $domDocument->createElement( 'Children' );
+
+        // Set attributes.
+        $childrenElement->setAttribute( 'offset', $offset );
+        if ( $languageCode )
+        {
+            $childrenElement->setAttribute( 'languageCode', $languageCode );
+        }
+        $childrenElement->setAttribute( 'limit', $limit );
+
+        // Get children, and add them to children list.
+        $children = eZContentObjectTreeNode::subTreeByNodeID( array( 'Depth' => 1,
+                                                                     'DepthOperator' => 'eq',
+                                                                     'Limit' => $limit,
+                                                                     'Offset' => $offset,
+                                                                     'Language' => $languageCode ),
+                                                              $nodeID );
+        if ( $children )
+        {
+            foreach( $children as $childNode )
+            {
+                $childrenElement->appendChild( $this->createTreeNodeDOMElement( $domDocument, $childNode ) );
+            }
+            $childrenElement->setAttribute( 'count', count( $children ) );
+        }
+        else
+        {
+            $childrenElement->setAttribute( 'count', count( $children ) );
+        }
+
+        return $childrenElement;
+    }
+
+    /**
+     * Get top node list.
+     *
+     * @param Array getParameters.
+     * @param Array getOptions.
+     * @param Array postParameters.
+     * @param Array postOptions.
+     *
+     * @return DOMElement DOMElement contating top node information.
+     */
     public function ezodfGetTopNodeList( $getParams, $getOptions, $postParams, $postOptions )
     {
         $domDocument = new DOMDocument( '1.0', 'utf-8' );
@@ -89,6 +142,8 @@ class eZRESTODFHandler extends eZRESTBaseHandler
 
         $contentINI = eZINI::instance( 'content.ini' );
         $odfINI = eZINI::instance( 'odf.ini' );
+
+        $elementCount = 0;
 
         foreach( $odfINI->variable( 'OOMenuSettings', 'TopNodeNameList' ) as $topNodeName )
         {
@@ -99,7 +154,10 @@ class eZRESTODFHandler extends eZRESTBaseHandler
                 throw new Exception( 'Could not fetch node: "' . $topNodeName . '", ID: ', $nodeID );
             }
             $nodeListElement->appendChild( $this->createTreeNodeDOMElement( $domDocument, $node ) );
+            $elementCount++;
         }
+
+        $nodeListElement->setAttribute( 'count', $elementCount );
 
         return $nodeListElement;
     }
@@ -167,6 +225,7 @@ class eZRESTODFHandler extends eZRESTBaseHandler
         // Set attributes.
         $nodeElement->setAttribute( 'nodeID', $node->attribute( 'node_id' ) );
         $nodeElement->setAttribute( 'parentID', $node->attribute( 'parent_node_id' ) );
+        $nodeElement->setAttribute( 'hasChildren', $node->childrenCount() ? '1' : '0' );
 
         // Get access rights element.
         $nodeElement->appendChild( $this->createAccessDOMElement( $domDocument, $node ) );
