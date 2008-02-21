@@ -45,33 +45,91 @@ class eZRESTODFHandler extends eZRESTBaseHandler
 
         // Add views for eZRESTODFHandler
         $moduleDefinition->addView( 'ezodfGetTopNodeList', array( 'method' => 'ezodfGetTopNodeList',
-                                                                  'functions' => 'client' ) );
+                                                                  'functions' => 'ezodf_oo_client' ) );
         $moduleDefinition->addView( 'ezodfGetChildren', array( 'method' => 'ezodfGetChildren',
-                                                              'functions' => 'client',
+                                                              'functions' => 'ezodf_oo_client',
                                                               'getParams' => array( 'nodeID' ),
                                                               'getOptions' => array( 'languageCode' => false,
                                                                                      'offset' => 0,
                                                                                      'limit' => 10 ) ) );
         $moduleDefinition->addView( 'ezodfGetNodeInfo', array( 'method' => 'ezodfGetNodeInfo',
-                                                               'functions' => 'client',
+                                                               'functions' => 'ezodf_oo_client',
                                                                'getParams' => array( 'nodeID' ),
                                                                'getOptions' => array( 'languageCode' => false ) ) );
         $moduleDefinition->addView( 'ezodfFetchOONode', array( 'method' => 'ezodfFetchOONode',
-                                                               'functions' => 'client',
+                                                               'functions' => 'ezodf_oo_client',
                                                                'getParams' => array( 'nodeID' ),
-                                                               'getOptions' => array( 'languageCode' => false ) ) );
+                                                               'getOptions' => array( 'languageCode' => false,
+                                                                                      'base64Encoded' => true ) ) );
         $moduleDefinition->addView( 'ezodfPutOONode', array( 'method' => 'putOONode',
-                                                             'functions' => 'client',
-                                                             'postParams' => array( 'nodeID', 'data' ),
+                                                             'functions' => 'ezodf_oo_client',
+                                                             'postParams' => array( 'nodeID', 'data', 'filename' ),
                                                              'postOptions' => array( 'languageCode' => false ) ) );
-        $moduleDefinition->addView( 'replaceOONode', array( 'method' => 'replaceOONode',
-                                                            'functions' => 'client',
-                                                            'getParams' => array( 'nodeID', 'data' ),
-                                                            'postOptions' => array( 'languageCode' => null ) ) );
+        $moduleDefinition->addView( 'ezodfReplaceOONode', array( 'method' => 'replaceOONode',
+                                                                 'functions' => 'ezodf_oo_client',
+                                                                 'getParams' => array( 'nodeID', 'data', 'filename' ),
+                                                                 'postOptions' => array( 'languageCode' => null ) ) );
 
         // Add access functions for eZRESTODFHandler
-        $moduleDefinition->addFunction( 'client', array() );
+        $moduleDefinition->addFunction( 'ezodf_oo_client', array() );
         return $moduleDefinition;
+    }
+
+    /**
+     * Store OpenOffice.org document to specified location. The specified location will become the parent of the
+     * OpenOffice.org document.
+     *
+     * @param Array getParameters.
+     * @param Array getOptions.
+     * @param Array postParameters.
+     * @param Array postOptions.
+     *
+     * @return DOMElement DOMElement containing OO document.
+     */
+    public function ezodfPutOONode( $getParams, $getOptions, $postParams, $postOptions )
+    {
+        $nodeID = $postParams['nodeID'];
+        $data = $postParams['data'];
+        $filename = $postParams['filename'];
+        $languageCode = $postOptions['languageCode'];
+        $base64Encoded = $postOptions['base64Encoded'];
+
+        $node = eZContentObjectTreeNode::fetch( $nodeID, $languageCode );
+
+        if ( !$node )
+        {
+            throw new Exception( 'Could not fetch node: ' . $nodeID );
+        }
+
+        // Decode data.
+        if ( $base64Encoded )
+        {
+            $data = base64_decode( $data );
+        }
+
+        // Store data to temporary file.
+        $tmpFilePath = eZSys::cacheDirectory() . '/ezodf/' . substr( md5( mt_rand() ), 0, 8 );
+        $tmpFilename = $tmpFilePath . '/' . $filename;
+        if ( !eZFile::create( $filename, $tmpFilePath, $data ) )
+        {
+            throw new Exception( 'Could not create file: ' . $tmpFilename );
+        }
+
+        $import = new eZOOImport();
+        $result = $import->import( $tmpFilename, $nodeID, $filename );
+        eZDir::recursiveDelete( $tmpFilePath );
+        if ( !$result )
+        {
+            throw new Exception( 'OO import failed: ' . $import->getErrorNumber() . ' - ' . $import->getErrorMessage() );
+        }
+
+        $domDocument = new DOMDocument( '1.0', 'utf-8' );
+        $importElement = $domDocument->createElement( 'OOImport' );
+
+        // Add node info about imported document.
+        $importElement->appendChild( $this->createTreeNodeDOMElement( $domDocument, $result['MainNode'] ) );
+
+        return $importElement;
     }
 
     /**
