@@ -65,14 +65,37 @@ class eZRESTODFHandler extends eZRESTBaseHandler
                                                              'functions' => 'ezodf_oo_client',
                                                              'postParams' => array( 'nodeID', 'data', 'filename' ),
                                                              'postOptions' => array( 'languageCode' => false ) ) );
-        $moduleDefinition->addView( 'ezodfReplaceOONode', array( 'method' => 'replaceOONode',
+        $moduleDefinition->addView( 'ezodfReplaceOONode', array( 'method' => 'ezodfReplaceOONode',
                                                                  'functions' => 'ezodf_oo_client',
-                                                                 'getParams' => array( 'nodeID', 'data', 'filename' ),
+                                                                 'postParams' => array( 'nodeID', 'data', 'filename' ),
                                                                  'postOptions' => array( 'languageCode' => null ) ) );
 
         // Add access functions for eZRESTODFHandler
         $moduleDefinition->addFunction( 'ezodf_oo_client', array() );
         return $moduleDefinition;
+    }
+
+    /**
+     * Replace OpenOffice.org document to specified location. A new version will be created, and the existing document
+     * will be archived.
+     *
+     * @param Array getParameters.
+     * @param Array getOptions.
+     * @param Array postParameters.
+     * @param Array postOptions.
+     *
+     * @return DOMElement DOMElement containing OO document.
+     */
+    public function ezodfReplaceOONode( $getParams, $getOptions, $postParams, $postOptions )
+    {
+        try
+        {
+            return $this->importOODocument( $getParams, $getOptions, $postParams, $postOptions, 'replace' );
+        }
+        catch( Exception $e )
+        {
+            throw $e;
+        }
     }
 
     /**
@@ -88,48 +111,14 @@ class eZRESTODFHandler extends eZRESTBaseHandler
      */
     public function ezodfPutOONode( $getParams, $getOptions, $postParams, $postOptions )
     {
-        $nodeID = $postParams['nodeID'];
-        $data = $postParams['data'];
-        $filename = $postParams['filename'];
-        $languageCode = $postOptions['languageCode'];
-        $base64Encoded = $postOptions['base64Encoded'];
-
-        $node = eZContentObjectTreeNode::fetch( $nodeID, $languageCode );
-
-        if ( !$node )
+        try
         {
-            throw new Exception( 'Could not fetch node: ' . $nodeID );
+            return $this->importOODocument( $getParams, $getOptions, $postParams, $postOptions, 'import' );
         }
-
-        // Decode data.
-        if ( $base64Encoded )
+        catch( Exception $e )
         {
-            $data = base64_decode( $data );
+            throw $e;
         }
-
-        // Store data to temporary file.
-        $tmpFilePath = eZSys::cacheDirectory() . '/ezodf/' . substr( md5( mt_rand() ), 0, 8 );
-        $tmpFilename = $tmpFilePath . '/' . $filename;
-        if ( !eZFile::create( $filename, $tmpFilePath, $data ) )
-        {
-            throw new Exception( 'Could not create file: ' . $tmpFilename );
-        }
-
-        $import = new eZOOImport();
-        $result = $import->import( $tmpFilename, $nodeID, $filename );
-        eZDir::recursiveDelete( $tmpFilePath );
-        if ( !$result )
-        {
-            throw new Exception( 'OO import failed: ' . $import->getErrorNumber() . ' - ' . $import->getErrorMessage() );
-        }
-
-        $domDocument = new DOMDocument( '1.0', 'utf-8' );
-        $importElement = $domDocument->createElement( 'OOImport' );
-
-        // Add node info about imported document.
-        $importElement->appendChild( $this->createTreeNodeDOMElement( $domDocument, $result['MainNode'] ) );
-
-        return $importElement;
     }
 
     /**
@@ -544,6 +533,63 @@ class eZRESTODFHandler extends eZRESTBaseHandler
         }
 
         return $languageListElement;
+    }
+
+    /**
+     * Import object.
+     *
+     * @param Array getParameters.
+     * @param Array getOptions.
+     * @param Array postParameters.
+     * @param Array postOptions.
+     * @param string Import type.
+     *
+     * @return DOMElement DOMElement containing OO document.
+     */
+    protected function importOODocument( $getParams, $getOptions, $postParams, $postOptions, $importType = 'import' )
+    {
+        $nodeID = $postParams['nodeID'];
+        $data = $postParams['data'];
+        $filename = $postParams['filename'];
+        $languageCode = $postOptions['languageCode'];
+        $base64Encoded = $postOptions['base64Encoded'];
+
+        $node = eZContentObjectTreeNode::fetch( $nodeID, $languageCode );
+
+        if ( !$node )
+        {
+            throw new Exception( 'Could not fetch node: ' . $nodeID );
+        }
+
+        // Decode data.
+        if ( $base64Encoded )
+        {
+            $data = base64_decode( $data );
+        }
+
+        // Store data to temporary file.
+        $tmpFilePath = eZSys::cacheDirectory() . '/ezodf/' . substr( md5( mt_rand() ), 0, 8 );
+        $tmpFilename = $tmpFilePath . '/' . $filename;
+        if ( !eZFile::create( $filename, $tmpFilePath, $data ) )
+        {
+            throw new Exception( 'Could not create file: ' . $tmpFilename );
+        }
+
+        $import = new eZOOImport();
+        $result = $import->import( $tmpFilename, $nodeID, $filename, $importType );
+        eZDir::recursiveDelete( $tmpFilePath );
+        if ( !$result )
+        {
+            throw new Exception( 'OO import failed: ' . $import->getErrorNumber() . ' - ' . $import->getErrorMessage() );
+        }
+
+        $domDocument = new DOMDocument( '1.0', 'utf-8' );
+        $importElement = $domDocument->createElement( 'OOImport' );
+
+        // Add node info about imported document.
+        $importElement->appendChild( $this->createTreeNodeDOMElement( $domDocument, $result['MainNode'] ) );
+
+        return $importElement;
     }
 
     /**
