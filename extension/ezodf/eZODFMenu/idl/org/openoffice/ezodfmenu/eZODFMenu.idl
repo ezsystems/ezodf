@@ -1,0 +1,12 @@
+#ifndef __org_openoffice_ezodfmenu_ezodfmenu_idl__
+#define __org_openoffice_ezodfmenu_ezodfmenu_idl__
+
+#include <org/openoffice/ezodfmenu/XEzodfmenu.idl>
+module org { module openoffice { module ezodfmenu { 	
+
+	service eZODFMenu : org::openoffice::ezodfmenu::XEzodfmenu {
+
+	};
+
+ }; }; };
+#endif

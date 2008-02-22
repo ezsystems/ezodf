@@ -1,0 +1,15 @@
+#ifndef __org_openoffice_ezodfmenu_xezodfmenu_idl__
+#define __org_openoffice_ezodfmenu_xezodfmenu_idl__
+
+#include <com/sun/star/uno/XInterface.idl>
+module org { module openoffice { module ezodfmenu { 	
+
+	interface XEzodfmenu : com::sun::star::uno::XInterface {
+		void open();
+		void save();
+		void saveAs();
+
+	};
+
+ }; }; };
+#endif
