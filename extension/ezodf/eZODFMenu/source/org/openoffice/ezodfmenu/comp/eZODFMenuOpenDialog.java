@@ -51,6 +51,10 @@ public class eZODFMenuOpenDialog extends JFrame {
 	 */
 	protected void populateDialog()
 	{
+		// Set size
+		setSize( 600, 800 );
+		
+		// Add main layout components
 		setLayout( new BorderLayout() );
 		add( getTopComponent(), BorderLayout.NORTH );
 	}
