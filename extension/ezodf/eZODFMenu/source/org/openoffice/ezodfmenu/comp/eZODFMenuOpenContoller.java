@@ -25,9 +25,20 @@
 package org.openoffice.ezodfmenu.comp;
 
 /**
- * Class containing eZ ODF menu library. The library include
- * functions for communicating with the eZ REST service.
+ * eZODFMenuOepnController. This class creates "Open" dialog
+ * and contains the controlling methods.
  */
-public class eZODFMenuLib {
+public class eZODFMenuOpenController {
+
+	protected eZODFMenuOpenDialog openDialog;
+	
+	/**
+	 * Constructor. Initializes the open dialog. Execute the
+	 * open() method to open the dialog. 
+	 */
+	public eZODFMenuOpenController() {
+		super();
+		
+	}
 
 }

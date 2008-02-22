@@ -71,6 +71,7 @@ public final class EZODFMenuImpl extends WeakBase
 
     public void open()
     {
+    	openController = new eZODFOpen
         // TODO !!!
         // Insert your implementation here.
     }

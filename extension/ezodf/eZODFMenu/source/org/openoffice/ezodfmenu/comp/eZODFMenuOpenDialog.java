@@ -25,9 +25,8 @@
 package org.openoffice.ezodfmenu.comp;
 
 /**
- * Class containing eZ ODF menu library. The library include
- * functions for communicating with the eZ REST service.
+ * Open dialog GUI
  */
-public class eZODFMenuLib {
+public class eZODFMenuOpenDialog {
 
 }
