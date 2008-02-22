@@ -37,8 +37,15 @@ public class eZODFMenuOpenController {
 	 * open() method to open the dialog. 
 	 */
 	public eZODFMenuOpenController() {
-		super();
-		
+		openDialog = new eZODFMenuOpenDialog();
+	}
+	
+	/**
+	 * Open OO Open dialog
+	 */
+	public void openDialog()
+	{
+		openDialog.setVisible( true );
 	}
 
 }

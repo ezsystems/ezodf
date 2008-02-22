@@ -8,17 +8,17 @@ import com.sun.star.registry.XRegistryKey;
 import com.sun.star.lib.uno.helper.WeakBase;
 
 
-public final class EZODFMenuImpl extends WeakBase
+public final class eZODFMenuImpl extends WeakBase
    implements com.sun.star.lang.XServiceInfo,
               org.openoffice.ezodfmenu.XeZODFMenu
 {
     private final XComponentContext m_xContext;
-    private static final String m_implementationName = EZODFMenuImpl.class.getName();
+    private static final String m_implementationName = eZODFMenuImpl.class.getName();
     private static final String[] m_serviceNames = {
         "org.openoffice.ezodfmenu.eZODFMenu" };
 
 
-    public EZODFMenuImpl( XComponentContext context )
+    public eZODFMenuImpl( XComponentContext context )
     {
         m_xContext = context;
     };
@@ -27,7 +27,7 @@ public final class EZODFMenuImpl extends WeakBase
         XSingleComponentFactory xFactory = null;
 
         if ( sImplementationName.equals( m_implementationName ) )
-            xFactory = Factory.createComponentFactory(EZODFMenuImpl.class, m_serviceNames);
+            xFactory = Factory.createComponentFactory(eZODFMenuImpl.class, m_serviceNames);
         return xFactory;
     }
 
@@ -71,7 +71,8 @@ public final class EZODFMenuImpl extends WeakBase
 
     public void open()
     {
-    	openController = new eZODFMenuOpenController();
+    	eZODFMenuOpenController openController = new eZODFMenuOpenController();
+    	openController.openDialog();
         // TODO !!!
         // Insert your implementation here.
     }

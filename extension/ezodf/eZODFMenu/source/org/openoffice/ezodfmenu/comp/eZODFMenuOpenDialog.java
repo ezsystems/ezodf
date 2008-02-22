@@ -24,9 +24,49 @@
  */
 package org.openoffice.ezodfmenu.comp;
 
+import javax.swing.*;
+import java.awt.*;
+
 /**
  * Open dialog GUI
  */
-public class eZODFMenuOpenDialog {
+public class eZODFMenuOpenDialog extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4400067100991729955L;
+
+	/**
+	 * Constructor. Populates the eZODFMenuOpenDialog, but will not display it.
+	 */
+	public eZODFMenuOpenDialog()
+	{
+		super();
+		populateDialog();
+	}
+	
+	/**
+	 * Populate open dialog.
+	 */
+	protected void populateDialog()
+	{
+		setLayout( new BorderLayout() );
+		add( getTopComponent(), BorderLayout.NORTH );
+	}
+	
+	/**
+	 * Populate top of open dialog.
+	 * 
+	 * @return Component Top component.
+	 */
+	protected Component getTopComponent()
+	{
+		JPanel panel = new JPanel( new BorderLayout() );
+		
+		panel.add( new JLabel( "Select server" ), BorderLayout.NORTH );
+		panel.add( new JLabel( "TODO !!" ), BorderLayout.SOUTH );
+		
+		return panel;
+	}
 }
