@@ -1,0 +1,190 @@
+!SESSION 2008-02-22 09:43:28.559 -----------------------------------------------
+eclipse.buildId=M20060921-0945
+java.version=1.5.0_10
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Command-line arguments:  -data /home2/hovik/dev/ezodf/unstable/kk_180207_OODialog/extension/ezodf/eZODFMenu -os linux -ws gtk -arch x86
+
+!ENTRY org.eclipse.osgi 2 1 2008-02-22 09:43:29.802
+!MESSAGE NLS missing message: initializer_error in: org.eclipse.core.internal.runtime.messages
+
+!ENTRY org.eclipse.osgi 2 1 2008-02-22 09:43:29.802
+!MESSAGE NLS missing message: fileInitializer_fileNotFound in: org.eclipse.core.internal.runtime.messages
+
+!ENTRY org.eclipse.osgi 2 1 2008-02-22 09:43:29.803
+!MESSAGE NLS missing message: fileInitializer_IOError in: org.eclipse.core.internal.runtime.messages
+
+!ENTRY org.eclipse.osgi 2 1 2008-02-22 09:43:29.803
+!MESSAGE NLS missing message: fileInitializer_missingFileName in: org.eclipse.core.internal.runtime.messages
+
+!ENTRY org.eclipse.ui 4 4 2008-02-22 09:43:32.247
+!MESSAGE Plugin org.openoffice.ide.eclipse.core, extension org.eclipse.ui.perspectiveExtensions
+Attribute 'relative' not defined.  This attribute is required when relationship="right".
+
+!ENTRY org.eclipse.ui 4 4 2008-02-22 09:43:32.247
+!MESSAGE Unable to process element: view in perspective extension: null
+
+!ENTRY org.eclipse.osgi 4 0 2008-02-22 09:50:45.473
+!MESSAGE Error while stopping "org.openoffice.ide.eclipse.core_1.1.0".
+!STACK 0
+org.osgi.framework.BundleException: Exception in org.openoffice.ide.eclipse.core.OOEclipsePlugin.stop() of bundle org.openoffice.ide.eclipse.core.
+	at org.eclipse.osgi.framework.internal.core.BundleContextImpl.stop(BundleContextImpl.java:1048)
+	at org.eclipse.osgi.framework.internal.core.BundleHost.stopWorker(BundleHost.java:396)
+	at org.eclipse.osgi.framework.internal.core.AbstractBundle.stop(AbstractBundle.java:400)
+	at org.eclipse.core.runtime.internal.adaptor.BundleStopper.basicStopBundles(BundleStopper.java:86)
+	at org.eclipse.core.runtime.internal.adaptor.BundleStopper.stopBundles(BundleStopper.java:73)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAdaptorHook.frameworkStopping(EclipseAdaptorHook.java:156)
+	at org.eclipse.osgi.baseadaptor.BaseAdaptor.frameworkStopping(BaseAdaptor.java:288)
+	at org.eclipse.osgi.framework.internal.core.Framework.shutdown(Framework.java:529)
+	at org.eclipse.osgi.framework.internal.core.Framework.close(Framework.java:440)
+	at org.eclipse.osgi.framework.internal.core.OSGi.close(OSGi.java:41)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.shutdown(EclipseStarter.java:423)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:193)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.eclipse.core.launcher.Main.invokeFramework(Main.java:336)
+	at org.eclipse.core.launcher.Main.basicRun(Main.java:280)
+	at org.eclipse.core.launcher.Main.run(Main.java:977)
+	at org.eclipse.core.launcher.Main.main(Main.java:952)
+Caused by: java.lang.NullPointerException
+	at org.openoffice.ide.eclipse.core.internal.helpers.PropertiesManager.getProperties(Unknown Source)
+	at org.openoffice.ide.eclipse.core.internal.helpers.PropertiesManager.loadOOos(Unknown Source)
+	at org.openoffice.ide.eclipse.core.model.OOoContainer.loadOOos(Unknown Source)
+	at org.openoffice.ide.eclipse.core.model.OOoContainer.getInstance(Unknown Source)
+	at org.openoffice.ide.eclipse.core.OOEclipsePlugin.stop(Unknown Source)
+	at org.eclipse.osgi.framework.internal.core.BundleContextImpl$3.run(BundleContextImpl.java:1032)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.eclipse.osgi.framework.internal.core.BundleContextImpl.stop(BundleContextImpl.java:1028)
+	... 19 more
+Root exception:
+java.lang.NullPointerException
+	at org.openoffice.ide.eclipse.core.internal.helpers.PropertiesManager.getProperties(Unknown Source)
+	at org.openoffice.ide.eclipse.core.internal.helpers.PropertiesManager.loadOOos(Unknown Source)
+	at org.openoffice.ide.eclipse.core.model.OOoContainer.loadOOos(Unknown Source)
+	at org.openoffice.ide.eclipse.core.model.OOoContainer.getInstance(Unknown Source)
+	at org.openoffice.ide.eclipse.core.OOEclipsePlugin.stop(Unknown Source)
+	at org.eclipse.osgi.framework.internal.core.BundleContextImpl$3.run(BundleContextImpl.java:1032)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.eclipse.osgi.framework.internal.core.BundleContextImpl.stop(BundleContextImpl.java:1028)
+	at org.eclipse.osgi.framework.internal.core.BundleHost.stopWorker(BundleHost.java:396)
+	at org.eclipse.osgi.framework.internal.core.AbstractBundle.stop(AbstractBundle.java:400)
+	at org.eclipse.core.runtime.internal.adaptor.BundleStopper.basicStopBundles(BundleStopper.java:86)
+	at org.eclipse.core.runtime.internal.adaptor.BundleStopper.stopBundles(BundleStopper.java:73)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAdaptorHook.frameworkStopping(EclipseAdaptorHook.java:156)
+	at org.eclipse.osgi.baseadaptor.BaseAdaptor.frameworkStopping(BaseAdaptor.java:288)
+	at org.eclipse.osgi.framework.internal.core.Framework.shutdown(Framework.java:529)
+	at org.eclipse.osgi.framework.internal.core.Framework.close(Framework.java:440)
+	at org.eclipse.osgi.framework.internal.core.OSGi.close(OSGi.java:41)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.shutdown(EclipseStarter.java:423)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:193)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.eclipse.core.launcher.Main.invokeFramework(Main.java:336)
+	at org.eclipse.core.launcher.Main.basicRun(Main.java:280)
+	at org.eclipse.core.launcher.Main.run(Main.java:977)
+	at org.eclipse.core.launcher.Main.main(Main.java:952)
+!SESSION 2008-02-22 09:50:46.269 -----------------------------------------------
+eclipse.buildId=M20060921-0945
+java.version=1.5.0_10
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Command-line arguments:  -data /home2/hovik/dev/ezodf/unstable/kk_180207_OODialog/extension/ezodf/eZODFMenu -os linux -ws gtk -arch x86
+
+!ENTRY org.eclipse.osgi 2 1 2008-02-22 09:50:47.516
+!MESSAGE NLS missing message: initializer_error in: org.eclipse.core.internal.runtime.messages
+
+!ENTRY org.eclipse.osgi 2 1 2008-02-22 09:50:47.516
+!MESSAGE NLS missing message: fileInitializer_fileNotFound in: org.eclipse.core.internal.runtime.messages
+
+!ENTRY org.eclipse.osgi 2 1 2008-02-22 09:50:47.516
+!MESSAGE NLS missing message: fileInitializer_IOError in: org.eclipse.core.internal.runtime.messages
+
+!ENTRY org.eclipse.osgi 2 1 2008-02-22 09:50:47.517
+!MESSAGE NLS missing message: fileInitializer_missingFileName in: org.eclipse.core.internal.runtime.messages
+!SESSION 2008-02-22 09:53:32.870 -----------------------------------------------
+eclipse.buildId=M20060921-0945
+java.version=1.5.0_10
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  extension/ezodf/eZODFMenu/.project
+Command-line arguments:  -os linux -ws gtk -arch x86 extension/ezodf/eZODFMenu/.project
+
+!ENTRY org.eclipse.osgi 2 1 2008-02-22 09:53:34.090
+!MESSAGE NLS missing message: initializer_error in: org.eclipse.core.internal.runtime.messages
+
+!ENTRY org.eclipse.osgi 2 1 2008-02-22 09:53:34.091
+!MESSAGE NLS missing message: fileInitializer_fileNotFound in: org.eclipse.core.internal.runtime.messages
+
+!ENTRY org.eclipse.osgi 2 1 2008-02-22 09:53:34.091
+!MESSAGE NLS missing message: fileInitializer_IOError in: org.eclipse.core.internal.runtime.messages
+
+!ENTRY org.eclipse.osgi 2 1 2008-02-22 09:53:34.091
+!MESSAGE NLS missing message: fileInitializer_missingFileName in: org.eclipse.core.internal.runtime.messages
+
+!ENTRY org.eclipse.osgi 4 0 2008-02-22 09:54:17.215
+!MESSAGE Error while stopping "org.openoffice.ide.eclipse.core_1.1.0".
+!STACK 0
+org.osgi.framework.BundleException: Exception in org.openoffice.ide.eclipse.core.OOEclipsePlugin.stop() of bundle org.openoffice.ide.eclipse.core.
+	at org.eclipse.osgi.framework.internal.core.BundleContextImpl.stop(BundleContextImpl.java:1048)
+	at org.eclipse.osgi.framework.internal.core.BundleHost.stopWorker(BundleHost.java:396)
+	at org.eclipse.osgi.framework.internal.core.AbstractBundle.stop(AbstractBundle.java:400)
+	at org.eclipse.core.runtime.internal.adaptor.BundleStopper.basicStopBundles(BundleStopper.java:86)
+	at org.eclipse.core.runtime.internal.adaptor.BundleStopper.stopBundles(BundleStopper.java:73)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAdaptorHook.frameworkStopping(EclipseAdaptorHook.java:156)
+	at org.eclipse.osgi.baseadaptor.BaseAdaptor.frameworkStopping(BaseAdaptor.java:288)
+	at org.eclipse.osgi.framework.internal.core.Framework.shutdown(Framework.java:529)
+	at org.eclipse.osgi.framework.internal.core.Framework.close(Framework.java:440)
+	at org.eclipse.osgi.framework.internal.core.OSGi.close(OSGi.java:41)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.shutdown(EclipseStarter.java:423)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:193)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.eclipse.core.launcher.Main.invokeFramework(Main.java:336)
+	at org.eclipse.core.launcher.Main.basicRun(Main.java:280)
+	at org.eclipse.core.launcher.Main.run(Main.java:977)
+	at org.eclipse.core.launcher.Main.main(Main.java:952)
+Caused by: java.lang.NullPointerException
+	at org.openoffice.ide.eclipse.core.internal.helpers.PropertiesManager.getProperties(Unknown Source)
+	at org.openoffice.ide.eclipse.core.internal.helpers.PropertiesManager.loadOOos(Unknown Source)
+	at org.openoffice.ide.eclipse.core.model.OOoContainer.loadOOos(Unknown Source)
+	at org.openoffice.ide.eclipse.core.model.OOoContainer.getInstance(Unknown Source)
+	at org.openoffice.ide.eclipse.core.OOEclipsePlugin.stop(Unknown Source)
+	at org.eclipse.osgi.framework.internal.core.BundleContextImpl$3.run(BundleContextImpl.java:1032)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.eclipse.osgi.framework.internal.core.BundleContextImpl.stop(BundleContextImpl.java:1028)
+	... 19 more
+Root exception:
+java.lang.NullPointerException
+	at org.openoffice.ide.eclipse.core.internal.helpers.PropertiesManager.getProperties(Unknown Source)
+	at org.openoffice.ide.eclipse.core.internal.helpers.PropertiesManager.loadOOos(Unknown Source)
+	at org.openoffice.ide.eclipse.core.model.OOoContainer.loadOOos(Unknown Source)
+	at org.openoffice.ide.eclipse.core.model.OOoContainer.getInstance(Unknown Source)
+	at org.openoffice.ide.eclipse.core.OOEclipsePlugin.stop(Unknown Source)
+	at org.eclipse.osgi.framework.internal.core.BundleContextImpl$3.run(BundleContextImpl.java:1032)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.eclipse.osgi.framework.internal.core.BundleContextImpl.stop(BundleContextImpl.java:1028)
+	at org.eclipse.osgi.framework.internal.core.BundleHost.stopWorker(BundleHost.java:396)
+	at org.eclipse.osgi.framework.internal.core.AbstractBundle.stop(AbstractBundle.java:400)
+	at org.eclipse.core.runtime.internal.adaptor.BundleStopper.basicStopBundles(BundleStopper.java:86)
+	at org.eclipse.core.runtime.internal.adaptor.BundleStopper.stopBundles(BundleStopper.java:73)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAdaptorHook.frameworkStopping(EclipseAdaptorHook.java:156)
+	at org.eclipse.osgi.baseadaptor.BaseAdaptor.frameworkStopping(BaseAdaptor.java:288)
+	at org.eclipse.osgi.framework.internal.core.Framework.shutdown(Framework.java:529)
+	at org.eclipse.osgi.framework.internal.core.Framework.close(Framework.java:440)
+	at org.eclipse.osgi.framework.internal.core.OSGi.close(OSGi.java:41)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.shutdown(EclipseStarter.java:423)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:193)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.eclipse.core.launcher.Main.invokeFramework(Main.java:336)
+	at org.eclipse.core.launcher.Main.basicRun(Main.java:280)
+	at org.eclipse.core.launcher.Main.run(Main.java:977)
+	at org.eclipse.core.launcher.Main.main(Main.java:952)
