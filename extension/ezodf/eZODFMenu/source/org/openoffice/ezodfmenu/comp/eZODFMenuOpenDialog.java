@@ -52,7 +52,7 @@ public class eZODFMenuOpenDialog extends JFrame {
 	protected void populateDialog()
 	{
 		// Set size
-		setSize( 600, 800 );
+		setSize( 800, 600 );
 		
 		// Add main layout components
 		setLayout( new BorderLayout() );
@@ -73,4 +73,5 @@ public class eZODFMenuOpenDialog extends JFrame {
 		
 		return panel;
 	}
+	
 }

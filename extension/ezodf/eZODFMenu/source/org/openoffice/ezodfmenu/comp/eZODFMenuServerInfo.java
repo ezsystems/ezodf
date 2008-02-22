@@ -24,34 +24,58 @@
  */
 package org.openoffice.ezodfmenu.comp;
 
+import java.io.Serializable;
+
 /**
- * eZODFMenuOepnController. This class creates "Open" dialog
- * and contains the controlling methods.
+ * @author hovik
+ *
  */
-public class eZODFMenuOpenController {
+public class eZODFMenuServerInfo implements Serializable {
 
-	protected eZODFMenuOpenDialog openDialog;
-	
 	/**
-	 * Constructor. Initializes the open dialog. Execute the
-	 * open() method to open the dialog. 
-	 */
-	public eZODFMenuOpenController() {
-		openDialog = new eZODFMenuOpenDialog();
-	}
-	
-	/**
-	 * Open OO Open dialog
-	 */
-	public void openDialog()
-	{
-		openDialog.setVisible( true );
-	}
-	
-	/**
-	 * Get server list. The server list is an array of url username and password.
 	 * 
-	 * @return
 	 */
+	private static final long serialVersionUID = 7934826971361655809L;
+	
+	protected String url;
+	protected String username;
+	protected String password;
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
+	}
+	/**
+	 * @param password the password to set
+	 */
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	/**
+	 * @return the url
+	 */
+	public String getUrl() {
+		return url;
+	}
+	/**
+	 * @param url the url to set
+	 */
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	/**
+	 * @return the username
+	 */
+	public String getUsername() {
+		return username;
+	}
+	/**
+	 * @param username the username to set
+	 */
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
+	
 }
