@@ -107,14 +107,18 @@ public class eZODFMenuServerInfo implements Serializable, Comparable {
 	public static void storeHashMapToFile()
 	{
 		// Keep 10 latest installations. ( ordered by accessTime ).
+		HashMap<String, eZODFMenuServerInfo> serverHashMap = new HashMap<String, eZODFMenuServerInfo>();
 		eZODFMenuServerInfo[] serverArray = (eZODFMenuServerInfo[])eZODFMenuServerInfo.ServerList.values().toArray();
 		Arrays.sort( serverArray );
-		
+		for( int idx = 0; idx < ( serverArray.length < 10 ? serverArray.length : 10 ); ++idx )
+		{
+			serverHashMap.put( serverArray[idx].getUrl(), serverArray[idx] );
+		}
 		
 		try {
 			File file = new File( eZODFMenuLib.getStoragePath(), getFilename() );
 			ObjectOutputStream oos = new ObjectOutputStream( new FileOutputStream( file ) );
-			oos.writeObject( eZODFMenuServerInfo.ServerList );
+			oos.writeObject( serverHashMap );
 		}
 		catch( Exception e )
 		{

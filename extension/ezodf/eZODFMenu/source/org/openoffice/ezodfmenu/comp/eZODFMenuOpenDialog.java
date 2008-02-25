@@ -26,6 +26,8 @@ package org.openoffice.ezodfmenu.comp;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
 
 /**
@@ -72,10 +74,22 @@ public class eZODFMenuOpenDialog extends JFrame {
 		panel.add( new JLabel( "Select server" ), BorderLayout.NORTH );
 		
 		// Build server list.
+		JPanel serverPanel = new JPanel( new BorderLayout() );
 		HashMap<String, eZODFMenuServerInfo> serverList = eZODFMenuServerInfo.loadHashMapFromFile();
 		JList list = new JList( new Vector( serverList.values() ) );
 		list.setCellRenderer( new ServerCellRenderer() );
-		panel.add( list, BorderLayout.SOUTH );
+		list.setVisibleRowCount( 1 );
+		serverPanel.add( list, BorderLayout.CENTER );
+
+		// Add "Add server" button
+		JButton addServer =  new JButton( "Add server" );
+		addServer.addActionListener( new ActionListener( ){
+				public void actionPerformed( ActionEvent e ) {
+					new ServerEditDialog( new eZODFMenuServerInfo() ).open();// TODO Auto-generated method stub
+				}
+		});
+		serverPanel.add( addServer, BorderLayout.EAST );
+		panel.add( serverPanel, BorderLayout.CENTER );
 		
 		return panel;
 	}
