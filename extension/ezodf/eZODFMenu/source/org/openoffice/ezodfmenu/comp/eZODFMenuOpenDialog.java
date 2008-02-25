@@ -70,9 +70,33 @@ public class eZODFMenuOpenDialog extends JFrame {
 		JPanel panel = new JPanel( new BorderLayout() );
 		
 		panel.add( new JLabel( "Select server" ), BorderLayout.NORTH );
-		panel.add( new JLabel( "TODO !!" ), BorderLayout.SOUTH );		
+		
+		// Build server list.
+		HashMap<String, eZODFMenuServerInfo> serverList = eZODFMenuServerInfo.loadHashMapFromFile();
+		JList list = new JList( new Vector( serverList.values() ) );
+		list.setCellRenderer( new ServerCellRenderer() );
+		panel.add( list, BorderLayout.SOUTH );
 		
 		return panel;
 	}
 	
+	/**
+	 * Server list cell renderer.
+	 */
+	class ServerCellRenderer implements ListCellRenderer {
+		/**
+		 * Reimp.
+		 */
+		public Component getListCellRendererComponent( JList list,
+                									   Object value,
+                									   int index,
+                									   boolean isSelected,
+                									   boolean cellHasFocus)
+		{
+			eZODFMenuServerInfo serverInfo = (eZODFMenuServerInfo)value;
+			return new JLabel( serverInfo.getUsername() + "@" + serverInfo.getUrl() );
+		}
+	}
 }
+
+
