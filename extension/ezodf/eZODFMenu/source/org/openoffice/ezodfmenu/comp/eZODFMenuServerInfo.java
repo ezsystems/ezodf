@@ -77,5 +77,8 @@ public class eZODFMenuServerInfo implements Serializable {
 		this.username = username;
 	}
 
+	/**
+	 * 
+	 */
 	
 }

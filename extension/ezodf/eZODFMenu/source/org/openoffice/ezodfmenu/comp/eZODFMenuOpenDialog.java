@@ -26,6 +26,7 @@ package org.openoffice.ezodfmenu.comp;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.*;
 
 /**
  * Open dialog GUI
@@ -69,7 +70,7 @@ public class eZODFMenuOpenDialog extends JFrame {
 		JPanel panel = new JPanel( new BorderLayout() );
 		
 		panel.add( new JLabel( "Select server" ), BorderLayout.NORTH );
-		panel.add( new JLabel( "TODO !!" ), BorderLayout.SOUTH );
+		panel.add( new JLabel( "TODO !!" ), BorderLayout.SOUTH );		
 		
 		return panel;
 	}

@@ -24,10 +24,48 @@
  */
 package org.openoffice.ezodfmenu.comp;
 
+
 /**
  * Class containing eZ ODF menu library. The library include
  * functions for communicating with the eZ REST service.
  */
 public class eZODFMenuLib {
 
+	public static final int UNIX = 0;
+	public static final int WINDOWS = 0;
+	
+	/**
+	 * Get persistent storage path.
+	 * 
+	 * @return String Persistent storage path
+	 */
+	public static String getStoragePath()
+	{
+		return System.getProperty( "java.io.tmpdir" );
+	}
+	
+	/**
+	 * Get Operating system.
+	 * 
+	 * @return int Operating system
+	 */
+	public static int getOS()
+	{
+		int os = UNIX;
+		// Detect OS.
+		try
+		{
+			String home = System.getenv( "HOME" );
+			if ( home.indexOf( "/" ) == -1 )
+			{
+				os = WINDOWS;
+			}
+		}
+		catch ( Exception e )
+		{
+			os = WINDOWS;
+		}
+		
+		return os;
+	}
 }

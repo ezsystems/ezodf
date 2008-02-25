@@ -24,6 +24,8 @@
  */
 package org.openoffice.ezodfmenu.comp;
 
+import java.util.Map;
+
 /**
  * eZODFMenuOepnController. This class creates "Open" dialog
  * and contains the controlling methods.
@@ -31,6 +33,7 @@ package org.openoffice.ezodfmenu.comp;
 public class eZODFMenuOpenController {
 
 	protected eZODFMenuOpenDialog openDialog;
+	protected eZODFMenuServerInfo[] serverInfoList;
 	
 	/**
 	 * Constructor. Initializes the open dialog. Execute the
@@ -41,17 +44,33 @@ public class eZODFMenuOpenController {
 	}
 	
 	/**
+	 * Load data needed by the open dialog window
+	 */
+	public void loadData()
+	{
+		Map<String,eZODFMenuServerInfo> serverList;
+	}
+
+	/**
 	 * Open OO Open dialog
 	 */
 	public void openDialog()
 	{
 		openDialog.setVisible( true );
 	}
-	
+
 	/**
-	 * Get server list. The server list is an array of url username and password.
-	 * 
-	 * @return
+	 * @return the serverInfoList
 	 */
+	public eZODFMenuServerInfo[] getServerInfoList() {
+		return serverInfoList;
+	}
+
+	/**
+	 * @param serverInfoList the serverInfoList to set
+	 */
+	public void setServerInfoList(eZODFMenuServerInfo[] serverInfoList) {
+		this.serverInfoList = serverInfoList;
+	}
 
 }

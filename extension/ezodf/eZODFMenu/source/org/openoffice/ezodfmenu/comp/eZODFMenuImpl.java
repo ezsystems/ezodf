@@ -1,7 +1,6 @@
 package org.openoffice.ezodfmenu.comp;
 
 import com.sun.star.uno.UnoRuntime;
-import com.sun.star.beans.*;
 import com.sun.star.uno.XComponentContext;
 import com.sun.star.lib.uno.helper.Factory;
 import com.sun.star.lang.XSingleComponentFactory;
