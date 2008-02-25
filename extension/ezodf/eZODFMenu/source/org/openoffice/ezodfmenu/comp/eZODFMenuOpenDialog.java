@@ -77,15 +77,25 @@ public class eZODFMenuOpenDialog extends JFrame {
 		JPanel serverPanel = new JPanel( new BorderLayout() );
 		HashMap<String, eZODFMenuServerInfo> serverList = eZODFMenuServerInfo.loadHashMapFromFile();
 		JList list = new JList( new Vector( serverList.values() ) );
-		list.setCellRenderer( new ServerCellRenderer() );
+		list.setCellRenderer( new ListCellRenderer() {
+			public Component getListCellRendererComponent( JList list,
+	                									   Object value,
+	                									   int index,
+	                									   boolean isSelected,
+	                									   boolean cellHasFocus)
+			{
+				eZODFMenuServerInfo serverInfo = (eZODFMenuServerInfo)value;
+				return new JLabel( serverInfo.getUsername() + "@" + serverInfo.getUrl() );
+			}});
 		list.setVisibleRowCount( 1 );
 		serverPanel.add( list, BorderLayout.CENTER );
 
 		// Add "Add server" button
 		JButton addServer =  new JButton( "Add server" );
-		addServer.addActionListener( new ActionListener( ){
+		addServer.addActionListener( new ActionListener( ) {
 				public void actionPerformed( ActionEvent e ) {
-					new ServerEditDialog( new eZODFMenuServerInfo() ).open();// TODO Auto-generated method stub
+					ServerEditDialog editDialog = new ServerEditDialog( getThis(), new eZODFMenuServerInfo() );
+					editDialog.setVisible( true );
 				}
 		});
 		serverPanel.add( addServer, BorderLayout.EAST );
@@ -95,21 +105,13 @@ public class eZODFMenuOpenDialog extends JFrame {
 	}
 	
 	/**
-	 * Server list cell renderer.
+	 * Get this.
+	 * 
+	 * @return This
 	 */
-	class ServerCellRenderer implements ListCellRenderer {
-		/**
-		 * Reimp.
-		 */
-		public Component getListCellRendererComponent( JList list,
-                									   Object value,
-                									   int index,
-                									   boolean isSelected,
-                									   boolean cellHasFocus)
-		{
-			eZODFMenuServerInfo serverInfo = (eZODFMenuServerInfo)value;
-			return new JLabel( serverInfo.getUsername() + "@" + serverInfo.getUrl() );
-		}
+	protected JFrame getThis()
+	{
+		return this;
 	}
 }
 

@@ -127,6 +127,15 @@ public class eZODFMenuServerInfo implements Serializable, Comparable {
 	}
 	
 	/**
+	 * Add Server Info to server list.
+	 */
+	public static void addToList( eZODFMenuServerInfo serverInfo )
+	{
+		eZODFMenuServerInfo.ServerList.put( serverInfo.getUrl(), serverInfo );
+		eZODFMenuServerInfo.storeHashMapToFile();
+	}
+
+	/**
 	 * Get eZODFMenuServerInfo filename.
 	 */
 	public static String getFilename()
