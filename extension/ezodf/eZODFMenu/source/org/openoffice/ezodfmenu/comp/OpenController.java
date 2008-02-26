@@ -30,16 +30,16 @@ import java.util.Map;
  * eZODFMenuOepnController. This class creates "Open" dialog
  * and contains the controlling methods.
  */
-public class eZODFMenuOpenController {
+public class OpenController {
 
 	protected OpenDialog openDialog;
-	protected eZODFMenuServerInfo[] serverInfoList;
+	protected ServerInfo[] serverInfoList;
 	
 	/**
 	 * Constructor. Initializes the open dialog. Execute the
 	 * open() method to open the dialog. 
 	 */
-	public eZODFMenuOpenController() {
+	public OpenController() {
 		openDialog = new OpenDialog();
 	}
 	
@@ -48,7 +48,7 @@ public class eZODFMenuOpenController {
 	 */
 	public void loadData()
 	{
-		Map<String,eZODFMenuServerInfo> serverList;
+		Map<String,ServerInfo> serverList;
 	}
 
 	/**
@@ -62,14 +62,14 @@ public class eZODFMenuOpenController {
 	/**
 	 * @return the serverInfoList
 	 */
-	public eZODFMenuServerInfo[] getServerInfoList() {
+	public ServerInfo[] getServerInfoList() {
 		return serverInfoList;
 	}
 
 	/**
 	 * @param serverInfoList the serverInfoList to set
 	 */
-	public void setServerInfoList(eZODFMenuServerInfo[] serverInfoList) {
+	public void setServerInfoList(ServerInfo[] serverInfoList) {
 		this.serverInfoList = serverInfoList;
 	}
 

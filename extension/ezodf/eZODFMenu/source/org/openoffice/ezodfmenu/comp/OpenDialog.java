@@ -73,7 +73,7 @@ public class OpenDialog extends JFrame {
 		
 		// Build server list.
 		JPanel serverPanel = new JPanel( new BorderLayout() );
-		HashMap<String, eZODFMenuServerInfo> serverInfoList = eZODFMenuServerInfo.loadHashMapFromFile();
+		HashMap<String, ServerInfo> serverInfoList = ServerInfo.loadHashMapFromFile();
 		serverList = new JList( new Vector( serverInfoList.values() ) );
 		serverList.setCellRenderer( new ListCellRenderer() {
 			public Component getListCellRendererComponent( JList list,
@@ -82,7 +82,7 @@ public class OpenDialog extends JFrame {
 	                									   boolean isSelected,
 	                									   boolean cellHasFocus)
 			{
-				eZODFMenuServerInfo serverInfo = (eZODFMenuServerInfo)value;
+				ServerInfo serverInfo = (ServerInfo)value;
 				return new JLabel( serverInfo.getUsername() + "@" + serverInfo.getUrl() );
 			}});
 		serverList.setVisibleRowCount( 1 );
@@ -92,7 +92,7 @@ public class OpenDialog extends JFrame {
 		JButton addServer =  new JButton( "Add server" );
 		addServer.addActionListener( new ActionListener( ) {
 				public void actionPerformed( ActionEvent e ) {
-					ServerEditDialog editDialog = new ServerEditDialog( getThis(), new eZODFMenuServerInfo() );
+					ServerEditDialog editDialog = new ServerEditDialog( getThis(), new ServerInfo() );
 					editDialog.setVisible( true );
 				}
 		});

@@ -49,7 +49,7 @@ public class ServerEditDialog extends JDialog
 {
 
 	private static final long serialVersionUID = -8627326145818032301L;
-	protected eZODFMenuServerInfo serverInfo;
+	protected ServerInfo serverInfo;
 	protected OpenDialog openDialog;
 	
 	protected JTextField urlField;
@@ -62,7 +62,7 @@ public class ServerEditDialog extends JDialog
 	 * 
 	 * @param Server info.
 	 */
-	public ServerEditDialog( final OpenDialog openDialog, eZODFMenuServerInfo serverInfo )
+	public ServerEditDialog( final OpenDialog openDialog, ServerInfo serverInfo )
 	{
 		super( openDialog );
 		openDialog.setEnabled( false );
@@ -178,7 +178,7 @@ public class ServerEditDialog extends JDialog
 		serverInfo.setUsername( usernameField.getText() );
 		serverInfo.setPassword( new String( password1.getPassword() ) );
 		
-		eZODFMenuServerInfo.addToList( serverInfo );
+		ServerInfo.addToList( serverInfo );
 		openDialog.populateServerList();
 		
 		return true;
@@ -196,13 +196,13 @@ public class ServerEditDialog extends JDialog
 	/**
 	 * @return the serverInfo
 	 */
-	public eZODFMenuServerInfo getServerInfo() {
+	public ServerInfo getServerInfo() {
 		return serverInfo;
 	}
 	/**
 	 * @param serverInfo the serverInfo to set
 	 */
-	public void setServerInfo(eZODFMenuServerInfo serverInfo) {
+	public void setServerInfo(ServerInfo serverInfo) {
 		this.serverInfo = serverInfo;
 	}
 }

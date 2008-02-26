@@ -33,9 +33,9 @@ import java.io.*;
  * @author hovik
  *
  */
-public class eZODFMenuServerInfo implements Serializable, Comparable {
+public class ServerInfo implements Serializable, Comparable {
 
-	public static HashMap<String, eZODFMenuServerInfo> ServerList;
+	public static HashMap<String, ServerInfo> ServerList;
 
 	private static final long serialVersionUID = 7934826971361655809L;
 	
@@ -83,21 +83,21 @@ public class eZODFMenuServerInfo implements Serializable, Comparable {
 	}
 
 	/**
-	 * Load eZODFMenuServerInfo list from persistent file.
+	 * Load ServerInfo list from persistent file.
 	 * 
 	 * @return Map of server info. 
 	 */
 	@SuppressWarnings("unchecked")
-	public static HashMap<String, eZODFMenuServerInfo> loadHashMapFromFile()
+	public static HashMap<String, ServerInfo> loadHashMapFromFile()
 	{
 		try {
 			File file = new File( eZODFMenuLib.getStoragePath(), getFilename() );
 			ObjectInputStream inStream = new ObjectInputStream( new FileInputStream( file ) );
-			eZODFMenuServerInfo.ServerList = (HashMap<String, eZODFMenuServerInfo>)inStream.readObject();
-			return eZODFMenuServerInfo.ServerList;
+			ServerInfo.ServerList = (HashMap<String, ServerInfo>)inStream.readObject();
+			return ServerInfo.ServerList;
 		}
 		catch( Exception e ){
-			return new HashMap<String, eZODFMenuServerInfo>();
+			return new HashMap<String, ServerInfo>();
 		}
 	}
 	
@@ -107,8 +107,8 @@ public class eZODFMenuServerInfo implements Serializable, Comparable {
 	public static void storeHashMapToFile()
 	{
 		// Keep 10 latest installations. ( ordered by accessTime ).
-		HashMap<String, eZODFMenuServerInfo> serverHashMap = new HashMap<String, eZODFMenuServerInfo>();
-		eZODFMenuServerInfo[] serverArray = (eZODFMenuServerInfo[])eZODFMenuServerInfo.ServerList.values().toArray();
+		HashMap<String, ServerInfo> serverHashMap = new HashMap<String, ServerInfo>();
+		ServerInfo[] serverArray = (ServerInfo[])ServerInfo.ServerList.values().toArray();
 		Arrays.sort( serverArray );
 		for( int idx = 0; idx < ( serverArray.length < 10 ? serverArray.length : 10 ); ++idx )
 		{
@@ -129,14 +129,14 @@ public class eZODFMenuServerInfo implements Serializable, Comparable {
 	/**
 	 * Add Server Info to server list.
 	 */
-	public static void addToList( eZODFMenuServerInfo serverInfo )
+	public static void addToList( ServerInfo serverInfo )
 	{
-		eZODFMenuServerInfo.ServerList.put( serverInfo.getUrl(), serverInfo );
-		eZODFMenuServerInfo.storeHashMapToFile();
+		ServerInfo.ServerList.put( serverInfo.getUrl(), serverInfo );
+		ServerInfo.storeHashMapToFile();
 	}
 
 	/**
-	 * Get eZODFMenuServerInfo filename.
+	 * Get ServerInfo filename.
 	 */
 	public static String getFilename()
 	{
@@ -156,6 +156,6 @@ public class eZODFMenuServerInfo implements Serializable, Comparable {
 	}
 
 	public int compareTo(Object obj) {
-		return (int)(this.getAccessTime() - ((eZODFMenuServerInfo)obj).getAccessTime());
+		return (int)(this.getAccessTime() - ((ServerInfo)obj).getAccessTime());
 	}
 }
