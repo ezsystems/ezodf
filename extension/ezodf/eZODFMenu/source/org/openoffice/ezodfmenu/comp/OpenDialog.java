@@ -33,15 +33,15 @@ import java.util.*;
 /**
  * Open dialog GUI
  */
-public class eZODFMenuOpenDialog extends JFrame {
+public class OpenDialog extends JFrame {
 
 	protected JList serverList;
 	private static final long serialVersionUID = 4400067100991729955L;
 
 	/**
-	 * Constructor. Populates the eZODFMenuOpenDialog, but will not display it.
+	 * Constructor. Populates the OpenDialog, but will not display it.
 	 */
-	public eZODFMenuOpenDialog()
+	public OpenDialog()
 	{
 		super();
 		populateDialog();
@@ -114,7 +114,7 @@ public class eZODFMenuOpenDialog extends JFrame {
 	 * 
 	 * @return This
 	 */
-	protected eZODFMenuOpenDialog getThis()
+	protected OpenDialog getThis()
 	{
 		return this;
 	}

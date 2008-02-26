@@ -32,7 +32,7 @@ import java.util.Map;
  */
 public class eZODFMenuOpenController {
 
-	protected eZODFMenuOpenDialog openDialog;
+	protected OpenDialog openDialog;
 	protected eZODFMenuServerInfo[] serverInfoList;
 	
 	/**
@@ -40,7 +40,7 @@ public class eZODFMenuOpenController {
 	 * open() method to open the dialog. 
 	 */
 	public eZODFMenuOpenController() {
-		openDialog = new eZODFMenuOpenDialog();
+		openDialog = new OpenDialog();
 	}
 	
 	/**

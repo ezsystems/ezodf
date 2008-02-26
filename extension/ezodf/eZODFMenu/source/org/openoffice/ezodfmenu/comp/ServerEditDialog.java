@@ -50,7 +50,7 @@ public class ServerEditDialog extends JDialog
 
 	private static final long serialVersionUID = -8627326145818032301L;
 	protected eZODFMenuServerInfo serverInfo;
-	protected eZODFMenuOpenDialog openDialog;
+	protected OpenDialog openDialog;
 	
 	protected JTextField urlField;
 	protected JTextField usernameField;
@@ -62,7 +62,7 @@ public class ServerEditDialog extends JDialog
 	 * 
 	 * @param Server info.
 	 */
-	public ServerEditDialog( final eZODFMenuOpenDialog openDialog, eZODFMenuServerInfo serverInfo )
+	public ServerEditDialog( final OpenDialog openDialog, eZODFMenuServerInfo serverInfo )
 	{
 		super( openDialog );
 		openDialog.setEnabled( false );
