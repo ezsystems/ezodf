@@ -28,6 +28,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.*;
 
 /**
@@ -35,16 +37,29 @@ import java.util.*;
  */
 public class OpenDialog extends JFrame {
 
-	protected JList serverList;
+	protected JComboBox serverList;
+	protected OpenController controller;
 	private static final long serialVersionUID = 4400067100991729955L;
 
 	/**
 	 * Constructor. Populates the OpenDialog, but will not display it.
 	 */
-	public OpenDialog()
+	public OpenDialog( OpenController openController )
 	{
 		super();
+		this.controller = openController;
 		populateDialog();
+		this.addWindowListener( new WindowListener() {
+			public void windowClosed(WindowEvent e) {}
+			public void windowActivated(WindowEvent e) {}
+			public void windowClosing(WindowEvent e) {
+				System.exit( 0 );
+			}
+			public void windowDeactivated(WindowEvent e) {}
+			public void windowDeiconified(WindowEvent e) {}
+			public void windowIconified(WindowEvent e) {}
+			public void windowOpened(WindowEvent e) {}
+		} );
 	}
 	
 	/**
@@ -75,8 +90,8 @@ public class OpenDialog extends JFrame {
 		// Build server list.
 		JPanel serverPanel = new JPanel( new BorderLayout() );
 		HashMap<String, ServerInfo> serverInfoList = ServerInfo.loadHashMapFromFile();
-		serverList = new JList( new Vector( serverInfoList.values() ) );
-		serverList.setCellRenderer( new ListCellRenderer() {
+		serverList = new JComboBox( new Vector( serverInfoList.values() ) );
+		serverList.setRenderer( new ListCellRenderer() {
 			public Component getListCellRendererComponent( JList list,
 	                									   Object value,
 	                									   int index,
@@ -96,8 +111,8 @@ public class OpenDialog extends JFrame {
 		        }
 				return new JLabel( serverInfo.getUsername() + "@" + serverInfo.getUrl() );
 			}});
-		serverList.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
-		serverList.setVisibleRowCount( 1 );
+		serverList.setMaximumRowCount( 8 );
+		serverList.setEditable( false );
 		serverPanel.add( serverList, BorderLayout.CENTER );
 
 
@@ -106,7 +121,7 @@ public class OpenDialog extends JFrame {
 		JButton connect =  new JButton( "Connect" );
 		connect.addActionListener( new ActionListener( ) {
 				public void actionPerformed( ActionEvent e ) {
-					//connectToSever
+					controller.connectToServer( (ServerInfo)serverList.getSelectedItem() );
 				}
 		});
 		buttonPanel.add( connect );
@@ -123,7 +138,7 @@ public class OpenDialog extends JFrame {
 		JButton editServer = new JButton( "Edit" );
 		editServer.addActionListener( new ActionListener( ) {
 			public void actionPerformed( ActionEvent e ) {
-				ServerEditDialog editDialog = new ServerEditDialog( getThis(), (ServerInfo)serverList.getSelectedValue() );
+				ServerEditDialog editDialog = new ServerEditDialog( getThis(), (ServerInfo)serverList.getSelectedItem() );
 				editDialog.setVisible( true );
 			}
 		});
@@ -142,7 +157,11 @@ public class OpenDialog extends JFrame {
 	public void populateServerList()
 	{
 		HashMap<String, ServerInfo> serverInfoList = ServerInfo.loadHashMapFromFile();
-		serverList.setListData( new Vector( serverInfoList.values() ) );
+		serverList.removeAllItems();
+		for( Iterator<ServerInfo> iterator = serverInfoList.values().iterator(); iterator.hasNext(); )
+		{
+			serverList.addItem( iterator.next() );
+		}
 	}
 	/**
 	 * Get this.

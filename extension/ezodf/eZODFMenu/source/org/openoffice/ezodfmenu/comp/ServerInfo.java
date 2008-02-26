@@ -103,7 +103,7 @@ public class ServerInfo implements Serializable, Comparable {
 	public static HashMap<String, ServerInfo> loadHashMapFromFile()
 	{
 		try {
-			File file = new File( eZODFMenuLib.getStoragePath(), getFilename() );
+			File file = new File( MenuLib.getStoragePath(), getFilename() );
 			ObjectInputStream inStream = new ObjectInputStream( new FileInputStream( file ) );
 			ServerInfo.ServerList = (HashMap<String, ServerInfo>)inStream.readObject();
 			return ServerInfo.ServerList;
@@ -129,7 +129,7 @@ public class ServerInfo implements Serializable, Comparable {
 		}
 		
 		try {
-			File file = new File( eZODFMenuLib.getStoragePath(), getFilename() );
+			File file = new File( MenuLib.getStoragePath(), getFilename() );
 			ObjectOutputStream oos = new ObjectOutputStream( new FileOutputStream( file ) );
 			oos.writeObject( serverHashMap );
 		}

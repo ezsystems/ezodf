@@ -29,7 +29,7 @@ package org.openoffice.ezodfmenu.comp;
  * Class containing eZ ODF menu library. The library include
  * functions for communicating with the eZ REST service.
  */
-public class eZODFMenuLib {
+public class MenuLib {
 
 	public static final int UNIX = 0;
 	public static final int WINDOWS = 0;
@@ -68,4 +68,8 @@ public class eZODFMenuLib {
 		
 		return os;
 	}
+	
+	/**
+	 * Connect
+	 */
 }

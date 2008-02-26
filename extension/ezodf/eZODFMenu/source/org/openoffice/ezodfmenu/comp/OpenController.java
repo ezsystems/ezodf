@@ -24,6 +24,12 @@
  */
 package org.openoffice.ezodfmenu.comp;
 
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.plaf.metal.MetalLookAndFeel;
+import javax.swing.plaf.synth.SynthLookAndFeel;
+
 
 /**
  * eZODFMenuOepnController. This class creates "Open" dialog
@@ -33,13 +39,20 @@ public class OpenController {
 
 	protected OpenDialog openDialog;
 	protected ServerInfo[] serverInfoList;
+	protected ServerConnection serverConnection;
 	
 	/**
 	 * Constructor. Initializes the open dialog. Execute the
 	 * open() method to open the dialog. 
 	 */
 	public OpenController() {
-		openDialog = new OpenDialog();
+		try {
+			UIManager.setLookAndFeel( new MetalLookAndFeel() );
+		}
+		catch( Exception e ){
+		}
+		openDialog = new OpenDialog( this );
+		SwingUtilities.updateComponentTreeUI( openDialog );
 	}
 	
 	/**
@@ -47,7 +60,33 @@ public class OpenController {
 	 */
 	public void loadData()
 	{
-		
+		// TODO
+	}
+
+	/**
+	 * Connect to server
+	 * 
+	 * @param Server info.
+	 */
+	public void connectToServer( ServerInfo serverInfo )
+	{
+		if ( serverInfo == null )
+		{
+			JOptionPane.showMessageDialog( this.openDialog,
+					"No server selected",
+					"Connect",
+					JOptionPane.WARNING_MESSAGE );
+			return;
+		}
+		this.serverConnection = new ServerConnection( serverInfo );
+		if ( !this.serverConnection.connect() )
+		{
+			JOptionPane.showMessageDialog( this.openDialog,
+					"Unable to connect to server: " + serverInfo.getUrl(),
+					"Connect",
+					JOptionPane.WARNING_MESSAGE );
+			return;
+		}
 	}
 
 	/**
