@@ -35,9 +35,7 @@ import java.util.*;
  */
 public class eZODFMenuOpenDialog extends JFrame {
 
-	/**
-	 * 
-	 */
+	protected JList serverList;
 	private static final long serialVersionUID = 4400067100991729955L;
 
 	/**
@@ -75,9 +73,9 @@ public class eZODFMenuOpenDialog extends JFrame {
 		
 		// Build server list.
 		JPanel serverPanel = new JPanel( new BorderLayout() );
-		HashMap<String, eZODFMenuServerInfo> serverList = eZODFMenuServerInfo.loadHashMapFromFile();
-		JList list = new JList( new Vector( serverList.values() ) );
-		list.setCellRenderer( new ListCellRenderer() {
+		HashMap<String, eZODFMenuServerInfo> serverInfoList = eZODFMenuServerInfo.loadHashMapFromFile();
+		serverList = new JList( new Vector( serverInfoList.values() ) );
+		serverList.setCellRenderer( new ListCellRenderer() {
 			public Component getListCellRendererComponent( JList list,
 	                									   Object value,
 	                									   int index,
@@ -87,8 +85,8 @@ public class eZODFMenuOpenDialog extends JFrame {
 				eZODFMenuServerInfo serverInfo = (eZODFMenuServerInfo)value;
 				return new JLabel( serverInfo.getUsername() + "@" + serverInfo.getUrl() );
 			}});
-		list.setVisibleRowCount( 1 );
-		serverPanel.add( list, BorderLayout.CENTER );
+		serverList.setVisibleRowCount( 1 );
+		serverPanel.add( serverList, BorderLayout.CENTER );
 
 		// Add "Add server" button
 		JButton addServer =  new JButton( "Add server" );
@@ -103,13 +101,20 @@ public class eZODFMenuOpenDialog extends JFrame {
 		
 		return panel;
 	}
+
+	/**
+	 * Populate server list content.
+	 */
+	public void populateServerList()
+	{
 	
+	}
 	/**
 	 * Get this.
 	 * 
 	 * @return This
 	 */
-	protected JFrame getThis()
+	protected eZODFMenuOpenDialog getThis()
 	{
 		return this;
 	}

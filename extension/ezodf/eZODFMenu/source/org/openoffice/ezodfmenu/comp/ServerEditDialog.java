@@ -50,7 +50,7 @@ public class ServerEditDialog extends JDialog
 
 	private static final long serialVersionUID = -8627326145818032301L;
 	protected eZODFMenuServerInfo serverInfo;
-	protected Frame parentFrame;
+	protected eZODFMenuOpenDialog openDialog;
 	
 	protected JTextField urlField;
 	protected JTextField usernameField;
@@ -62,20 +62,20 @@ public class ServerEditDialog extends JDialog
 	 * 
 	 * @param Server info.
 	 */
-	public ServerEditDialog( Frame frame, eZODFMenuServerInfo serverInfo )
+	public ServerEditDialog( final eZODFMenuOpenDialog openDialog, eZODFMenuServerInfo serverInfo )
 	{
-		super( frame );
-		parentFrame = frame;
-		parentFrame.setEnabled( false );
+		super( openDialog );
+		openDialog.setEnabled( false );
 		setSize( 600, 200 );
 		setServerInfo( serverInfo );
 		
 		addWindowStateListener( new WindowStateListener(){
 			public void windowStateChanged(WindowEvent arg0) {
-				parentFrame.setEnabled( true );
+				openDialog.setEnabled( true );
 			}
 		});
 		
+		this.openDialog = openDialog;
 		populateDialog();
 	}
 	
@@ -179,6 +179,7 @@ public class ServerEditDialog extends JDialog
 		serverInfo.setPassword( new String( password1.getPassword() ) );
 		
 		eZODFMenuServerInfo.addToList( serverInfo );
+		openDialog.populateServerList();
 		
 		return true;
 	}
@@ -188,7 +189,7 @@ public class ServerEditDialog extends JDialog
 	 */
 	protected void close()
 	{
-		parentFrame.setEnabled( true );
+		this.openDialog.setEnabled( true );
 		this.setVisible( false );
 	}
 
