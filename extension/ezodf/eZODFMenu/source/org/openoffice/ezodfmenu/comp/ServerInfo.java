@@ -72,6 +72,10 @@ public class ServerInfo implements Serializable, Comparable {
 	 * @return the url
 	 */
 	public String getUrl() {
+		if ( url.endsWith( "/" ) )
+		{
+			return url.substring( 0, url.length() -1 );
+		}
 		return url;
 	}
 
@@ -132,6 +136,8 @@ public class ServerInfo implements Serializable, Comparable {
 			File file = new File( MenuLib.getStoragePath(), getFilename() );
 			ObjectOutputStream oos = new ObjectOutputStream( new FileOutputStream( file ) );
 			oos.writeObject( serverHashMap );
+			oos.flush();
+			oos.close();
 		}
 		catch( Exception e )
 		{
