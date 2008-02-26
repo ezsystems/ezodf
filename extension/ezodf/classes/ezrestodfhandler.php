@@ -61,7 +61,7 @@ class eZRESTODFHandler extends eZRESTBaseHandler
                                                                'getParams' => array( 'nodeID' ),
                                                                'getOptions' => array( 'languageCode' => false,
                                                                                       'base64Encoded' => true ) ) );
-        $moduleDefinition->addView( 'ezodfPutOONode', array( 'method' => 'putOONode',
+        $moduleDefinition->addView( 'ezodfPutOONode', array( 'method' => 'ezodfPutOONode',
                                                              'functions' => 'ezodf_oo_client',
                                                              'postParams' => array( 'nodeID', 'data', 'filename' ),
                                                              'postOptions' => array( 'languageCode' => false ) ) );
