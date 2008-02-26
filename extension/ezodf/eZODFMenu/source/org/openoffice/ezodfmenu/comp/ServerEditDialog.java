@@ -37,6 +37,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.event.WindowStateListener;
 import java.net.URL;
 
@@ -73,6 +74,18 @@ public class ServerEditDialog extends JDialog
 				openDialog.setEnabled( true );
 			}
 		});
+		
+		this.addWindowListener( new WindowListener() {
+			public void windowClosed(WindowEvent e) {}
+			public void windowActivated(WindowEvent e) {}
+			public void windowClosing(WindowEvent e) {
+				close();
+			}
+			public void windowDeactivated(WindowEvent e) {}
+			public void windowDeiconified(WindowEvent e) {}
+			public void windowIconified(WindowEvent e) {}
+			public void windowOpened(WindowEvent e) {}
+		} );
 		
 		this.openDialog = openDialog;
 		populateDialog();

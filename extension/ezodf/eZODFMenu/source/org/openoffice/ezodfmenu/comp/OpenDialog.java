@@ -38,6 +38,7 @@ import java.util.*;
 public class OpenDialog extends JFrame {
 
 	protected JComboBox serverList;
+	protected JTree tree;
 	protected OpenController controller;
 	private static final long serialVersionUID = 4400067100991729955L;
 
@@ -73,6 +74,23 @@ public class OpenDialog extends JFrame {
 		// Add main layout components
 		setLayout( new BorderLayout() );
 		add( getTopComponent(), BorderLayout.NORTH );
+		add( getMainComponent(), BorderLayout.CENTER );
+	}
+	
+	/**
+	 * Populate main part of open dialog.
+	 * 
+	 * @return Main part component.
+	 */
+	protected Component getMainComponent()
+	{
+		JPanel panel = new JPanel( new BorderLayout() );
+		
+		// Build Tree.
+		
+		
+		
+		return panel;
 	}
 	
 	/**
@@ -85,7 +103,9 @@ public class OpenDialog extends JFrame {
 	{
 		JPanel panel = new JPanel( new BorderLayout() );
 		
-		panel.add( new JLabel( "Select server" ), BorderLayout.NORTH );
+		JLabel title = new JLabel( "Select server" );
+		title.setHorizontalAlignment( SwingConstants.CENTER );
+		panel.add( title, BorderLayout.NORTH );
 		
 		// Build server list.
 		JPanel serverPanel = new JPanel( new BorderLayout() );
