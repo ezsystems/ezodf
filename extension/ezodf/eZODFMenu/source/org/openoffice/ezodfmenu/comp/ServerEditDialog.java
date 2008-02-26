@@ -33,7 +33,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import java.awt.BorderLayout;
-import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -118,11 +117,8 @@ public class ServerEditDialog extends JDialog
 		storeButton.addActionListener( new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{
-				if ( validateAndStore() )
-				{
-					close();
-				}
-			}
+				validateAndStore();
+			} 
 		});
 		buttonPanel.add( storeButton );
 		
@@ -143,9 +139,10 @@ public class ServerEditDialog extends JDialog
 				    JOptionPane.WARNING_MESSAGE);
 			return false;
 		}
-		try{
+		try {
 			new URL( urlField.getText() );
-		} catch( Exception e ) {
+		} 
+		catch( Exception e ) {
 			JOptionPane.showMessageDialog(this,
 				    "Invalid URL",
 				    "URL",
@@ -165,10 +162,10 @@ public class ServerEditDialog extends JDialog
 		
 		// Password check
 		if ( new String( password1.getPassword() ).trim() == "" ||
-			 new String( password1.getPassword() ) != new String( password2.getPassword() ) )
+			 !( new String( password1.getPassword() ).equals( new String( password2.getPassword() ) ) ) )
 		{
 			JOptionPane.showMessageDialog(this,
-					"Missmatching password",
+					"Missmatching password, " + new String( password1.getPassword() ) + '-' + new String( password2.getPassword() ),
 					"Password",
 					JOptionPane.WARNING_MESSAGE);
 			return false;
@@ -180,6 +177,8 @@ public class ServerEditDialog extends JDialog
 		
 		ServerInfo.addToList( serverInfo );
 		openDialog.populateServerList();
+		
+		close();
 		
 		return true;
 	}

@@ -24,7 +24,6 @@
  */
 package org.openoffice.ezodfmenu.comp;
 
-import java.util.Map;
 
 /**
  * eZODFMenuOepnController. This class creates "Open" dialog
@@ -48,7 +47,7 @@ public class OpenController {
 	 */
 	public void loadData()
 	{
-		Map<String,ServerInfo> serverList;
+		
 	}
 
 	/**

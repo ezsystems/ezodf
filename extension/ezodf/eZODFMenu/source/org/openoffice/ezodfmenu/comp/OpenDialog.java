@@ -65,6 +65,7 @@ public class OpenDialog extends JFrame {
 	 * 
 	 * @return Component Top component.
 	 */
+	@SuppressWarnings("unchecked")
 	protected Component getTopComponent()
 	{
 		JPanel panel = new JPanel( new BorderLayout() );
@@ -105,9 +106,11 @@ public class OpenDialog extends JFrame {
 	/**
 	 * Populate server list content.
 	 */
+	@SuppressWarnings("unchecked")
 	public void populateServerList()
 	{
-	
+		HashMap<String, ServerInfo> serverInfoList = ServerInfo.loadHashMapFromFile();
+		serverList.setListData( new Vector( serverInfoList.values() ) );
 	}
 	/**
 	 * Get this.
