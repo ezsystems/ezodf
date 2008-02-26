@@ -35,7 +35,7 @@ import java.io.*;
  */
 public class ServerInfo implements Serializable, Comparable {
 
-	public static HashMap<String, ServerInfo> ServerList;
+	public static HashMap<String, ServerInfo> ServerList = new HashMap<String, ServerInfo>();
 
 	private static final long serialVersionUID = 7934826971361655809L;
 	
@@ -57,12 +57,24 @@ public class ServerInfo implements Serializable, Comparable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+	/**
+	 * Get Key for ServerInfo list
+	 * 
+	 * @return Key
+	 */
+	public String getKey()
+	{
+		return getUsername() + '@' + getUrl();
+	}
+	
 	/**
 	 * @return the url
 	 */
 	public String getUrl() {
 		return url;
 	}
+
 	/**
 	 * @param url the url to set
 	 */
@@ -108,11 +120,12 @@ public class ServerInfo implements Serializable, Comparable {
 	{
 		// Keep 10 latest installations. ( ordered by accessTime ).
 		HashMap<String, ServerInfo> serverHashMap = new HashMap<String, ServerInfo>();
-		ServerInfo[] serverArray = (ServerInfo[])ServerInfo.ServerList.values().toArray();
+		Object[] serverArray = (Object[])ServerInfo.ServerList.values().toArray();
 		Arrays.sort( serverArray );
 		for( int idx = 0; idx < ( serverArray.length < 10 ? serverArray.length : 10 ); ++idx )
 		{
-			serverHashMap.put( serverArray[idx].getUrl(), serverArray[idx] );
+			ServerInfo serverInfo = (ServerInfo)serverArray[idx];
+			serverHashMap.put( serverInfo.getKey(), serverInfo );
 		}
 		
 		try {
@@ -131,7 +144,7 @@ public class ServerInfo implements Serializable, Comparable {
 	 */
 	public static void addToList( ServerInfo serverInfo )
 	{
-		ServerInfo.ServerList.put( serverInfo.getUrl(), serverInfo );
+		ServerInfo.ServerList.put( serverInfo.getKey(), serverInfo );
 		ServerInfo.storeHashMapToFile();
 	}
 

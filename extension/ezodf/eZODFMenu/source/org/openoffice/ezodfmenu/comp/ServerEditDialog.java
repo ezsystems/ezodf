@@ -117,7 +117,10 @@ public class ServerEditDialog extends JDialog
 		storeButton.addActionListener( new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{
-				validateAndStore();
+				if ( validateAndStore() )
+				{
+					close();
+				}
 			} 
 		});
 		buttonPanel.add( storeButton );
@@ -177,8 +180,6 @@ public class ServerEditDialog extends JDialog
 		
 		ServerInfo.addToList( serverInfo );
 		openDialog.populateServerList();
-		
-		close();
 		
 		return true;
 	}

@@ -84,20 +84,52 @@ public class OpenDialog extends JFrame {
 	                									   boolean cellHasFocus)
 			{
 				ServerInfo serverInfo = (ServerInfo)value;
+				if (isSelected) 
+				{
+					setBackground(list.getSelectionBackground());
+					setForeground(list.getSelectionForeground());
+		        }
+				else 
+				{
+					setBackground(list.getBackground());
+					setForeground(list.getForeground());
+		        }
 				return new JLabel( serverInfo.getUsername() + "@" + serverInfo.getUrl() );
 			}});
+		serverList.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
 		serverList.setVisibleRowCount( 1 );
 		serverPanel.add( serverList, BorderLayout.CENTER );
 
-		// Add "Add server" button
-		JButton addServer =  new JButton( "Add server" );
+
+		// Add "Connect", "Edit" and "Add server" buttons
+		JPanel buttonPanel = new JPanel();
+		JButton connect =  new JButton( "Connect" );
+		connect.addActionListener( new ActionListener( ) {
+				public void actionPerformed( ActionEvent e ) {
+					//connectToSever
+				}
+		});
+		buttonPanel.add( connect );
+		
+		JButton addServer =  new JButton( "Add" );
 		addServer.addActionListener( new ActionListener( ) {
 				public void actionPerformed( ActionEvent e ) {
 					ServerEditDialog editDialog = new ServerEditDialog( getThis(), new ServerInfo() );
 					editDialog.setVisible( true );
 				}
 		});
-		serverPanel.add( addServer, BorderLayout.EAST );
+		buttonPanel.add( addServer );
+		
+		JButton editServer = new JButton( "Edit" );
+		editServer.addActionListener( new ActionListener( ) {
+			public void actionPerformed( ActionEvent e ) {
+				ServerEditDialog editDialog = new ServerEditDialog( getThis(), (ServerInfo)serverList.getSelectedValue() );
+				editDialog.setVisible( true );
+			}
+		});
+		buttonPanel.add( editServer );
+		
+		serverPanel.add( buttonPanel, BorderLayout.EAST );
 		panel.add( serverPanel, BorderLayout.CENTER );
 		
 		return panel;
