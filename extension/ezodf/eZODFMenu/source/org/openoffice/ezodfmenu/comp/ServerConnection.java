@@ -107,7 +107,7 @@ public class ServerConnection {
 	 */
 	public eZPTreeNode getTopNode()
 	{
-		return null;
+		return new eZPTopTreeNode( "Root" );
 	}
 
 

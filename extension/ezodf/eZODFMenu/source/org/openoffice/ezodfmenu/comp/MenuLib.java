@@ -24,7 +24,9 @@
  */
 package org.openoffice.ezodfmenu.comp;
 
+import java.io.BufferedOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Iterator;
@@ -80,15 +82,26 @@ public class MenuLib {
 	}
 	
 	/**
+	 * @see sendHTTPGetRequest
+	 */
+	public static InputStream sendHTTPGetRequest( String uri, 
+			Map<String,String> getParameters ) throws Exception
+	{
+		return MenuLib.sendHTTPGetRequest(uri, getParameters, "" );
+	}
+
+	/**
 	 * Send HTTP Get request.
 	 * 
 	 * @param Url
 	 * @param Get parameters
 	 * 
 	 * @return Input stream from HTTP request.
+	 * @throws Exception
 	 */
 	public static InputStream sendHTTPGetRequest( String uri, 
-			Map<String,String> getParameters ) throws Exception
+			Map<String,String> getParameters,
+			String sessionID ) throws Exception
 	{
 		// Extract get parameters.
 		uri += "?";
@@ -104,6 +117,10 @@ public class MenuLib {
 		{
 			URL url = new URL( uri );
 			connection = (HttpURLConnection)url.openConnection();
+			if ( sessionID != "" )
+			{
+				connection.setRequestProperty( "Cookie", sessionID );
+			}
 		}
 		catch( Exception e )
 		{
@@ -123,13 +140,67 @@ public class MenuLib {
 		// Read XML response.
 		return connection.getInputStream();
 	}
-	 
+	
+	/**
+	 * @see sendHTTPPostRequest
+	 */
+	public static InputStream sendHTTPPostRequest( String uri, 
+			Map<String,String> postParameters ) throws Exception
+	{
+		return MenuLib.sendHTTPPostRequest(uri, postParameters, "" );
+	}
+
 	/**
 	 * Send HTTP request.
+	 * 
+	 * @param Url
+	 * @param Post parameters
+	 * @param Session IDs
+	 * 
+	 * @return Input stream from HTTP request.
 	 */
-	public static InputStream sendHTTPPostRequest( URL url, 
-			Map<String,String> getParameters ) 
+	public static InputStream sendHTTPPostRequest( String uri, 
+			Map<String,String> postParameters,
+			String sessionID ) throws Exception
 	{
-		return null;
+		// Send HTTP request
+		HttpURLConnection connection;
+		try
+		{
+			URL url = new URL( uri );
+			connection = (HttpURLConnection)url.openConnection();
+			if ( sessionID != "" )
+			{
+				connection.setRequestProperty( "Cookie", sessionID );
+			}
+		}
+		catch( Exception e )
+		{
+			JOptionPane.showMessageDialog( null,
+				    "Failed to open a connection: " + e.getMessage(),
+				    "Connect",
+				    JOptionPane.WARNING_MESSAGE);
+			return null;
+		}
+		
+		connection.setDoInput( true );
+		connection.setDoOutput( true ); 
+
+		// Prepare request
+		connection.setRequestMethod( "POST" );			
+
+		OutputStream os = connection.getOutputStream();
+		
+		for( Iterator iterator = postParameters.entrySet().iterator(); iterator.hasNext(); )
+		{
+			Map.Entry<String,String> map = (Map.Entry<String,String>)iterator.next();
+			os.write( new String( map.getKey() + "=" + map.getValue() + "&" ).getBytes() );
+		}
+
+		os.flush();
+		os.close();
+		
+		// Read XML response.
+		return connection.getInputStream();
 	}
 }

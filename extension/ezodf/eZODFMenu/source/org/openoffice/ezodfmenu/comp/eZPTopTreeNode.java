@@ -24,52 +24,29 @@
  */
 package org.openoffice.ezodfmenu.comp;
 
-import org.w3c.dom.Node;
-
 /**
  * @author hovik
  *
  */
-public class eZPTreeNode {
+public class eZPTopTreeNode extends eZPTreeNode {
 
-	protected Node treeNode = null;
-	
-	/**
-	 * Create empty tree node.
-	 */
-	public eZPTreeNode()
-	{		
-	}
+	protected String name;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param Node
+	 * @param name
 	 */
-	public eZPTreeNode( Node node )
+	public eZPTopTreeNode( String nodeName )
 	{
-		treeNode = node;
+		name = nodeName;
 	}
-
+	
+	/**
+	 * @return Name
+	 */
 	public String getName()
 	{
-		// TODO
-		return null;
+		return name;
 	}
-	
-	/**
-	 * @return the treeNode
-	 */
-	public Node getTreeNode() {
-		return treeNode;
-	}
-
-	/**
-	 * @param treeNode the treeNode to set
-	 */
-	public void setTreeNode(Node treeNode) {
-		this.treeNode = treeNode;
-	}
-	
-	
 }
