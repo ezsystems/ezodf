@@ -24,6 +24,8 @@
  */
 package org.openoffice.ezodfmenu.comp;
 
+import java.util.Vector;
+
 import javax.swing.JOptionPane;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -39,6 +41,9 @@ public class eZPTreeNode {
 
 	protected Node treeNode = null;
 	protected ServerConnection serverConnection;
+	
+	protected Vector<eZPTreeNode> children = new Vector<eZPTreeNode>();
+	protected int childCount = -1;
 	
 	public final static int TopNodeID = -1;
 	
@@ -86,8 +91,20 @@ public class eZPTreeNode {
 	
 	public int getNodeID()
 	{
-		// TODO
-		return 0;
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		String expression = "@nodeID";
+		try
+		{
+			return Integer.parseInt( (String)xpath.evaluate(expression, treeNode, XPathConstants.STRING ) );
+		}
+		catch ( Exception e )
+		{
+			JOptionPane.showMessageDialog( null,
+				    "Get name XPath failed: " + e.getMessage(),
+				    "eZPTreeNode.getNodeID()",
+				    JOptionPane.WARNING_MESSAGE);
+			return 0;
+		}
 	}
 	
 	/**
@@ -97,15 +114,53 @@ public class eZPTreeNode {
 	 */
 	public eZPTreeNode getChild( int idx )
 	{
-		//TODO
+		try
+		{
+			return children.get( idx );
+		}
+		catch( Exception e )
+		{
+			// If unable child node is not fetched yet, fetch next 10 children, and try again.
+			try
+			{
+				children.addAll( serverConnection.getChildren( this, children.size(), 10 ) );
+				return this.getChild( idx );
+			}
+			catch( Exception e2 )
+			{
+				// Error output handled by serverConnection.getChildren();
+			}
+		}
+		
 		return null;
 	}
 	
+	/**
+	 * Get child count.
+	 * 
+	 * @return Child count
+	 */
 	public int getChildCount()
 	{
-		// TODO
-		return 0;
+		if ( childCount == -1 )
+		{
+			childCount = serverConnection.getChildCount( this );
+		}
+		return childCount;
 	}
+	
+	/**
+	 * Get index of child node.
+	 * 
+	 * @param childNode
+	 * 
+	 * @return Index of child node.
+	 */
+	public int getIndexOfChild( eZPTreeNode childNode )
+	{
+		return children.indexOf( childNode );
+	}
+	
 	
 	/**
 	 * @return the treeNode

@@ -32,7 +32,7 @@ public class eZPTopTreeNode extends eZPTreeNode {
 
 	protected String name;
 
-	/**
+	/*
 	 * Constructor
 	 * 
 	 * @param name
@@ -41,17 +41,27 @@ public class eZPTopTreeNode extends eZPTreeNode {
 	{
 		serverConnection = connection;
 		name = nodeName;
+		
+		children = serverConnection.getTopNodeList();
 	}
-	
-	/**
-	 * @return Name
+
+	/*
+	 * @see org.openoffice.ezodfmenu.comp.eZPTreeNode#getName()
 	 */
 	public String getName()
 	{
 		return name;
 	}
 	
-	/**
+	/*
+	 * @see org.openoffice.ezodfmenu.comp.eZPTreeNode#getChildCount()
+	 */
+	public int getChildCount()
+	{
+		return children.size();
+	}
+	
+	/*
 	 * @see eZPTreeNode.getNodeID
 	 */
 	public int getNodeID()

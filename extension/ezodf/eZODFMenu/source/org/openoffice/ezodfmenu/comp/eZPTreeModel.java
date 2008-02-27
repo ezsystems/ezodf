@@ -35,6 +35,18 @@ import javax.swing.tree.TreePath;
  */
 public class eZPTreeModel implements TreeModel {
 
+	ServerConnection serverConnection;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param Server connection
+	 */
+	public eZPTreeModel( ServerConnection connection )
+	{
+		serverConnection = connection;
+	}
+
 	/* (non-Javadoc)
 	 * @see javax.swing.tree.TreeModel#addTreeModelListener(javax.swing.event.TreeModelListener)
 	 */
@@ -67,42 +79,28 @@ public class eZPTreeModel implements TreeModel {
 	 * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
 	 */
 	public int getChildCount(Object object) {
-		eZPTreeNode node;
-		try
-		{
-			node = (eZPTreeNode)object;
-		}
-		catch( Exception e)
-		{
-			JOptionPane.showMessageDialog( null,
-				    "Invalid eZPTreeNode: " + e.getMessage(),
-				    "TreeModel.getChildCount()",
-				    JOptionPane.WARNING_MESSAGE);
-			return 0;
-		}
-		return node.getChildCount();
+		return ((eZPTreeNode)object).getChildCount();
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.swing.tree.TreeModel#getIndexOfChild(java.lang.Object, java.lang.Object)
 	 */
 	public int getIndexOfChild(Object parent, Object object) {
-		// TODO Auto-generated method stub
-		return 0;
+		return ((eZPTreeNode)parent).getIndexOfChild( (eZPTreeNode)object );
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.swing.tree.TreeModel#getRoot()
 	 */
 	public Object getRoot() {
-		// TODO Auto-generated method stub
-		return null;
+		return serverConnection.getTopNode();
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
 	 */
 	public boolean isLeaf(Object object) {
+		//return ((eZPTreeNode)object).isLeaf();
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -111,15 +109,14 @@ public class eZPTreeModel implements TreeModel {
 	 * @see javax.swing.tree.TreeModel#removeTreeModelListener(javax.swing.event.TreeModelListener)
 	 */
 	public void removeTreeModelListener(TreeModelListener listener) {
-		// TODO Auto-generated method stub
+		// Do nothing
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.swing.tree.TreeModel#valueForPathChanged(javax.swing.tree.TreePath, java.lang.Object)
 	 */
 	public void valueForPathChanged(TreePath path, Object object) {
-		// TODO Auto-generated method stub
-
+		// Do nothing.
 	}
 
 }
