@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 
 import javax.swing.JOptionPane;
 
@@ -62,36 +63,17 @@ public class ServerConnection {
 	 */
 	protected boolean login()
 	{
-		HttpURLConnection connection;
+		HashMap<String,String> getParameters = new HashMap<String,String>();
+		getParameters.put( "login", serverInfo.getUsername() );
+		getParameters.put( "password", serverInfo.getPassword() );
+		
 		try
 		{
-			URL url = new URL( getLoginURL() );
-			connection = (HttpURLConnection)url.openConnection();
-		}
-		catch( Exception e )
-		{
-			JOptionPane.showMessageDialog( null,
-				    "Failed to open a connection: " + e.getMessage(),
-				    "Connect",
-				    JOptionPane.WARNING_MESSAGE);
-			return false;
-		}
-		
-		connection.setDoInput( true );
-		connection.setDoOutput( true );
-		
-		try 
-		{
-			// Prepare request
-			connection.setRequestMethod( "GET" );			
-			
-			// Read XML response.
+			InputStream in = MenuLib.sendHTTPGetRequest( getLoginURL(), getParameters);
 			DOMParser parser = new DOMParser();
-			InputStream in = connection.getInputStream();
 			InputSource source = new InputSource(in);
 			parser.parse(source);
 			in.close();
-			connection.disconnect();
 			
 			Document domDoc = parser.getDocument();
 		    NodeList sessionIDNodeList = domDoc.getElementsByTagName( "SessionID" );
@@ -117,6 +99,10 @@ public class ServerConnection {
 	}
 	
 	/**
+	 * 
+	 */
+	
+	/**
 	 * Get eZ Publish top node. The top node also contains top node list.
 	 */
 	public eZPTreeNode getTopNode()
@@ -132,7 +118,7 @@ public class ServerConnection {
 	 */
 	protected String getLoginURL()
 	{
-		return serverInfo.getUrl() + "/" + ServerConnection.LoginPath + "?login=" + serverInfo.getUsername() + "&password=" + serverInfo.getPassword(); 	
+		return serverInfo.getUrl() + "/" + ServerConnection.LoginPath; 	
 	}
 
 	/**

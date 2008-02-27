@@ -24,6 +24,16 @@
  */
 package org.openoffice.ezodfmenu.comp;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.swing.JOptionPane;
+
+import com.sun.org.apache.xerces.internal.impl.xs.dom.DOMParser;
+
 
 /**
  * Class containing eZ ODF menu library. The library include
@@ -70,6 +80,56 @@ public class MenuLib {
 	}
 	
 	/**
-	 * Connect
+	 * Send HTTP Get request.
+	 * 
+	 * @param Url
+	 * @param Get parameters
+	 * 
+	 * @return Input stream from HTTP request.
 	 */
+	public static InputStream sendHTTPGetRequest( String uri, 
+			Map<String,String> getParameters ) throws Exception
+	{
+		// Extract get parameters.
+		uri += "?";
+		for( Iterator iterator = getParameters.entrySet().iterator(); iterator.hasNext(); )
+		{
+			Map.Entry<String,String> map = (Map.Entry<String,String>)iterator.next();
+			uri += map.getKey() + "=" + map.getValue() + "&";
+		}
+
+		// Send HTTP request
+		HttpURLConnection connection;
+		try
+		{
+			URL url = new URL( uri );
+			connection = (HttpURLConnection)url.openConnection();
+		}
+		catch( Exception e )
+		{
+			JOptionPane.showMessageDialog( null,
+				    "Failed to open a connection: " + e.getMessage(),
+				    "Connect",
+				    JOptionPane.WARNING_MESSAGE);
+			return null;
+		}
+		
+		connection.setDoInput( true );
+		connection.setDoOutput( true );
+		
+		// Prepare request
+		connection.setRequestMethod( "GET" );			
+			
+		// Read XML response.
+		return connection.getInputStream();
+	}
+	 
+	/**
+	 * Send HTTP request.
+	 */
+	public static InputStream sendHTTPPostRequest( URL url, 
+			Map<String,String> getParameters ) 
+	{
+		return null;
+	}
 }
