@@ -74,6 +74,14 @@ public class OpenDialog extends JFrame {
 		// Add main layout components
 		setLayout( new BorderLayout() );
 		add( getTopComponent(), BorderLayout.NORTH );
+		
+	}
+	
+	/**
+	 * Populate main component.
+	 */
+	public void populateMainComponent()
+	{
 		add( getMainComponent(), BorderLayout.CENTER );
 	}
 	
@@ -86,9 +94,8 @@ public class OpenDialog extends JFrame {
 	{
 		JPanel panel = new JPanel( new BorderLayout() );
 		
-		// Build Tree.
-		
-		
+		tree = new JTree( new eZPTreeModel( controller.serverConnection ) );
+		panel.add( tree, BorderLayout.CENTER );
 		
 		return panel;
 	}

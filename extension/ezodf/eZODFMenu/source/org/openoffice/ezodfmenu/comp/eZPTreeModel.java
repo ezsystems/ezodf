@@ -83,6 +83,13 @@ public class eZPTreeModel implements TreeModel {
 	}
 
 	/* (non-Javadoc)
+	 * @see javax.swing.tree.TreeModel#getChildTreeCount(java.lang.Object)
+	 */
+	public int getChildTreeCount(Object object) {
+		return ((eZPTreeNode)object).getChildTreeCount();
+	}
+
+	/* (non-Javadoc)
 	 * @see javax.swing.tree.TreeModel#getIndexOfChild(java.lang.Object, java.lang.Object)
 	 */
 	public int getIndexOfChild(Object parent, Object object) {
@@ -100,9 +107,7 @@ public class eZPTreeModel implements TreeModel {
 	 * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
 	 */
 	public boolean isLeaf(Object object) {
-		//return ((eZPTreeNode)object).isLeaf();
-		// TODO Auto-generated method stub
-		return false;
+		return ((eZPTreeNode)object).getChildTreeCount() != 0;
 	}
 
 	/* (non-Javadoc)

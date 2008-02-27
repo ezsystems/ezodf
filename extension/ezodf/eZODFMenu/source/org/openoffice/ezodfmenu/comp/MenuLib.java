@@ -132,7 +132,7 @@ public class MenuLib {
 		}
 		
 		connection.setDoInput( true );
-		connection.setDoOutput( true );
+		connection.setDoOutput( false );
 		
 		// Prepare request
 		connection.setRequestMethod( "GET" );			

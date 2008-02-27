@@ -43,7 +43,7 @@ public class eZPTreeNode {
 	protected ServerConnection serverConnection;
 	
 	protected Vector<eZPTreeNode> children = new Vector<eZPTreeNode>();
-	protected int childCount = -1;
+	protected int childTreeCount = -1;
 	
 	public final static int TopNodeID = -1;
 	
@@ -140,13 +140,45 @@ public class eZPTreeNode {
 	 * 
 	 * @return Child count
 	 */
+	public int getChildTreeCount()
+	{
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		String expression = "@childTreeCount";
+		try
+		{
+			return Integer.parseInt( (String)xpath.evaluate(expression, treeNode, XPathConstants.STRING ) );
+		}
+		catch ( Exception e )
+		{
+			JOptionPane.showMessageDialog( null,
+				    "Get childTreeCount XPath failed: " + e.getMessage(),
+				    "eZPTreeNode.getChildTreeCount()",
+				    JOptionPane.WARNING_MESSAGE);
+			return 0;
+		}
+	}
+	
+	/**
+	 * Get child count.
+	 * 
+	 * @return Child count
+	 */
 	public int getChildCount()
 	{
-		if ( childCount == -1 )
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		String expression = "@childCount";
+		try
 		{
-			childCount = serverConnection.getChildCount( this );
+			return Integer.parseInt( (String)xpath.evaluate(expression, treeNode, XPathConstants.STRING ) );
 		}
-		return childCount;
+		catch ( Exception e )
+		{
+			JOptionPane.showMessageDialog( null,
+				    "Get childCount XPath failed: " + e.getMessage(),
+				    "eZPTreeNode.getChildCount()",
+				    JOptionPane.WARNING_MESSAGE);
+			return 0;
+		}
 	}
 	
 	/**

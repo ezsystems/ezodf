@@ -20,7 +20,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import com.sun.org.apache.xerces.internal.impl.xs.dom.DOMParser;
+import com.sun.org.apache.xerces.internal.parsers.DOMParser;
+
+
 
 /**
  * @author hovik
@@ -31,7 +33,6 @@ public class ServerConnection {
 	private static final String LoginPath = "ezrest/login";
 	private static final String TopNodeListPath = "ezrest/ezodfGetTopNodeList";
 	private static final String GetChildrenPath = "ezrest/ezodfGetChildren";
-	private static final String GetChildCountPath = "ezrest/ezodfGetChildCount";
 	private static final String GetNodeInfoPath = "ezrest/ezodfGetNodeInfo";
 	private static final String FetchOONodePath = "ezrest/ezodfFetchOONode";
 	private static final String PutOONodePath = "ezrest/ezodfPutOONode";
@@ -81,15 +82,11 @@ public class ServerConnection {
 			in.close();
 			
 			Document domDoc = parser.getDocument();
-		    NodeList sessionIDNodeList = domDoc.getElementsByTagName( "SessionID" );
-		    if ( sessionIDNodeList.getLength() == 0 )
-		    {
-		    	JOptionPane.showMessageDialog( null,
-					    "Failed logging in: " + domDoc.getElementsByTagName( "Error" ).item( 0 ).getTextContent(),
-					    "Login",
-					    JOptionPane.WARNING_MESSAGE);
-		    }
-		    setSessionID( sessionIDNodeList.item(0).getTextContent() );
+		    Node sessionIDNode = domDoc.getElementsByTagName( "SessionID" ).item( 0 );
+		    
+		    XPath xpath = XPathFactory.newInstance().newXPath();
+			String expression = "text()";
+			setSessionID( (String)xpath.evaluate(expression, sessionIDNode, XPathConstants.STRING ) );		    
 		}
 		catch( Exception e )
 		{
@@ -149,44 +146,6 @@ public class ServerConnection {
 		return result;
 	}
 
-	/**
-	 * Get child count
-	 * 
-	 * @param Tree node
-	 * 
-	 * @return Child count
-	 */
-	public int getChildCount( eZPTreeNode node )
-	{
-		HashMap<String,String> getParameters = new HashMap<String,String>();
-		getParameters.put( "nodeID", Integer.toString( node.getNodeID() ) );
-		
-		try
-		{
-			// Send request	
-			InputStream in = MenuLib.sendHTTPGetRequest( getChildCountURL(), getParameters, this.sessionID );
-			DOMParser parser = new DOMParser();
-			InputSource source = new InputSource(in);
-			parser.parse(source);
-			in.close();
-			
-			// Parse result and create eZPTreeNode objects.
-			XPath xpath = XPathFactory.newInstance().newXPath();
-			
-			Document domDoc = parser.getDocument();
-		    return Integer.parseInt( (String)xpath.evaluate( "@count", domDoc.getElementsByTagName( "ChildCount" ).item(0), XPathConstants.STRING ) );
-		    
-		}
-		catch( Exception e )
-		{
-			JOptionPane.showMessageDialog( null,
-				    "Failed to get children: " + getChildrenURL() + ": " +  e.getMessage(),
-				    "getChildren",
-				    JOptionPane.WARNING_MESSAGE);
-			return -1;
-		}
-	}
-	
 	/**
 	 * Get children of specified parent node. 
 	 * @param Parent node
@@ -253,11 +212,6 @@ public class ServerConnection {
 	protected String getChildrenURL()
 	{
 		return serverInfo.getUrl() + "/" + ServerConnection.GetChildrenPath;
-	}
-	
-	protected String getChildCountURL()
-	{
-		return serverInfo.getUrl() + "/" + ServerConnection.GetChildCountPath;
 	}
 
 	/**

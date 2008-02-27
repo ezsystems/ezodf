@@ -84,6 +84,7 @@ public class OpenController {
 			// Error output handled by serverConnection.
 			return;
 		}
+		openDialog.populateMainComponent();
 	}
 
 	/**
