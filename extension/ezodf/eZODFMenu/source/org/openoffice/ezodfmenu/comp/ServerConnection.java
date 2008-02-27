@@ -10,8 +10,10 @@ import java.net.URL;
 
 import javax.swing.JOptionPane;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.w3c.dom.*;
 
 import com.sun.org.apache.xerces.internal.impl.xs.dom.DOMParser;
 
@@ -81,12 +83,7 @@ public class ServerConnection {
 		try 
 		{
 			// Prepare request
-			connection.setRequestMethod( "GET" );
-			
-			// Send request.
-			OutputStream out = connection.getOutputStream();
-			out.flush();
-			out.close();
+			connection.setRequestMethod( "GET" );			
 			
 			// Read XML response.
 			DOMParser parser = new DOMParser();
@@ -96,15 +93,25 @@ public class ServerConnection {
 			in.close();
 			connection.disconnect();
 			
+			Document domDoc = parser.getDocument();
+		    NodeList sessionIDNodeList = domDoc.getElementsByTagName( "SessionID" );
+		    if ( sessionIDNodeList.getLength() == 0 )
+		    {
+		    	JOptionPane.showMessageDialog( null,
+					    "Failed logging in: " + domDoc.getElementsByTagName( "Error" ).item( 0 ).getTextContent(),
+					    "Login",
+					    JOptionPane.WARNING_MESSAGE);
+		    }
+		    setSessionID( sessionIDNodeList.item(0).getTextContent() );
 		}
 		catch( Exception e )
 		{
 			JOptionPane.showMessageDialog( null,
-				    "Failed logging in: " + e.getMessage(),
+				    "Failed logging in: " + getLoginURL() + ": " +  e.getMessage(),
 				    "Login",
 				    JOptionPane.WARNING_MESSAGE);
+			return false;
 		}
-		
 		
 		return true;
 	}
@@ -125,6 +132,20 @@ public class ServerConnection {
 	 */
 	protected String getLoginURL()
 	{
-		return serverInfo.getUrl() + ServerConnection.LoginPath + "?login=" + serverInfo.getUsername() + "&password=" + serverInfo.getPassword(); 	
+		return serverInfo.getUrl() + "/" + ServerConnection.LoginPath + "?login=" + serverInfo.getUsername() + "&password=" + serverInfo.getPassword(); 	
+	}
+
+	/**
+	 * @return the sessionID
+	 */
+	public String getSessionID() {
+		return sessionID;
+	}
+
+	/**
+	 * @param sessionID the sessionID to set
+	 */
+	public void setSessionID(String sessionID) {
+		this.sessionID = sessionID;
 	}
 }

@@ -81,10 +81,7 @@ public class OpenController {
 		this.serverConnection = new ServerConnection( serverInfo );
 		if ( !this.serverConnection.connect() )
 		{
-			JOptionPane.showMessageDialog( this.openDialog,
-					"Unable to connect to server: " + serverInfo.getUrl(),
-					"Connect",
-					JOptionPane.WARNING_MESSAGE );
+			// Error output handled by serverConnection.
 			return;
 		}
 	}

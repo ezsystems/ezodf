@@ -72,6 +72,11 @@ public class ServerInfo implements Serializable, Comparable {
 	 * @return the url
 	 */
 	public String getUrl() {
+		if ( url == null )
+		{
+			return url;
+		}
+
 		if ( url.endsWith( "/" ) )
 		{
 			return url.substring( 0, url.length() -1 );
