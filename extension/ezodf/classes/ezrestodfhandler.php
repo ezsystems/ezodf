@@ -47,11 +47,14 @@ class eZRESTODFHandler extends eZRESTBaseHandler
         $moduleDefinition->addView( 'ezodfGetTopNodeList', array( 'method' => 'ezodfGetTopNodeList',
                                                                   'functions' => 'ezodf_oo_client' ) );
         $moduleDefinition->addView( 'ezodfGetChildren', array( 'method' => 'ezodfGetChildren',
-                                                              'functions' => 'ezodf_oo_client',
-                                                              'getParams' => array( 'nodeID' ),
-                                                              'getOptions' => array( 'languageCode' => false,
-                                                                                     'offset' => 0,
-                                                                                     'limit' => 10 ) ) );
+                                                               'functions' => 'ezodf_oo_client',
+                                                               'getParams' => array( 'nodeID' ),
+                                                               'getOptions' => array( 'languageCode' => false,
+                                                                                      'offset' => 0,
+                                                                                      'limit' => 10 ) ) );
+        $moduleDefinition->addView( 'ezodfGetChildCount', array( 'method' => 'ezodfGetChildCount',
+                                                                 'functions' => 'ezodf_oo_client',
+                                                                 'getParams' => array( 'nodeID' ) ) );
         $moduleDefinition->addView( 'ezodfGetNodeInfo', array( 'method' => 'ezodfGetNodeInfo',
                                                                'functions' => 'ezodf_oo_client',
                                                                'getParams' => array( 'nodeID' ),
@@ -156,7 +159,30 @@ class eZRESTODFHandler extends eZRESTBaseHandler
     }
 
     /**
-     * Get top node list.
+     * Get Child count.
+     *
+     * @param Array getParameters.
+     * @param Array getOptions.
+     * @param Array postParameters.
+     * @param Array postOptions.
+     *
+     * @return DOMElement DOMElement contating top node information.
+     */
+    public function ezodfGetChildCount( $getParams, $getOptions, $postParams, $postOptions )
+    {
+        $nodeID = $getParams['nodeID'];
+
+        $domDocument = new DOMDocument( '1.0', 'utf-8' );
+        $childCountElement = $domDocument->createElement( 'ChildCount' );
+        $childCountElement->setAttribute( 'count', eZContentObjectTreeNode::subTreeCountByNodeID( array( 'Depth' => 1,
+                                                                                                         'DepthOperator' => 'eq' ),
+                                                                                                  $nodeID ) );
+        return $childCountElement;
+
+    }
+
+    /**
+     * Get Children.
      *
      * @param Array getParameters.
      * @param Array getOptions.
