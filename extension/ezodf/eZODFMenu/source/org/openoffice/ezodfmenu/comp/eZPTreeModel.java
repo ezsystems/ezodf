@@ -24,6 +24,7 @@
  */
 package org.openoffice.ezodfmenu.comp;
 
+import javax.swing.JOptionPane;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
@@ -38,23 +39,48 @@ public class eZPTreeModel implements TreeModel {
 	 * @see javax.swing.tree.TreeModel#addTreeModelListener(javax.swing.event.TreeModelListener)
 	 */
 	public void addTreeModelListener(TreeModelListener listener) {
-		// TODO Auto-generated method stub
+		// Do nothing.
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.swing.tree.TreeModel#getChild(java.lang.Object, int)
 	 */
-	public Object getChild(Object object, int idx) {
-		// TODO Auto-generated method stub
-		return null;
+	public Object getChild( Object object, int idx) {
+		eZPTreeNode node;
+		try
+		{
+			node = (eZPTreeNode)object;
+		}
+		catch( Exception e)
+		{
+			JOptionPane.showMessageDialog( null,
+				    "Invalid eZPTreeNode: " + e.getMessage(),
+				    "TreeModel.getChild()",
+				    JOptionPane.WARNING_MESSAGE);
+			return null;
+		}
+		
+		return node.getChild( idx );
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
 	 */
 	public int getChildCount(Object object) {
-		// TODO Auto-generated method stub
-		return 0;
+		eZPTreeNode node;
+		try
+		{
+			node = (eZPTreeNode)object;
+		}
+		catch( Exception e)
+		{
+			JOptionPane.showMessageDialog( null,
+				    "Invalid eZPTreeNode: " + e.getMessage(),
+				    "TreeModel.getChildCount()",
+				    JOptionPane.WARNING_MESSAGE);
+			return 0;
+		}
+		return node.getChildCount();
 	}
 
 	/* (non-Javadoc)

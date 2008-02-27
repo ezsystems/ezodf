@@ -37,8 +37,9 @@ public class eZPTopTreeNode extends eZPTreeNode {
 	 * 
 	 * @param name
 	 */
-	public eZPTopTreeNode( String nodeName )
+	public eZPTopTreeNode( ServerConnection connection, String nodeName )
 	{
+		serverConnection = connection;
 		name = nodeName;
 	}
 	
@@ -48,5 +49,13 @@ public class eZPTopTreeNode extends eZPTreeNode {
 	public String getName()
 	{
 		return name;
+	}
+	
+	/**
+	 * @see eZPTreeNode.getNodeID
+	 */
+	public int getNodeID()
+	{
+		return eZPTreeNode.TopNodeID;
 	}
 }

@@ -24,6 +24,11 @@
  */
 package org.openoffice.ezodfmenu.comp;
 
+import javax.swing.JOptionPane;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
 import org.w3c.dom.Node;
 
 /**
@@ -33,6 +38,9 @@ import org.w3c.dom.Node;
 public class eZPTreeNode {
 
 	protected Node treeNode = null;
+	protected ServerConnection serverConnection;
+	
+	public final static int TopNodeID = -1;
 	
 	/**
 	 * Create empty tree node.
@@ -43,18 +51,60 @@ public class eZPTreeNode {
 
 	/**
 	 * Constructor
-	 * 
+	 *
+	 * @param Server connection.
 	 * @param Node
 	 */
-	public eZPTreeNode( Node node )
+	public eZPTreeNode( ServerConnection connection, Node node )
 	{
+		serverConnection = connection;
 		treeNode = node;
 	}
 
+	
+	/**
+	 * Get node name
+	 * @return Name
+	 */
 	public String getName()
 	{
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		String expression = "Object/NameList/Name[@locale=Object/@initialLanguage]/text()";
+		try
+		{
+			return (String) xpath.evaluate(expression, treeNode, XPathConstants.STRING);
+		}
+		catch ( Exception e )
+		{
+			JOptionPane.showMessageDialog( null,
+				    "Get name XPath failed: " + e.getMessage(),
+				    "eZPTreeNode.getName()",
+				    JOptionPane.WARNING_MESSAGE);
+			return "";
+		}
+	}
+	
+	public int getNodeID()
+	{
 		// TODO
+		return 0;
+	}
+	
+	/**
+	 * Get Child by index.
+	 * @param Index
+	 * @return Tree node cild.
+	 */
+	public eZPTreeNode getChild( int idx )
+	{
+		//TODO
 		return null;
+	}
+	
+	public int getChildCount()
+	{
+		// TODO
+		return 0;
 	}
 	
 	/**
