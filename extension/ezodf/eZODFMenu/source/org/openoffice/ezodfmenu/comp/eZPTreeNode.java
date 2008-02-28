@@ -128,6 +128,52 @@ public class eZPTreeNode {
 			return 0;
 		}
 	}
+
+	/**
+	 * Get published date time string.
+	 * 
+	 * @return Date time.
+	 */
+	public String getPublishedDateTime()
+	{
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		String expression = "Object/@published";
+		try
+		{
+			return (String)xpath.evaluate(expression, treeNode, XPathConstants.STRING );
+		}
+		catch ( Exception e )
+		{
+			JOptionPane.showMessageDialog( null,
+				    "Get name XPath failed: " + e.getMessage(),
+				    "eZPTreeNode.getNodeID()",
+				    JOptionPane.WARNING_MESSAGE);
+			return "";
+		}
+	}
+	
+	/**
+	 * Get modified date time string.
+	 * 
+	 * @return Date time.
+	 */
+	public String getModifiedDateTime()
+	{
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		String expression = "Object/@modified";
+		try
+		{
+			return (String)xpath.evaluate(expression, treeNode, XPathConstants.STRING );
+		}
+		catch ( Exception e )
+		{
+			JOptionPane.showMessageDialog( null,
+				    "Get name XPath failed: " + e.getMessage(),
+				    "eZPTreeNode.getNodeID()",
+				    JOptionPane.WARNING_MESSAGE);
+			return "";
+		}
+	}
 	
 	/**
 	 * Get Child by index.

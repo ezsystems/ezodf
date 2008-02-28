@@ -28,6 +28,7 @@ import javax.swing.*;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -45,7 +46,7 @@ public class OpenDialog extends JFrame {
 
 	protected JComboBox serverList;
 	protected JTree tree;
-	protected JList list;
+	protected JTable table;
 	protected JPanel mainPanel;
 	protected OpenController controller;
 	private static final long serialVersionUID = 4400067100991729955L;
@@ -103,18 +104,18 @@ public class OpenDialog extends JFrame {
 
 				/* if nothing is selected, set empty list model, if not, use populated list model. */ 
 				if (node == null){
-					list.setModel( new DefaultListModel() );
+					table.setModel( new DefaultTableModel() );
 				}
 				else{
-					list.setModel( new eZPTreeListModel( node ) );
+					table.setModel( new eZPTreeTableModel( node ) );
 				}
 			}	
 		});
 		JScrollPane treeScrollPane = new JScrollPane( tree );
 		
 		// Add List.
-		list = new JList( new DefaultListModel() );
-		JScrollPane listScrollPane = new JScrollPane( list );
+		table = new JTable( new DefaultTableModel() );
+		JScrollPane listScrollPane = new JScrollPane( table );
 		
 		mainPanel.add( new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, treeScrollPane, listScrollPane ) );
 		
