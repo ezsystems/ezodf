@@ -3,6 +3,8 @@
  */
 package org.openoffice.ezodfmenu.comp;
 
+import java.util.Date;
+
 import javax.swing.JComponent;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.TableModelListener;
@@ -35,10 +37,10 @@ public class eZPTreeTableModel implements TableModel {
 		{
 			case 0: return new Object().getClass();
 			default:
-			case 1:
-			case 2:
-			case 3:
-			case 4: return new String().getClass();
+			case 1: return new String().getClass();
+			case 2: return new String().getClass();
+			case 3: return new Date().getClass();
+			case 4: return new Date().getClass();
 		}
 	}
 

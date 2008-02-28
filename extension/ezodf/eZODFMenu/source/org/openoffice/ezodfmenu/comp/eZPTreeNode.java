@@ -24,6 +24,7 @@
  */
 package org.openoffice.ezodfmenu.comp;
 
+import java.util.Date;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
@@ -134,13 +135,13 @@ public class eZPTreeNode {
 	 * 
 	 * @return Date time.
 	 */
-	public String getPublishedDateTime()
+	public Date getPublishedDateTime()
 	{
 		XPath xpath = XPathFactory.newInstance().newXPath();
 		String expression = "Object/@published";
 		try
 		{
-			return (String)xpath.evaluate(expression, treeNode, XPathConstants.STRING );
+			return new Date( Long.parseLong( (String)xpath.evaluate(expression, treeNode, XPathConstants.STRING ) ) * 1000 );
 		}
 		catch ( Exception e )
 		{
@@ -148,7 +149,7 @@ public class eZPTreeNode {
 				    "Get name XPath failed: " + e.getMessage(),
 				    "eZPTreeNode.getNodeID()",
 				    JOptionPane.WARNING_MESSAGE);
-			return "";
+			return new Date();
 		}
 	}
 	
@@ -157,13 +158,13 @@ public class eZPTreeNode {
 	 * 
 	 * @return Date time.
 	 */
-	public String getModifiedDateTime()
+	public Date getModifiedDateTime()
 	{
 		XPath xpath = XPathFactory.newInstance().newXPath();
 		String expression = "Object/@modified";
 		try
 		{
-			return (String)xpath.evaluate(expression, treeNode, XPathConstants.STRING );
+			return new Date( Long.parseLong( (String)xpath.evaluate(expression, treeNode, XPathConstants.STRING ) ) * 1000 );
 		}
 		catch ( Exception e )
 		{
@@ -171,7 +172,7 @@ public class eZPTreeNode {
 				    "Get name XPath failed: " + e.getMessage(),
 				    "eZPTreeNode.getNodeID()",
 				    JOptionPane.WARNING_MESSAGE);
-			return "";
+			return new Date();
 		}
 	}
 	
