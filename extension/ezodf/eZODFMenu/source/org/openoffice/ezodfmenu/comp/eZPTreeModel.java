@@ -79,13 +79,6 @@ public class eZPTreeModel implements TreeModel {
 	 * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
 	 */
 	public int getChildCount(Object object) {
-		return ((eZPTreeNode)object).getChildCount();
-	}
-
-	/* (non-Javadoc)
-	 * @see javax.swing.tree.TreeModel#getChildTreeCount(java.lang.Object)
-	 */
-	public int getChildTreeCount(Object object) {
 		return ((eZPTreeNode)object).getChildTreeCount();
 	}
 
@@ -107,7 +100,7 @@ public class eZPTreeModel implements TreeModel {
 	 * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
 	 */
 	public boolean isLeaf(Object object) {
-		return ((eZPTreeNode)object).getChildTreeCount() != 0;
+		return ((eZPTreeNode)object).getChildTreeCount() == 0;
 	}
 
 	/* (non-Javadoc)
