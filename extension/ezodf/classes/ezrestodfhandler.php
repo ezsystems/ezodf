@@ -52,9 +52,12 @@ class eZRESTODFHandler extends eZRESTBaseHandler
                                                                'getOptions' => array( 'languageCode' => false,
                                                                                       'offset' => 0,
                                                                                       'limit' => 10 ) ) );
-        $moduleDefinition->addView( 'ezodfGetChildCount', array( 'method' => 'ezodfGetChildCount',
-                                                                 'functions' => 'ezodf_oo_client',
-                                                                 'getParams' => array( 'nodeID' ) ) );
+        $moduleDefinition->addView( 'ezodfGetMenuChildren', array( 'method' => 'ezodfGetMenuChildren',
+                                                                   'functions' => 'ezodf_oo_client',
+                                                                   'getParams' => array( 'nodeID' ),
+                                                                   'getOptions' => array( 'languageCode' => false,
+                                                                                          'offset' => 0,
+                                                                                          'limit' => 10 ) ) );
         $moduleDefinition->addView( 'ezodfGetNodeInfo', array( 'method' => 'ezodfGetNodeInfo',
                                                                'functions' => 'ezodf_oo_client',
                                                                'getParams' => array( 'nodeID' ),
@@ -159,29 +162,6 @@ class eZRESTODFHandler extends eZRESTBaseHandler
     }
 
     /**
-     * Get Child count.
-     *
-     * @param Array getParameters.
-     * @param Array getOptions.
-     * @param Array postParameters.
-     * @param Array postOptions.
-     *
-     * @return DOMElement DOMElement contating top node information.
-     */
-    public function ezodfGetChildCount( $getParams, $getOptions, $postParams, $postOptions )
-    {
-        $nodeID = $getParams['nodeID'];
-
-        $domDocument = new DOMDocument( '1.0', 'utf-8' );
-        $childCountElement = $domDocument->createElement( 'ChildCount' );
-        $childCountElement->setAttribute( 'count', eZContentObjectTreeNode::subTreeCountByNodeID( array( 'Depth' => 1,
-                                                                                                         'DepthOperator' => 'eq' ),
-                                                                                                  $nodeID ) );
-        return $childCountElement;
-
-    }
-
-    /**
      * Get Children.
      *
      * @param Array getParameters.
@@ -227,6 +207,59 @@ class eZRESTODFHandler extends eZRESTBaseHandler
         else
         {
             $childrenElement->setAttribute( 'count', count( $children ) );
+        }
+
+        return $childrenElement;
+    }
+
+    /**
+     * Get Menu children.
+     *
+     * @param Array getParameters.
+     * @param Array getOptions.
+     * @param Array postParameters.
+     * @param Array postOptions.
+     *
+     * @return DOMElement DOMElement contating top node information.
+     */
+    public function ezodfGetMenuChildren( $getParams, $getOptions, $postParams, $postOptions )
+    {
+        $nodeID = $getParams['nodeID'];
+        $languageCode = $getOptions['languageCode'];
+        $offset = $getOptions['offset'];
+        $limit = $getOptions['limit'];
+
+        $domDocument = new DOMDocument( '1.0', 'utf-8' );
+        $childrenElement = $domDocument->createElement( 'MenuChildren' );
+
+        // Set attributes.
+        $childrenElement->setAttribute( 'offset', $offset );
+        if ( $languageCode )
+        {
+            $childrenElement->setAttribute( 'languageCode', $languageCode );
+        }
+        $childrenElement->setAttribute( 'limit', $limit );
+
+        // Get children, and add them to children list.
+        $children = eZContentObjectTreeNode::subTreeByNodeID( array( 'Depth' => 1,
+                                                                     'DepthOperator' => 'eq',
+                                                                     'Limit' => $limit,
+                                                                     'Offset' => $offset,
+                                                                     'Language' => $languageCode,
+                                                                     'ClassFilterType' => 'include',
+                                                                     'ClassFilterArray' => eZINI::instance( 'contentstructuremenu.ini' )->variable( 'TreeMenu', 'ShowClasses' ) ),
+                                                              $nodeID );
+        if ( $children )
+        {
+            foreach( $children as $childNode )
+            {
+                $childrenElement->appendChild( $this->createTreeNodeDOMElement( $domDocument, $childNode ) );
+            }
+            $childrenElement->setAttribute( 'count', count( $children ) );
+        }
+        else
+        {
+            $childrenElement->setAttribute( 'count', 0 );
         }
 
         return $childrenElement;
@@ -332,7 +365,16 @@ class eZRESTODFHandler extends eZRESTBaseHandler
         // Set attributes.
         $nodeElement->setAttribute( 'nodeID', $node->attribute( 'node_id' ) );
         $nodeElement->setAttribute( 'parentID', $node->attribute( 'parent_node_id' ) );
-        $nodeElement->setAttribute( 'hasChildren', $node->childrenCount() ? '1' : '0' );
+
+        // Get child information.
+        $conditions = array( 'Depth' => 1,
+                             'DepthOperator' => 'eq' );
+        $nodeElement->setAttribute( 'childCount', eZContentObjectTreeNode::subTreeCountByNodeID( $conditions, $node->attribute( 'node_id' ) ) );
+
+        // Get child information for tree structure.
+        $conditions['ClassFilterType'] = 'include';
+        $conditions['ClassFilterArray'] = eZINI::instance( 'contentstructuremenu.ini' )->variable( 'TreeMenu', 'ShowClasses' );
+        $nodeElement->setAttribute( 'childMenuCount', eZContentObjectTreeNode::subTreeCountByNodeID( $conditions, $node->attribute( 'node_id' ) ) );
 
         // Get access rights element.
         $nodeElement->appendChild( $this->createAccessDOMElement( $domDocument, $node ) );

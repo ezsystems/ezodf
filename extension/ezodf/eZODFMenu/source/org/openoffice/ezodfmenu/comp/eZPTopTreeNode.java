@@ -43,6 +43,7 @@ public class eZPTopTreeNode extends eZPTreeNode {
 		name = nodeName;
 		
 		children = serverConnection.getTopNodeList();
+		menuChildren = children;
 	}
 
 	/*
@@ -56,7 +57,15 @@ public class eZPTopTreeNode extends eZPTreeNode {
 	/*
 	 * @see org.openoffice.ezodfmenu.comp.eZPTreeNode#getChildCount()
 	 */
-	public int getChildTreeCount()
+	public int getMenuChildCount()
+	{
+		return children.size();
+	}
+	
+	/*
+	 * @see org.openoffice.ezodfmenu.comp.eZPTreeNode#getChildCount()
+	 */
+	public int getChildCount()
 	{
 		return children.size();
 	}

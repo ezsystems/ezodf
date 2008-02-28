@@ -33,6 +33,7 @@ public class ServerConnection {
 	private static final String LoginPath = "ezrest/login";
 	private static final String TopNodeListPath = "ezrest/ezodfGetTopNodeList";
 	private static final String GetChildrenPath = "ezrest/ezodfGetChildren";
+	private static final String GetMenuChildrenPath = "ezrest/ezodfGetMenuChildren";
 	private static final String GetNodeInfoPath = "ezrest/ezodfGetNodeInfo";
 	private static final String FetchOONodePath = "ezrest/ezodfFetchOONode";
 	private static final String PutOONodePath = "ezrest/ezodfPutOONode";
@@ -148,6 +149,7 @@ public class ServerConnection {
 
 	/**
 	 * Get children of specified parent node. 
+	 * 
 	 * @param Parent node
 	 * @param offset
 	 * @param limit
@@ -166,6 +168,51 @@ public class ServerConnection {
 		{
 			// Send request	
 			InputStream in = MenuLib.sendHTTPGetRequest( getChildrenURL(), getParameters, this.sessionID );
+			DOMParser parser = new DOMParser();
+			InputSource source = new InputSource(in);
+			parser.parse(source);
+			in.close();
+			
+			// Parse result and create eZPTreeNode objects.
+			Document domDoc = parser.getDocument();
+		    NodeList nodeList = domDoc.getElementsByTagName( "Node" );
+		    for( int idx = 0; idx < nodeList.getLength(); idx++ )
+		    {
+		    	result.add( new eZPTreeNode( this, nodeList.item( idx ) ) );
+		    }
+		}
+		catch( Exception e )
+		{
+			JOptionPane.showMessageDialog( null,
+				    "Failed to get children: " + getChildrenURL() + ": " +  e.getMessage(),
+				    "getChildren",
+				    JOptionPane.WARNING_MESSAGE);
+		}
+		
+		return result;
+	}
+
+	/**
+	 * Get menu children of specified parent node. 
+	 * 
+	 * @param Parent node
+	 * @param offset
+	 * @param limit
+	 * @return Vector of eZPTreeNodes.
+	 */
+	public Vector<eZPTreeNode> getMenuChildren( eZPTreeNode parentNode, int offset, int limit )
+	{
+		Vector<eZPTreeNode> result = new Vector<eZPTreeNode>();
+		
+		HashMap<String,String> getParameters = new HashMap<String,String>();
+		getParameters.put( "nodeID", Integer.toString( parentNode.getNodeID() ) );
+		getParameters.put( "offset", Integer.toString( offset ) );
+		getParameters.put( "limit", Integer.toString( limit ) );
+		
+		try
+		{
+			// Send request	
+			InputStream in = MenuLib.sendHTTPGetRequest( getMenuChildrenURL(), getParameters, this.sessionID );
 			DOMParser parser = new DOMParser();
 			InputSource source = new InputSource(in);
 			parser.parse(source);
@@ -212,6 +259,16 @@ public class ServerConnection {
 	protected String getChildrenURL()
 	{
 		return serverInfo.getUrl() + "/" + ServerConnection.GetChildrenPath;
+	}
+
+	/**
+	 * Get menu children URL
+	 * 
+	 * @return URL to get children REST service
+	 */
+	protected String getMenuChildrenURL()
+	{
+		return serverInfo.getUrl() + "/" + ServerConnection.GetMenuChildrenPath;
 	}
 
 	/**

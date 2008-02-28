@@ -72,21 +72,21 @@ public class eZPTreeModel implements TreeModel {
 			return null;
 		}
 		
-		return node.getChild( idx );
+		return node.getMenuChild( idx );
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
 	 */
 	public int getChildCount(Object object) {
-		return ((eZPTreeNode)object).getChildTreeCount();
+		return ((eZPTreeNode)object).getMenuChildCount();
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.swing.tree.TreeModel#getIndexOfChild(java.lang.Object, java.lang.Object)
 	 */
 	public int getIndexOfChild(Object parent, Object object) {
-		return ((eZPTreeNode)parent).getIndexOfChild( (eZPTreeNode)object );
+		return ((eZPTreeNode)parent).getIndexOfMenuChild( (eZPTreeNode)object );
 	}
 
 	/* (non-Javadoc)
@@ -100,7 +100,7 @@ public class eZPTreeModel implements TreeModel {
 	 * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
 	 */
 	public boolean isLeaf(Object object) {
-		return ((eZPTreeNode)object).getChildTreeCount() == 0;
+		return ((eZPTreeNode)object).getMenuChildCount() == 0;
 	}
 
 	/* (non-Javadoc)

@@ -42,6 +42,7 @@ public class eZPTreeNode {
 	protected Node treeNode = null;
 	protected ServerConnection serverConnection;
 	
+	protected Vector<eZPTreeNode> menuChildren = new Vector<eZPTreeNode>();
 	protected Vector<eZPTreeNode> children = new Vector<eZPTreeNode>();
 	protected int childTreeCount = -1;
 	
@@ -157,14 +158,42 @@ public class eZPTreeNode {
 	}
 	
 	/**
+	 * Get Menu Child by index.
+	 * @param Index
+	 * @return Tree node cild.
+	 */
+	public eZPTreeNode getMenuChild( int idx )
+	{
+		try
+		{
+			return menuChildren.get( idx );
+		}
+		catch( Exception e )
+		{
+			// If unable child node is not fetched yet, fetch next 10 children, and try again.
+			try
+			{
+				menuChildren.addAll( serverConnection.getMenuChildren( this, menuChildren.size(), 10 ) );
+				return this.getMenuChild( idx );
+			}
+			catch( Exception e2 )
+			{
+				// Error output handled by serverConnection.getChildren();
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
 	 * Get child count.
 	 * 
 	 * @return Child count
 	 */
-	public int getChildTreeCount()
+	public int getMenuChildCount()
 	{
 		XPath xpath = XPathFactory.newInstance().newXPath();
-		String expression = "@childTreeCount";
+		String expression = "@childMenuCount";
 		try
 		{
 			return Integer.parseInt( (String)xpath.evaluate(expression, treeNode, XPathConstants.STRING ) );
@@ -172,8 +201,8 @@ public class eZPTreeNode {
 		catch ( Exception e )
 		{
 			JOptionPane.showMessageDialog( null,
-				    "Get childTreeCount XPath failed: " + e.getMessage(),
-				    "eZPTreeNode.getChildTreeCount()",
+				    "Get menuChildCount XPath failed: " + e.getMessage(),
+				    "eZPTreeNode.getMenuChildTreeCount()",
 				    JOptionPane.WARNING_MESSAGE);
 			return 0;
 		}
@@ -212,6 +241,18 @@ public class eZPTreeNode {
 	public int getIndexOfChild( eZPTreeNode childNode )
 	{
 		return children.indexOf( childNode );
+	}
+	
+	/**
+	 * Get index of menu child node.
+	 * 
+	 * @param childNode
+	 * 
+	 * @return Index of child node.
+	 */
+	public int getIndexOfMenuChild( eZPTreeNode childNode )
+	{
+		return menuChildren.indexOf( childNode );
 	}
 	
 	
