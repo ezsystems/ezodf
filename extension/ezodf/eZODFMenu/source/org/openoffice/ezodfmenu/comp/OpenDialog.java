@@ -39,6 +39,7 @@ public class OpenDialog extends JFrame {
 
 	protected JComboBox serverList;
 	protected JTree tree;
+	protected JPanel mainPanel;
 	protected OpenController controller;
 	private static final long serialVersionUID = 4400067100991729955L;
 
@@ -74,7 +75,8 @@ public class OpenDialog extends JFrame {
 		// Add main layout components
 		setLayout( new BorderLayout() );
 		add( getTopComponent(), BorderLayout.NORTH );
-		
+		mainPanel = new JPanel( new BorderLayout() );
+		add( mainPanel, BorderLayout.CENTER );
 	}
 	
 	/**
@@ -82,22 +84,12 @@ public class OpenDialog extends JFrame {
 	 */
 	public void populateMainComponent()
 	{
-		add( getMainComponent(), BorderLayout.CENTER );
-	}
-	
-	/**
-	 * Populate main part of open dialog.
-	 * 
-	 * @return Main part component.
-	 */
-	protected Component getMainComponent()
-	{
-		JPanel panel = new JPanel( new BorderLayout() );
+		// Remove existing components.
+		mainPanel.removeAll();
 		
 		tree = new JTree( new eZPTreeModel( controller.serverConnection ) );
-		panel.add( tree, BorderLayout.CENTER );
-		
-		return panel;
+		mainPanel.add( tree, BorderLayout.CENTER );
+		mainPanel.updateUI();
 	}
 	
 	/**
