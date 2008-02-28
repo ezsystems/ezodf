@@ -25,7 +25,11 @@
 package org.openoffice.ezodfmenu.comp;
 
 import javax.swing.*;
+import javax.swing.event.ListDataListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeSelectionModel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -41,6 +45,7 @@ public class OpenDialog extends JFrame {
 
 	protected JComboBox serverList;
 	protected JTree tree;
+	protected JList list;
 	protected JPanel mainPanel;
 	protected OpenController controller;
 	private static final long serialVersionUID = 4400067100991729955L;
@@ -89,9 +94,30 @@ public class OpenDialog extends JFrame {
 		// Remove existing components.
 		mainPanel.removeAll();
 		
+		// Add JTree
 		tree = new JTree( new eZPTreeModel( controller.serverConnection ) );
+		tree.getSelectionModel().setSelectionMode( TreeSelectionModel.SINGLE_TREE_SELECTION );
+		tree.addTreeSelectionListener( new TreeSelectionListener(){
+			public void valueChanged(TreeSelectionEvent arg0) {
+				eZPTreeNode node = (eZPTreeNode)tree.getLastSelectedPathComponent();
+
+				/* if nothing is selected, set empty list model, if not, use populated list model. */ 
+				if (node == null){
+					list.setModel( new DefaultListModel() );
+				}
+				else{
+					list.setModel( new eZPTreeListModel( node ) );
+				}
+			}	
+		});
+		JScrollPane treeScrollPane = new JScrollPane( tree );
 		
-		mainPanel.add( new JScrollPane( tree ), BorderLayout.CENTER );
+		// Add List.
+		list = new JList( new DefaultListModel() );
+		JScrollPane listScrollPane = new JScrollPane( list );
+		
+		mainPanel.add( new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, treeScrollPane, listScrollPane ) );
+		
 		mainPanel.updateUI();
 	}
 	
