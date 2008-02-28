@@ -25,6 +25,8 @@
 package org.openoffice.ezodfmenu.comp;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultTreeCellRenderer;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -88,7 +90,8 @@ public class OpenDialog extends JFrame {
 		mainPanel.removeAll();
 		
 		tree = new JTree( new eZPTreeModel( controller.serverConnection ) );
-		mainPanel.add( tree, BorderLayout.CENTER );
+		
+		mainPanel.add( new JScrollPane( tree ), BorderLayout.CENTER );
 		mainPanel.updateUI();
 	}
 	

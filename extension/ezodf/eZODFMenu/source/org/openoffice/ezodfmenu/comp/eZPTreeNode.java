@@ -65,7 +65,6 @@ public class eZPTreeNode {
 		serverConnection = connection;
 		treeNode = node;
 	}
-
 	
 	/**
 	 * Get node name
@@ -74,7 +73,7 @@ public class eZPTreeNode {
 	public String getName()
 	{
 		XPath xpath = XPathFactory.newInstance().newXPath();
-		String expression = "Object/NameList/Name[@locale=Object/@initialLanguage]/text()";
+		String expression = "Object/NameList/Name[1]/text()";
 		try
 		{
 			return (String) xpath.evaluate(expression, treeNode, XPathConstants.STRING);
@@ -88,7 +87,29 @@ public class eZPTreeNode {
 			return "";
 		}
 	}
-	
+
+	/**
+	 * Get node name
+	 * @return Name
+	 */
+	public String getClassName()
+	{
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		String expression = "Object/Class/NameList/Name[1]/text()";
+		try
+		{
+			return (String) xpath.evaluate(expression, treeNode, XPathConstants.STRING);
+		}
+		catch ( Exception e )
+		{
+			JOptionPane.showMessageDialog( null,
+				    "Get name XPath failed: " + e.getMessage(),
+				    "eZPTreeNode.getName()",
+				    JOptionPane.WARNING_MESSAGE);
+			return "";
+		}
+	}
+
 	public int getNodeID()
 	{
 		XPath xpath = XPathFactory.newInstance().newXPath();
@@ -208,5 +229,8 @@ public class eZPTreeNode {
 		this.treeNode = treeNode;
 	}
 	
-	
+	public String toString()
+	{
+		return this.getName() + " ( " + this.getClassName() + " )";
+	}
 }

@@ -53,8 +53,6 @@ public class eZPTopTreeNode extends eZPTreeNode {
 		return name;
 	}
 	
-	
-	
 	/*
 	 * @see org.openoffice.ezodfmenu.comp.eZPTreeNode#getChildCount()
 	 */
@@ -69,5 +67,10 @@ public class eZPTopTreeNode extends eZPTreeNode {
 	public int getNodeID()
 	{
 		return eZPTreeNode.TopNodeID;
+	}
+	
+	public String toString()
+	{
+		return this.getName();
 	}
 }
