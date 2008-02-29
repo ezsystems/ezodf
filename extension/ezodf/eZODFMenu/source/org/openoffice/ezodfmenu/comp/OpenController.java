@@ -28,7 +28,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.plaf.metal.MetalLookAndFeel;
-import javax.swing.plaf.synth.SynthLookAndFeel;
 
 
 /**

@@ -24,17 +24,16 @@
  */
 package org.openoffice.ezodfmenu.comp;
 
-import java.io.BufferedOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.JOptionPane;
 
-import com.sun.org.apache.xerces.internal.impl.xs.dom.DOMParser;
 
 
 /**
@@ -107,7 +106,7 @@ public class MenuLib {
 		uri += "?";
 		for( Iterator iterator = getParameters.entrySet().iterator(); iterator.hasNext(); )
 		{
-			Map.Entry<String,String> map = (Map.Entry<String,String>)iterator.next();
+			Map.Entry<String,String> map = (Map.Entry<String, String>)iterator.next();
 			uri += map.getKey() + "=" + map.getValue() + "&";
 		}
 

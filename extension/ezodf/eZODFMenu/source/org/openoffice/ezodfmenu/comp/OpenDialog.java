@@ -25,7 +25,6 @@
 package org.openoffice.ezodfmenu.comp;
 
 import javax.swing.*;
-import javax.swing.event.ListDataListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -78,13 +77,39 @@ public class OpenDialog extends JFrame {
 	protected void populateDialog()
 	{
 		// Set size
-		setSize( 800, 600 );
-		
-		// Add main layout components
+		setSize( 800, 600 );		
+
 		setLayout( new BorderLayout() );
+//		 Add Server selection
 		add( getTopComponent(), BorderLayout.NORTH );
+		
+		// Add server browse/file selection
 		mainPanel = new JPanel( new BorderLayout() );
 		add( mainPanel, BorderLayout.CENTER );
+		
+		// Add Open/Cancel buttons.
+		add( getButtonPanel(), BorderLayout.SOUTH );
+	}
+	
+	/**
+	 * Get button panel
+	 * 
+	 * @return Button panel
+	 */
+	protected Component getButtonPanel()
+	{
+		JPanel panel = new JPanel( new BorderLayout() );
+		JPanel buttonPanel = new JPanel();
+		panel.add( buttonPanel, BorderLayout.EAST );
+		
+		JButton cancelButton = new JButton( );
+		cancelButton.addActionListener( new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+					// TODO
+			}
+		});
+		
+		return panel;
 	}
 	
 	/**
@@ -111,10 +136,15 @@ public class OpenDialog extends JFrame {
 				}
 			}	
 		});
+		// Use folder icon for leaf icons.
+		DefaultTreeCellRenderer treeRenderer = new DefaultTreeCellRenderer();
+		treeRenderer.setLeafIcon( treeRenderer.getDefaultClosedIcon() );
+		tree.setCellRenderer( treeRenderer );
 		JScrollPane treeScrollPane = new JScrollPane( tree );
 		
-		// Add List.
+		// Add table.
 		table = new JTable( new DefaultTableModel() );
+		table.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
 		JScrollPane listScrollPane = new JScrollPane( table );
 		
 		mainPanel.add( new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, treeScrollPane, listScrollPane ) );

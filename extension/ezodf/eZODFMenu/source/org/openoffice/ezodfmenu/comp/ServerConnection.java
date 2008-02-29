@@ -4,9 +4,6 @@
 package org.openoffice.ezodfmenu.comp;
 
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Vector;
 

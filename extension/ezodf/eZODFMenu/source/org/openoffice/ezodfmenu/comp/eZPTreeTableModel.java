@@ -5,8 +5,6 @@ package org.openoffice.ezodfmenu.comp;
 
 import java.util.Date;
 
-import javax.swing.JComponent;
-import javax.swing.event.ListDataListener;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
