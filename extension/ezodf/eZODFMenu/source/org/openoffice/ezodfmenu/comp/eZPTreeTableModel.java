@@ -25,6 +25,16 @@ public class eZPTreeTableModel implements TableModel {
 	{
 		this.treeNode = treeNode;
 	}
+	
+	/**
+	 * Get eZPTreeNode at specified row index.
+	 * 
+	 * @return Tree node
+	 */
+	public eZPTreeNode getTreeNode( int rowIndex )
+	{
+		return treeNode.getChild( rowIndex );
+	}
 
 	public void addTableModelListener(TableModelListener arg0) {
 		// Do nothing.

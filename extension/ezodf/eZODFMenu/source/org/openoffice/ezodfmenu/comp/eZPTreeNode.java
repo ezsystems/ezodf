@@ -34,6 +34,8 @@ import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Node;
 
+import sun.misc.BASE64Decoder;
+
 /**
  * @author hovik
  *
@@ -42,6 +44,9 @@ public class eZPTreeNode {
 
 	protected Node treeNode = null;
 	protected ServerConnection serverConnection;
+	
+	protected byte[] OODocumentData = null;
+	protected String OODocumentFileName = null;
 	
 	protected Vector<eZPTreeNode> menuChildren = new Vector<eZPTreeNode>();
 	protected Vector<eZPTreeNode> children = new Vector<eZPTreeNode>();
@@ -66,6 +71,64 @@ public class eZPTreeNode {
 	{
 		serverConnection = connection;
 		treeNode = node;
+	}
+	
+	/**
+	 * Get OpenDocument data.
+	 * 
+	 * @return OO document data.
+	 */
+	public byte[] getOODocumentData()
+	{
+		if ( this.OODocumentData == null )
+		{
+			this.loadOODocument();
+		}
+		
+		return this.OODocumentData; 
+	}
+
+	/**
+	 * Load OODocument data.
+	 */
+	protected void loadOODocument()
+	{
+		BASE64Decoder decoder = new BASE64Decoder();
+		Node OODocumentNode = serverConnection.getOODocument( this );
+		if ( OODocumentNode == null )
+		{
+			JOptionPane.showMessageDialog( null,
+				    "Unable to get OODocument node.",
+				    "eZPTreeNode.loadOODocument",
+				    JOptionPane.WARNING_MESSAGE);
+		}
+		
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		String expression = "@filename";
+		try
+		{
+			this.OODocumentFileName = (String) xpath.evaluate(expression, OODocumentNode, XPathConstants.STRING);
+		}
+		catch( Exception e )
+		{
+			JOptionPane.showMessageDialog( null,
+				    "Unable to get filename form OODocument: " + e.getMessage(),
+				    "eZPTreeNode.loadOODocument",
+				    JOptionPane.WARNING_MESSAGE);
+		}
+		
+		expression = "text()";
+		try
+		{
+			this.OODocumentData = decoder.decodeBuffer( (String) xpath.evaluate(expression, OODocumentNode, XPathConstants.STRING) );
+		}
+		catch( Exception e )
+		{
+			JOptionPane.showMessageDialog( null,
+				    "Unable to get ODT data form OODocument: " + e.getMessage(),
+				    "eZPTreeNode.loadOODocument",
+				    JOptionPane.WARNING_MESSAGE);
+		}
 	}
 	
 	/**

@@ -55,6 +55,24 @@ public class OpenController {
 	}
 	
 	/**
+	 * Open OO Document in OpenOffice.org
+	 * 
+	 * @param Tree node representing the document.
+	 */
+	public void openDocument( eZPTreeNode treeNode )
+	{
+		byte[] ooDocumentData = treeNode.getOODocumentData();
+		
+		// If OO data is null, return.
+		if ( ooDocumentData == null )
+		{
+			return;
+		}
+		
+		
+	}
+	
+	/**
 	 * Load data needed by the open dialog window
 	 */
 	public void loadData()
@@ -106,6 +124,14 @@ public class OpenController {
 	 */
 	public void setServerInfoList(ServerInfo[] serverInfoList) {
 		this.serverInfoList = serverInfoList;
+	}
+	
+	/**
+	 * Exit program.
+	 */
+	public void exit()
+	{
+		System.exit(0);
 	}
 
 }

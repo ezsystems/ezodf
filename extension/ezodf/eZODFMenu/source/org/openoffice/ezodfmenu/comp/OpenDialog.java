@@ -62,7 +62,7 @@ public class OpenDialog extends JFrame {
 			public void windowClosed(WindowEvent e) {}
 			public void windowActivated(WindowEvent e) {}
 			public void windowClosing(WindowEvent e) {
-				System.exit( 0 );
+				controller.exit();
 			}
 			public void windowDeactivated(WindowEvent e) {}
 			public void windowDeiconified(WindowEvent e) {}
@@ -102,10 +102,37 @@ public class OpenDialog extends JFrame {
 		JPanel buttonPanel = new JPanel();
 		panel.add( buttonPanel, BorderLayout.EAST );
 		
-		JButton cancelButton = new JButton( );
+		// Add Cancel button.
+		JButton cancelButton = new JButton( "Cancel" );
 		cancelButton.addActionListener( new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
-					// TODO
+				// Exit program.	 	
+				controller.exit();
+			}
+		});
+		buttonPanel.add( cancelButton );
+		
+		// Add open button.
+		JButton openButton = new JButton( "Open" );
+		openButton.addActionListener( new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				if ( table.getSelectedRow() != -1  )
+				{
+					try {
+						controller.openDocument( ((eZPTreeTableModel)table.getModel()).getTreeNode( table.getSelectedRow() ) );
+					}
+					catch( Exception e)
+					{
+						// Do nothing.
+					}
+				}
+				else
+				{
+					JOptionPane.showMessageDialog( null,
+						    "Please select document before opening.",
+						    "Open document",
+						    JOptionPane.INFORMATION_MESSAGE );
+				}	
 			}
 		});
 		

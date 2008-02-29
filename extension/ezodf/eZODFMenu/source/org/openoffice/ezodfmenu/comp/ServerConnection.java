@@ -143,6 +143,42 @@ public class ServerConnection {
 		
 		return result;
 	}
+	
+	/**
+	 * Get OO document data.
+	 * 
+	 * @param eZPTreeNode
+	 * 
+	 * @return OO Data Node.
+	 */
+	public Node getOODocument( eZPTreeNode treeNode )
+	{
+		HashMap<String,String> getParameters = new HashMap<String,String>();
+		getParameters.put( "nodeID", Integer.toString( treeNode.getNodeID() ) );
+
+		try
+		{
+			// Send request
+			InputStream in = MenuLib.sendHTTPGetRequest( getOODocumentURL(), getParameters, this.sessionID );
+			DOMParser parser = new DOMParser();
+			InputSource source = new InputSource(in);
+			parser.parse(source);
+			in.close();
+			
+			// Parse result and create eZPTreeNode objects.
+			Document domDoc = parser.getDocument();
+		    return domDoc.getElementsByTagName( "OODocument" ).item( 0 );
+		}
+		catch( Exception e )
+		{
+			JOptionPane.showMessageDialog( null,
+				    "Failed to get top node list: " + getChildrenURL() + ": " +  e.getMessage(),
+				    "getTopNodeList",
+				    JOptionPane.WARNING_MESSAGE);
+		}
+		
+		return null;
+	}
 
 	/**
 	 * Get children of specified parent node. 
@@ -256,6 +292,16 @@ public class ServerConnection {
 	protected String getChildrenURL()
 	{
 		return serverInfo.getUrl() + "/" + ServerConnection.GetChildrenPath;
+	}
+	
+	/**
+	 * Get OO Document URL
+	 * 
+	 * @return URL to getOODocument
+	 */
+	protected String getOODocumentURL()
+	{
+		return serverInfo.getUrl() + "/" + ServerConnection.FetchOONodePath;
 	}
 
 	/**
