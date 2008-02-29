@@ -24,10 +24,29 @@
  */
 package org.openoffice.ezodfmenu.comp;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.plaf.metal.MetalLookAndFeel;
+
+import com.sun.star.awt.XWindow;
+import com.sun.star.awt.XWindowListener;
+import com.sun.star.beans.PropertyValue;
+import com.sun.star.document.EventObject;
+import com.sun.star.document.XEventListener;
+import com.sun.star.frame.XComponentLoader;
+import com.sun.star.frame.XController;
+import com.sun.star.frame.XFrame;
+import com.sun.star.frame.XModel;
+import com.sun.star.lang.XComponent;
+import com.sun.star.lang.XMultiComponentFactory;
+import com.sun.star.uno.UnoRuntime;
+import com.sun.star.uno.XComponentContext;
+import com.sun.star.xml.dom.XDocument;
 
 
 /**
@@ -39,12 +58,13 @@ public class OpenController {
 	protected OpenDialog openDialog;
 	protected ServerInfo[] serverInfoList;
 	protected ServerConnection serverConnection;
+	protected XComponentContext xContext;
 	
 	/**
 	 * Constructor. Initializes the open dialog. Execute the
 	 * open() method to open the dialog. 
 	 */
-	public OpenController() {
+	public OpenController( XComponentContext xContext ) {
 		try {
 			UIManager.setLookAndFeel( new MetalLookAndFeel() );
 		}
@@ -52,6 +72,7 @@ public class OpenController {
 		}
 		openDialog = new OpenDialog( this );
 		SwingUtilities.updateComponentTreeUI( openDialog );
+		this.xContext = xContext;
 	}
 	
 	/**
@@ -69,16 +90,84 @@ public class OpenController {
 			return;
 		}
 		
-		
-	}
-	
-	/**
-	 * Load data needed by the open dialog window
-	 */
-	public void loadData()
-	{
-		// TODO
-	}
+		XMultiComponentFactory serviceManager = xContext.getServiceManager();
+		Object desktop;
+
+        // Retrieve the Desktop object and get its XComponentLoader.
+		try 
+		{
+			desktop = serviceManager.createInstanceWithContext( "com.sun.star.frame.Desktop", xContext );
+		}
+		catch( Exception e )
+		{
+			JOptionPane.showMessageDialog( null,
+				    "Unable to load desktop from service manager: " + e.getMessage(),
+				    "OpenController.openDocument",
+				    JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+        XComponentLoader loader = (XComponentLoader)UnoRuntime.queryInterface( XComponentLoader.class, desktop);
+
+        // Define general document properties (see
+        // com.sun.star.document.MediaDescriptor for the possibilities).
+        ArrayList<PropertyValue> props = new ArrayList<PropertyValue>();
+        PropertyValue p = null;
+        // Set document filename
+        p = new PropertyValue();
+        p.Name = "eZPFilename";
+        p.Value = treeNode.getOODocumentFilename();
+        props.add(p);
+        p = new PropertyValue();
+        p.Name = "Title";
+        p.Value = treeNode.getName();
+        props.add(p);
+        // Add eZPTreeNode
+// TODO - add IDL for eZPTreeNode
+        /*        p = new PropertyValue();
+        p.Name = "eZPTreeNode";
+        p.Value = treeNode;
+        props.add( p );*/
+
+        PropertyValue[] properties = new PropertyValue[props.size()];
+        props.toArray(properties);
+
+        // Create the document
+        // (see com.sun.star.frame.XComponentLoader for argument details).
+
+        XComponent document = null;
+        String odfFile = MenuLib.storeTempFile( ooDocumentData, treeNode.getOODocumentFilename() );
+
+        if ( odfFile != null) {
+            // Create a new document that is a duplicate of the template.
+
+            String templateFileURL = this.filePathToURL( odfFile );
+            try {
+            	document = loader.loadComponentFromURL(
+            			templateFileURL,    // URL of templateFile.
+            			"_blank",           // Target frame name (_blank creates new frame).
+            			0,                  // Search flags.
+            			properties);        // Document attributes.
+            }
+            catch ( Exception e )
+            {
+            	JOptionPane.showMessageDialog( null,
+    				    "Unable to load component from URL : " + e.getMessage(),
+    				    "OpenController.openDocument",
+    				    JOptionPane.WARNING_MESSAGE);
+            	return;
+            }
+       
+               // Get the document window and frame.
+
+        	XModel model = (XModel) UnoRuntime.queryInterface(XModel.class, document);
+        	XController c = model.getCurrentController();
+        	XFrame frame = c.getFrame();
+        	XWindow window = frame.getContainerWindow();
+
+        	window.setEnable( true );
+        	window.setVisible( true );
+        }
+	}	
 
 	/**
 	 * Connect to server
@@ -131,7 +220,22 @@ public class OpenController {
 	 */
 	public void exit()
 	{
-		System.exit(0);
+		openDialog.setVisible( false );
 	}
+	
+	/**
+	 * Convert filename to url.
+	 * @param filename
+	 * @return url
+	 */
+	protected String filePathToURL(String file) {
+        File f = new File(file);
+        StringBuffer sb = new StringBuffer("file:///");
+        try {
+            sb.append(f.getCanonicalPath().replace('\\', '/'));
+        } catch (IOException e) {
+        }
+        return sb.toString();
+    } 
 
 }

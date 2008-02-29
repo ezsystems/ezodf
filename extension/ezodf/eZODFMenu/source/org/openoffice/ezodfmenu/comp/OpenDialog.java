@@ -135,6 +135,7 @@ public class OpenDialog extends JFrame {
 				}	
 			}
 		});
+		buttonPanel.add( openButton );
 		
 		return panel;
 	}

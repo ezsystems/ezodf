@@ -24,12 +24,15 @@
  */
 package org.openoffice.ezodfmenu.comp;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 import java.util.Map.Entry;
 
 import javax.swing.JOptionPane;
@@ -201,5 +204,34 @@ public class MenuLib {
 		
 		// Read XML response.
 		return connection.getInputStream();
+	}
+	
+	/**
+	 * Store file to tmp path. Returns filename.
+	 * 
+	 * @param Data
+	 * 
+	 * @return Filename 
+	 */
+	public static String storeTempFile( byte[] data, String filename )
+	{
+		Random random = new Random();
+		File file = new File( getStoragePath(), filename );
+		try
+		{
+			FileOutputStream fos = new FileOutputStream( file );
+			fos.write( data );
+			fos.flush();
+			fos.close();
+			return file.getAbsolutePath();
+		}
+		catch( Exception e )
+		{
+			JOptionPane.showMessageDialog( null,
+				    "Unable to create temporary file: " + e.getMessage(),
+				    "MenuLib.storeTmpFile",
+				    JOptionPane.WARNING_MESSAGE);
+			return null;
+		}
 	}
 }

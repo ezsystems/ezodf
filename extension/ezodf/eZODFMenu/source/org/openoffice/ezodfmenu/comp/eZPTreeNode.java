@@ -24,6 +24,7 @@
  */
 package org.openoffice.ezodfmenu.comp;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Vector;
 
@@ -40,13 +41,14 @@ import sun.misc.BASE64Decoder;
  * @author hovik
  *
  */
-public class eZPTreeNode {
+public class eZPTreeNode implements Serializable {
 
+	private static final long serialVersionUID = 5473805752377662556L;
 	protected Node treeNode = null;
 	protected ServerConnection serverConnection;
 	
 	protected byte[] OODocumentData = null;
-	protected String OODocumentFileName = null;
+	protected String OODocumentFilename = null;
 	
 	protected Vector<eZPTreeNode> menuChildren = new Vector<eZPTreeNode>();
 	protected Vector<eZPTreeNode> children = new Vector<eZPTreeNode>();
@@ -89,6 +91,21 @@ public class eZPTreeNode {
 	}
 
 	/**
+	 * Get OpenDocument filename.
+	 * 
+	 * @return OO document filename.
+	 */
+	public String getOODocumentFilename()
+	{
+		if ( this.OODocumentFilename == null )
+		{
+			this.loadOODocument();
+		}
+		
+		return this.OODocumentFilename; 
+	}
+
+	/**
 	 * Load OODocument data.
 	 */
 	protected void loadOODocument()
@@ -107,7 +124,7 @@ public class eZPTreeNode {
 		String expression = "@filename";
 		try
 		{
-			this.OODocumentFileName = (String) xpath.evaluate(expression, OODocumentNode, XPathConstants.STRING);
+			this.OODocumentFilename = (String) xpath.evaluate(expression, OODocumentNode, XPathConstants.STRING);
 		}
 		catch( Exception e )
 		{
