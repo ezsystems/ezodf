@@ -41,7 +41,8 @@ import sun.misc.BASE64Decoder;
  * @author hovik
  *
  */
-public class eZPTreeNode implements Serializable {
+public class eZPTreeNode 
+	implements Serializable,  org.openoffice.ezodfmenu.eZPTreeNode {
 
 	private static final long serialVersionUID = 5473805752377662556L;
 	protected Node treeNode = null;

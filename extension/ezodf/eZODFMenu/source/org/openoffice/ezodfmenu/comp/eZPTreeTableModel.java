@@ -43,12 +43,12 @@ public class eZPTreeTableModel implements TableModel {
 	public Class<?> getColumnClass( int columnIndex ) {
 		switch( columnIndex )
 		{
-			case 0: return new Object().getClass();
 			default:
-			case 1: return new String().getClass();
-			case 2: return new String().getClass();
-			case 3: return new Date().getClass();
-			case 4: return new Date().getClass();
+			case 0: return Object.class;
+			case 1: return String.class;
+			case 2: return String.class;
+			case 3: return Date.class;
+			case 4: return Date.class;
 		}
 	}
 

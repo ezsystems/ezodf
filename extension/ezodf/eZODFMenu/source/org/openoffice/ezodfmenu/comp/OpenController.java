@@ -123,10 +123,10 @@ public class OpenController {
         props.add(p);
         // Add eZPTreeNode
 // TODO - add IDL for eZPTreeNode
-        /*        p = new PropertyValue();
+        p = new PropertyValue();
         p.Name = "eZPTreeNode";
         p.Value = treeNode;
-        props.add( p );*/
+        props.add( p );
 
         PropertyValue[] properties = new PropertyValue[props.size()];
         props.toArray(properties);
