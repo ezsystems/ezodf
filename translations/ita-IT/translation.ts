@@ -3,19 +3,19 @@
     <name>extension/ezodf</name>
     <message>
         <source>Import</source>
-        <translation>Importa</translation>
+        <translation type="obsolete">Importa</translation>
     </message>
     <message>
         <source>Export</source>
-        <translation>Esporta</translation>
+        <translation type="obsolete">Esporta</translation>
     </message>
     <message>
         <source>Replace</source>
-        <translation>Sostituisci</translation>
+        <translation type="obsolete">Sostituisci</translation>
     </message>
     <message>
         <source>Choose document placement</source>
-        <translation>Scegli la posizione del documento</translation>
+        <translation type="obsolete">Scegli la posizione del documento</translation>
     </message>
     <message>
         <source>Upload file</source>
@@ -212,7 +212,7 @@ Le immagini saranno collocate nella sezione Media in modo da poterle riusare.</t
     <name>extension/ezodf/popupmenu</name>
     <message>
         <source>Export OpenOffice.org</source>
-        <translation>Esportazione OpenOffice.org</translation>
+        <translation type="obsolete">Esportazione OpenOffice.org</translation>
     </message>
     <message>
         <source>Export PDF</source>
@@ -224,11 +224,27 @@ Le immagini saranno collocate nella sezione Media in modo da poterle riusare.</t
     </message>
     <message>
         <source>Import OpenOffice.org</source>
-        <translation>Importazione OpenOffice.org</translation>
+        <translation type="obsolete">Importazione OpenOffice.org</translation>
     </message>
     <message>
         <source>Replace OpenOffice.org</source>
-        <translation>Sostituisci OpenOffice.org</translation>
+        <translation type="obsolete">Sostituisci OpenOffice.org</translation>
+    </message>
+    <message>
+        <source>OpenOffice.org</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export OpenOffice</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import OpenOffice</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Replace OpenOffice</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

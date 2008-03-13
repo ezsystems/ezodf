@@ -3,19 +3,19 @@
     <name>extension/ezodf</name>
     <message>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Replace</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Choose document placement</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Upload file</source>
@@ -49,62 +49,39 @@
         <source>Document is now imported</source>
         <translation type="unfinished"></translation>
     </message>
-     <message>
+    <message>
         <source>The object was imported as: %class_name</source>
         <translation type="unfinished"></translation>
     </message>
-     <message>
+    <message>
         <source>Document imported as</source>
         <translation type="unfinished"></translation>
     </message>
-     <message>
+    <message>
         <source>The images are placed in the media and can be re-used.</source>
         <translation type="unfinished"></translation>
     </message>
-     <message>
+    <message>
         <source>Import another document</source>
         <translation type="unfinished"></translation>
     </message>
-     <message>
+    <message>
         <source>Import OpenOffice.org document</source>
         <translation type="unfinished"></translation>
     </message>
-     <message>
+    <message>
         <source>Replace document</source>
         <translation type="unfinished"></translation>
     </message>
-     <message>
+    <message>
         <source>Import to</source>
         <translation type="unfinished"></translation>
     </message>
-     <message>
+    <message>
         <source>You can import OpenOffice.org Writer documents directly into eZ publish from this page. You are
 asked where to place the document and eZ publish does the rest. The document is converted into
 the appropriate class during the import, you get a notice about this after the import is done.
 Images are placed in the media library so you can re-use them in other articles.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>extension/ezodf/popupmenu</name>
-    <message>
-        <source>Export OpenOffice.org</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Export PDF</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Export Word</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Import OpenOffice.org</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Replace OpenOffice.org</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -221,11 +198,46 @@ Images are placed in the media library so you can re-use them in other articles.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Document is not suported.</source>
+        <source>Cannot store uploaded file, cannot import.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>extension/ezodf/popupmenu</name>
+    <message>
+        <source>Export OpenOffice.org</source>
+        <translation type="obsolete"></translation>
+    </message>
+    <message>
+        <source>Export PDF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot store uploaded file, cannot import.</source>
+        <source>Export Word</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import OpenOffice.org</source>
+        <translation type="obsolete"></translation>
+    </message>
+    <message>
+        <source>Replace OpenOffice.org</source>
+        <translation type="obsolete"></translation>
+    </message>
+    <message>
+        <source>OpenOffice.org</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export OpenOffice</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import OpenOffice</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Replace OpenOffice</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
