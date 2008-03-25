@@ -53,26 +53,16 @@ import com.sun.star.xml.dom.XDocument;
  * eZODFMenuOepnController. This class creates "Open" dialog
  * and contains the controlling methods.
  */
-public class OpenController {
-
-	protected OpenDialog openDialog;
-	protected ServerInfo[] serverInfoList;
-	protected ServerConnection serverConnection;
-	protected XComponentContext xContext;
+public class OpenController extends Controller {
 	
 	/**
 	 * Constructor. Initializes the open dialog. Execute the
 	 * open() method to open the dialog. 
 	 */
 	public OpenController( XComponentContext xContext ) {
-		try {
-			UIManager.setLookAndFeel( new MetalLookAndFeel() );
-		}
-		catch( Exception e ){
-		}
-		openDialog = new OpenDialog( this );
-		SwingUtilities.updateComponentTreeUI( openDialog );
-		this.xContext = xContext;
+		super( xContext );
+		dialog = new OpenDialog( this );
+		SwingUtilities.updateComponentTreeUI( dialog );
 	}
 	
 	/**
@@ -122,7 +112,6 @@ public class OpenController {
         p.Value = treeNode.getName();
         props.add(p);
         // Add eZPTreeNode
-// TODO - add IDL for eZPTreeNode
         p = new PropertyValue();
         p.Name = "eZPTreeNode";
         p.Value = treeNode;
@@ -167,75 +156,5 @@ public class OpenController {
         	window.setEnable( true );
         	window.setVisible( true );
         }
-	}	
-
-	/**
-	 * Connect to server
-	 * 
-	 * @param Server info.
-	 */
-	public void connectToServer( ServerInfo serverInfo )
-	{
-		if ( serverInfo == null )
-		{
-			JOptionPane.showMessageDialog( this.openDialog,
-					"No server selected",
-					"Connect",
-					JOptionPane.WARNING_MESSAGE );
-			return;
-		}
-		this.serverConnection = new ServerConnection( serverInfo );
-		if ( !this.serverConnection.connect() )
-		{
-			// Error output handled by serverConnection.
-			return;
-		}
-		openDialog.populateMainComponent();
 	}
-
-	/**
-	 * Open OO Open dialog
-	 */
-	public void openDialog()
-	{
-		openDialog.setVisible( true );
-	}
-
-	/**
-	 * @return the serverInfoList
-	 */
-	public ServerInfo[] getServerInfoList() {
-		return serverInfoList;
-	}
-
-	/**
-	 * @param serverInfoList the serverInfoList to set
-	 */
-	public void setServerInfoList(ServerInfo[] serverInfoList) {
-		this.serverInfoList = serverInfoList;
-	}
-	
-	/**
-	 * Exit program.
-	 */
-	public void exit()
-	{
-		openDialog.setVisible( false );
-	}
-	
-	/**
-	 * Convert filename to url.
-	 * @param filename
-	 * @return url
-	 */
-	protected String filePathToURL(String file) {
-        File f = new File(file);
-        StringBuffer sb = new StringBuffer("file:///");
-        try {
-            sb.append(f.getCanonicalPath().replace('\\', '/'));
-        } catch (IOException e) {
-        }
-        return sb.toString();
-    } 
-
 }

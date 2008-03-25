@@ -50,7 +50,7 @@ public class ServerEditDialog extends JDialog
 
 	private static final long serialVersionUID = -8627326145818032301L;
 	protected ServerInfo serverInfo;
-	protected OpenDialog openDialog;
+	protected Dialog dialog;
 	
 	protected JTextField urlField;
 	protected JTextField usernameField;
@@ -62,16 +62,16 @@ public class ServerEditDialog extends JDialog
 	 * 
 	 * @param Server info.
 	 */
-	public ServerEditDialog( final OpenDialog openDialog, ServerInfo serverInfo )
+	public ServerEditDialog( final Dialog dialog, ServerInfo serverInfo )
 	{
-		super( openDialog );
-		openDialog.setEnabled( false );
+		super( dialog );
+		dialog.setEnabled( false );
 		setSize( 600, 200 );
 		setServerInfo( serverInfo );
 		
 		addWindowStateListener( new WindowStateListener(){
 			public void windowStateChanged(WindowEvent arg0) {
-				openDialog.setEnabled( true );
+				dialog.setEnabled( true );
 			}
 		});
 		
@@ -87,7 +87,7 @@ public class ServerEditDialog extends JDialog
 			public void windowOpened(WindowEvent e) {}
 		} );
 		
-		this.openDialog = openDialog;
+		this.dialog = dialog;
 		populateDialog();
 	}
 	
@@ -192,7 +192,7 @@ public class ServerEditDialog extends JDialog
 		serverInfo.setPassword( new String( password1.getPassword() ) );
 		
 		ServerInfo.addToList( serverInfo );
-		openDialog.populateServerList();
+		dialog.populateServerList();
 		
 		return true;
 	}
@@ -202,7 +202,7 @@ public class ServerEditDialog extends JDialog
 	 */
 	protected void close()
 	{
-		this.openDialog.setEnabled( true );
+		this.dialog.setEnabled( true );
 		this.setVisible( false );
 	}
 

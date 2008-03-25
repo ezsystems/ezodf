@@ -65,6 +65,7 @@ public final class eZODFMenuImpl extends WeakBase
 
     public void save()
     {
+		
         // TODO !!!
         // Insert your implementation here.
     }
