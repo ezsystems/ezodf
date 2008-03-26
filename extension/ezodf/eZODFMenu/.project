@@ -31,6 +31,21 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
+			<name>org.openoffice.ide.eclipse.core.types</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.openoffice.ide.eclipse.core.types</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.openoffice.ide.eclipse.core.types</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
 			<name>org.eclipse.jdt.core.javabuilder</name>
 			<arguments>
 			</arguments>

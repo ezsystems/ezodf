@@ -402,4 +402,18 @@ public class eZPTreeNode
 	{
 		return this.getName() + " ( " + this.getClassName() + " )";
 	}
+
+	/**
+	 * @return the serverConnection
+	 */
+	public ServerConnection getServerConnection() {
+		return serverConnection;
+	}
+
+	/**
+	 * @param serverConnection the serverConnection to set
+	 */
+	public void setServerConnection(ServerConnection serverConnection) {
+		this.serverConnection = serverConnection;
+	}
 }

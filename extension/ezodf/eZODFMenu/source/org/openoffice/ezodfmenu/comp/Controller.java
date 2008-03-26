@@ -104,5 +104,5 @@ public class Controller  {
 	public void exit()
 	{
 		dialog.setVisible( false );
-	}	
+	}
 }

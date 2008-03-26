@@ -24,29 +24,19 @@
  */
 package org.openoffice.ezodfmenu.comp;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.plaf.metal.MetalLookAndFeel;
-
 import com.sun.star.awt.XWindow;
-import com.sun.star.awt.XWindowListener;
 import com.sun.star.beans.PropertyValue;
-import com.sun.star.document.EventObject;
-import com.sun.star.document.XEventListener;
 import com.sun.star.frame.XComponentLoader;
 import com.sun.star.frame.XController;
 import com.sun.star.frame.XFrame;
 import com.sun.star.frame.XModel;
 import com.sun.star.lang.XComponent;
 import com.sun.star.lang.XMultiComponentFactory;
+import com.sun.star.text.XTextDocument;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.uno.XComponentContext;
-import com.sun.star.xml.dom.XDocument;
 
 
 /**
@@ -98,31 +88,8 @@ public class OpenController extends Controller {
 		}
         XComponentLoader loader = (XComponentLoader)UnoRuntime.queryInterface( XComponentLoader.class, desktop);
 
-        // Define general document properties (see
-        // com.sun.star.document.MediaDescriptor for the possibilities).
-        ArrayList<PropertyValue> props = new ArrayList<PropertyValue>();
-        PropertyValue p = null;
-        // Set document filename
-        p = new PropertyValue();
-        p.Name = "eZPFilename";
-        p.Value = treeNode.getOODocumentFilename();
-        props.add(p);
-        p = new PropertyValue();
-        p.Name = "Title";
-        p.Value = treeNode.getName();
-        props.add(p);
-        // Add eZPTreeNode
-        p = new PropertyValue();
-        p.Name = "eZPTreeNode";
-        p.Value = treeNode;
-        props.add( p );
-
-        PropertyValue[] properties = new PropertyValue[props.size()];
-        props.toArray(properties);
-
         // Create the document
         // (see com.sun.star.frame.XComponentLoader for argument details).
-
         XComponent document = null;
         String odfFile = MenuLib.storeTempFile( ooDocumentData, treeNode.getOODocumentFilename() );
 
@@ -135,7 +102,7 @@ public class OpenController extends Controller {
             			templateFileURL,    // URL of templateFile.
             			"_blank",           // Target frame name (_blank creates new frame).
             			0,                  // Search flags.
-            			properties);        // Document attributes.
+            			new PropertyValue[0] );        // Document attributes.
             }
             catch ( Exception e )
             {
@@ -146,15 +113,21 @@ public class OpenController extends Controller {
             	return;
             }
        
-               // Get the document window and frame.
-
+            // Get the document window and frame.
         	XModel model = (XModel) UnoRuntime.queryInterface(XModel.class, document);
         	XController c = model.getCurrentController();
         	XFrame frame = c.getFrame();
         	XWindow window = frame.getContainerWindow();
 
+        	// Set document properties.
+        	XTextDocument textDocument = (XTextDocument)UnoRuntime.queryInterface( com.sun.star.text.XTextDocument.class, document );
+        	DocumentInfo.setTreeNode( textDocument.getURL(), treeNode );
+        	
+        	// Show window.
         	window.setEnable( true );
         	window.setVisible( true );
+        	
+        	exit();
         }
 	}
 }

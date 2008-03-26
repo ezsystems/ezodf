@@ -30,6 +30,7 @@ package org.openoffice.ezodfmenu.comp;
  */
 public class eZPTopTreeNode extends eZPTreeNode {
 
+	private static final long serialVersionUID = 3299458749203341370L;
 	protected String name;
 
 	/*

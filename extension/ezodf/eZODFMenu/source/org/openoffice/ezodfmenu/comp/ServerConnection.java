@@ -4,6 +4,7 @@
 package org.openoffice.ezodfmenu.comp;
 
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -17,6 +18,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import sun.misc.BASE64Encoder;
+
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 
 
@@ -25,8 +28,9 @@ import com.sun.org.apache.xerces.internal.parsers.DOMParser;
  * @author hovik
  *
  */
-public class ServerConnection {
-	
+public class ServerConnection implements Serializable {
+
+	private static final long serialVersionUID = 2854107146010800577L;
 	private static final String LoginPath = "ezrest/login";
 	private static final String TopNodeListPath = "ezrest/ezodfGetTopNodeList";
 	private static final String GetChildrenPath = "ezrest/ezodfGetChildren";
@@ -137,7 +141,7 @@ public class ServerConnection {
 		{
 			JOptionPane.showMessageDialog( null,
 				    "Failed to get top node list: " + getChildrenURL() + ": " +  e.getMessage(),
-				    "getTopNodeList",
+				    "ServerConnection.getTopNodeList",
 				    JOptionPane.WARNING_MESSAGE);
 		}
 		
@@ -173,7 +177,7 @@ public class ServerConnection {
 		{
 			JOptionPane.showMessageDialog( null,
 				    "Failed to get top node list: " + getChildrenURL() + ": " +  e.getMessage(),
-				    "getTopNodeList",
+				    "ServerConnection.getOODocument",
 				    JOptionPane.WARNING_MESSAGE);
 		}
 		
@@ -218,7 +222,7 @@ public class ServerConnection {
 		{
 			JOptionPane.showMessageDialog( null,
 				    "Failed to get children: " + getChildrenURL() + ": " +  e.getMessage(),
-				    "getChildren",
+				    "MenuLib.getChildren",
 				    JOptionPane.WARNING_MESSAGE);
 		}
 		
@@ -263,11 +267,53 @@ public class ServerConnection {
 		{
 			JOptionPane.showMessageDialog( null,
 				    "Failed to get children: " + getChildrenURL() + ": " +  e.getMessage(),
-				    "getChildren",
+				    "MenuLib.getMenuChildren",
 				    JOptionPane.WARNING_MESSAGE);
 		}
 		
 		return result;
+	}
+
+	/**
+	 * Replace OO document data.
+	 * 
+	 * @param eZPTreeNode
+	 * @param Data
+	 */
+	public void replaceOODocument( eZPTreeNode treeNode, byte[] data )
+	{
+		BASE64Encoder encoder = new BASE64Encoder();
+
+		HashMap<String,String> postParameters = new HashMap<String,String>();
+		postParameters.put( "nodeID", Integer.toString( treeNode.getNodeID() ) );
+		postParameters.put( "filename", treeNode.getOODocumentFilename() );
+		postParameters.put( "data", encoder.encode( data ) );
+		postParameters.put( "base64Encoded", "1" );
+
+		String str = "";
+		try
+		{
+			// Send request
+			InputStream in = MenuLib.sendHTTPPostRequest( getReplaceOODocumentURL(), postParameters, this.sessionID );
+			
+			byte[] buff = new byte[in.available()];
+			in.read( buff );
+			
+			str = new String( buff );
+			in.reset();
+			
+			DOMParser parser = new DOMParser();
+			InputSource source = new InputSource(in);
+			parser.parse(source);
+			in.close();			
+		}
+		catch( Exception e )
+		{
+			JOptionPane.showMessageDialog( null,
+				    "Failed to replace OO Document: " + getReplaceOODocumentURL() + ": " +  e.getMessage() + ", " + str,
+				    "ServerConnection.replaceOODocument",
+				    JOptionPane.WARNING_MESSAGE);
+		}
 	}
 
 	/**
@@ -302,6 +348,16 @@ public class ServerConnection {
 	protected String getOODocumentURL()
 	{
 		return serverInfo.getUrl() + "/" + ServerConnection.FetchOONodePath;
+	}
+
+	/**
+	 * Get OO Document URL
+	 * 
+	 * @return URL to getOODocument
+	 */
+	protected String getReplaceOODocumentURL()
+	{
+		return serverInfo.getUrl() + "/" + ServerConnection.ReplaceOONodePath;
 	}
 
 	/**

@@ -215,7 +215,6 @@ public class MenuLib {
 	 */
 	public static String storeTempFile( byte[] data, String filename )
 	{
-		Random random = new Random();
 		File file = new File( getStoragePath(), filename );
 		try
 		{
