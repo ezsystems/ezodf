@@ -69,12 +69,14 @@ class eZRESTODFHandler extends eZRESTBaseHandler
                                                                                       'base64Encoded' => true ) ) );
         $moduleDefinition->addView( 'ezodfPutOONode', array( 'method' => 'ezodfPutOONode',
                                                              'functions' => 'ezodf_oo_client',
-                                                             'postParams' => array( 'nodeID', 'data', 'filename' ),
-                                                             'postOptions' => array( 'languageCode' => false ) ) );
+                                                             'postParams' => array( 'nodeID', 'data' ),
+                                                             'postOptions' => array( 'languageCode' => false,
+                                                                                     'base64Encoded' => true ) ) );
         $moduleDefinition->addView( 'ezodfReplaceOONode', array( 'method' => 'ezodfReplaceOONode',
                                                                  'functions' => 'ezodf_oo_client',
-                                                                 'postParams' => array( 'nodeID', 'data', 'filename' ),
-                                                                 'postOptions' => array( 'languageCode' => null ) ) );
+                                                                 'postParams' => array( 'nodeID', 'data' ),
+                                                                 'postOptions' => array( 'languageCode' => null,
+                                                                                         'base64Encoded' => true ) ) );
 
         // Add access functions for eZRESTODFHandler
         $moduleDefinition->addFunction( 'ezodf_oo_client', array() );
@@ -618,7 +620,6 @@ class eZRESTODFHandler extends eZRESTBaseHandler
     {
         $nodeID = $postParams['nodeID'];
         $data = $postParams['data'];
-        $filename = $postParams['filename'];
         $languageCode = $postOptions['languageCode'];
         $base64Encoded = $postOptions['base64Encoded'];
 
@@ -636,6 +637,7 @@ class eZRESTODFHandler extends eZRESTBaseHandler
         }
 
         // Store data to temporary file.
+        $filename = substr( md5( mt_rand() ), 0, 8 ) . '.odf';
         $tmpFilePath = eZSys::cacheDirectory() . '/ezodf/' . substr( md5( mt_rand() ), 0, 8 );
         $tmpFilename = $tmpFilePath . '/' . $filename;
         if ( !eZFile::create( $filename, $tmpFilePath, $data ) )
