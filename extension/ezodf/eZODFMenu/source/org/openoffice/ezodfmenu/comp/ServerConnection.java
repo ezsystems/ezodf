@@ -18,7 +18,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import sun.misc.BASE64Encoder;
+import sun.misc.BASE64Encoder; 
 
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 
@@ -287,20 +287,14 @@ public class ServerConnection implements Serializable {
 		HashMap<String,String> postParameters = new HashMap<String,String>();
 		postParameters.put( "nodeID", Integer.toString( treeNode.getNodeID() ) );
 		postParameters.put( "filename", treeNode.getOODocumentFilename() );
-		postParameters.put( "data", encoder.encode( data ) );
+		postParameters.put( "data", encoder.encodeBuffer( data ) );
 		postParameters.put( "base64Encoded", "1" );
 
 		String str = "";
 		try
 		{
 			// Send request
-			InputStream in = MenuLib.sendHTTPPostRequest( getReplaceOODocumentURL(), postParameters, this.sessionID );
-			
-			byte[] buff = new byte[in.available()];
-			in.read( buff );
-			
-			str = new String( buff );
-			in.reset();
+			InputStream in = MenuLib.sendHTTPPostRequest( getReplaceOODocumentURL(), postParameters, this.sessionID );			
 			
 			DOMParser parser = new DOMParser();
 			InputSource source = new InputSource(in);

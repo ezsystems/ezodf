@@ -25,9 +25,11 @@
 package org.openoffice.ezodfmenu.comp;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Arrays;
+import java.util.Vector;
 import java.io.*;
+
+import javax.swing.JOptionPane;
 
 /**
  * @author hovik
@@ -35,7 +37,7 @@ import java.io.*;
  */
 public class ServerInfo implements Serializable, Comparable {
 
-	public static HashMap<String, ServerInfo> ServerList = new HashMap<String, ServerInfo>();
+	public static Vector<ServerInfo> ServerList = new Vector<ServerInfo>();
 
 	private static final long serialVersionUID = 7934826971361655809L;
 	
@@ -102,6 +104,17 @@ public class ServerInfo implements Serializable, Comparable {
 	public void setUsername(String username) {
 		this.username = username;
 	}
+	
+	/**
+	 * Get latest accessed ServerInfo.
+	 * 
+	 * @return Latest accessed ServerInfo. Null if none exists.
+	 */
+	public static ServerInfo getLatestAccessed() 
+			throws ArrayIndexOutOfBoundsException, NullPointerException
+	{
+		return ServerInfo.ServerList.get( 0 );
+	}
 
 	/**
 	 * Load ServerInfo list from persistent file.
@@ -109,16 +122,16 @@ public class ServerInfo implements Serializable, Comparable {
 	 * @return Map of server info. 
 	 */
 	@SuppressWarnings("unchecked")
-	public static HashMap<String, ServerInfo> loadHashMapFromFile()
+	public static Vector<ServerInfo> loadHashMapFromFile()
 	{
 		try {
 			File file = new File( MenuLib.getStoragePath(), getFilename() );
 			ObjectInputStream inStream = new ObjectInputStream( new FileInputStream( file ) );
-			ServerInfo.ServerList = (HashMap<String, ServerInfo>)inStream.readObject();
+			ServerInfo.ServerList = (Vector<ServerInfo>)inStream.readObject();
 			return ServerInfo.ServerList;
 		}
 		catch( Exception e ){
-			return new HashMap<String, ServerInfo>();
+			return new Vector<ServerInfo>();
 		}
 	}
 	
@@ -128,13 +141,13 @@ public class ServerInfo implements Serializable, Comparable {
 	public static void storeHashMapToFile()
 	{
 		// Keep 10 latest installations. ( ordered by accessTime ).
-		HashMap<String, ServerInfo> serverHashMap = new HashMap<String, ServerInfo>();
-		Object[] serverArray = (Object[])ServerInfo.ServerList.values().toArray();
+		Vector<Object> serverHashMap = new Vector<Object>();
+		Object[] serverArray = ServerInfo.ServerList.toArray();
+
 		Arrays.sort( serverArray );
 		for( int idx = 0; idx < ( serverArray.length < 10 ? serverArray.length : 10 ); ++idx )
 		{
-			ServerInfo serverInfo = (ServerInfo)serverArray[idx];
-			serverHashMap.put( serverInfo.getKey(), serverInfo );
+			serverHashMap.add( serverArray[idx] );
 		}
 		
 		try {
@@ -146,7 +159,11 @@ public class ServerInfo implements Serializable, Comparable {
 		}
 		catch( Exception e )
 		{
-			// Do nothing.
+			JOptionPane.showMessageDialog( null,
+				    "Failed strong server info: " + e.getMessage(),
+				    "ServerInfo.storeHashMapToFile",
+				    JOptionPane.WARNING_MESSAGE);
+			return;
 		}
 	}
 	
@@ -155,7 +172,7 @@ public class ServerInfo implements Serializable, Comparable {
 	 */
 	public static void addToList( ServerInfo serverInfo )
 	{
-		ServerInfo.ServerList.put( serverInfo.getKey(), serverInfo );
+		ServerInfo.ServerList.add( serverInfo );
 		ServerInfo.storeHashMapToFile();
 	}
 

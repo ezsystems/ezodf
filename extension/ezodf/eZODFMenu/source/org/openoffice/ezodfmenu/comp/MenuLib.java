@@ -32,10 +32,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Random;
-import java.util.Map.Entry;
-
 import javax.swing.JOptionPane;
+import java.net.URLEncoder;
 
 
 
@@ -107,10 +105,10 @@ public class MenuLib {
 	{
 		// Extract get parameters.
 		uri += "?";
-		for( Iterator iterator = getParameters.entrySet().iterator(); iterator.hasNext(); )
+		for( Iterator<Map.Entry<String,String>> iterator = getParameters.entrySet().iterator(); iterator.hasNext(); )
 		{
-			Map.Entry<String,String> map = (Map.Entry<String, String>)iterator.next();
-			uri += map.getKey() + "=" + map.getValue() + "&";
+			Map.Entry<String,String> map = iterator.next();
+			uri += URLEncoder.encode( map.getKey(), "ISO-8859-1" ) + "=" + URLEncoder.encode( map.getValue(), "ISO-8859-1" ) + "&";
 		}
 
 		// Send HTTP request
@@ -193,10 +191,10 @@ public class MenuLib {
 
 		OutputStream os = connection.getOutputStream();
 		
-		for( Iterator iterator = postParameters.entrySet().iterator(); iterator.hasNext(); )
+		for( Iterator<Map.Entry<String,String>> iterator = postParameters.entrySet().iterator(); iterator.hasNext(); )
 		{
-			Map.Entry<String,String> map = (Map.Entry<String,String>)iterator.next();
-			os.write( new String( map.getKey() + "=" + map.getValue() + "&" ).getBytes() );
+			Map.Entry<String,String> map = iterator.next();
+			os.write( new String( URLEncoder.encode( map.getKey(), "ISO-8859-1" ) + "=" + URLEncoder.encode( map.getValue(), "ISO-8859-1" ) + "&" ).getBytes() );
 		}
 
 		os.flush();

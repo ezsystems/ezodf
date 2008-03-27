@@ -28,8 +28,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 /**
  * Open dialog GUI
@@ -37,28 +35,16 @@ import java.awt.event.WindowListener;
 public class OpenDialog extends Dialog {
 
 	private static final long serialVersionUID = 4400067100991729955L;
-
-	/**
-	 * Constructor. Populates the OpenDialog, but will not display it.
-	 */
-	public OpenDialog( OpenController openController )
-	{
-		super();
-		this.controller = openController;
-		populateDialog();
-		this.addWindowListener( new WindowListener() {
-			public void windowClosed(WindowEvent e) {}
-			public void windowActivated(WindowEvent e) {}
-			public void windowClosing(WindowEvent e) {
-				controller.exit();
-			}
-			public void windowDeactivated(WindowEvent e) {}
-			public void windowDeiconified(WindowEvent e) {}
-			public void windowIconified(WindowEvent e) {}
-			public void windowOpened(WindowEvent e) {}
-		} );
-	}
 	
+	
+	/**
+	 * Constructor
+	 */
+	public OpenDialog( OpenController controller )
+	{
+		super( controller );
+	}
+
 	/**
 	 * Get button panel
 	 * 

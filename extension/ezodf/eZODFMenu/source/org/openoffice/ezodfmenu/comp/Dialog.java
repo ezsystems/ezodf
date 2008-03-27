@@ -7,7 +7,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
+import java.awt.event.WindowListener;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -30,6 +30,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeSelectionModel;
 
+import java.awt.event.WindowEvent;
+
 /**
  * @author hovik
  *
@@ -46,13 +48,53 @@ public abstract class Dialog extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = -5712029151989993846L;
+	
+	/**
+	 * Constructor. Populates the OpenDialog, but will not display it.
+	 */
+	public Dialog( final Controller controller )
+	{
+		super();
+		this.controller = controller;
+		// Populate dialog.
+		populateDialog();
+		
+		// Connect to latest accessed server.
+		connectToLatest();
 
+		this.addWindowListener( new WindowListener() {
+			public void windowClosed(WindowEvent e) {}
+			public void windowActivated(WindowEvent e) {}
+			public void windowClosing(WindowEvent e) {
+				controller.exit();
+			}
+			public void windowDeactivated(WindowEvent e) {}
+			public void windowDeiconified(WindowEvent e) {}
+			public void windowIconified(WindowEvent e) {}
+			public void windowOpened(WindowEvent e) {}
+		} );
+	}
+	
+	/**
+	 * Connect to latest accessed server.
+	 */
+	protected void connectToLatest()
+	{
+		try
+		{
+			controller.connectToServer( ServerInfo.getLatestAccessed() );
+		}
+		catch( Exception e )
+		{
+			return;
+		}
+	}
+	
 	/**
 	 * Populate top of open dialog.
 	 * 
 	 * @return Component Top component.
 	 */
-	@SuppressWarnings("unchecked")
 	protected Component getTopComponent()
 	{
 		JPanel panel = new JPanel( new BorderLayout() );
@@ -63,8 +105,8 @@ public abstract class Dialog extends JFrame {
 		
 		// Build server list.
 		JPanel serverPanel = new JPanel( new BorderLayout() );
-		HashMap<String, ServerInfo> serverInfoList = ServerInfo.loadHashMapFromFile();
-		serverList = new JComboBox( new Vector( serverInfoList.values() ) );
+		Vector<ServerInfo> serverInfoList = ServerInfo.loadHashMapFromFile();
+		serverList = new JComboBox( serverInfoList );
 		serverList.setRenderer( new ListCellRenderer() {
 			public Component getListCellRendererComponent( JList list,
 	                									   Object value,
@@ -72,6 +114,10 @@ public abstract class Dialog extends JFrame {
 	                									   boolean isSelected,
 	                									   boolean cellHasFocus)
 			{
+				if ( value == null )
+				{
+					return new JLabel( "" );
+				}
 				ServerInfo serverInfo = (ServerInfo)value;
 				if (isSelected) 
 				{
@@ -127,12 +173,11 @@ public abstract class Dialog extends JFrame {
 	/**
 	 * Populate server list content.
 	 */
-	@SuppressWarnings("unchecked")
 	public void populateServerList()
 	{
-		HashMap<String, ServerInfo> serverInfoList = ServerInfo.loadHashMapFromFile();
+		Vector<ServerInfo> serverInfoList = ServerInfo.loadHashMapFromFile();
 		serverList.removeAllItems();
-		for( Iterator<ServerInfo> iterator = serverInfoList.values().iterator(); iterator.hasNext(); )
+		for( Iterator<ServerInfo> iterator = serverInfoList.iterator(); iterator.hasNext(); )
 		{
 			serverList.addItem( iterator.next() );
 		}

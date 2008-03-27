@@ -10,7 +10,6 @@ import java.net.MalformedURLException;
 import javax.swing.JOptionPane;
 
 import com.sun.star.beans.PropertyValue;
-import com.sun.star.beans.XPropertySet;
 import com.sun.star.frame.XDesktop;
 import com.sun.star.frame.XStorable;
 import com.sun.star.io.IOException;
@@ -57,10 +56,7 @@ public class SaveController extends Controller {
 		}
 		
 		XComponent document = xDesktop.getCurrentComponent();
-		XTextDocument textDocument = (XTextDocument)UnoRuntime.queryInterface( com.sun.star.text.XTextDocument.class, document );
-		
-		// Get document properties.
-		XPropertySet propertySet = (XPropertySet)UnoRuntime.queryInterface(XPropertySet.class, serviceManager );
+		XTextDocument textDocument = (XTextDocument)UnoRuntime.queryInterface( com.sun.star.text.XTextDocument.class, document );		
 	      
 	    // Access filename and eZPTreeNode property value.
 		eZPTreeNode treeNode = DocumentInfo.getTreeNode( textDocument.getURL() );
