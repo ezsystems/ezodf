@@ -637,7 +637,7 @@ class eZRESTODFHandler extends eZRESTBaseHandler
         }
 
         // Store data to temporary file.
-        $filename = substr( md5( mt_rand() ), 0, 8 ) . '.odf';
+        $filename = substr( md5( mt_rand() ), 0, 8 ) . '.odt';
         $tmpFilePath = eZSys::cacheDirectory() . '/ezodf/' . substr( md5( mt_rand() ), 0, 8 );
         $tmpFilename = $tmpFilePath . '/' . $filename;
         if ( !eZFile::create( $filename, $tmpFilePath, $data ) )
