@@ -342,7 +342,6 @@ class eZOOImport
         }
         else
         {
-            require_once('extension/ezodf/lib/pclzip.lib.php');
             $archive = new PclZip( $file );
             $archive->extract( PCLZIP_OPT_PATH, $uniqueImportDir );
         }
