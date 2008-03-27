@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest:manifest>
+	<manifest:file-entry manifest:full-path="types.rdb" manifest:media-type="application/vnd.sun.star.uno-typelibrary;type=RDB"/>
+	<manifest:file-entry manifest:full-path="addon.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/>
+	<manifest:file-entry manifest:full-path="eZOOMenu" manifest:media-type="application/vnd.sun.star.basic-library"/>
+	<manifest:file-entry manifest:full-path="eZODFMenu.jar" manifest:media-type="application/vnd.sun.star.uno-component;type=Java"/>
+</manifest:manifest>
