@@ -286,7 +286,6 @@ public class ServerConnection implements Serializable {
 
 		HashMap<String,String> postParameters = new HashMap<String,String>();
 		postParameters.put( "nodeID", Integer.toString( treeNode.getNodeID() ) );
-		postParameters.put( "filename", treeNode.getOODocumentFilename() );
 		postParameters.put( "data", encoder.encodeBuffer( data ) );
 		postParameters.put( "base64Encoded", "1" );
 
@@ -306,6 +305,41 @@ public class ServerConnection implements Serializable {
 			JOptionPane.showMessageDialog( null,
 				    "Failed to replace OO Document: " + getReplaceOODocumentURL() + ": " +  e.getMessage() + ", " + str,
 				    "ServerConnection.replaceOODocument",
+				    JOptionPane.WARNING_MESSAGE);
+		}
+	}
+	
+	/**
+	 * Replace OO document data.
+	 * 
+	 * @param Parent eZPTreeNode
+	 * @param Data
+	 */
+	public void putOODocument( eZPTreeNode parentTreeNode, byte[] data )
+	{
+		BASE64Encoder encoder = new BASE64Encoder();
+
+		HashMap<String,String> postParameters = new HashMap<String,String>();
+		postParameters.put( "nodeID", Integer.toString( parentTreeNode.getNodeID() ) );
+		postParameters.put( "data", encoder.encodeBuffer( data ) );
+		postParameters.put( "base64Encoded", "1" );
+
+		String str = "";
+		try
+		{
+			// Send request
+			InputStream in = MenuLib.sendHTTPPostRequest( getPutOODocumentURL(), postParameters, this.sessionID );			
+			
+			DOMParser parser = new DOMParser();
+			InputSource source = new InputSource(in);
+			parser.parse(source);
+			in.close();			
+		}
+		catch( Exception e )
+		{
+			JOptionPane.showMessageDialog( null,
+				    "Failed to replace OO Document: " + getPutOODocumentURL() + ": " +  e.getMessage() + ", " + str,
+				    "ServerConnection.putOODocument",
 				    JOptionPane.WARNING_MESSAGE);
 		}
 	}
@@ -352,6 +386,16 @@ public class ServerConnection implements Serializable {
 	protected String getReplaceOODocumentURL()
 	{
 		return serverInfo.getUrl() + "/" + ServerConnection.ReplaceOONodePath;
+	}
+	
+	/**
+	 * Get OO Document URL
+	 * 
+	 * @return URL to getOODocument
+	 */
+	protected String getPutOODocumentURL()
+	{
+		return serverInfo.getUrl() + "/" + ServerConnection.PutOONodePath;
 	}
 
 	/**

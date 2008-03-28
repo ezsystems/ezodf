@@ -17,19 +17,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreeSelectionModel;
-
 import java.awt.event.WindowEvent;
 
 /**
@@ -213,42 +204,7 @@ public abstract class Dialog extends JFrame {
 	/**
 	 * Populate main component.
 	 */
-	public void populateMainComponent()
-	{
-		// Remove existing components.
-		mainPanel.removeAll();
-		
-		// Add JTree
-		tree = new JTree( new eZPTreeModel( controller.serverConnection ) );
-		tree.getSelectionModel().setSelectionMode( TreeSelectionModel.SINGLE_TREE_SELECTION );
-		tree.addTreeSelectionListener( new TreeSelectionListener(){
-			public void valueChanged(TreeSelectionEvent arg0) {
-				eZPTreeNode node = (eZPTreeNode)tree.getLastSelectedPathComponent();
-
-				/* if nothing is selected, set empty list model, if not, use populated list model. */ 
-				if (node == null){
-					table.setModel( new DefaultTableModel() );
-				}
-				else{
-					table.setModel( new eZPTreeTableModel( node ) );
-				}
-			}	
-		});
-		// Use folder icon for leaf icons.
-		DefaultTreeCellRenderer treeRenderer = new DefaultTreeCellRenderer();
-		treeRenderer.setLeafIcon( treeRenderer.getDefaultClosedIcon() );
-		tree.setCellRenderer( treeRenderer );
-		JScrollPane treeScrollPane = new JScrollPane( tree );
-		
-		// Add table.
-		table = new JTable( new DefaultTableModel() );
-		table.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
-		JScrollPane listScrollPane = new JScrollPane( table );
-		
-		mainPanel.add( new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, treeScrollPane, listScrollPane ) );
-		
-		mainPanel.updateUI();
-	}
+	public abstract void populateMainComponent();	
 
 	/**
 	 * Get this.

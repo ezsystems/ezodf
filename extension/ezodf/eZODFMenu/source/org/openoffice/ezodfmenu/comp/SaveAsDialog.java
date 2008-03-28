@@ -11,6 +11,9 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeSelectionModel;
 
 /**
  * @author hovik
@@ -51,8 +54,9 @@ public class SaveAsDialog extends Dialog {
 			public void actionPerformed(ActionEvent arg0) {
 				if ( table.getSelectedRow() != -1  )
 				{
-					try {
-						((OpenController)controller).openDocument( ((eZPTreeTableModel)table.getModel()).getTreeNode( table.getSelectedRow() ) );
+					try 
+					{
+						((SaveAsController)controller).saveAsDocument( (eZPTreeNode)tree.getLastSelectedPathComponent() );
 					}
 					catch( Exception e)
 					{
@@ -72,5 +76,28 @@ public class SaveAsDialog extends Dialog {
 		
 		return panel;
 	}
+	
+	/**
+	 * Populate main component.
+	 */
+	public void populateMainComponent()
+	{
+		// Remove existing components.
+		mainPanel.removeAll();
+		
+		// Add JTree
+		tree = new JTree( new eZPTreeModel( controller.serverConnection ) );
+		tree.getSelectionModel().setSelectionMode( TreeSelectionModel.SINGLE_TREE_SELECTION );
+
+		// Use folder icon for leaf icons.
+		DefaultTreeCellRenderer treeRenderer = new DefaultTreeCellRenderer();
+		treeRenderer.setLeafIcon( treeRenderer.getDefaultClosedIcon() );
+		tree.setCellRenderer( treeRenderer );
+		
+		mainPanel.add( tree );
+		
+		mainPanel.updateUI();
+	}
+
 
 }
