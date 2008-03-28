@@ -24,6 +24,8 @@
  */
 package org.openoffice.ezodfmenu.comp;
 
+import java.util.HashMap;
+
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import com.sun.star.awt.XWindow;
@@ -45,6 +47,8 @@ import com.sun.star.uno.XComponentContext;
  */
 public class OpenController extends Controller {
 	
+	protected static HashMap<XComponentContext, OpenController> instanceList = new HashMap<XComponentContext, OpenController>();
+
 	/**
 	 * Constructor. Initializes the open dialog. Execute the
 	 * open() method to open the dialog. 
@@ -55,6 +59,24 @@ public class OpenController extends Controller {
 		SwingUtilities.updateComponentTreeUI( dialog );
 	}
 	
+	/**
+	 * Get instance of save controller.
+	 * 
+	 *  @param context
+	 *  
+	 *  @return SaveController
+	 */
+	public static OpenController getInstance( XComponentContext context )
+	{
+		OpenController controller = instanceList.get( context );
+		if ( controller == null )
+		{
+			controller = new OpenController( context );
+		}
+		
+		return controller;
+	}
+
 	/**
 	 * Open OO Document in OpenOffice.org
 	 * 
@@ -93,6 +115,12 @@ public class OpenController extends Controller {
         XComponent document = null;
         String odfFile = MenuLib.storeTempFile( ooDocumentData, treeNode.getOODocumentFilename() );
 
+        // Set macro enabled property
+        PropertyValue[] propertyList = new PropertyValue[1];
+        propertyList[0] = new PropertyValue();
+        propertyList[0].Name = "MacroExecutionMode";
+        propertyList[0].Value = 4; 
+        
         if ( odfFile != null) {
             // Create a new document that is a duplicate of the template.
 
@@ -100,9 +128,9 @@ public class OpenController extends Controller {
             try {
             	document = loader.loadComponentFromURL(
             			templateFileURL,    // URL of templateFile.
-            			"_blank",           // Target frame name (_blank creates new frame).
+            			"_default",           // Target frame name (_blank creates new frame).
             			0,                  // Search flags.
-            			new PropertyValue[0] );        // Document attributes.
+            			propertyList );        // Document attributes.
             }
             catch ( Exception e )
             {

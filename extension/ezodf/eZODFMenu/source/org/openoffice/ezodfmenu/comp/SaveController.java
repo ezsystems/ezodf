@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.util.HashMap;
+
 import javax.swing.JOptionPane;
 
 import com.sun.star.beans.PropertyValue;
@@ -25,11 +27,32 @@ import com.sun.star.uno.XComponentContext;
  */
 public class SaveController extends Controller {
 
+	protected static HashMap<XComponentContext, SaveController> instanceList = new HashMap<XComponentContext, SaveController>();
+
 	/**
 	 * @param context
 	 */
 	public SaveController(XComponentContext context) {
 		super(context);
+		instanceList.put( context, this );
+	}
+	
+	/**
+	 * Get instance of save controller.
+	 * 
+	 *  @param context
+	 *  
+	 *  @return SaveController
+	 */
+	public static SaveController getInstance( XComponentContext context )
+	{
+		SaveController controller = instanceList.get( context );
+		if ( controller == null )
+		{
+			controller = new SaveController( context );
+		}
+		
+		return controller;
 	}
 	
 	/**

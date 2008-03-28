@@ -58,13 +58,13 @@ public final class eZODFMenuImpl extends WeakBase
     // org.openoffice.ezodfmenu.XEzodfmenu:
     public void open()
     {
-    	OpenController openController = new OpenController( m_xContext );
+    	OpenController openController = OpenController.getInstance( m_xContext );
     	openController.openDialog();
     }
 
     public void save()
     {
-		SaveController saveController = new SaveController( m_xContext );
+		SaveController saveController = SaveController.getInstance( m_xContext );
 		saveController.saveDocument();
     }
 
