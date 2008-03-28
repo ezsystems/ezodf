@@ -70,8 +70,8 @@ public final class eZODFMenuImpl extends WeakBase
 
     public void saveAs()
     {
-        // TODO !!!
-        // Insert your implementation here.
+		SaveAsController saveAsController = SaveAsController.getInstance( m_xContext );
+		saveAsController.openDialog();
     }
     
     public static void main( String[] argv )

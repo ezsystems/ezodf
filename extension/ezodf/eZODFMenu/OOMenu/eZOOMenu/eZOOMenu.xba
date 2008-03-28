@@ -12,5 +12,9 @@ sub eZSave( )
 	ezodf.save()
 end sub
 
+sub eZSave( )
+	ezodf = createUnoService( "org.openoffice.ezodfmenu.eZODFMenu" )
+	ezodf.saveAs()
+end sub
 
 </script:module>

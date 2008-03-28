@@ -140,5 +140,10 @@ public class SaveController extends Controller {
 				    JOptionPane.WARNING_MESSAGE);
 			return;
 		 }
+	     
+	     JOptionPane.showMessageDialog( null,
+				    "Document successfully stored to eZ Publish",
+				    "SaveController.saveDocument",
+				    JOptionPane.INFORMATION_MESSAGE);
 	}
 }
