@@ -280,7 +280,7 @@ public class ServerConnection implements Serializable {
 	 * @param eZPTreeNode
 	 * @param Data
 	 */
-	public void replaceOODocument( eZPTreeNode treeNode, byte[] data )
+	public eZPTreeNode replaceOODocument( eZPTreeNode treeNode, byte[] data )
 	{
 		BASE64Encoder encoder = new BASE64Encoder();
 
@@ -298,7 +298,15 @@ public class ServerConnection implements Serializable {
 			DOMParser parser = new DOMParser();
 			InputSource source = new InputSource(in);
 			parser.parse(source);
-			in.close();			
+			in.close();		
+			
+			// Parse result and create eZPTreeNode objects.
+			Document domDoc = parser.getDocument();
+		    NodeList nodeList = domDoc.getElementsByTagName( "Node" );
+		    for( int idx = 0; idx < nodeList.getLength(); idx++ )
+		    {
+		    	return new eZPTreeNode( this, nodeList.item( idx ) );
+		    }
 		}
 		catch( Exception e )
 		{
@@ -307,6 +315,8 @@ public class ServerConnection implements Serializable {
 				    "ServerConnection.replaceOODocument",
 				    JOptionPane.WARNING_MESSAGE);
 		}
+		
+		return null;
 	}
 	
 	/**
@@ -315,7 +325,7 @@ public class ServerConnection implements Serializable {
 	 * @param Parent eZPTreeNode
 	 * @param Data
 	 */
-	public void putOODocument( eZPTreeNode parentTreeNode, byte[] data )
+	public eZPTreeNode putOODocument( eZPTreeNode parentTreeNode, byte[] data )
 	{
 		BASE64Encoder encoder = new BASE64Encoder();
 
@@ -334,6 +344,14 @@ public class ServerConnection implements Serializable {
 			InputSource source = new InputSource(in);
 			parser.parse(source);
 			in.close();			
+			
+			// Parse result and create eZPTreeNode objects.
+			Document domDoc = parser.getDocument();
+		    NodeList nodeList = domDoc.getElementsByTagName( "Node" );
+		    for( int idx = 0; idx < nodeList.getLength(); idx++ )
+		    {
+		    	return new eZPTreeNode( this, nodeList.item( idx ) );
+		    }
 		}
 		catch( Exception e )
 		{
@@ -341,7 +359,11 @@ public class ServerConnection implements Serializable {
 				    "Failed to replace OO Document: " + getPutOODocumentURL() + ": " +  e.getMessage() + ", " + str,
 				    "ServerConnection.putOODocument",
 				    JOptionPane.WARNING_MESSAGE);
+			
+			return null;
 		}
+		
+		return null;
 	}
 
 	/**

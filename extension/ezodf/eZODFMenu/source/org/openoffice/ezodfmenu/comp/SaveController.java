@@ -130,7 +130,8 @@ public class SaveController extends Controller {
 		     {
 		    	 offset += numRead;
 		     }
-		     treeNode.getServerConnection().replaceOODocument( treeNode, data );
+		     treeNode = treeNode.getServerConnection().replaceOODocument( treeNode, data );
+		     DocumentInfo.setTreeNode( textDocument.getURL(), treeNode );
 	     }
 	     catch( Exception e )
 	     {

@@ -45,7 +45,7 @@
             <value xml:lang="en">Save as to eZ Publish</value>
           </prop>
           <prop oor:name="URL" oor:type="xs:string">
-            <value>macro:///eZOOMenu.eZOOMenu.saveAs</value>
+            <value>macro:///eZOOMenu.eZOOMenu.eZSaveAs</value>
           </prop>
           <prop oor:name="Target" oor:type="xs:string">
             <value>_self</value>

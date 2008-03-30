@@ -52,7 +52,7 @@ public class SaveAsDialog extends Dialog {
 		JButton saveButton = new JButton( "Save here" );
 		saveButton.addActionListener( new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
-				if ( table.getSelectedRow() != -1  )
+				if ( tree.getSelectionCount() > 0 )
 				{
 					try 
 					{

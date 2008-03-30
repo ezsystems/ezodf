@@ -134,7 +134,8 @@ public class SaveAsController extends Controller {
 		     {
 		    	 offset += numRead;
 		     }
-		     parentTreeNode.getServerConnection().putOODocument( parentTreeNode, data );
+		     eZPTreeNode treeNode = parentTreeNode.getServerConnection().putOODocument( parentTreeNode, data );
+		     DocumentInfo.setTreeNode( textDocument.getURL(), treeNode );
 	     }
 	     catch( Exception e )
 	     {
@@ -149,5 +150,7 @@ public class SaveAsController extends Controller {
 				    "Document successfully stored to eZ Publish",
 				    "SaveController.saveDocument",
 				    JOptionPane.INFORMATION_MESSAGE);
+	     
+	     exit();
 	}
 }
