@@ -311,7 +311,7 @@ class eZOOImport
         //
         if ( in_array( $originalFileType, $convertTypes, false ) )
         {
-            $uniqueStamp = md5( mktime() );
+            $uniqueStamp = md5( time() );
             $tmpFromFile = $tmpDir . "/convert_from_$uniqueStamp.doc";
             $tmpToFile   = $tmpDir . "/ooo_converted_$uniqueStamp.odt";
             copy( realpath( $file ),  $tmpFromFile );
