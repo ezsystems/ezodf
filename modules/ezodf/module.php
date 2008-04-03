@@ -33,6 +33,7 @@ $ViewList = array();
 $ViewList['import'] = array(
     'script' => 'import.php',
     'params' => array(),
+    'functions' => array( 'import' ),
     'post_actions' => array( 'BrowseActionName' ),
     'unordered_params' => array( 'node_id' => 'NodeID',
                                  'import_type' => 'ImportType' ) );
@@ -40,6 +41,7 @@ $ViewList['import'] = array(
 $ViewList['export'] = array(
     'script' => 'export.php',
     'params' => array(),
+    'functions' => array( 'export' ),
     'post_actions' => array( 'BrowseActionName' ),
     'unordered_params' => array( 'node_id' => 'NodeID',
                                  'export_type' => 'ExportType' ) );
@@ -58,5 +60,9 @@ $ViewList['upload_export'] = array(
     'script' => 'upload_export.php',
     'params' => array() );
 */
+
+$FunctionList = array();
+$FunctionList['import'] = array();
+$FunctionList['export'] = array();
 
 ?>
