@@ -226,7 +226,7 @@ if ( $doExport == true )
 }
 
 $Result = array();
-$Result['content'] =& $tpl->fetch( "design:ezodf/export.tpl" );
+$Result['content'] = $tpl->fetch( "design:ezodf/export.tpl" );
 $Result['path'] = array( array( 'url' => '/ezodf/export/',
                                 'text' => ezi18n( 'extension/ezodf', 'OpenOffice.org export' ) ) );
 
