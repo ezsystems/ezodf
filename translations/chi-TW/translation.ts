@@ -3,19 +3,19 @@
     <name>extension/ezodf</name>
     <message>
         <source>Import</source>
-        <translation>匯入</translation>
+        <translation type="obsolete">匯入</translation>
     </message>
     <message>
         <source>Export</source>
-        <translation>匯出</translation>
+        <translation type="obsolete">匯出</translation>
     </message>
     <message>
         <source>Replace</source>
-        <translation>置換</translation>
+        <translation type="obsolete">置換</translation>
     </message>
     <message>
         <source>Choose document placement</source>
-        <translation>選擇文件位置</translation>
+        <translation type="obsolete">選擇文件位置</translation>
     </message>
     <message>
         <source>Upload file</source>
@@ -49,35 +49,35 @@
         <source>Document is now imported</source>
         <translation>現在文件已匯入</translation>
     </message>
-     <message>
+    <message>
         <source>The object was imported as: %class_name</source>
         <translation>將物件匯入為：%class_name</translation>
     </message>
-     <message>
+    <message>
         <source>Document imported as</source>
         <translation>將文件匯入為</translation>
     </message>
-     <message>
+    <message>
         <source>The images are placed in the media and can be re-used.</source>
         <translation>圖像放置於媒體庫中且能被再利用。</translation>
     </message>
-     <message>
+    <message>
         <source>Import another document</source>
         <translation>匯入另一份文件</translation>
     </message>
-     <message>
+    <message>
         <source>Import OpenOffice.org document</source>
         <translation>匯入 OpenOffice.org 文件</translation>
     </message>
-     <message>
+    <message>
         <source>Replace document</source>
         <translation>置換文件</translation>
     </message>
-     <message>
+    <message>
         <source>Import to</source>
         <translation>匯入到</translation>
     </message>
-     <message>
+    <message>
         <source>You can import OpenOffice.org Writer documents directly into eZ publish from this page. You are
 asked where to place the document and eZ publish does the rest. The document is converted into
 the appropriate class during the import, you get a notice about this after the import is done.
@@ -85,29 +85,6 @@ Images are placed in the media library so you can re-use them in other articles.
         <translation>您可以經由此頁直接將 OpenOffice.org Writer 文件匯入 eZ publish。
 您將被要求輸入放置文件的地方，eZ publish 則會完成剩下的工作。文件於匯入時會轉換為適當的類別，在匯入完成之後您會獲得相關說明。
 圖像被放置於媒體庫中，因此您可以在其他文章中重覆利用它們。</translation>
-    </message>
-</context>
-<context>
-    <name>extension/ezodf/popupmenu</name>
-    <message>
-        <source>Export OpenOffice.org</source>
-        <translation>匯出 OpenOffice.org</translation>
-    </message>
-    <message>
-        <source>Export PDF</source>
-        <translation>匯出 PDF</translation>
-    </message>
-    <message>
-        <source>Export Word</source>
-        <translation>匯出 Word</translation>
-    </message>
-    <message>
-        <source>Import OpenOffice.org</source>
-        <translation>匯入 OpenOffice.org</translation>
-    </message>
-    <message>
-        <source>Replace OpenOffice.org</source>
-        <translation>置換 OpenOffice.org</translation>
     </message>
 </context>
 <context>
@@ -226,12 +203,47 @@ Images are placed in the media library so you can re-use them in other articles.
         <translation>無法匯入文件，所提供的位置 nodeID 無效。</translation>
     </message>
     <message>
-        <source>Document is not suported.</source>
-        <translation>不支援該文件。</translation>
-    </message>
-    <message>
         <source>Cannot store uploaded file, cannot import.</source>
         <translation>無法儲存上傳的檔案，無法匯入。</translation>
+    </message>
+</context>
+<context>
+    <name>extension/ezodf/popupmenu</name>
+    <message>
+        <source>Export OpenOffice.org</source>
+        <translation type="obsolete">匯出 OpenOffice.org</translation>
+    </message>
+    <message>
+        <source>Export PDF</source>
+        <translation>匯出 PDF</translation>
+    </message>
+    <message>
+        <source>Export Word</source>
+        <translation>匯出 Word</translation>
+    </message>
+    <message>
+        <source>Import OpenOffice.org</source>
+        <translation type="obsolete">匯入 OpenOffice.org</translation>
+    </message>
+    <message>
+        <source>Replace OpenOffice.org</source>
+        <translation type="obsolete">置換 OpenOffice.org</translation>
+    </message>
+    <message>
+        <source>OpenOffice.org</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export OpenOffice</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import OpenOffice</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Replace OpenOffice</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

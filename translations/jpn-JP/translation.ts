@@ -3,19 +3,19 @@
     <name>extension/ezodf</name>
     <message>
         <source>Import</source>
-        <translation>インポート</translation>
+        <translation type="obsolete">インポート</translation>
     </message>
     <message>
         <source>Export</source>
-        <translation>エクスポート</translation>
+        <translation type="obsolete">エクスポート</translation>
     </message>
     <message>
         <source>Replace</source>
-        <translation>リプレイス</translation>
+        <translation type="obsolete">リプレイス</translation>
     </message>
     <message>
         <source>Choose document placement</source>
-        <translation>ドキュメントの配置を選択してください</translation>
+        <translation type="obsolete">ドキュメントの配置を選択してください</translation>
     </message>
     <message>
         <source>Upload file</source>
@@ -211,7 +211,7 @@ Images are placed in the media library so you can re-use them in other articles.
     <name>extension/ezodf/popupmenu</name>
     <message>
         <source>Export OpenOffice.org</source>
-        <translation>OpenOffice.orgをエクスポート</translation>
+        <translation type="obsolete">OpenOffice.orgをエクスポート</translation>
     </message>
     <message>
         <source>Export PDF</source>
@@ -223,11 +223,27 @@ Images are placed in the media library so you can re-use them in other articles.
     </message>
     <message>
         <source>Import OpenOffice.org</source>
-        <translation>OpenOffice.orgをインポート</translation>
+        <translation type="obsolete">OpenOffice.orgをインポート</translation>
     </message>
     <message>
         <source>Replace OpenOffice.org</source>
-        <translation>OpenOffice.orgをリプレイス</translation>
+        <translation type="obsolete">OpenOffice.orgをリプレイス</translation>
+    </message>
+    <message>
+        <source>OpenOffice.org</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export OpenOffice</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import OpenOffice</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Replace OpenOffice</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

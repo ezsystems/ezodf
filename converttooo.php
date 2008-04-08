@@ -44,9 +44,10 @@ Needs the following in PHP Configuration
 
 */
 
-$homeDir = "/home/sp";
-$displayNum = ':0';
-$ooexecutable = "openoffice.org-2.0";
+$homeDir = "/lhome/odfdaemon";
+$displayNum = ':1';
+#$ooexecutable = "openoffice.org-2.0";
+$ooexecutable = "/usr/bin/ooffice";
 
 set_time_limit( 0 );
 
