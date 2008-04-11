@@ -3,7 +3,7 @@
 // Created on: <10-Nov-2004 11:42:23 bf>
 //
 // ## BEGIN COPYRIGHT, LICENSE AND WARRANTY NOTICE ##
-// SOFTWARE NAME: eZ publish
+// SOFTWARE NAME: eZ Publish
 // SOFTWARE RELEASE: 3.9.x
 // COPYRIGHT NOTICE: Copyright (C) 1999-2006 eZ systems AS
 // SOFTWARE LICENSE: GNU General Public License v2.0
@@ -116,7 +116,7 @@ if ( $doExport == true )
         // Check if we have read access to this node
         if ( $node && $node->canRead() )
         {
-            // Do the actual eZ publish export
+            // Do the actual eZ Publish export
             $fileName = eZOOConverter::objectToOO( $nodeID );
 
             if ( !is_array( $fileName ) )
@@ -198,7 +198,7 @@ if ( $doExport == true )
                 header( "Expires: ". gmdate('D, d M Y H:i:s', time() + 600) . 'GMT');
                 header( "Content-Length: $contentLength" );
                 header( "Content-Type: $contentType" );
-                header( "X-Powered-By: eZ publish" );
+                header( "X-Powered-By: eZ Publish" );
                 header( "Content-disposition: attachment; filename=\"$escapedOriginalFileName\"" );
                 header( "Content-Transfer-Encoding: binary" );
                 header( "Accept-Ranges: bytes" );
@@ -232,7 +232,7 @@ $Result['path'] = array( array( 'url' => '/ezodf/export/',
 
 
 /*!
-      Connects to the eZ publish document conversion daemon and converts the document to specified format
+      Connects to the eZ Publish document conversion daemon and converts the document to specified format
 */
 function daemonConvert( $server, $port, $sourceFile, $conversionCommand, $destFile )
 {
@@ -247,7 +247,7 @@ function daemonConvert( $server, $port, $sourceFile, $conversionCommand, $destFi
         $welcome = fread( $fp, 1024 );
 
         $welcome = trim( $welcome );
-        if ( $welcome == "eZ publish document conversion daemon" )
+        if ( $welcome == "eZ Publish document conversion daemon" )
         {
             $commandString = "$conversionCommand $sourceFile $destFile";
             fputs( $fp, $commandString, strlen( $commandString ) );

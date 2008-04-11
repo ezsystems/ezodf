@@ -5,7 +5,7 @@
 // Created on: <21-Jan-2005 09:52:07 bf>
 //
 // ## BEGIN COPYRIGHT, LICENSE AND WARRANTY NOTICE ##
-// SOFTWARE NAME: eZ publish
+// SOFTWARE NAME: eZ Publish
 // SOFTWARE RELEASE: 3.9.x
 // COPYRIGHT NOTICE: Copyright (C) 1999-2006 eZ systems AS
 // SOFTWARE LICENSE: GNU General Public License v2.0
@@ -35,7 +35,7 @@ include_once( "lib/ezxml/classes/ezxml.php" );
 
 /*!
   \class eZOoconverter ezooconverter.php
-  \brief The class handles the conversion from eZ publish objects to OO documents using the eZOOGenerator class
+  \brief The class handles the conversion from eZ Publish objects to OO documents using the eZOOGenerator class
 
 */
 
@@ -49,7 +49,7 @@ class eZOOConverter
     }
 
     /*!
-      Converts the eZ publish object with the given node id into an OpenOffice.org Writer document.
+      Converts the eZ Publish object with the given node id into an OpenOffice.org Writer document.
       The filename to the generated file is returned.
     */
     static function objectToOO( $nodeID )

@@ -5,7 +5,7 @@
 // Created on: <17-Nov-2004 10:11:05 bf>
 //
 // ## BEGIN COPYRIGHT, LICENSE AND WARRANTY NOTICE ##
-// SOFTWARE NAME: eZ publish
+// SOFTWARE NAME: eZ Publish
 // SOFTWARE RELEASE: 3.9.x
 // COPYRIGHT NOTICE: Copyright (C) 1999-2006 eZ systems AS
 // SOFTWARE LICENSE: GNU General Public License v2.0
@@ -71,7 +71,7 @@ class eZOOGenerator
         $metaXML = "<?xml version='1.0' encoding='UTF-8'?>" .
                    "<office:document-meta xmlns:office='urn:oasis:names:tc:opendocument:xmlns:office:1.0' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:meta='urn:oasis:names:tc:opendocument:xmlns:meta:1.0' xmlns:ooo='http://openoffice.org/2004/office' office:version='1.0' xmlns:ezpublish='http://www.ez.no/ezpublish/oasis'>" .
                      "<office:meta>" .
-                     "<meta:generator>eZ publish</meta:generator>" .
+                     "<meta:generator>eZ Publish</meta:generator>" .
                      " <meta:creation-date>2004-11-10T11:39:50</meta:creation-date>" .
                      "  <dc:date>2004-11-10T11:40:15</dc:date>" .
                      "  <dc:language>en-US</dc:language>" .

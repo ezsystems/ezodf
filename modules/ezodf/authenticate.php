@@ -1,7 +1,7 @@
 <?php
 //
 // ## BEGIN COPYRIGHT, LICENSE AND WARRANTY NOTICE ##
-// SOFTWARE NAME: eZ publish
+// SOFTWARE NAME: eZ Publish
 // SOFTWARE RELEASE: 3.9.x
 // COPYRIGHT NOTICE: Copyright (C) 1999-2006 eZ systems AS
 // SOFTWARE LICENSE: GNU General Public License v2.0
@@ -93,7 +93,7 @@
 
         print( $display );
 
-        // Don't display eZ publish page structure
+        // Don't display eZ Publish page structure
         eZExecution::cleanExit();
     }
 ?>

@@ -16,14 +16,14 @@
 
 <img align="right" src={"ooo_logo.gif"|ezimage} alt="OpenOffice.org" />
 
-<h2>{"Export eZ publish content to OpenOffice.org"|i18n("extension/ezodf")}</h2>
+<h2>{"Export eZ Publish content to OpenOffice.org"|i18n("extension/ezodf")}</h2>
 
 {section show=$error_string}
    <h3>{"Error"|i18n("extension/ezodf")}: {$error_string}</h3>
 {/section}
 
 <p>
-{"Here you can export any eZ publish content object to an OpenOffice.org Writer document format."|i18n("extension/ezodf")}
+{"Here you can export any eZ Publish content object to an OpenOffice.org Writer document format."|i18n("extension/ezodf")}
 </p>
 
 </div>

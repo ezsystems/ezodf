@@ -1,4 +1,4 @@
-REM  eZ publish document conversion macros
+REM  eZ Publish document conversion macros
 
 Sub convertToOOo(strFile as string, strDestFile as string)
 

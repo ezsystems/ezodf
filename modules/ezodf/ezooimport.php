@@ -5,7 +5,7 @@
 // Created on: <17-Jan-2005 09:11:41 bf>
 //
 // ## BEGIN COPYRIGHT, LICENSE AND WARRANTY NOTICE ##
-// SOFTWARE NAME: eZ publish
+// SOFTWARE NAME: eZ Publish
 // SOFTWARE RELEASE: 3.9.x
 // COPYRIGHT NOTICE: Copyright (C) 1999-2006 eZ systems AS
 // SOFTWARE LICENSE: GNU General Public License v2.0
@@ -163,7 +163,7 @@ class eZOOImport
     }
 
     /*!
-      Connects to the eZ publish document conversion daemon and converts the document to OpenOffice.org Writer
+      Connects to the eZ Publish document conversion daemon and converts the document to OpenOffice.org Writer
     */
     function daemonConvert( $sourceFile, $destFile )
     {
@@ -182,7 +182,7 @@ class eZOOImport
             $welcome = fread( $fp, 1024 );
 
             $welcome = trim( $welcome );
-            if ( $welcome == "eZ publish document conversion daemon" )
+            if ( $welcome == "eZ Publish document conversion daemon" )
             {
                 $commandString = "convertToOOo $sourceFile $destFile";
 
@@ -316,7 +316,7 @@ class eZOOImport
             $tmpToFile   = $tmpDir . "/ooo_converted_$uniqueStamp.odt";
             copy( realpath( $file ),  $tmpFromFile );
 
-           /// Convert document using the eZ publish document conversion daemon
+           /// Convert document using the eZ Publish document conversion daemon
             if ( !$this->daemonConvert( $tmpFromFile, $tmpToFile ) )
             {
                 if( $this->getErrorNumber() == 0 )
@@ -393,7 +393,7 @@ class eZOOImport
                 $sectionNameArray[] = strtolower( $sectionNode->attributeValueNS( "name", "urn:oasis:names:tc:opendocument:xmlns:text:1.0" ) );
             }
 
-            // Check if there is a coresponding eZ publish class for this document
+            // Check if there is a coresponding eZ Publish class for this document
             foreach ( $registeredClassArray as $className )
             {
                 $attributeArray = $ooINI->variable( $className, 'Attribute' );
@@ -869,7 +869,7 @@ class eZOOImport
 
     /*!
       Handless DOM node in the OpenOffice.org writer docuemnt and returns the eZXMLText equivalent.
-      If images are embedded in the document they will be imported as media objects in eZ publish.
+      If images are embedded in the document they will be imported as media objects in eZ Publish.
      */
     function handleNode( $node, &$sectionLevel, $isLastTag = false )
     {
@@ -1710,7 +1710,7 @@ class eZOOImport
 
     // Variable containing collapsing tag name.
     // E.g. preformatted text is tagged on each paragraph,
-    // in eZ publish we make a <literal> tag around the text instead
+    // in eZ Publish we make a <literal> tag around the text instead
     var $CollapsingTagName = false;
     var $CollapsingTagContent = false;
     var $CollapsingTagAttribute = false;

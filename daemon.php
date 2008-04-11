@@ -4,7 +4,7 @@
 // Created on: <07-Jul-2005 10:14:34 bf>
 //
 // ## BEGIN COPYRIGHT, LICENSE AND WARRANTY NOTICE ##
-// SOFTWARE NAME: eZ publish
+// SOFTWARE NAME: eZ Publish
 // SOFTWARE RELEASE: 3.9.x
 // COPYRIGHT NOTICE: Copyright (C) 1999-2006 eZ systems AS
 // SOFTWARE LICENSE: GNU General Public License v2.0
@@ -97,7 +97,7 @@ while ( $spawn = socket_accept( $socket ))
     else
     {
         // We are in the forked child process
-        socket_write( $spawn, "eZ publish document conversion daemon\n");
+        socket_write( $spawn, "eZ Publish document conversion daemon\n");
 
         // Parse input
         $input = socket_read( $spawn, 1024 );
