@@ -30,7 +30,7 @@
 <ul>
   <li>{"The object was imported as: %class_name"|i18n('extension/ezodf','', hash( '%class_name', $class_identifier ) )}</li>
   <li>{"Document imported as"|i18n("extension/ezodf")} <a href={$url_alias|ezurl}>{$node_name}</a>.</li>
-  <li>{"The images are placed in the media and can be re-used."|i18n("extension/ezodf")}</li>
+  <li>{"The images are placed in the media library and can be re-used."|i18n("extension/ezodf")}</li>
   <li><a href={"/ezodf/import"|ezurl}>{"Import another document"|i18n("extension/ezodf")}</a></li>
 </ul>
 

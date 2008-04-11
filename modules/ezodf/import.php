@@ -129,7 +129,7 @@ if ( $module->isCurrentAction( 'OOPlace' ) )
                 else
                 {
                     $tpl->setVariable( 'error', makeErrorArray( eZOOImport::ERROR_DOCNOTSUPPORTED,
-                                                                ezi18n( 'extension/ezodf/import/error', "Document is not suported." ) ) );
+                                                                ezi18n( 'extension/ezodf/import/error', "Document is not supported." ) ) );
                 }
 
             }
@@ -198,7 +198,7 @@ else
                         else
                         {
                             $tpl->setVariable( 'error', makeErrorArray( eZOOImport::ERROR_DOCNOTSUPPORTED,
-                                                                        ezi18n( 'extension/ezodf/import/error',"Document is not suported." ) ) );
+                                                                        ezi18n( 'extension/ezodf/import/error',"Document is not supported." ) ) );
                         }
                     }
                     $http->removeSessionVariable( 'oo_direct_import_node' );
