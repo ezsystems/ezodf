@@ -813,7 +813,7 @@ class eZOOImport
 
                 // Create image folder if it does not already exist
                 {
-                    $contentINI =& eZINI::instance( 'content.ini' );
+                    $contentINI = eZINI::instance( 'content.ini' );
                     $mediaRootNodeID = $contentINI->variable( "NodeSettings", "MediaRootNode" );
 
                     $node = eZContentObjectTreeNode::fetch( $mediaRootNodeID );
@@ -1411,7 +1411,7 @@ class eZOOImport
 /*
 
                                 // Check if an image with the same remote ID already exists
-                                $db =& eZDB::instance();
+                                $db = eZDB::instance();
                                 $imageParentNodeID = $GLOBALS["OOImportObjectID"];
                                 $resultArray = $db->arrayQuery( 'SELECT id, node_id, ezcontentobject.remote_id
                                                                  FROM  ezcontentobject, ezcontentobject_tree
