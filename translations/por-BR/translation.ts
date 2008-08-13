@@ -15,7 +15,7 @@
     </message>
     <message>
         <source>Choose document placement</source>
-        <translation type="obsolete">Escolher colocação do documento</translation>
+        <translation type="obsolete">Escolher local do documento</translation>
     </message>
     <message>
         <source>Upload file</source>
@@ -39,15 +39,15 @@
     </message>
     <message>
         <source>Export eZ publish content to OpenOffice.org</source>
-        <translation>Exportar conteúdo do eZ Publish para OpenOffice.org</translation>
+        <translation type="obsolete">Exportar conteúdo do eZ Publish para OpenOffice.org</translation>
     </message>
     <message>
         <source>Here you can export any eZ publish content object to an OpenOffice.org Writer document format.</source>
-        <translation>Aqui você pode exportar qualquer objeto de conteúdo do eZ Publish para um documento OpenOffice.org Writer.</translation>
+        <translation type="obsolete">Aqui você pode exportar qualquer objeto de conteúdo do eZ Publish para um documento OpenOffice.org Writer.</translation>
     </message>
     <message>
         <source>Document is now imported</source>
-        <translation>O documento foi agora importado</translation>
+        <translation>O documento foi importado agora</translation>
     </message>
     <message>
         <source>The object was imported as: %class_name</source>
@@ -59,7 +59,7 @@
     </message>
     <message>
         <source>The images are placed in the media and can be re-used.</source>
-        <translation>As imagens foram colocadas na pasta mídia e podem ser reutilizadas.</translation>
+        <translation type="obsolete">As imagens foram colocadas na pasta mídia e podem ser reutilizadas.</translation>
     </message>
     <message>
         <source>Import another document</source>
@@ -82,17 +82,36 @@
 asked where to place the document and eZ publish does the rest. The document is converted into
 the appropriate class during the import, you get a notice about this after the import is done.
 Images are placed in the media library so you can re-use them in other articles.</source>
-        <translation>Você pode importar documentos OpenOffice.org Writer diretamente para o eZ Publish a partir desta página.(new line)
-Você escolherá onde colocar o documento e o eZ Publish fará o resto. O documento é convertido para(new line)
-a classe apropriada durante a importação, você receberá um aviso sobre isto após concluída a importação(new line)
-As imagens são colocadas na biblioteca de mídia e você poderá reutilizá-las em outros artigos.</translation>
+        <translation type="obsolete">Você pode importar documentos OpenOffice.org Writer diretamente para o eZ Publish a partir desta página.
+Você escolherá onde colocar o documento e o eZ Publish fará o resto. O documento é convertido para
+a classe apropriada durante a importação, você receberá um aviso sobre isto após concluída a importação
+As imagens são colocadas na biblioteca e você poderá reutilizá-las em outros artigos.</translation>
+    </message>
+    <message>
+        <source>Export eZ Publish content to OpenOffice.org</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Here you can export any eZ Publish content object to an OpenOffice.org Writer document format.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The images are placed in the media library and can be re-used.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You can import OpenOffice.org Writer documents directly into eZ Publish from this page. You are
+asked where to place the document and eZ Publish does the rest. The document is converted into
+the appropriate class during the import, you get a notice about this after the import is done.
+Images are placed in the media library so you can re-use them in other articles.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>extension/ezodf/browse</name>
     <message>
         <source>Choose document placement</source>
-        <translation>Escolher colocação do documento</translation>
+        <translation>Escolher o local para o documento</translation>
     </message>
     <message>
         <source>Please choose the placement for the OpenOffice.org object.
@@ -100,11 +119,11 @@ As imagens são colocadas na biblioteca de mídia e você poderá reutilizá-las
     Select the placements and click the %buttonname button.
     Using the recent and bookmark items for quick placement is also possible.
     Click on placement names to change the browse listing.</source>
-        <translation>Favor escolher a colocação do objeto OpenOffice.org.(new line)
-(new line)
-(sp)(sp)(sp)(sp)Selecione as colocações e clique no botão %buttonname.(new line)
-sp)(sp)(sp)(sp)Também é possível usar os recentes itens do bookmark para rápida colocação.(new line)
-(sp)(sp)(sp)(sp)Clique nos nomes das colocações para modificar a lista de procura.</translation>
+        <translation>Favor escolher a colocação do objeto OpenOffice.org.
+
+    Selecione as colocações e clique no botão %buttonname.
+    Também é possível usar os recentes itens do bookmark para rápida colocação.
+    Clique nos nomes das colocações para modificar a lista de procura.</translation>
     </message>
     <message>
         <source>Select</source>
@@ -142,7 +161,7 @@ sp)(sp)(sp)(sp)Também é possível usar os recentes itens do bookmark para ráp
     </message>
     <message>
         <source>Could not parse XML.</source>
-        <translation>Não foi possível processar XML.</translation>
+        <translation>Não foi possível processar o XML.</translation>
     </message>
     <message>
         <source>Can not open socket. Please check if extension/ezodf/daemon.php is running.</source>
@@ -174,7 +193,7 @@ sp)(sp)(sp)(sp)Também é possível usar os recentes itens do bookmark para ráp
     </message>
     <message>
         <source>Unknown content class specified in odf.ini:</source>
-        <translation>Classe de conteúdo especificada em odf.ini é desconhecida:</translation>
+        <translation>A classe de conteúdo especificada em odf.ini é desconhecida:</translation>
     </message>
     <message>
         <source>Unknown error.</source>
@@ -186,27 +205,27 @@ sp)(sp)(sp)(sp)Também é possível usar os recentes itens do bookmark para ráp
     </message>
     <message>
         <source>Unable to fetch node with id  </source>
-        <translation>Incapaz de alcançar o nó com o id(sp)(sp)</translation>
+        <translation>Não foi possível carregar o nó com o id  </translation>
     </message>
     <message>
         <source>Folder for images could not be created, access denied.</source>
-        <translation>Pasta para imagens não pôde ser criada, acesso negado.</translation>
-    </message>
-    <message>
-        <source>Document is not suported.</source>
-        <translation>Documento não é suportado.</translation>
+        <translation>A pasta para imagens não pôde ser criada, acesso negado.</translation>
     </message>
     <message>
         <source>Cannot import. File not found. Already imported?</source>
-        <translation>Não é possível importar. Arquivo não encontrado. Este já foi importado?</translation>
+        <translation>Não foi possível importar. Arquivo não encontrado. Este arquivo já foi importado?</translation>
     </message>
     <message>
         <source>Cannot import document, supplied placement nodeID is not valid.</source>
-        <translation>Não é possível importar documento, colocação de nodeID fornecido é inválido.</translation>
+        <translation>Não foi possível importar documento, o local do ID do nó fornecido é inválido.</translation>
     </message>
     <message>
         <source>Cannot store uploaded file, cannot import.</source>
-        <translation>Não é possível armazenar documento carregado, não é possível importar.</translation>
+        <translation>Não é possível armazenar o documento carregado, não foi possível importar.</translation>
+    </message>
+    <message>
+        <source>Document is not supported.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
