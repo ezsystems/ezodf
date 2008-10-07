@@ -3,31 +3,31 @@
     <name>design/ezwebin/parts/website_toolbar</name>
     <message>
         <source>About</source>
-        <translation>Über</translation>
+        <translation>Om</translation>
     </message>
     <message>
         <source>Create here</source>
-        <translation>Hier erstellen</translation>
+        <translation>Opret her</translation>
     </message>
     <message>
         <source>Edit: %node_name [%class_name]</source>
-        <translation>Bearbeiten: %node_name  [%class_name]</translation>
+        <translation>Rediger: %node_name [%class_name]</translation>
     </message>
     <message>
         <source>Move</source>
-        <translation>Verschieben</translation>
+        <translation>Flyt</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation>Entfernen</translation>
+        <translation>Fjern</translation>
     </message>
     <message>
         <source>Add locations</source>
-        <translation>Orte hinzufügen</translation>
+        <translation>Tilføj lokationer</translation>
     </message>
     <message>
         <source>Timeline</source>
-        <translation>Zeitskala</translation>
+        <translation>Tidslinje</translation>
     </message>
     <message>
         <source>Documentation</source>
@@ -35,54 +35,54 @@
     </message>
     <message>
         <source>Replace</source>
-        <translation>Ersetzen</translation>
+        <translation>Erstat</translation>
     </message>
     <message>
         <source>Export</source>
-        <translation>Exportieren</translation>
+        <translation>Eksport</translation>
     </message>
     <message>
         <source>Import</source>
-        <translation>Importieren</translation>
+        <translation>Import</translation>
     </message>
 </context>
 <context>
     <name>ezmultiupload</name>
     <message>
-        <source>Multiupload</source>
-        <translation>Multi-Upload</translation>
-    </message>
-    <message>
         <source>Error</source>
-        <translation>Fehler</translation>
+        <translation>Fejl</translation>
     </message>
     <message>
-        <source>The files are uploaded to</source>
-        <translation>Erfolgreicher Upload der Dateien nach</translation>
+        <source>Starting...</source>
+        <translation>Starter...</translation>
     </message>
     <message>
-        <source>Select files</source>
-        <translation>Dateien auswählen</translation>
+        <source>All files received.</source>
+        <translation>Alle modtagne filer.</translation>
     </message>
     <message>
         <source>Unable to load Flash content. You can download the latest version of Flash Player from the</source>
-        <translation>Flash-Content konnte nicht geladen werden. Sie können die neueste Flash-Player-Version downloaden über</translation>
+        <translation>Kunne ikke hente Flash-indhold. Du kan downloade den seneste version af Flash Player fra </translation>
     </message>
     <message>
         <source>Adobe Flash Player Download Center</source>
         <translation>Adobe Flash Player Download Center</translation>
     </message>
     <message>
-        <source>All files received.</source>
-        <translation>Alle Dateien erhalten.</translation>
+        <source>The files are uploaded to</source>
+        <translation>Filerne er uploadet til</translation>
+    </message>
+    <message>
+        <source>Select files</source>
+        <translation>Vælg filer</translation>
     </message>
     <message>
         <source>Thumbnail created.</source>
-        <translation>Bildvorschau erstellt.</translation>
+        <translation>Thumbnail er oprettet.</translation>
     </message>
     <message>
-        <source>Starting...</source>
-        <translation>Starte ...</translation>
+        <source>Multiupload</source>
+        <translation>Multiupload</translation>
     </message>
 </context>
 </TS>

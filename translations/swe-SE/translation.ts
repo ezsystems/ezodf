@@ -3,31 +3,31 @@
     <name>design/ezwebin/parts/website_toolbar</name>
     <message>
         <source>About</source>
-        <translation>Über</translation>
+        <translation>Om</translation>
     </message>
     <message>
         <source>Create here</source>
-        <translation>Hier erstellen</translation>
+        <translation>Skapa här</translation>
     </message>
     <message>
         <source>Edit: %node_name [%class_name]</source>
-        <translation>Bearbeiten: %node_name  [%class_name]</translation>
+        <translation>Redigera: %node_name [%class_name]</translation>
     </message>
     <message>
         <source>Move</source>
-        <translation>Verschieben</translation>
+        <translation>Flytta</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation>Entfernen</translation>
+        <translation>Ta bort</translation>
     </message>
     <message>
         <source>Add locations</source>
-        <translation>Orte hinzufügen</translation>
+        <translation>Lägg till platser</translation>
     </message>
     <message>
         <source>Timeline</source>
-        <translation>Zeitskala</translation>
+        <translation>Tidslinje</translation>
     </message>
     <message>
         <source>Documentation</source>
@@ -35,54 +35,54 @@
     </message>
     <message>
         <source>Replace</source>
-        <translation>Ersetzen</translation>
+        <translation>Ersätt</translation>
     </message>
     <message>
         <source>Export</source>
-        <translation>Exportieren</translation>
+        <translation>Exportera</translation>
     </message>
     <message>
         <source>Import</source>
-        <translation>Importieren</translation>
+        <translation>Importera</translation>
     </message>
 </context>
 <context>
     <name>ezmultiupload</name>
     <message>
-        <source>Multiupload</source>
-        <translation>Multi-Upload</translation>
-    </message>
-    <message>
         <source>Error</source>
-        <translation>Fehler</translation>
-    </message>
-    <message>
-        <source>The files are uploaded to</source>
-        <translation>Erfolgreicher Upload der Dateien nach</translation>
-    </message>
-    <message>
-        <source>Select files</source>
-        <translation>Dateien auswählen</translation>
-    </message>
-    <message>
-        <source>Unable to load Flash content. You can download the latest version of Flash Player from the</source>
-        <translation>Flash-Content konnte nicht geladen werden. Sie können die neueste Flash-Player-Version downloaden über</translation>
-    </message>
-    <message>
-        <source>Adobe Flash Player Download Center</source>
-        <translation>Adobe Flash Player Download Center</translation>
-    </message>
-    <message>
-        <source>All files received.</source>
-        <translation>Alle Dateien erhalten.</translation>
-    </message>
-    <message>
-        <source>Thumbnail created.</source>
-        <translation>Bildvorschau erstellt.</translation>
+        <translation>Fel</translation>
     </message>
     <message>
         <source>Starting...</source>
-        <translation>Starte ...</translation>
+        <translation>Startar...</translation>
+    </message>
+    <message>
+        <source>All files received.</source>
+        <translation>Alla filer har mottagits.</translation>
+    </message>
+    <message>
+        <source>Unable to load Flash content. You can download the latest version of Flash Player from the</source>
+        <translation>Kunde inte ladda Flash-innehåll. Du kan ladda ned den senaste versionen av Flash PLayer från</translation>
+    </message>
+    <message>
+        <source>Adobe Flash Player Download Center</source>
+        <translation>Adobe Flash Player nedladdningscenter</translation>
+    </message>
+    <message>
+        <source>The files are uploaded to</source>
+        <translation>Filerna har laddats upp till</translation>
+    </message>
+    <message>
+        <source>Select files</source>
+        <translation>Välj filer</translation>
+    </message>
+    <message>
+        <source>Thumbnail created.</source>
+        <translation>Miniatyr skapad.</translation>
+    </message>
+    <message>
+        <source>Multiupload</source>
+        <translation>Multi-uppladdning</translation>
     </message>
 </context>
 </TS>

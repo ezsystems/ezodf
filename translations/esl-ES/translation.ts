@@ -3,86 +3,86 @@
     <name>design/ezwebin/parts/website_toolbar</name>
     <message>
         <source>About</source>
-        <translation>Über</translation>
+        <translation>Acerca de</translation>
     </message>
     <message>
         <source>Create here</source>
-        <translation>Hier erstellen</translation>
+        <translation>Crear aquí</translation>
     </message>
     <message>
         <source>Edit: %node_name [%class_name]</source>
-        <translation>Bearbeiten: %node_name  [%class_name]</translation>
+        <translation>Editar: %node_name [%class_name]</translation>
     </message>
     <message>
         <source>Move</source>
-        <translation>Verschieben</translation>
+        <translation>Mover</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation>Entfernen</translation>
+        <translation>Eliminar</translation>
     </message>
     <message>
         <source>Add locations</source>
-        <translation>Orte hinzufügen</translation>
+        <translation>Añadir ubicaciones</translation>
     </message>
     <message>
         <source>Timeline</source>
-        <translation>Zeitskala</translation>
+        <translation>Línea cronológica</translation>
     </message>
     <message>
         <source>Documentation</source>
-        <translation>Dokumentation</translation>
+        <translation>Documentación</translation>
     </message>
     <message>
         <source>Replace</source>
-        <translation>Ersetzen</translation>
+        <translation>Sustituir</translation>
     </message>
     <message>
         <source>Export</source>
-        <translation>Exportieren</translation>
+        <translation>Exportar</translation>
     </message>
     <message>
         <source>Import</source>
-        <translation>Importieren</translation>
+        <translation>Importar</translation>
     </message>
 </context>
 <context>
     <name>ezmultiupload</name>
     <message>
         <source>Multiupload</source>
-        <translation>Multi-Upload</translation>
+        <translation>Multicarga</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>Fehler</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <source>The files are uploaded to</source>
-        <translation>Erfolgreicher Upload der Dateien nach</translation>
+        <translation>Los archivos se van a cargar a </translation>
     </message>
     <message>
         <source>Select files</source>
-        <translation>Dateien auswählen</translation>
+        <translation>Seleccionar archivos</translation>
     </message>
     <message>
         <source>Unable to load Flash content. You can download the latest version of Flash Player from the</source>
-        <translation>Flash-Content konnte nicht geladen werden. Sie können die neueste Flash-Player-Version downloaden über</translation>
+        <translation>No se puede cargar el contenido Flash. Descargue la última versiónde Flash Player desde</translation>
     </message>
     <message>
         <source>Adobe Flash Player Download Center</source>
-        <translation>Adobe Flash Player Download Center</translation>
+        <translation>Centro de descargas de Adobe Flash Player</translation>
     </message>
     <message>
         <source>All files received.</source>
-        <translation>Alle Dateien erhalten.</translation>
+        <translation>Se han recibido todos los archivos.</translation>
     </message>
     <message>
         <source>Thumbnail created.</source>
-        <translation>Bildvorschau erstellt.</translation>
+        <translation>Miniatura creada.</translation>
     </message>
     <message>
         <source>Starting...</source>
-        <translation>Starte ...</translation>
+        <translation>Iniciando...</translation>
     </message>
 </context>
 </TS>

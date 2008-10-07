@@ -3,70 +3,70 @@
     <name>design/ezwebin/parts/website_toolbar</name>
     <message>
         <source>About</source>
-        <translation>Über</translation>
+        <translation>Over</translation>
     </message>
     <message>
         <source>Create here</source>
-        <translation>Hier erstellen</translation>
+        <translation>Hier aanmaken</translation>
     </message>
     <message>
         <source>Edit: %node_name [%class_name]</source>
-        <translation>Bearbeiten: %node_name  [%class_name]</translation>
+        <translation>Bewerken: %node_name [%class_name]</translation>
     </message>
     <message>
         <source>Move</source>
-        <translation>Verschieben</translation>
+        <translation>Verplaatsen</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation>Entfernen</translation>
+        <translation>Verwijderen</translation>
     </message>
     <message>
         <source>Add locations</source>
-        <translation>Orte hinzufügen</translation>
+        <translation>Locaties toevoegen</translation>
     </message>
     <message>
         <source>Timeline</source>
-        <translation>Zeitskala</translation>
+        <translation>Tijdlijn</translation>
     </message>
     <message>
         <source>Documentation</source>
-        <translation>Dokumentation</translation>
+        <translation>Documentatie</translation>
     </message>
     <message>
         <source>Replace</source>
-        <translation>Ersetzen</translation>
+        <translation>Vervangen</translation>
     </message>
     <message>
         <source>Export</source>
-        <translation>Exportieren</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <source>Import</source>
-        <translation>Importieren</translation>
+        <translation>Import</translation>
     </message>
 </context>
 <context>
     <name>ezmultiupload</name>
     <message>
         <source>Multiupload</source>
-        <translation>Multi-Upload</translation>
+        <translation>Multiupload</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>Fehler</translation>
+        <translation>Fout</translation>
     </message>
     <message>
         <source>The files are uploaded to</source>
-        <translation>Erfolgreicher Upload der Dateien nach</translation>
+        <translation>De bestanden werden geüpload naar</translation>
     </message>
     <message>
         <source>Select files</source>
-        <translation>Dateien auswählen</translation>
+        <translation>Bestanden selecteren</translation>
     </message>
     <message>
         <source>Unable to load Flash content. You can download the latest version of Flash Player from the</source>
-        <translation>Flash-Content konnte nicht geladen werden. Sie können die neueste Flash-Player-Version downloaden über</translation>
+        <translation>Laden van Flashinhoud niet mogelijk. U kunt de laatste versie van Flash Player downloaden van</translation>
     </message>
     <message>
         <source>Adobe Flash Player Download Center</source>
@@ -74,15 +74,15 @@
     </message>
     <message>
         <source>All files received.</source>
-        <translation>Alle Dateien erhalten.</translation>
+        <translation>Alle bestanden ontvangen.</translation>
     </message>
     <message>
         <source>Thumbnail created.</source>
-        <translation>Bildvorschau erstellt.</translation>
+        <translation>Miniatuur aangemaakt.</translation>
     </message>
     <message>
         <source>Starting...</source>
-        <translation>Starte ...</translation>
+        <translation>Begonnen...</translation>
     </message>
 </context>
 </TS>
