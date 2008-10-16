@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS><TS version="1.1" language="zh_CN">
+<defaultcodec></defaultcodec>
+<context>
+    <name>extension/ezodf</name>
+    <message>
+        <location filename="" line="0"/>
+        <source>Upload file</source>
+        <translation>上传文件</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Error</source>
+        <translation>错误</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Export Object</source>
+        <translation>导出对象</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>OpenOffice.org import</source>
+        <translation>OpenOffice.org导入</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>OpenOffice.org export</source>
+        <translation>OpenOffice.org导出</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Export eZ publish content to OpenOffice.org</source>
+        <translation>导出eZ publish内容至OpenOffice.org</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Here you can export any eZ publish content object to an OpenOffice.org Writer document format.</source>
+        <translation>这里您可以将任何eZ publish内容对象导出为OpenOffice.org Writer文档格式。</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Document is now imported</source>
+        <translation>文档导入成功</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>The object was imported as: %class_name</source>
+        <translation>该对象被导入为: %class_name</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Document imported as</source>
+        <translation>文档被导入为</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>The images are placed in the media and can be re-used.</source>
+        <translation>图片为放置在媒体哭并可以重用。</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Import another document</source>
+        <translation>导入另一个文档</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Import OpenOffice.org document</source>
+        <translation>导入OpenOffice.org文档</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Replace document</source>
+        <translation>替换文档</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Import to</source>
+        <translation>导入至</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>You can import OpenOffice.org Writer documents directly into eZ publish from this page. You are
+asked where to place the document and eZ publish does the rest. The document is converted into
+the appropriate class during the import, you get a notice about this after the import is done.
+Images are placed in the media library so you can re-use them in other articles.</source>
+        <translation>您可以在这个页面直接将OpenOffice.org Writer文档直接导入eZ publish。您会被
+询问将文档放置于什么位置，之后的工作eZ publish会自动完成。文档会被转换为
+适当的类，在导入完成之后系统会给出相应的提示。
+图片会被放置于媒体库，因此您可以在其他文章中重用它们。</translation>
+    </message>
+</context>
+<context>
+    <name>extension/ezodf/browse</name>
+    <message>
+        <location filename="" line="0"/>
+        <source>Choose document placement</source>
+        <translation>选择文档的位置</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Please choose the placement for the OpenOffice.org object.
+
+    Select the placements and click the %buttonname button.
+    Using the recent and bookmark items for quick placement is also possible.
+    Click on placement names to change the browse listing.</source>
+        <translation>请选择OpenOffice.org对象的放置位置。
+
+    选择位置然后点击%buttonname按钮。
+    也可以使用最近浏览和书签来快速定位。
+    点击位置名称刷新浏览目录树。</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Select</source>
+        <translation>选择</translation>
+    </message>
+</context>
+<context>
+    <name>extension/ezodf/export/error</name>
+    <message>
+        <location filename="" line="0"/>
+        <source>Destination file format not supported</source>
+        <translation>目标文件格式不支持</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>PDF conversion failed</source>
+        <translation>PDF转换失败</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Word conversion failed</source>
+        <translation>单词转换失败</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Unable to fetch node, or no read access</source>
+        <translation>无法提取节点，或者没有读权限</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Unable to open file %1 on server side</source>
+        <translation>无法打开服务器端文件%1</translation>
+    </message>
+</context>
+<context>
+    <name>extension/ezodf/import/error</name>
+    <message>
+        <location filename="" line="0"/>
+        <source>File extension or type is not allowed.</source>
+        <translation>文件扩展名或类型不支持。</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Could not parse XML.</source>
+        <translation>无法解析XML。</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Can not open socket. Please check if extension/ezodf/daemon.php is running.</source>
+        <translation>无法打开套接字。请检查extension/ezodf/daemon.php是否启动。</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Can not convert the given document.</source>
+        <translation>无法转换指定的文档。</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Unable to call daemon. Fork can not create child process.</source>
+        <translation>无法调用后台进程。无法生成子进程。</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Daemon reported error.</source>
+        <translation>后台进程报错。</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Unknown node.</source>
+        <translation>未知节点。</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Access denied.</source>
+        <translation>拒绝访问。</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Error during import.</source>
+        <translation>导入过程中出错。</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Unknown content class specified in odf.ini:</source>
+        <translation>odf.ini中指定的类未知:</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Unknown error.</source>
+        <translation>未知错误。</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Filetype: </source>
+        <translation>文件类型: </translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Unable to fetch node with id  </source>
+        <translation>无法提取节点id  </translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Folder for images could not be created, access denied.</source>
+        <translation>无法创建图片文件夹，拒绝访问。</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Document is not suported.</source>
+        <translation>文档不支持。</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Cannot import. File not found. Already imported?</source>
+        <translation>无法导入。没找到文件。已经导入?</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Cannot import document, supplied placement nodeID is not valid.</source>
+        <translation>无法导入文档，提供的位置nodeID不合法。</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Cannot store uploaded file, cannot import.</source>
+        <translation>无法保存上传的文件，无法导入。</translation>
+    </message>
+</context>
+<context>
+    <name>extension/ezodf/popupmenu</name>
+    <message>
+        <location filename="" line="0"/>
+        <source>Export PDF</source>
+        <translation>导入PDF</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Export Word</source>
+        <translation>导入Word</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>OpenOffice.org</source>
+        <translation>OpenOffice.org</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Export OpenOffice</source>
+        <translation>导出OpenOffice</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Import OpenOffice</source>
+        <translation>导入OpenOffice</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>Replace OpenOffice</source>
+        <translation>替换OpenOffice</translation>
+    </message>
+</context>
+</TS>
