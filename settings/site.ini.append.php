@@ -9,6 +9,7 @@ AnonymousAccessList[]=odf/upload_export
 PolicyOmitList[]=odf/upload_import
 PolicyOmitList[]=odf/authenticate
 PolicyOmitList[]=odf/upload_export
+PolicyOmitList[]=odf/ezodf_oo_client
 
 [RegionalSettings]
 TranslationExtensions[]=ezodf

@@ -175,7 +175,7 @@ class eZOOImport
                          $port,
                          $errorNR,
                          $errorString,
-                         0 );
+                         10 ); // @as 2008-11-25: change the timeout from 0 to 10 to avoid problems with connection
 
         if ( $fp )
         {
@@ -309,7 +309,8 @@ class eZOOImport
 
         // Check if document conversion is needed
         //
-        if ( in_array( $originalFileType, $convertTypes, false ) )
+        // Alex 2008/04/21 - added !== false
+        if ( in_array( $originalFileType, $convertTypes, false ) !== false )
         {
             $uniqueStamp = md5( time() );
             $tmpFromFile = $tmpDir . "/convert_from_$uniqueStamp.doc";
@@ -460,24 +461,161 @@ class eZOOImport
             // No defined sections. Do default import.
             $bodyNodeArray = $dom->elementsByNameNS( 'text', 'urn:oasis:names:tc:opendocument:xmlns:office:1.0' );
 
-            if ( count( $bodyNodeArray ) == 1 )
+            // Added by Soushi
+            // check the parent-style-name [ eZSectionDefinition ]
+            $eZSectionDefinitionStyleName = array();
+            foreach( $automaticStyleArray[0]->children() as $child )
             {
-                $xmlText = "";
-                $level = 1;
-                foreach ( $bodyNodeArray[0]->children() as $childNode )
+                if( $child->get_attribute('parent-style-name') == 'eZSectionDefinition')
                 {
-                    $xmlText .= eZOOImport::handleNode( $childNode, $level );
+                     $eZSectionDefinitionStyleName[] = $child->get_attribute('name');
                 }
+            }
+            
+            $sectionNameArray = array();
+            $sectionNodeArray = array();
+            $paragraphSectionName = NULL;
+            $firstChildFlag = false;
+            foreach ( $bodyNodeArray[0]->children() as $childNode )
+            {
+                $firstChildFlag = true;
+                if( in_array( $childNode->get_attribute('style-name'), $eZSectionDefinitionStyleName ) || $childNode->get_attribute('style-name') == 'eZSectionDefinition' )
+                {
+                    $firstChildFlag = false;
+                    $childNodeChildren = $childNode->children();
+                    $paragraphSectionName = trim( $childNodeChildren[0]->textContent() );
+                    $sectionNameArray[] =  $paragraphSectionName;
+                }
+                if( $paragraphSectionName && $firstChildFlag )
+                {
+                    $paragraphSectionNodeArray[ $paragraphSectionName ][] = $childNode;
+                }
+            }
+            
+            $sectionNodeArray = array();
+            foreach( $paragraphSectionNodeArray as $key => $childNodes )
+            {
+                $sectionNode = new eZDOMNode();
+                $sectionNode->setName( "section" );
+                $sectionNode->setType( 1 );
+                
+                foreach( $childNodes as $childNode )
+                {
+                    $sectionNode->appendChild( $childNode );
+                }
+                
+                $sectionNodeArray[$key] = $sectionNode;
+            }
+            
+            if( $sectionNameArray )
+            {
+                $registeredClassArray = $ooINI->variable( 'ODFImport', 'RegisteredClassArray' );
+                
+                // Check if there is a coresponding eZ Publish class for this document
+                foreach ( $registeredClassArray as $className )
+                {
+                    $attributeArray = $ooINI->variable( $className, 'Attribute' );
 
-                $endSectionPart = "";
-                $levelDiff = 1 - $level;
-                if ( $levelDiff < 0 )
-                    $endSectionPart = str_repeat( "</section>", abs( $levelDiff ) );
+                    if ( count( $attributeArray ) > 0 )
+                    {
+                        // Convert space to _ in section names
+                        foreach ( $sectionNameArray as $key => $value )
+                        {
+                            $sectionNameArray[$key] = str_replace( " ", "_", $value );
+                        }
 
-                $charset = eZTextCodec::internalCharset();
-                $xmlTextBody = "<?xml version='1.0' encoding='$charset' ?>" .
-                     "<section xmlns:image='http://ez.no/namespaces/ezpublish3/image/' " .
-                     "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'><section>" . $xmlText . $endSectionPart . "</section></section>";
+                        sort( $attributeArray );
+                        sort( $sectionNameArray );
+
+                        $diff = array_diff( $attributeArray, $sectionNameArray );
+                        if ( count( $diff ) == 0 )
+                        {
+                            $importClassIdentifier = $className;
+                            $customClassFound = true;
+                            break;
+                        }
+                    }
+                }
+                
+                if ( $customClassFound == true )
+                {
+                    foreach ( $sectionNodeArray as $key => $sectionNode )
+                    {
+                        
+                        $sectionName = str_replace( " ", "_", $key );
+                        $xmlText = "";
+                        $level = 1;
+                        $childArray = $sectionNode->children();
+                        $nodeCount = 1;
+                        foreach ( $childArray as $childNode )
+                        {
+                            $isLastTag = false;
+                            if ( $nodeCount == count( $childArray ) )
+                            {
+                                $isLastTag = true;
+                            }
+
+                            $xmlText .= eZOOImport::handleNode( $childNode, $level, $isLastTag );
+                            $nodeCount++;
+                        }
+                        $endSectionPart = "";
+                        $levelDiff = 1 - $level;
+                        if ( $levelDiff < 0 )
+                            $endSectionPart = str_repeat( "</section>", abs( $levelDiff ) );
+                        $charset = eZTextCodec::internalCharset();
+
+                        // Store the original XML for each section, since some datatypes needs to handle the XML specially
+                        $sectionNodeHash[$sectionName] = $sectionNode;
+                        
+                        $xmlTextArray[$sectionName] = "<?xml version='1.0' encoding='$charset' ?>" .
+                            "<section xmlns:image='http://ez.no/namespaces/ezpublish3/image/' " .
+                            "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'><section>" . $xmlText . $endSectionPart . "</section></section>";
+                    }
+                }
+                else
+                {
+                    if ( count( $bodyNodeArray ) == 1 )
+                    {
+                        $xmlText = "";
+                        $level = 1;
+                        foreach ( $bodyNodeArray[0]->children() as $childNode )
+                        {
+                            $xmlText .= eZOOImport::handleNode( $childNode, $level );
+                        }
+
+                        $endSectionPart = "";
+                        $levelDiff = 1 - $level;
+                        if ( $levelDiff < 0 )
+                            $endSectionPart = str_repeat( "</section>", abs( $levelDiff ) );
+
+                        $charset = eZTextCodec::internalCharset();
+                        $xmlTextBody = "<?xml version='1.0' encoding='$charset' ?>" .
+                             "<section xmlns:image='http://ez.no/namespaces/ezpublish3/image/' " .  
+                             "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'><section>" . $xmlText . $endSectionPart . "</section></section>";
+                    }
+                }
+            }
+            else
+            {
+                if ( count( $bodyNodeArray ) == 1 )
+                {
+                    $xmlText = "";
+                    $level = 1;
+                    foreach ( $bodyNodeArray[0]->children() as $childNode )
+                    {
+                        $xmlText .= eZOOImport::handleNode( $childNode, $level );
+                    }
+
+                    $endSectionPart = "";
+                    $levelDiff = 1 - $level;
+                    if ( $levelDiff < 0 )
+                        $endSectionPart = str_repeat( "</section>", abs( $levelDiff ) );
+
+                    $charset = eZTextCodec::internalCharset();
+                    $xmlTextBody = "<?xml version='1.0' encoding='$charset' ?>" .
+                         "<section xmlns:image='http://ez.no/namespaces/ezpublish3/image/' " .  
+                         "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'><section>" . $xmlText . $endSectionPart . "</section></section>";
+                }
             }
         }
 
@@ -600,7 +738,7 @@ class eZOOImport
                             // day/month/year 14:00
                             $dateString = trim( strip_tags( $xmlTextArray[$sectionName] ) );
 
-                            $dateTimeArray = split(  " ", $dateString );
+                            $dateTimeArray = explode(  " ", $dateString );
 
                             $dateArray = explode( "/", $dateTimeArray[0] );
                             $timeArray = explode( ":", $dateTimeArray[1] );
@@ -642,7 +780,9 @@ class eZOOImport
                                         // finally look for the image node
                                         $children = $frame->children();
 
-                                        if ( $children[0]->name() == "image" )
+                                        // Alex 2008-05-27 - added isset()
+                                        if ( isset( $children[0] ) 
+                                             && $children[0]->name() == "image" )
                                         {
                                             $imageNode = $children[0];
                                             $fileName = $imageNode->attributeValue( "href" );
@@ -915,9 +1055,27 @@ class eZOOImport
                         $levelDiff = $level - $sectionLevel;
                         $sectionLevel = $level;
                         $headerContent = "";
-                        foreach ( $node->children() as $childNode )
+
+                        // Added by Soushi
+                        $children = $node->children();
+                        foreach ( $node->children() as $key => $childNode )
                         {
-                            $headerContent .= eZOOImport::handleInlineNode( $childNode );
+                            // Alex 2008/04/21 - added initializations for $nextlineBreak and $prevlineBreak
+                            $nextlineBreak = false;
+                            $prevlineBreak = false;
+                            // Alex 2008/04/21 - added isset()
+                            if( isset( $children[ $key + 1 ] ) )
+                            {
+                                $nextChildNode = $children[ $key + 1 ];
+                                $nextlineBreak = ( $nextChildNode->name() == 'line-break' ) ? true : false;
+                            }
+                            // Alex 2008/04/21 - added isset()
+                            if( isset( $children[ $key - 1 ] ) )
+                            {
+                                $prevChildNode = $children[ $key - 1 ];
+                                $prevlineBreak = ( $prevChildNode->name() == 'line-break' ) ? true : false;
+                            }
+                            $headerContent .= eZOOImport::handleInlineNode( $childNode, $nextlineBreak, $prevlineBreak );
                         }
                         $sectionLevel = $level;
 
@@ -975,7 +1133,7 @@ class eZOOImport
 
                         if ( $styleName == $tmpStyleName )
                         {
-                            if ( count( $style->children() >= 1 ) )
+                            if ( count( $style->children() ) >= 1 )
                             {
                                 $children = $style->children();
 
@@ -1025,9 +1183,27 @@ class eZOOImport
                         $postStyles .= "</strong>";
 
                     $paragraphContent = "";
-                    foreach ( $node->children() as $childNode )
+
+                    // Added by Soushi
+                    $children = $node->children();
+                    foreach ( $node->children() as $key => $childNode )
                     {
-                        $paragraphContent .= eZOOImport::handleInlineNode( $childNode );
+                        // Alex 2008/04/21 - added initializations for $nextlineBreak and $prevlineBreak
+                        $nextlineBreak = false;
+                        $prevlineBreak = false;
+                        // Alex 2008/04/21 - added isset()
+                        if( isset( $children[ $key + 1 ] ) )
+                        {
+                            $nextChildNode = $children[ $key + 1 ];
+                            $nextlineBreak = ( $nextChildNode->name() == 'line-break' ) ? true : false;
+                        }
+                        // Alex 2008/04/21 - added isset()
+                        if( isset( $children[ $key - 1 ] ) )
+                        {
+                            $prevChildNode = $children[ $key - 1 ];
+                            $prevlineBreak = ( $prevChildNode->name() == 'line-break' ) ? true : false;
+                        }
+                        $paragraphContent .= eZOOImport::handleInlineNode( $childNode, $nextlineBreak, $prevlineBreak );
                     }
 
 
@@ -1134,7 +1310,8 @@ class eZOOImport
 
                         if ( $styleName == $tmpStyleName )
                         {
-                            if ( count( $style->children() >= 1 ) )
+                            // Alex 2008/04/21 - fixed count paranthesis
+                            if ( count( $style->children() ) >= 1 )
                             {
                                 $children = $style->children();
 
@@ -1287,8 +1464,10 @@ class eZOOImport
 
     /*!
       Handles the rendering of line nodes, e.g. inside paragraphs and headers.
+
+      $nextLineBreak and $prevLineBreak attributes added by Alex (they were used but not defined)
      */
-    function handleInlineNode( $childNode )
+    function handleInlineNode( $childNode, $nextLineBreak = false, $prevLineBreak = false )
     {
         $paragraphContent = "";
         switch ( $childNode->name() )
@@ -1373,7 +1552,8 @@ class eZOOImport
 
                                 if ( $styleName == $tmpStyleName )
                                 {
-                                    if ( count( $style->children() == 1 ) )
+                                    // Alex 2008/04/22 - fixed count paranthesis (moved paranthesis from outside == to before ==)
+                                    if ( count( $style->children() ) == 1 )
                                     {
                                         $children = $style->children();
                                         $properties = $children[0];
@@ -1566,7 +1746,8 @@ class eZOOImport
 
                     if ( $styleName == $tmpStyleName )
                     {
-                        if ( count( $style->children() >= 1 ) )
+                        // Alex 2008/04/22 - fixed count paranthesis
+                        if ( count( $style->children() ) >= 1 )
                         {
                             $children = $style->children();
 
@@ -1610,6 +1791,15 @@ class eZOOImport
 
         }
 
+        if( $nextLineBreak )
+        {
+            $paragraphContent = '<line>' . $paragraphContent . '</line>';
+        }
+        elseif( $prevLineBreak && $paragraphContent )
+        {
+            $paragraphContent = '<line>' . $paragraphContent . '</line>';
+        }
+        
         return $paragraphContent;
     }
 

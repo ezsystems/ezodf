@@ -43,6 +43,7 @@ class eZOOGenerator
 {
     const TEXT = 1001;
     const LINK = 1002;
+    const LINE = 1003;
     const STYLE_START = 2003;
     const STYLE_STOP = 2004;
 
@@ -331,12 +332,54 @@ class eZOOGenerator
 
     /*!
       Adds a new header to the document.
+
+      Modified by Soushi.
+      $paragraphArray parameter added by Soushi.
     */
-    function addHeader( $text, $level = 1 )
+    function addHeader( $text, $level = 1, $paragraphArray = array() )
     {
+        $headerContents = array();
+        $headerContents['Text'] = $text;
+        foreach ( $paragraphArray as $paragraphElement )
+        {
+            switch ( $paragraphElement[0] )
+            {
+                case self::TEXT:
+                {
+                    $tagContent = $paragraphElement[1];
+
+                    $tagContent = str_replace( "&", "&amp;", $tagContent );
+                    $tagContent = str_replace( ">", "&gt;", $tagContent );
+                    $tagContent = str_replace( "<", "&lt;", $tagContent );
+                    $tagContent = str_replace( "'", "&apos;", $tagContent );
+                    $tagContent = str_replace( '"', "&quot;", $tagContent );
+
+
+                    $headerContents['Element'][] = array( 'Type' => 'text', "Content" => $tagContent );
+                }break;
+                
+                case self::LINK:
+                {
+                    $headerContents['Element'][] = array( 'Type' => 'link',
+                                                          "Content" => $content = $paragraphElement[2],
+                                                          "HREF" => $paragraphElement[1] );
+                }break;
+                
+                case self::LINE:
+                {
+                    $headerContents['Element'][] = array( 'Type' => 'line',
+                                                          "Content" => '');
+                }break;
+
+                default:
+                {
+                    eZDebug::writeError( "Unknown paragraph element." );
+                }break;
+            }
+        }
         $this->DocumentArray[] = array( 'Type' => 'header',
-                                        'Text' => $text,
-                                        'Level' => $level );
+                                        'Content' => $headerContents,
+                                        'Level' => $level);
     }
 
     /*!
@@ -401,6 +444,12 @@ class eZOOGenerator
                                                    "Content" => $content = $paragraphElement[2],
                                                    "HREF" => $paragraphElement[1] );
                     }break;
+                    
+                    case self::LINE:
+                    {
+                        $paragraphArray[] = array( 'Type' => 'line',
+                                                   "Content" => '');
+                    }break;
 
                     default:
                     {
@@ -411,7 +460,8 @@ class eZOOGenerator
         }
         else
         {
-            $paragraphArray = array( array( 'Type' => 'text', "Content" => $argArray[0] ) );
+            // Alex 2008-06-03 - Added isset()
+            $paragraphArray = array( array( 'Type' => 'text', "Content" => isset( $argArray[0] ) ? $argArray[0] : '' ) );
         }
 
         $elementArray = array( 'Type' => 'paragraph',
@@ -444,7 +494,9 @@ class eZOOGenerator
                 // Add the paragraph inside a table cell
                 $currentRow = $this->DocumentStack[$this->CurrentStackNumber]['CurrentRow'];
                 $currentCell = $this->DocumentStack[$this->CurrentStackNumber]['CurrentCell'];
-                if ( is_numeric( $this->DocumentStack[$this->CurrentStackNumber]['CurrentColSpan'] ) )
+                // Alex 2008-06-03 - Added isset()
+                if ( isset( $this->DocumentStack[$this->CurrentStackNumber]['CurrentColSpan'] )
+                     && is_numeric( $this->DocumentStack[$this->CurrentStackNumber]['CurrentColSpan'] ) )
                     $elementArray = array_merge( $elementArray, array( "ColSpan" => $this->DocumentStack[$this->CurrentStackNumber]['CurrentColSpan'] ) );
                 $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'][$currentRow][$currentCell][] = $elementArray;
 
@@ -517,9 +569,20 @@ class eZOOGenerator
             $this->addElement( $elementArray );
         }
     }
+    
+    /*!
+       Starts a new paragraph section with the given name.
+
+       Added by Soushi.
+    */
+    function startClassMapHeader( $name )
+    {
+        $this->DocumentArray[] = array( 'Type' => 'class-map-header',
+                                        'Text' => $name );
+    }
 
     /*!
-       Stars a new section with the given name
+       Starts a new section with the given name.
     */
     function startSection( $name )
     {
@@ -666,7 +729,12 @@ class eZOOGenerator
 
                         case "link":
                         {
-                            $contentXML .= "<text:a xlink:type='simple' xlink:href='" . htmlspecialchars( $paragraphElement['HREF'] ) . "'>" . htmlspecialchars( $paragraphElement['Content'] ) . "</text:a>";
+                            $contentXML .= "<text:a xlink:type='simple' xlink:href='" . $paragraphElement['HREF']. "'>" . $paragraphElement['Content'] . "</text:a>";
+                        }break;
+                        
+                        case "line":
+                        {
+                            $contentXML .= "<text:line-break />";
                         }break;
 
                         default:
@@ -678,6 +746,14 @@ class eZOOGenerator
                 $contentXML .= "</text:p>";
 
 
+            }break;
+            
+            case "class-map-header":
+            {
+                $contentXML .= "<text:p text:style-name='Defualt'></text:p>" . "\n";
+                $contentXML .= "<text:p text:style-name='eZSectionDefinition'>" . "\n";
+                $contentXML .= $element['Text'];
+                $contentXML .= "</text:p>". "\n";
             }break;
 
             case "section":
@@ -692,7 +768,58 @@ class eZOOGenerator
 
             case "header":
             {
-                $contentXML .= "\n<text:h text:style-name='Heading " . $element['Level'] . "' text:outline-level='" . $element['Level'] . "'>" . htmlspecialchars( $element['Text'] ) . "</text:h>\n";
+                $contentXML .= "\n<text:h text:style-name='Heading " . $element['Level'] . "' text:outline-level='" . $element['Level'] . "'>";
+                // Alex 2008/04/22 - Added isset()
+                if ( isset( $element['Content']['Element'] ) )
+                {
+                    foreach( $element['Content']['Element'] as $headerElement )
+                    {
+                        switch ( $headerElement['Type'] )
+                        {
+                            case "text":
+                            {
+                                // @as 2008-11-25 comment: before merging to trunk,
+                                // htmlspecialchars() was called on the 'Text' element of $element.
+                                // But Soushi's changes do the same earlier (see lines 347-359 in this file)
+                                // so htmlspecialchars() is not needed anymore
+                                $contentXML .= $headerElement['Content'];
+                            }break;
+
+                            case "link":
+                            {
+                                $contentXML .= "<text:a xlink:type='simple' xlink:href='" . $headerElement['HREF']. "'>";
+                                
+                                if( strlen( $element['ClassName'] ) )
+                                {
+                                    $contentXML .=  "<text:span text:style-name='eZClassification_20_" . $element['ClassName'] . "'>";
+                                    $contentXML .=  $headerElement['Content'];
+                                    $contentXML .=  '</text:span>';
+                                }
+                                else
+                                {
+                                    $contentXML .= $headerElement['Content'];
+                                
+                                }
+                                $contentXML .= "</text:a>";
+                            }break;
+                            
+                            case "line":
+                            {
+                                $contentXML .= "<text:line-break />";
+                            }break;
+
+                            default:
+                            {
+                                eZDebug::writeError( "Unsupported paragraph element" );
+                            }break;
+                        }
+                    }
+                }
+                else
+                {
+                    $contentXML .= $element['Content']['Text'];
+                }
+                $contentXML .= "</text:h>\n";
             }break;
 
             case "image" :
@@ -781,6 +908,8 @@ class eZOOGenerator
                 $tableCounter = 1;
 
                 $columnCount = 0;
+                // Alex 2008-06-03 - Added initialization for $columnDefinition
+                $columnDefinition = "";
                 $rowContent = "";
                 $rowCount = 1;
                 foreach ( $element['Content'] as $rowArray )
@@ -800,7 +929,9 @@ class eZOOGenerator
                         foreach ( $cellArray as $cellElement )
                         {
                             // Check for colspan
-                            if ( is_numeric( $cellElement['ColSpan'] ) )
+                            // Alex 2008-06-03 - Added isset()
+                            if ( isset( $cellElement['ColSpan'] )
+                                 && is_numeric( $cellElement['ColSpan'] ) )
                             {
                                 $colSpan = $cellElement['ColSpan'];
                                 // Increase cell count with 1-colspan

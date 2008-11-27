@@ -240,7 +240,7 @@ function daemonConvert( $server, $port, $sourceFile, $conversionCommand, $destFi
                      $port,
                      $errorNR,
                      $errorString,
-                     0 );
+                     10 ); // @as 2008-11-25 - Increase the timeout from 0 to 10 to prevent problems with connection
 
     if ( $fp )
     {

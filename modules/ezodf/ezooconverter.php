@@ -67,132 +67,225 @@ class eZOOConverter
             // Clear the view cache when exporting, for some reason images are re-generated and the resolution is becomming poor
             include_once( "kernel/classes/ezcontentcachemanager.php" );
             eZContentCacheManager::clearObjectViewCache( $object->attribute( "id" ) );
+            
+            $odfINI = eZINI::instance( 'odf.ini' );
+            $ClassMappingToHeader = ( $odfINI->variable( 'ODFExport', 'ClassAttributeMappingToHeader' ) == 'enabled' ) ? true : false;
+
+            // @bf 2008-08-21: Fetch the current class identifier and the .ini settings for the enabled attributes for this
+            $classIdentifier = $object->contentClassIdentifier();
+            $enabledClassAttributes = $odfINI->variable( $classIdentifier, 'Attribute' );
 
             foreach ( $attributes as $attribute )
             {
-                switch ( $attribute->attribute( 'data_type_string' ) )
+                // @bf 2008-08-21: Verify that the attribute is enabled in the .ini setting for this class
+                $enabledAttribute = false;
+                $attributeIdentifier = $attribute->contentClassAttributeIdentifier();
+                foreach ( $enabledClassAttributes as $key => $value )
                 {
-                    case "ezstring":
-                    {
-                        $text = trim( $attribute->content() );
-                        if ( $text != "" )
+                        if ( $key == $attributeIdentifier )
                         {
-                            $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
-                            $ooGenerator->addHeader( $attribute->content() );
-                            $ooGenerator->endSection( );
+                            $enabledAttribute = true;
                         }
-                    }break;
+                }
 
-                    case "eztext":
+                // @bf 2008-08-21: Only export attribute if it is enabled
+                if ( $enabledAttribute == true )
+                {
+                    switch ( $attribute->attribute( 'data_type_string' ) )
                     {
-                        $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
-                        $ooGenerator->addParagraph( $attribute->content() );
-                        $ooGenerator->endSection();
-
-                    }break;
-
-                    case "ezxmltext":
-                    {
-                        $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
-
-                        $xmlData = $attribute->attribute( 'data_text' );
-                        $domTree = $xml->domTree( $xmlData );
-                        if ( $domTree )
+                        case "ezstring":
                         {
-                            $root = $domTree->root();
-                            foreach ( $root->children() as $node )
+                            $text = trim( $attribute->content() );
+                            if ( $text != "" )
                             {
-                                eZOOConverter::handleNode( $node, $ooGenerator );
+                                if( !$ClassMappingToHeader )
+                                {
+                                    $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
+                                }
+                                else
+                                {
+                                    $ooGenerator->startClassMapHeader( $attribute->attribute( "contentclass_attribute_identifier" ) );
+                                }
+                                
+                                $ooGenerator->addHeader( $attribute->content() );
+                                if( !$ClassMappingToHeader )
+                                {
+                                    $ooGenerator->endSection( );
+                                }
                             }
-                        }
-                        $ooGenerator->endSection( );
-                    }break;
+                        }break;
 
-
-                    case "ezimage":
-                    {
-                        $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
-
-                        $imageHandler = $attribute->content();
-                        $originalImage = $imageHandler->attribute( 'original' );
-                        $displayImage = $imageHandler->attribute( 'original' );
-                        $displayWidth = $displayImage['width'];
-                        $displayHeight = $displayImage['height'];
-
-                        $imageArray = array( "FileName" => $originalImage['url'],
-                                               "Alignment" => "center",
-                                               "DisplayWidth" => $displayWidth,
-                                               "DisplayHeight" => $displayHeight );
-
-                        $ooGenerator->addImage( $imageArray);
-
-                        $ooGenerator->endSection();
-
-                    }break;
-
-                    case "ezdate":
-                    {
-                        $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
-
-                        $date = $attribute->content();
-                        $ooGenerator->addParagraph( $date->attribute( "day" ) . "/" . $date->attribute( "month" ) . "/" . $date->attribute( "year" ) );
-
-                        $ooGenerator->endSection();
-
-                    }break;
-
-
-                    case "ezdatetime":
-                    {
-                        $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
-
-                        $date = $attribute->content();
-                        $ooGenerator->addParagraph( $date->attribute( "day" ) . "/" . $date->attribute( "month" ) . "/" . $date->attribute( "year" ) . " " . $date->attribute( "hour" )  . ":" . $date->attribute( "minute" )  );
-
-                        $ooGenerator->endSection();
-
-                    }break;
-
-                    case "ezmatrix":
-                    {
-                        $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
-
-                        $matrix = $attribute->content();
-
-                        $columns = $matrix->attribute( "columns" );
-
-                        $ooGenerator->startTable();
-
-                        foreach ( $columns['sequential'] as $column )
+                        case "eztext":
                         {
-                            $ooGenerator->addParagraph( $column['name'] );
-                            $ooGenerator->nextCell();
-                        }
-
-                        $ooGenerator->nextRow( "defaultstyle" );
-
-                        $rows = $matrix->attribute( "rows" );
-
-                        foreach ( $rows['sequential'] as $row )
-                        {
-                            foreach ( $row['columns'] as $cell )
+                            if( !$ClassMappingToHeader )
                             {
-                                $ooGenerator->addParagraph( $cell );
+                                $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
+                            }
+                            else
+                            {
+                                $ooGenerator->startClassMapHeader( $attribute->attribute( "contentclass_attribute_identifier" ) );
+                            }
+                            $ooGenerator->addParagraph( $attribute->content() );
+                            if( !$ClassMappingToHeader )
+                            {
+                                $ooGenerator->endSection( );
+                            }
+
+                        }break;
+
+                        case "ezxmltext":
+                        {
+                            if( !$ClassMappingToHeader )
+                            {
+                                $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
+                            }
+                            else
+                            {
+                                $ooGenerator->startClassMapHeader( $attribute->attribute( "contentclass_attribute_identifier" ) );
+                            }
+
+                            $xmlData = $attribute->attribute( 'data_text' );
+                            $domTree = $xml->domTree( $xmlData );
+                            if ( $domTree )
+                            {
+                                $root = $domTree->root();
+                                foreach ( $root->children() as $node )
+                                {
+                                    eZOOConverter::handleNode( $node, $ooGenerator );
+                                }
+                            }
+                            if( !$ClassMappingToHeader )
+                            {
+                                $ooGenerator->endSection( );
+                            }
+                        }break;
+
+
+                        case "ezimage":
+                        {
+                            if( !$ClassMappingToHeader )
+                            {
+                                $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
+                            }
+                            else
+                            {
+                                $ooGenerator->startClassMapHeader( $attribute->attribute( "contentclass_attribute_identifier" ) );
+                            }
+
+                            $imageHandler = $attribute->content();
+                            $originalImage = $imageHandler->attribute( 'original' );
+                            $displayImage = $imageHandler->attribute( 'original' );
+                            $displayWidth = $displayImage['width'];
+                            $displayHeight = $displayImage['height'];
+
+                            $imageArray = array( "FileName" => $originalImage['url'],
+                                                   "Alignment" => "center",
+                                                   "DisplayWidth" => $displayWidth,
+                                                   "DisplayHeight" => $displayHeight );
+
+                            $ooGenerator->addImage( $imageArray);
+
+                            if( !$ClassMappingToHeader )
+                            {
+                                $ooGenerator->endSection( );
+                            }
+                            
+                        }break;
+
+                        case "ezdate":
+                        {
+                            if( !$ClassMappingToHeader )
+                            {
+                                $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
+                            }
+                            else
+                            {
+                                $ooGenerator->startClassMapHeader( $attribute->attribute( "contentclass_attribute_identifier" ) );
+                            }
+
+                            $date = $attribute->content();
+                            $ooGenerator->addParagraph( $date->attribute( "day" ) . "/" . $date->attribute( "month" ) . "/" . $date->attribute( "year" ) );
+
+                            if( !$ClassMappingToHeader )
+                            {
+                                $ooGenerator->endSection( );
+                            }
+
+                        }break;
+
+
+                        case "ezdatetime":
+                        {
+                            if( !$ClassMappingToHeader )
+                            {
+                                $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
+                            }
+                            else
+                            {
+                                $ooGenerator->startClassMapHeader( $attribute->attribute( "contentclass_attribute_identifier" ) );
+                            }
+
+                            $date = $attribute->content();
+                            $ooGenerator->addParagraph( $date->attribute( "day" ) . "/" . $date->attribute( "month" ) . "/" . $date->attribute( "year" ) . " " . $date->attribute( "hour" )  . ":" . $date->attribute( "minute" )  );
+
+                            if( !$ClassMappingToHeader )
+                            {
+                                $ooGenerator->endSection( );
+                            }
+
+                        }break;
+
+                        case "ezmatrix":
+                        {
+                            if( !$ClassMappingToHeader )
+                            {
+                                $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
+                            }
+                            else
+                            {
+                                $ooGenerator->startClassMapHeader( $attribute->attribute( "contentclass_attribute_identifier" ) );
+                            }
+
+                            $matrix = $attribute->content();
+
+                            $columns = $matrix->attribute( "columns" );
+
+                            $ooGenerator->startTable();
+
+                            foreach ( $columns['sequential'] as $column )
+                            {
+                                $ooGenerator->addParagraph( $column['name'] );
                                 $ooGenerator->nextCell();
                             }
+
                             $ooGenerator->nextRow( "defaultstyle" );
-                        }
 
-                        $ooGenerator->endTable();
+                            $rows = $matrix->attribute( "rows" );
 
-                        $ooGenerator->endSection();
+                            foreach ( $rows['sequential'] as $row )
+                            {
+                                foreach ( $row['columns'] as $cell )
+                                {
+                                    $ooGenerator->addParagraph( $cell );
+                                    $ooGenerator->nextCell();
+                                }
+                                $ooGenerator->nextRow( "defaultstyle" );
+                            }
 
-                    }break;
+                            $ooGenerator->endTable();
 
-                    default:
-                    {
-                        eZDebug::writeError( "Unsupported attribute for OO conversion: '" . $attribute->attribute( 'data_type_string' ) . "'" );
-                    }break;
+                            if( !$ClassMappingToHeader )
+                            {
+                                $ooGenerator->endSection( );
+                            }
+
+                        }break;
+
+                        default:
+                        {
+                            eZDebug::writeError( "Unsupported attribute for OO conversion: '" . $attribute->attribute( 'data_type_string' ) . "'" );
+                        }break;
+                    }
                 }
             }
 
@@ -340,7 +433,25 @@ class eZOOConverter
             {
                 if ( $level == 0 )
                     $level = 1;
-                $generator->addHeader( trim( $node->textContent() ), $level );
+                
+                $paragraphParameters = array();
+                $children = $node->children();
+                
+                foreach ( $node->children() as $key => $child )
+                {
+                    // Alex 2008/04/22 - added initialization
+                    $prevlineBreak = false;
+                    // Alex 2008/04/22 - added isset()
+                    if( isset( $children[ $key - 1 ] ) )
+                    {
+                        $prevChildNode = $children[ $key - 1 ];
+                        $prevlineBreak = ( $prevChildNode->name() == 'line' ) ? true : false;
+                    }
+                    $return = eZOOConverter::handleInlineNode( $child, $generator, $prevlineBreak );
+
+                    $paragraphParameters = array_merge( $paragraphParameters,  $return['paragraph_parameters'] );
+                }
+                $generator->addHeader( trim( $node->textContent() ), $level, $paragraphParameters );
             }break;
 
             case "ul":
@@ -353,9 +464,20 @@ class eZOOConverter
             {
                 $paragraphParameters = array();
                 $imageArray = array();
-                foreach ( $node->children() as $child )
+                
+                $children = $node->children();
+                
+                foreach ( $node->children() as $key => $child )
                 {
-                    $return = eZOOConverter::handleInlineNode( $child, $generator );
+                    // Alex 2008/04/21 - added initialization
+                    $prevlineBreak = false;
+                    // Alex 2008/04/21 - added isset()
+                    if( isset( $children[ $key - 1 ] ) )
+                    {
+                        $prevChildNode = $children[ $key - 1 ];
+                        $prevlineBreak = ( $prevChildNode->name() == 'line' ) ? true : false;
+                    }
+                    $return = eZOOConverter::handleInlineNode( $child, $generator, $prevlineBreak );
                     $paragraphParameters = array_merge( $paragraphParameters,  $return['paragraph_parameters'] );
                     $imageArray = $return['image_array'];
                 }
@@ -378,7 +500,12 @@ class eZOOConverter
         }
     }
 
-    static function handleInlineNode( $child, &$generator )
+    /*!
+     Handles an inline node.
+
+     Parameter $prevlineBreak added by Alex because it was used but not defined.
+     */
+    static function handleInlineNode( $child, &$generator, $prevlineBreak = false )
     {
         $paragraphParameters = array();
         $imageArray = array();
@@ -387,6 +514,12 @@ class eZOOConverter
         {
             case "line":
             {
+                // @todo: (Alex) check why this is needed here and not after the next line
+                if ( $prevlineBreak )
+                {
+                    $paragraphParameters[] = array( eZOOGenerator::LINE, '' );
+                }
+                
                 // Todo: support inline tags
                 $paragraphParameters[] = array( eZOOGenerator::TEXT, $child->textContent() );
 
@@ -531,7 +664,8 @@ class eZOOConverter
 
                     foreach ( $child->children() as $customParagraph )
                     {
-                        eZOOConverter::handleNode( $customParagraph, $generator, $level );
+                            // Alex 2008-06-03: changed $level (3rd argument) to $prevlineBreak
+                        eZOOConverter::handleNode( $customParagraph, $generator, $prevlineBreak );
                     }
 
                     $GLOBALS['CustomTagStyle'] = false;
@@ -554,7 +688,8 @@ class eZOOConverter
                             $generator->addParagraph( $childNode->content() );
                         else
                         {
-                            eZOOConverter::handleNode( $childNode, $generator, $level );
+                            // Alex 2008-06-03: changed $level (3rd argument) to $prevlineBreak
+                            eZOOConverter::handleNode( $childNode, $generator, $prevlineBreak );
                         }
                     }
                     $generator->nextListItem();
@@ -585,7 +720,8 @@ class eZOOConverter
 
                         foreach ( $cell->children() as $cellNode )
                         {
-                            eZOOConverter::handleNode( $cellNode, $generator, $level );
+                            // Alex 2008-06-03: changed $level (3rd argument) to $prevlineBreak
+                            eZOOConverter::handleNode( $cellNode, $generator, $prevlineBreak );
                         }
                         // If the cell is empty, create a dummy so the cell is properly exported
                         if ( count( $cell->children() ) == 0 )
@@ -593,7 +729,8 @@ class eZOOConverter
                             $n = new eZDOMNode();
                             $n->setType( 1 );
                             $n->setName( "paragraph" );
-                            eZOOConverter::handleNode( $n, $generator, $level );
+                            // Alex 2008-06-03: changed $level (3rd argument) to $prevlineBreak
+                            eZOOConverter::handleNode( $n, $generator, $prevlineBreak );
                         }
                         $generator->nextCell();
                     }
