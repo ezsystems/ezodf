@@ -452,7 +452,7 @@ class eZOOImport
                      $eZSectionDefinitionStyleName[] = $child->get_attribute('name');
                 }
             }
-            
+
             $sectionNameArray = array();
             $sectionNodeArray = array();
             $paragraphSectionName = NULL;
@@ -472,26 +472,26 @@ class eZOOImport
                     $paragraphSectionNodeArray[ $paragraphSectionName ][] = $childNode;
                 }
             }
-            
+
             $sectionNodeArray = array();
             foreach( $paragraphSectionNodeArray as $key => $childNodes )
             {
                 $sectionNode = new eZDOMNode();
                 $sectionNode->setName( "section" );
                 $sectionNode->setType( 1 );
-                
+
                 foreach( $childNodes as $childNode )
                 {
                     $sectionNode->appendChild( $childNode );
                 }
-                
+
                 $sectionNodeArray[$key] = $sectionNode;
             }
-            
+
             if( $sectionNameArray )
             {
                 $registeredClassArray = $ooINI->variable( 'ODFImport', 'RegisteredClassArray' );
-                
+
                 // Check if there is a coresponding eZ Publish class for this document
                 foreach ( $registeredClassArray as $className )
                 {
@@ -517,86 +517,60 @@ class eZOOImport
                         }
                     }
                 }
-                
-                if ( $customClassFound == true )
-                {
-                    foreach ( $sectionNodeArray as $key => $sectionNode )
-                    {
-                        
-                        $sectionName = str_replace( " ", "_", $key );
-                        $xmlText = "";
-                        $level = 1;
-                        $childArray = $sectionNode->children();
-                        $nodeCount = 1;
-                        foreach ( $childArray as $childNode )
-                        {
-                            $isLastTag = false;
-                            if ( $nodeCount == count( $childArray ) )
-                            {
-                                $isLastTag = true;
-                            }
-
-                            $xmlText .= eZOOImport::handleNode( $childNode, $level, $isLastTag );
-                            $nodeCount++;
-                        }
-                        $endSectionPart = "";
-                        $levelDiff = 1 - $level;
-                        if ( $levelDiff < 0 )
-                            $endSectionPart = str_repeat( "</section>", abs( $levelDiff ) );
-                        $charset = eZTextCodec::internalCharset();
-
-                        // Store the original XML for each section, since some datatypes needs to handle the XML specially
-                        $sectionNodeHash[$sectionName] = $sectionNode;
-                        
-                        $xmlTextArray[$sectionName] = "<?xml version='1.0' encoding='$charset' ?>" .
-                            "<section xmlns:image='http://ez.no/namespaces/ezpublish3/image/' " .
-                            "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'><section>" . $xmlText . $endSectionPart . "</section></section>";
-                    }
-                }
-                else
-                {
-                    if ( count( $bodyNodeArray ) == 1 )
-                    {
-                        $xmlText = "";
-                        $level = 1;
-                        foreach ( $bodyNodeArray[0]->children() as $childNode )
-                        {
-                            $xmlText .= eZOOImport::handleNode( $childNode, $level );
-                        }
-
-                        $endSectionPart = "";
-                        $levelDiff = 1 - $level;
-                        if ( $levelDiff < 0 )
-                            $endSectionPart = str_repeat( "</section>", abs( $levelDiff ) );
-
-                        $charset = eZTextCodec::internalCharset();
-                        $xmlTextBody = "<?xml version='1.0' encoding='$charset' ?>" .
-                             "<section xmlns:image='http://ez.no/namespaces/ezpublish3/image/' " .  
-                             "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'><section>" . $xmlText . $endSectionPart . "</section></section>";
-                    }
-                }
             }
-            else
+
+            if ( $sectionNameArray && $customClassFound == true )
             {
-                if ( count( $bodyNodeArray ) == 1 )
+                foreach ( $sectionNodeArray as $key => $sectionNode )
                 {
+                    $sectionName = str_replace( " ", "_", $key );
                     $xmlText = "";
                     $level = 1;
-                    foreach ( $bodyNodeArray[0]->children() as $childNode )
+                    $childArray = $sectionNode->children();
+                    $nodeCount = 1;
+                    foreach ( $childArray as $childNode )
                     {
-                        $xmlText .= eZOOImport::handleNode( $childNode, $level );
-                    }
+                        $isLastTag = false;
+                        if ( $nodeCount == count( $childArray ) )
+                        {
+                            $isLastTag = true;
+                        }
 
+                        $xmlText .= eZOOImport::handleNode( $childNode, $level, $isLastTag );
+                        $nodeCount++;
+                    }
                     $endSectionPart = "";
                     $levelDiff = 1 - $level;
                     if ( $levelDiff < 0 )
                         $endSectionPart = str_repeat( "</section>", abs( $levelDiff ) );
-
                     $charset = eZTextCodec::internalCharset();
-                    $xmlTextBody = "<?xml version='1.0' encoding='$charset' ?>" .
-                         "<section xmlns:image='http://ez.no/namespaces/ezpublish3/image/' " .  
-                         "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'><section>" . $xmlText . $endSectionPart . "</section></section>";
+
+                    // Store the original XML for each section, since some datatypes needs to handle the XML specially
+                    $sectionNodeHash[$sectionName] = $sectionNode;
+
+                    $xmlTextArray[$sectionName] = "<?xml version='1.0' encoding='$charset' ?>" .
+                        "<section xmlns:image='http://ez.no/namespaces/ezpublish3/image/' " .
+                        "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'><section>" . $xmlText . $endSectionPart . "</section></section>";
                 }
+            }
+            else if ( count( $bodyNodeArray ) == 1 )
+            {
+                $xmlText = "";
+                $level = 1;
+                foreach ( $bodyNodeArray[0]->children() as $childNode )
+                {
+                    $xmlText .= eZOOImport::handleNode( $childNode, $level );
+                }
+
+                $endSectionPart = "";
+                $levelDiff = 1 - $level;
+                if ( $levelDiff < 0 )
+                    $endSectionPart = str_repeat( "</section>", abs( $levelDiff ) );
+
+                $charset = eZTextCodec::internalCharset();
+                $xmlTextBody = "<?xml version='1.0' encoding='$charset' ?>" .
+                     "<section xmlns:image='http://ez.no/namespaces/ezpublish3/image/' " .
+                     "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'><section>" . $xmlText . $endSectionPart . "</section></section>";
             }
         }
 
@@ -762,7 +736,7 @@ class eZOOImport
                                         $children = $frame->children();
 
                                         // Alex 2008-05-27 - added isset()
-                                        if ( isset( $children[0] ) 
+                                        if ( isset( $children[0] )
                                              && $children[0]->name() == "image" )
                                         {
                                             $imageNode = $children[0];
@@ -1780,7 +1754,7 @@ class eZOOImport
         {
             $paragraphContent = '<line>' . $paragraphContent . '</line>';
         }
-        
+
         return $paragraphContent;
     }
 
