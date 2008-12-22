@@ -71,7 +71,7 @@ class eZOOConverter
 
         // @bf 2008-08-21: Fetch the current class identifier and the .ini settings for the enabled attributes for this
         $classIdentifier = $object->contentClassIdentifier();
-        $enabledClassAttributes = $odfINI->variable( $classIdentifier, 'Attribute' );
+        $enabledClassAttributes = $odfINI->hasVariable( $classIdentifier, 'Attribute' ) ? $odfINI->variable( $classIdentifier, 'Attribute' ) : array();
 
         foreach ( $attributes as $attribute )
         {
@@ -252,8 +252,8 @@ class eZOOConverter
                     $paragraphParameters = array_merge( $paragraphParameters, $return['paragraph_parameters'] );
                     $imageArray = array_merge( $imageArray, $return['image_array'] );
 
-                    $prevLineBreak = ( $childNode->nodeType === XML_ELEMENT_NODE &&
-                                       $childNode->localName === 'line' );
+                    $prevLineBreak = ( $child->nodeType === XML_ELEMENT_NODE &&
+                                       $child->localName === 'line' );
                 }
 
                 foreach ( $imageArray as $image )
@@ -263,7 +263,7 @@ class eZOOConverter
 
                 if ( isset( $GLOBALS['CustomTagStyle'] ) and $GLOBALS['CustomTagStyle'] != false )
                 {
-                    $paragraphParameters = array_merge( $GLOBALS['CustomTagStyle'], $paragraphParameters );
+                    $paragraphParameters = array_unshift( $paragraphParameters, $GLOBALS['CustomTagStyle'] );
                 }
 
                 call_user_func_array( array( $generator, "addParagraph" ), $paragraphParameters );
@@ -279,9 +279,9 @@ class eZOOConverter
     /*!
      Handles an inline node.
 
-     Parameter $prevlineBreak added by Alex because it was used but not defined.
+     Parameter $prevLineBreak added by Alex because it was used but not defined.
      */
-    static function handleInlineNode( $child, $generator, $prevlineBreak = false )
+    static function handleInlineNode( $child, $generator, $prevLineBreak = false )
     {
         $paragraphParameters = array();
         $imageArray = array();
@@ -291,7 +291,7 @@ class eZOOConverter
             case "line":
             {
                 // @todo: (Alex) check why this is needed here and not after the next line
-                if ( $prevlineBreak )
+                if ( $prevLineBreak )
                 {
                     $paragraphParameters[] = array( eZOOGenerator::LINE, '' );
                 }
@@ -438,7 +438,7 @@ class eZOOConverter
                         }
                         else
                         {
-                            // Alex 2008-06-03: changed $level (3rd argument) to $prevlineBreak
+                            // Alex 2008-06-03: changed $level (3rd argument) to $prevLineBreak
                             self::handleNode( $childNode, $generator, $prevLineBreak );
                         }
                     }
@@ -472,14 +472,14 @@ class eZOOConverter
                         {
                             $dummy = $cell->ownerDocument->createElement( "paragraph" );
                             $cell->appendChild( $dummy );
-                            // Alex 2008-06-03: changed $level (3rd argument) to $prevlineBreak
-                            eZOOConverter::handleNode( $dummy, $generator, $prevlineBreak );
+                            // Alex 2008-06-03: changed $level (3rd argument) to $prevLineBreak
+                            eZOOConverter::handleNode( $dummy, $generator, $prevLineBreak );
                         }
 
                         eZDebug::writeDebug( $cell->ownerDocument->saveXML( $cell ), 'ezxmltext table cell' );
                         foreach ( $cell->childNodes as $cellNode )
                         {
-                            // Alex 2008-06-03: changed $level (3rd argument) to $prevlineBreak
+                            // Alex 2008-06-03: changed $level (3rd argument) to $prevLineBreak
                             self::handleNode( $cellNode, $generator, $prevLineBreak );
                         }
 
