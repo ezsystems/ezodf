@@ -85,6 +85,15 @@ class eZOOConverter
                     continue;
                 }
 
+                if( !$ClassMappingToHeader )
+                {
+                    $ooGenerator->startSection( $attributeIdentifier );
+                }
+                else
+                {
+                    $ooGenerator->startClassMapHeader( $attributeIdentifier );
+                }
+
                 switch ( $attribute->attribute( 'data_type_string' ) )
                 {
                     case "ezstring":
@@ -92,52 +101,17 @@ class eZOOConverter
                         $text = trim( $attribute->content() );
                         if ( $text != "" )
                         {
-                            if( !$ClassMappingToHeader )
-                            {
-                                $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
-                            }
-                            else
-                            {
-                                $ooGenerator->startClassMapHeader( $attribute->attribute( "contentclass_attribute_identifier" ) );
-                            }
-
                             $ooGenerator->addHeader( $attribute->content() );
-                            if( !$ClassMappingToHeader )
-                            {
-                                $ooGenerator->endSection( );
-                            }
                         }
                     }break;
 
                     case "eztext":
                     {
-                        if( !$ClassMappingToHeader )
-                        {
-                            $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
-                        }
-                        else
-                        {
-                            $ooGenerator->startClassMapHeader( $attribute->attribute( "contentclass_attribute_identifier" ) );
-                        }
                         $ooGenerator->addParagraph( $attribute->content() );
-                        if( !$ClassMappingToHeader )
-                        {
-                            $ooGenerator->endSection( );
-                        }
-
                     }break;
 
                     case "ezxmltext":
                     {
-                        if( !$ClassMappingToHeader )
-                        {
-                            $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
-                        }
-                        else
-                        {
-                            $ooGenerator->startClassMapHeader( $attribute->attribute( "contentclass_attribute_identifier" ) );
-                        }
-
                         $xmlData = $attribute->attribute( 'data_text' );
                         $domTree = $xml->domTree( $xmlData );
                         if ( $domTree )
@@ -148,24 +122,11 @@ class eZOOConverter
                                 eZOOConverter::handleNode( $node, $ooGenerator );
                             }
                         }
-                        if( !$ClassMappingToHeader )
-                        {
-                            $ooGenerator->endSection( );
-                        }
                     }break;
 
 
                     case "ezimage":
                     {
-                        if( !$ClassMappingToHeader )
-                        {
-                            $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
-                        }
-                        else
-                        {
-                            $ooGenerator->startClassMapHeader( $attribute->attribute( "contentclass_attribute_identifier" ) );
-                        }
-
                         $imageHandler = $attribute->content();
                         $originalImage = $imageHandler->attribute( 'original' );
                         $displayImage = $imageHandler->attribute( 'original' );
@@ -178,68 +139,23 @@ class eZOOConverter
                                                "DisplayHeight" => $displayHeight );
 
                         $ooGenerator->addImage( $imageArray);
-
-                        if( !$ClassMappingToHeader )
-                        {
-                            $ooGenerator->endSection( );
-                        }
-
                     }break;
 
                     case "ezdate":
                     {
-                        if( !$ClassMappingToHeader )
-                        {
-                            $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
-                        }
-                        else
-                        {
-                            $ooGenerator->startClassMapHeader( $attribute->attribute( "contentclass_attribute_identifier" ) );
-                        }
-
                         $date = $attribute->content();
                         $ooGenerator->addParagraph( $date->attribute( "day" ) . "/" . $date->attribute( "month" ) . "/" . $date->attribute( "year" ) );
-
-                        if( !$ClassMappingToHeader )
-                        {
-                            $ooGenerator->endSection( );
-                        }
-
                     }break;
 
 
                     case "ezdatetime":
                     {
-                        if( !$ClassMappingToHeader )
-                        {
-                            $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
-                        }
-                        else
-                        {
-                            $ooGenerator->startClassMapHeader( $attribute->attribute( "contentclass_attribute_identifier" ) );
-                        }
-
                         $date = $attribute->content();
                         $ooGenerator->addParagraph( $date->attribute( "day" ) . "/" . $date->attribute( "month" ) . "/" . $date->attribute( "year" ) . " " . $date->attribute( "hour" )  . ":" . $date->attribute( "minute" )  );
-
-                        if( !$ClassMappingToHeader )
-                        {
-                            $ooGenerator->endSection( );
-                        }
-
                     }break;
 
                     case "ezmatrix":
                     {
-                        if( !$ClassMappingToHeader )
-                        {
-                            $ooGenerator->startSection( $attribute->attribute( "contentclass_attribute_identifier" ) );
-                        }
-                        else
-                        {
-                            $ooGenerator->startClassMapHeader( $attribute->attribute( "contentclass_attribute_identifier" ) );
-                        }
-
                         $matrix = $attribute->content();
 
                         $columns = $matrix->attribute( "columns" );
@@ -267,18 +183,17 @@ class eZOOConverter
                         }
 
                         $ooGenerator->endTable();
-
-                        if( !$ClassMappingToHeader )
-                        {
-                            $ooGenerator->endSection( );
-                        }
-
                     }break;
 
                     default:
                     {
                         eZDebug::writeError( "Unsupported attribute for OO conversion: '" . $attribute->attribute( 'data_type_string' ) . "'" );
                     }break;
+                }
+
+                if( !$ClassMappingToHeader )
+                {
+                    $ooGenerator->endSection();
                 }
             }
 
