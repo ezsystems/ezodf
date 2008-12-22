@@ -336,8 +336,8 @@ class eZOOImport
         }
 
         $fileName = $uniqueImportDir . "content.xml";
-        $xml = new eZXML();
-        $dom = $xml->domTree( file_get_contents( $fileName ) );
+        $dom = new DOMDocument( '1.0', 'UTF-8' );
+        $success = $dom->load( $fileName );
         $sectionNodeHash = array();
 
         // At this point we could unlink the destination file from the conversion, if conversion was used
@@ -346,7 +346,7 @@ class eZOOImport
             unlink( $tmpToFile );
         }
 
-        if ( !is_object( $dom ) )
+        if ( !$success )
         {
             $this->setError( self::ERROR_PARSEXML );
             return false;
@@ -354,17 +354,17 @@ class eZOOImport
 
 
         // Fetch the automatic document styles
-        $automaticStyleArray = $dom->elementsByNameNS( 'automatic-styles', 'urn:oasis:names:tc:opendocument:xmlns:office:1.0' );
-        if ( count( $automaticStyleArray ) == 1 )
+        $automaticStyleArray = $dom->getElementsByTagNameNS( self::NAMESPACE_OFFICE, 'automatic-styles' );
+        if ( $automaticStyleArray->length == 1 )
         {
-            $this->AutomaticStyles = $automaticStyleArray[0]->children();
+            $this->AutomaticStyles = $automaticStyleArray->item( 0 )->childNodes;
         }
 
         // Fetch the body section content
-        $sectionNodeArray = $dom->elementsByNameNS( 'section', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' );
+        $sectionNodeArray = $dom->getElementsByTagNameNS( self::NAMESPACE_TEXT, 'section' );
 
         $customClassFound = false;
-        if ( count( $sectionNodeArray ) > 0 )
+        if ( $sectionNodeArray->length > 0 )
         {
             $registeredClassArray = $ooINI->variable( 'ODFImport', 'RegisteredClassArray' );
 
@@ -372,7 +372,7 @@ class eZOOImport
             $sectionNameArray = array();
             foreach ( $sectionNodeArray as $sectionNode )
             {
-                $sectionNameArray[] = strtolower( $sectionNode->attributeValueNS( "name", "urn:oasis:names:tc:opendocument:xmlns:text:1.0" ) );
+                $sectionNameArray[] = strtolower( $sectionNode->getAttributeNS( self::NAMESPACE_TEXT, "name" ) );
             }
 
             // Check if there is a coresponding eZ Publish class for this document
@@ -405,20 +405,19 @@ class eZOOImport
             {
                 foreach ( $sectionNodeArray as $sectionNode )
                 {
-                    $sectionName = str_replace( " ", "_", strtolower( $sectionNode->attributeValueNS( 'name', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' ) ) );
+                    $sectionName = str_replace( " ", "_", strtolower( $sectionNode->getAttributeNS( self::NAMESPACE_TEXT, 'name' ) ) );
                     $xmlText = "";
                     $level = 1;
-                    $childArray = $sectionNode->children();
+                    $childArray = $sectionNode->childNodes;
                     $nodeCount = 1;
                     foreach ( $childArray as $childNode )
                     {
-                        $isLastTag = false;
-                        if ( $nodeCount == count( $childArray ) )
+                        if ( $childNode->nodeType === XML_ELEMENT_NODE )
                         {
-                            $isLastTag = true;
+                            $isLastTag = ( $nodeCount == $childArray->length );
+                            $xmlText .= self::handleNode( $childNode, $level, $isLastTag );
                         }
 
-                        $xmlText .= eZOOImport::handleNode( $childNode, $level, $isLastTag );
                         $nodeCount++;
                     }
                     $endSectionPart = "";
@@ -440,16 +439,16 @@ class eZOOImport
         if ( $customClassFound == false )
         {
             // No defined sections. Do default import.
-            $bodyNodeArray = $dom->elementsByNameNS( 'text', 'urn:oasis:names:tc:opendocument:xmlns:office:1.0' );
+            $bodyNodeArray = $dom->getElementsByTagNameNS( self::NAMESPACE_OFFICE, 'text' );
 
             // Added by Soushi
             // check the parent-style-name [ eZSectionDefinition ]
             $eZSectionDefinitionStyleName = array();
-            foreach( $automaticStyleArray[0]->children() as $child )
+            foreach( $automaticStyleArray->item( 0 )->childNodes as $child )
             {
-                if( $child->get_attribute('parent-style-name') == 'eZSectionDefinition')
+                if( $child->getAttribute( 'parent-style-name' ) == 'eZSectionDefinition' )
                 {
-                     $eZSectionDefinitionStyleName[] = $child->get_attribute('name');
+                     $eZSectionDefinitionStyleName[] = $child->getAttribute('name');
                 }
             }
 
@@ -457,30 +456,30 @@ class eZOOImport
             $sectionNodeArray = array();
             $paragraphSectionName = NULL;
             $firstChildFlag = false;
-            foreach ( $bodyNodeArray[0]->children() as $childNode )
+            foreach ( $bodyNodeArray->item( 0 )->childNodes as $childNode )
             {
                 $firstChildFlag = true;
-                if( in_array( $childNode->get_attribute('style-name'), $eZSectionDefinitionStyleName ) || $childNode->get_attribute('style-name') == 'eZSectionDefinition' )
+                if ( in_array( $childNode->getAttribute( 'style-name' ), $eZSectionDefinitionStyleName ) ||
+                     $childNode->getAttribute( 'style-name' ) == 'eZSectionDefinition' )
                 {
                     $firstChildFlag = false;
-                    $childNodeChildren = $childNode->children();
-                    $paragraphSectionName = trim( $childNodeChildren[0]->textContent() );
-                    $sectionNameArray[] =  $paragraphSectionName;
+                    $childNodeChildren = $childNode->childNodes;
+                    $paragraphSectionName = trim( $childNodeChildren->item( 0 )->textContent );
+                    $sectionNameArray[] = $paragraphSectionName;
                 }
-                if( $paragraphSectionName && $firstChildFlag )
+
+                if ( $paragraphSectionName && $firstChildFlag )
                 {
                     $paragraphSectionNodeArray[ $paragraphSectionName ][] = $childNode;
                 }
             }
 
             $sectionNodeArray = array();
-            foreach( $paragraphSectionNodeArray as $key => $childNodes )
+            foreach ( $paragraphSectionNodeArray as $key => $childNodes )
             {
-                $sectionNode = new eZDOMNode();
-                $sectionNode->setName( "section" );
-                $sectionNode->setType( 1 );
+                $sectionNode = $dom->createElementNode( 'section' );
 
-                foreach( $childNodes as $childNode )
+                foreach ( $childNodes as $childNode )
                 {
                     $sectionNode->appendChild( $childNode );
                 }
@@ -488,7 +487,8 @@ class eZOOImport
                 $sectionNodeArray[$key] = $sectionNode;
             }
 
-            if( $sectionNameArray )
+            $customClassFound = false;
+            if ( $sectionNameArray )
             {
                 $registeredClassArray = $ooINI->variable( 'ODFImport', 'RegisteredClassArray' );
 
@@ -526,18 +526,10 @@ class eZOOImport
                     $sectionName = str_replace( " ", "_", $key );
                     $xmlText = "";
                     $level = 1;
-                    $childArray = $sectionNode->children();
-                    $nodeCount = 1;
-                    foreach ( $childArray as $childNode )
+                    foreach ( $sectionNode->childNodes as $childNode )
                     {
-                        $isLastTag = false;
-                        if ( $nodeCount == count( $childArray ) )
-                        {
-                            $isLastTag = true;
-                        }
-
-                        $xmlText .= eZOOImport::handleNode( $childNode, $level, $isLastTag );
-                        $nodeCount++;
+                        $isLastTag = !isset( $childNode->nextSibling );
+                        $xmlText .= self::handleNode( $childNode, $level, $isLastTag );
                     }
                     $endSectionPart = "";
                     $levelDiff = 1 - $level;
@@ -553,13 +545,13 @@ class eZOOImport
                         "  xmlns:xhtml='http://ez.no/namespaces/ezpublish3/xhtml/'><section>" . $xmlText . $endSectionPart . "</section></section>";
                 }
             }
-            else if ( count( $bodyNodeArray ) == 1 )
+            else if ( $bodyNodeArray->length === 1 )
             {
                 $xmlText = "";
                 $level = 1;
-                foreach ( $bodyNodeArray[0]->children() as $childNode )
+                foreach ( $bodyNodeArray->item( 0 )->childNodes as $childNode )
                 {
-                    $xmlText .= eZOOImport::handleNode( $childNode, $level );
+                    $xmlText .= self::handleNode( $childNode, $level );
                 }
 
                 $endSectionPart = "";
@@ -650,8 +642,9 @@ class eZOOImport
                         case "ezstring":
                         case "eztext":
                         {
-                            $dom = $xml->domTree( $xmlTextArray[$sectionName] );
-                            $text = eZOOImport::domToText( $dom->root() );
+                            $eztextDom = new DOMDOcument( '1.0', 'UTF-8' );
+                            $eztextDom->loadXML( $xmlTextArray[$sectionName] );
+                            $text = $eztextDom->documentElement->textContent;
                             $dataMap[$attributeIdentifier]->setAttribute( 'data_text', trim( $text ) );
                             $dataMap[$attributeIdentifier]->store();
                         }break;
@@ -698,23 +691,22 @@ class eZOOImport
                             $dateArray = explode( "/", $dateTimeArray[0] );
                             $timeArray = explode( ":", $dateTimeArray[1] );
 
-
                             if ( count( $dateArray ) == 3 and count( $timeArray ) == 2 )
                             {
-                                    $year = $dateArray[2];
-                                    $month = $dateArray[1];
-                                    $day = $dateArray[0];
+                                $year = $dateArray[2];
+                                $month = $dateArray[1];
+                                $day = $dateArray[0];
 
-                                    $hour = $timeArray[0];
-                                    $minute = $timeArray[1];
+                                $hour = $timeArray[0];
+                                $minute = $timeArray[1];
 
-                                    $dateTime = new eZDateTime();
+                                $dateTime = new eZDateTime();
 
-                                    $contentClassAttribute = $dataMap[$attributeIdentifier];
+                                $contentClassAttribute = $dataMap[$attributeIdentifier];
 
-                                    $dateTime->setMDYHMS( $month, $day, $year, $hour, $minute, 0 );
-                                    $dataMap[$attributeIdentifier]->setAttribute( 'data_int', $dateTime->timeStamp()  );
-                                    $dataMap[$attributeIdentifier]->store();
+                                $dateTime->setMDYHMS( $month, $day, $year, $hour, $minute, 0 );
+                                $dataMap[$attributeIdentifier]->setAttribute( 'data_int', $dateTime->timeStamp()  );
+                                $dataMap[$attributeIdentifier]->store();
                             }
                         }break;
 
@@ -727,21 +719,18 @@ class eZOOImport
                             if ( is_object( $sectionNodeHash[$sectionName] ) )
                             {
                                 // Look for paragraphs in the section
-                                foreach ( $sectionNodeHash[$sectionName]->children() as $paragraph )
+                                foreach ( $sectionNodeHash[$sectionName]->childNodes as $paragraph )
                                 {
                                     // Look for frame node
-                                    foreach ( $paragraph->children() as $frame )
+                                    foreach ( $paragraph->childNodes as $frame )
                                     {
                                         // finally look for the image node
-                                        $children = $frame->children();
+                                        $children = $frame->childNodes;
 
-                                        // Alex 2008-05-27 - added isset()
-                                        if ( isset( $children[0] )
-                                             && $children[0]->name() == "image" )
+                                        $imageNode = $children->item( 0 );
+                                        if ( $imageNode && $imageNode->localName == "image" )
                                         {
-                                            $imageNode = $children[0];
-                                            $fileName = $imageNode->attributeValue( "href" );
-
+                                            $fileName = $imageNode->getAttribute( "href" );
                                             $filePath = $this->ImportDir . $fileName;
 
                                             if ( file_exists( $filePath ) )
@@ -788,28 +777,28 @@ class eZOOImport
                             if ( is_object( $sectionNodeHash[$sectionName] ) )
                             {
                                 // Look for paragraphs in the section
-                                foreach ( $sectionNodeHash[$sectionName]->children() as $table )
+                                foreach ( $sectionNodeHash[$sectionName]->childNodes as $table )
                                 {
-                                    if ( $table->name() == "table" )
+                                    if ( $table->localName == "table" )
                                     {
                                         // Loop the rows in the table
-                                        foreach ( $table->children() as $row )
+                                        foreach ( $table->childNodes as $row )
                                         {
                                             // Check the headers and compare with the defined matrix
-                                            if ( $row->name() == "table-header-rows" )
+                                            if ( $row->localName == "table-header-rows" )
                                             {
-                                                $rowArray = $row->children();
-                                                if ( count( $rowArray ) == 1  )
+                                                $rowArray = $row->childNodes;
+                                                if ( $rowArray->length == 1  )
                                                 {
-                                                    foreach ( $rowArray[0]->children() as $headerCell )
+                                                    foreach ( $rowArray->item( 0 )->childNodes as $headerCell )
                                                     {
-                                                        if ( $headerCell->name() == "table-cell" )
+                                                        if ( $headerCell->localName == "table-cell" )
                                                         {
-                                                            $paragraphArray = $headerCell->children();
+                                                            $paragraphArray = $headerCell->childNodes;
 
-                                                            if ( count( $paragraphArray ) == 1 )
+                                                            if ( $paragraphArray->length == 1 )
                                                             {
-                                                                $headerName = $paragraphArray[0]->textContent();
+                                                                $headerName = $paragraphArray->item( 0 )->textContent;
                                                                 if ( $matrixHeaderArray[$headerCount] != $headerName )
                                                                 {
                                                                     $headersValid = false;
@@ -822,18 +811,14 @@ class eZOOImport
                                             }
 
                                             // Check the rows
-                                            if ( $row->name() == "table-row" )
+                                            if ( $row->localName == "table-row" )
                                             {
-                                                foreach ( $row->children() as $cell )
+                                                foreach ( $row->childNodes as $cell )
                                                 {
-                                                    if ( count( $cell->children() ) >= 1 )
+                                                    if ( $cell->childNodes->length >= 1 )
                                                     {
-                                                        $firstParagraph = $cell->children();
-                                                        $firstParagraph = $firstParagraph[0];
-                                                        $cellContent = $firstParagraph->textContent();
-
-                                                        $cellArray[] = $cellContent;
-
+                                                        $firstParagraph = $cell->childNodes->item( 0 );
+                                                        $cellArray[] = $firstParagraph->textContent;
                                                     }
                                                 }
                                                 $rowCount++;
@@ -882,7 +867,7 @@ class eZOOImport
                     $bodyAttribute = $ooINI->variable( $importClassIdentifier, 'DefaultImportBodyAttribute' );
                 }
 
-                $objectName = basename( $originalFileName);
+                $objectName = basename( $originalFileName );
 
                 // Remove extension from name
                 $objectName = preg_replace( "/(\....)$/", "", $objectName );
@@ -896,7 +881,6 @@ class eZOOImport
                 $dataMap[$bodyAttribute]->store();
             }
 
-            include_once( 'lib/ezutils/classes/ezoperationhandler.php' );
             $operationResult = eZOperationHandler::execute( 'content', 'publish', array( 'object_id' => $contentObjectID,
                                                                                          'version' => $version->attribute( 'version' ) ) );
 
@@ -915,9 +899,9 @@ class eZOOImport
 
                     $articleFolderName = $object->attribute( 'name' );
                     $importFolderName = $ooINI->variable( 'ODFImport', 'ImportedImagesMediaNodeName' );
-                    $importNode = eZOOImport::createSubNode( $node, $importFolderName );
+                    $importNode = self::createSubNode( $node, $importFolderName );
 
-                    $articleNode = eZOOImport::createSubNode( $importNode, $articleFolderName );
+                    $articleNode = self::createSubNode( $importNode, $articleFolderName );
                     $imageRootNode = $articleNode->attribute( "node_id" );
                 }
             }
@@ -940,7 +924,6 @@ class eZOOImport
                                                              );
                 $nodeAssignment->store();
 
-                include_once( 'lib/ezutils/classes/ezoperationhandler.php' );
                 $operationResult = eZOperationHandler::execute( 'content', 'publish', array( 'object_id' => $image['ID'],
                                                                                              'version' => 1 ) );
 
@@ -963,7 +946,7 @@ class eZOOImport
 
 
     /*!
-      Handless DOM node in the OpenOffice.org writer docuemnt and returns the eZXMLText equivalent.
+      Handles DOM node in the OpenOffice.org writer document and returns the eZXMLText equivalent.
       If images are embedded in the document they will be imported as media objects in eZ Publish.
      */
     function handleNode( $node, &$sectionLevel, $isLastTag = false )
@@ -973,7 +956,7 @@ class eZOOImport
         {
 
             // If another tag than paragraph comes then terminate collapsing tags, if any
-            if ( $node->name() != "p" and $this->CollapsingTagName != false )
+            if ( $node->localName != "p" and $this->CollapsingTagName != false )
             {
                 $xhtmlTextContent .= '<paragraph>' . '<' . $this->CollapsingTagName . ' ' . $this->CollapsingTagAttribute . ' >' . $this->CollapsingTagContent . "</" . $this->CollapsingTagName . ">\n</paragraph>\n";
                 $this->CollapsingTagContent = false;
@@ -981,7 +964,7 @@ class eZOOImport
                 $this->CollapsingTagName = false;
             }
 
-            switch ( $node->name() )
+            switch ( $node->localName )
             {
                 case 'sequence-decls' :
                 case 'forms' :
@@ -992,15 +975,15 @@ class eZOOImport
 
                 case 'section' :
                 {
-                    foreach ( $node->children() as $childNode )
+                    foreach ( $node->childNodes as $childNode )
                     {
-                        $xhtmlTextContent  .= eZOOImport::handleNode( $childNode, $sectionLevel );
+                        $xhtmlTextContent  .= self::handleNode( $childNode, $sectionLevel );
                     }
                 }break;
 
                 case 'h' :
                 {
-                    $level = $node->attributeValueNS( 'outline-level', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' );
+                    $level = $node->getAttributeNS( self::NAMESPACE_TEXT, 'outline-level' );
 
                     if ( $level > 6 )
                         $level = 6;
@@ -1011,26 +994,16 @@ class eZOOImport
                         $sectionLevel = $level;
                         $headerContent = "";
 
-                        // Added by Soushi
-                        $children = $node->children();
-                        foreach ( $node->children() as $key => $childNode )
+                        foreach ( $node->childNodes as $childNode )
                         {
                             // Alex 2008/04/21 - added initializations for $nextlineBreak and $prevlineBreak
-                            $nextlineBreak = false;
-                            $prevlineBreak = false;
-                            // Alex 2008/04/21 - added isset()
-                            if( isset( $children[ $key + 1 ] ) )
-                            {
-                                $nextChildNode = $children[ $key + 1 ];
-                                $nextlineBreak = ( $nextChildNode->name() == 'line-break' ) ? true : false;
-                            }
-                            // Alex 2008/04/21 - added isset()
-                            if( isset( $children[ $key - 1 ] ) )
-                            {
-                                $prevChildNode = $children[ $key - 1 ];
-                                $prevlineBreak = ( $prevChildNode->name() == 'line-break' ) ? true : false;
-                            }
-                            $headerContent .= eZOOImport::handleInlineNode( $childNode, $nextlineBreak, $prevlineBreak );
+                            $nextLineBreak = ( isset( $childNode->nextSibling ) &&
+                                               $childNode->nextSibling->localName == 'line-break' );
+
+                            $prevLineBreak ( isset( $childNode->previousSibling ) &&
+                                             $childNode->previousSibling->localName == 'line-break' );
+
+                            $headerContent .= self::handleInlineNode( $childNode, $nextLineBreak, $prevLineBreak );
                         }
                         $sectionLevel = $level;
 
@@ -1044,13 +1017,13 @@ class eZOOImport
                     }
                     else
                     {
-                        eZDebug::writeError( "Unsupported header level $level<br>" . $node->textContent() . "<br>" );
+                        eZDebug::writeError( "Unsupported header level $level<br>" . $node->textContent . "<br>" );
                     }
                 }break;
 
                 case 'p' :
                 {
-                    $styleName = $node->attributeValueNS( 'style-name', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' );
+                    $styleName = $node->getAttributeNS( self::NAMESPACE_TEXT, 'style-name' );
 
                     $lastCollapsingTagName = $this->CollapsingTagName;
 
@@ -1084,24 +1057,19 @@ class eZOOImport
                     $headerLevel = false;
                     foreach ( $this->AutomaticStyles as $style )
                     {
-                        $tmpStyleName = $style->attributeValueNS( "name", "urn:oasis:names:tc:opendocument:xmlns:style:1.0" );
+                        $tmpStyleName = $style->getAttributeNS( self::NAMESPACE_STYLE, "name" );
 
                         if ( $styleName == $tmpStyleName )
                         {
-                            if ( count( $style->children() ) >= 1 )
+                            foreach ( $style->childNodes as $styleChild )
                             {
-                                $children = $style->children();
-
-                                foreach ( $children as $styleChild )
-                                {
-                                    $fontWeight = $styleChild->attributeValue( 'font-weight' );
-                                    $fontStyle = $styleChild->attributeValue( 'font-style' );
-                                }
+                                $fontWeight = $styleChild->getAttribute( 'font-weight' );
+                                $fontStyle = $styleChild->getAttribute( 'font-style' );
                             }
 
                             // Get the parent style name, it's used to see if it's a
                             // header which comes from Word conversion
-                            $parentStyleName = $style->attributeValueNS( "parent-style-name", "urn:oasis:names:tc:opendocument:xmlns:style:1.0" );
+                            $parentStyleName = $style->getAttributeNS( "parent-style-name" );
 
                             // Check if we've got a header definition and which level Heading_20
                             // Header styles is either defined in style-name or parent-style-name when
@@ -1124,7 +1092,6 @@ class eZOOImport
                             $headerLevel = $level;
                     }
 
-
                     $preStyles = "";
                     if ( $fontWeight == "bold" )
                         $preStyles .= "<strong>";
@@ -1138,29 +1105,16 @@ class eZOOImport
                         $postStyles .= "</strong>";
 
                     $paragraphContent = "";
-
-                    // Added by Soushi
-                    $children = $node->children();
-                    foreach ( $node->children() as $key => $childNode )
+                    foreach ( $node->childNodes as $childNode )
                     {
-                        // Alex 2008/04/21 - added initializations for $nextlineBreak and $prevlineBreak
-                        $nextlineBreak = false;
-                        $prevlineBreak = false;
-                        // Alex 2008/04/21 - added isset()
-                        if( isset( $children[ $key + 1 ] ) )
-                        {
-                            $nextChildNode = $children[ $key + 1 ];
-                            $nextlineBreak = ( $nextChildNode->name() == 'line-break' ) ? true : false;
-                        }
-                        // Alex 2008/04/21 - added isset()
-                        if( isset( $children[ $key - 1 ] ) )
-                        {
-                            $prevChildNode = $children[ $key - 1 ];
-                            $prevlineBreak = ( $prevChildNode->name() == 'line-break' ) ? true : false;
-                        }
-                        $paragraphContent .= eZOOImport::handleInlineNode( $childNode, $nextlineBreak, $prevlineBreak );
-                    }
+                        $nextLineBreak = ( isset( $childNode->nextSibling ) &&
+                                           $childNode->nextSibling->localName == 'line-break' );
 
+                        $prevLineBreak ( isset( $childNode->previousSibling ) &&
+                                         $childNode->previousSibling->localName == 'line-break' );
+
+                        $paragraphContent .= self::handleInlineNode( $childNode, $nextLineBreak, $prevLineBreak );
+                    }
 
                     // If current paragraph is actually a header, then skip sub-formatting
                     if ( $headerLevel !== false )
@@ -1242,11 +1196,11 @@ class eZOOImport
                 case 'numbered-paragraph' :
                 {
                     $listContent = "";
-                    foreach ( $node->children() as $itemNode )
+                    foreach ( $node->childNodes as $itemNode )
                     {
-                        if ( $itemNode->name() == 'p' )
+                        if ( $itemNode->localName == 'p' )
                         {
-                            $listContent .= "<li>" . strip_tags( eZOOImport::handleNode( $itemNode, $sectionLevel ) ) . "</li>";
+                            $listContent .= "<li>" . strip_tags( self::handleNode( $itemNode, $sectionLevel ) ) . "</li>";
                         }
                     }
 
@@ -1255,31 +1209,33 @@ class eZOOImport
 
                 case 'list' :
                 {
-                    $styleName = $node->attributeValueNS( 'style-name', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' );
+                    $styleName = $node->getAttributeNS( self::NAMESPACE_TEXT, 'style-name' );
 
                     // Check list style for unordered/ordered list
                     $listType = false;
                     foreach ( $this->AutomaticStyles as $style )
                     {
-                        $tmpStyleName = $style->attributeValueNS( "name", "urn:oasis:names:tc:opendocument:xmlns:style:1.0" );
+                        $tmpStyleName = $style->getAttributeNS( self::NAMESPACE_STYLE, "name" );
 
                         if ( $styleName == $tmpStyleName )
                         {
-                            // Alex 2008/04/21 - fixed count paranthesis
-                            if ( count( $style->children() ) >= 1 )
+                            if ( $style->childNodes->length >= 1 )
                             {
-                                $children = $style->children();
+                                $children = $style->childNodes;
 
-                                if ( $children[0]->name() == "list-level-style-number" )
+                                switch ( $children->item( 0 )->localName )
                                 {
-                                    $listType = "ordered";
-                                    $this->InsideListType = "ordered";
-                                }
+                                    case "list-level-style-number":
+                                    {
+                                        $listType = "ordered";
+                                        $this->InsideListType = "ordered";
+                                    } break;
 
-                                if ( $children[0]->name() == "list-level-style-bullet" )
-                                {
-                                    $listType = "unordered";
-                                    $this->InsideListType = "unordered";
+                                    case "list-level-style-bullet":
+                                    {
+                                        $listType = "unordered";
+                                        $this->InsideListType = "unordered";
+                                    } break;
                                 }
                             }
                         }
@@ -1293,13 +1249,13 @@ class eZOOImport
 
                     $isSubList = $this->IsSubList;
                     $this->IsSubList = true;
-                    foreach ( $node->children() as $itemNode )
+                    foreach ( $node->childNodes as $itemNode )
                     {
-                        if ( $itemNode->name() == 'list-item' )
+                        if ( $itemNode->localName == 'list-item' )
                         {
-                            foreach ( $itemNode->children() as $childNode )
+                            foreach ( $itemNode->childNodes as $childNode )
                             {
-                                $listItemContent = eZOOImport::handleNode( $childNode, $sectionLevel );
+                                $listItemContent = self::handleNode( $childNode, $sectionLevel );
 
                                 if ( substr( $listItemContent, 0, 4 ) == "<ol>" or
                                      substr( $listItemContent, 0, 4 ) == "<ul>" )
@@ -1346,25 +1302,25 @@ class eZOOImport
                 case 'table' :
                 {
                     $tableContent = "";
-                    foreach ( $node->children() as $itemNode )
+                    foreach ( $node->childNodes as $itemNode )
                     {
-                        if ( $itemNode->name() == 'table-header-rows' )
+                        if ( $itemNode->localName == 'table-header-rows' )
                         {
-                            foreach ( $itemNode->children() as $headerRow )
+                            foreach ( $itemNode->childNodes as $headerRow )
                             {
-                                if ( $headerRow->name() == 'table-row' )
+                                if ( $headerRow->localName == 'table-row' )
                                 {
                                     $rowContent = "";
-                                    foreach ( $headerRow->children() as $tableCell )
+                                    foreach ( $headerRow->childNodes as $tableCell )
                                     {
-                                        $colSpan = $tableCell->attributeValueNS( 'number-columns-spanned', 'urn:oasis:names:tc:opendocument:xmlns:table:1.0' );
+                                        $colSpan = $tableCell->getAttributeNS( self::NAMESPACE_TABLE, 'number-columns-spanned' );
 
-                                        if ( $tableCell->name() == 'table-cell' )
+                                        if ( $tableCell->localName == 'table-cell' )
                                         {
                                             $cellContent = "";
-                                            foreach ( $tableCell->children() as $tableContentNode )
+                                            foreach ( $tableCell->childNodes as $tableContentNode )
                                             {
-                                                $cellContent .= eZOOImport::handleNode( $tableContentNode, $sectionLevel );
+                                                $cellContent .= self::handleNode( $tableContentNode, $sectionLevel );
                                             }
                                             $colSpanXML = "";
                                             if ( is_numeric( $colSpan ) and $colSpan > 1 )
@@ -1378,18 +1334,18 @@ class eZOOImport
                                 }
                             }
                         }
-                        else if ( $itemNode->name() == 'table-row' )
+                        else if ( $itemNode->localName == 'table-row' )
                         {
                             $rowContent = "";
-                            foreach ( $itemNode->children() as $tableCell )
+                            foreach ( $itemNode->childNodes as $tableCell )
                             {
-                                if ( $tableCell->name() == 'table-cell' )
+                                if ( $tableCell->localName == 'table-cell' )
                                 {
                                     $cellContent = "";
-                                    $colSpan = $tableCell->attributeValueNS( 'number-columns-spanned', 'urn:oasis:names:tc:opendocument:xmlns:table:1.0' );
-                                    foreach ( $tableCell->children() as $tableContentNode )
+                                    $colSpan = $tableCell->getAttributeNS( self::NAMESPACE_TABLE, 'number-columns-spanned' );
+                                    foreach ( $tableCell->childNodes as $tableContentNode )
                                     {
-                                        $cellContent .= eZOOImport::handleNode( $tableContentNode, $sectionLevel );
+                                        $cellContent .= self::handleNode( $tableContentNode, $sectionLevel );
                                     }
                                     $colSpanXML = "";
                                     if ( is_numeric( $colSpan ) and $colSpan > 1 )
@@ -1401,8 +1357,6 @@ class eZOOImport
                             }
                             $tableContent .= "<tr>" . $rowContent . "</tr>";
                         }
-
-
                     }
                     $xhtmlTextContent .= "<paragraph><table width='100%'>" . $tableContent . "</table></paragraph>";
                 }break;
@@ -1410,7 +1364,7 @@ class eZOOImport
 
                 default:
                 {
-                    eZDebug::writeError( "Unsupported top node " . $node->name() . "<br/>" );
+                    eZDebug::writeError( "Unsupported top node " . $node->localName . "<br/>" );
                 }break;
             }
         }
@@ -1425,23 +1379,22 @@ class eZOOImport
     function handleInlineNode( $childNode, $nextLineBreak = false, $prevLineBreak = false )
     {
         $paragraphContent = "";
-        switch ( $childNode->name() )
+        switch ( $childNode->localName )
         {
             case "frame":
             {
                 $frameContent = "";
-                foreach ( $childNode->children() as $imageNode )
+                foreach ( $childNode->childNodes as $imageNode )
                 {
-                    switch ( $imageNode->name() )
+                    switch ( $imageNode->localName )
                     {
-
                         case "image" :
                         {
-                            $href = ltrim( $imageNode->attributeValueNS( 'href', 'http://www.w3.org/1999/xlink' ), '#' );
+                            $href = ltrim( $imageNode->getAttributeNS( self::NAMESPACE_XLINK, 'href' ), '#' );
 
                             if ( 0 < preg_match( '@^(?:http://)([^/]+)@i', $href ) ) //if image is specified with url
                             {
-                                eZDebug::writeDebug( "handling http url: $href", 'ezooimage::handleInlineNode()' );
+                                eZDebug::writeDebug( "handling http url: $href", __METHOD__ );
                                 $matches = array();
                                 if ( 0 < preg_match( '/.*\/(.*)?/i', $href, $matches ) )
                                 {
@@ -1452,23 +1405,23 @@ class eZOOImport
                                         $fileOut = fopen( $href, "wb" );
                                         if ( fwrite( $fileOut, $imageData ) )
                                         {
-                                            eZDebug::writeNotice( "External image stored in $href", "ezooimage::handleInlineNode()" );
+                                            eZDebug::writeNotice( "External image stored in $href", __METHOD__ );
                                         }
                                         else
-                                            eZDebug::writeError( "Could not save file $href", "ezooimage::handleInlineNode()" );
+                                            eZDebug::writeError( "Could not save file $href", __METHOD__ );
                                         fclose( $fileOut );
                                     }
                                     else
-                                        eZDebug::writeError( "Downloading external image from $href has failed, broken link?", "ezooimage::handleInlineNode()" );
+                                        eZDebug::writeError( "Downloading external image from $href has failed, broken link?", __METHOD__ );
                                 }
                                 else
-                                    eZDebug::writeError( "Could not match filename in $href", "ezooimage::handleInlineNode()" );
+                                    eZDebug::writeError( "Could not match filename in $href", __METHOD__ );
                             }
                             else
                                 $href = $this->ImportDir . $href;
 
                             // Check image name
-                            $imageName = $childNode->attributeValueNS( 'name', 'urn:oasis:names:tc:opendocument:xmlns:drawing:1.0' );
+                            $imageName = $childNode->getAttributeNS( self::NAMESPACE_DRAWING, 'name' );
                             if ( !$imageName )
                             {
                                 // set default image name
@@ -1482,7 +1435,7 @@ class eZOOImport
                             // Check image size
                             $imageSize = "large";
                             $pageWidth = 6;
-                            $width = $childNode->attributeValueNS( 'width', 'urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0' );
+                            $width = $childNode->getAttributeNS( self::NAMESPACE_SVG_COMPATIBLE, 'width' );
 
                             $sizePercentage = $width / $pageWidth * 100;
 
@@ -1497,22 +1450,20 @@ class eZOOImport
                             if ( $imageSize != "small" and $sizeArray[0] < 650 )
                                 $imageSize = "original";
 
-                            $styleName = $childNode->attributeValueNS( 'style-name', 'urn:oasis:names:tc:opendocument:xmlns:drawing:1.0' );
+                            $styleName = $childNode->getAttributeNS( self::NAMESPACE_DRAWING, 'style-name' );
 
                             // Check for style definitions
                             $imageAlignment = "center";
                             foreach ( $this->AutomaticStyles as $style )
                             {
-                                $tmpStyleName = $style->attributeValueNS( "name", "urn:oasis:names:tc:opendocument:xmlns:style:1.0" );
+                                $tmpStyleName = $style->getAttributeNS( self::NAMESPACE_STYLE, "name" );
 
                                 if ( $styleName == $tmpStyleName )
                                 {
-                                    // Alex 2008/04/22 - fixed count paranthesis (moved paranthesis from outside == to before ==)
-                                    if ( count( $style->children() ) == 1 )
+                                    if ( $style->childNodes->length == 1 )
                                     {
-                                        $children = $style->children();
-                                        $properties = $children[0];
-                                        $alignment = $properties->attributeValueNS( "horizontal-pos", "urn:oasis:names:tc:opendocument:xmlns:style:1.0" );
+                                        $properties = $style->childNodes->item( 0 );
+                                        $alignment = $properties->getAttributeNS( self::NAMESPACE_STYLE, "horizontal-pos" );
                                     }
 
                                     // Check image alignment
@@ -1641,28 +1592,20 @@ class eZOOImport
 
             case "text-box":
             {
-                foreach ( $childNode->children() as $textBoxNode )
+                foreach ( $childNode->childNodes as $textBoxNode )
                 {
-                    $boxContent .= eZOOImport::handleNode( $textBoxNode, $sectionLevel );
+                    $boxContent .= self::handleNode( $textBoxNode, $sectionLevel );
                 }
 
                 // Textboxes are defined inside paragraphs.
                 $paragraphContent .= "</paragraph>$boxContent<paragraph>";
             }break;
 
-            case "sequence" :
+            case 'sequence':
+            case 'date':
+            case 'initial-creator':
             {
-                $paragraphContent .= $childNode->textContent();
-            }break;
-
-            case "date" :
-            {
-                $paragraphContent .= $childNode->textContent();
-            }break;
-
-            case "initial-creator" :
-            {
-                $paragraphContent .= $childNode->textContent();
+                $paragraphContent .= $childNode->textContent;
             }break;
 
             case "s" :
@@ -1672,13 +1615,13 @@ class eZOOImport
 
             case "a" :
             {
-                $href = $childNode->attributeValueNS( 'href', 'http://www.w3.org/1999/xlink' );
-                $paragraphContent .= "<link href='$href'>" . $childNode->textContent() . "</link>";
+                $href = $childNode->getAttributeNS( self::NAMESPACE_XLINK, 'href' );
+                $paragraphContent .= "<link href='$href'>" . $childNode->textContent . "</link>";
             }break;
 
             case "#text" :
             {
-                $tagContent = str_replace( "&", "&amp;", $childNode->content() );
+                $tagContent = str_replace( "&", "&amp;", $childNode->textContent );
                 $tagContent = str_replace( ">", "&gt;", $tagContent );
                 $tagContent = str_replace( "<", "&lt;", $tagContent );
                 $tagContent = str_replace( "'", "&apos;", $tagContent );
@@ -1690,26 +1633,23 @@ class eZOOImport
             case "span" :
             {
                 // Fetch the style from the span
-                $styleName = $childNode->attributeValueNS( 'style-name', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0' );
+                $styleName = $childNode->getAttributeNS( self::NAMESPACE_TEXT, 'style-name' );
 
                 // Check for bold and italic styles
                 $fontWeight = false;
                 $fontStyle = false;
                 foreach ( $this->AutomaticStyles as $style )
                 {
-                    $tmpStyleName = $style->attributeValueNS( "name", "urn:oasis:names:tc:opendocument:xmlns:style:1.0" );
+                    $tmpStyleName = $style->getAttributeNS( self::NAMESPACE_STYLE, "name" );
 
                     if ( $styleName == $tmpStyleName )
                     {
-                        // Alex 2008/04/22 - fixed count paranthesis
-                        if ( count( $style->children() ) >= 1 )
+                        if ( $style->childNodes->length >= 1 )
                         {
-                            $children = $style->children();
-
-                            foreach ( $children as $styleChild )
+                            foreach ( $style->childNodes as $styleChild )
                             {
-                                $fontWeight = $styleChild->attributeValue( 'font-weight' );
-                                $fontStyle = $styleChild->attributeValue( 'font-style' );
+                                $fontWeight = $styleChild->getAttribute( 'font-weight' );
+                                $fontStyle = $styleChild->getAttribute( 'font-style' );
                             }
                         }
                     }
@@ -1726,7 +1666,8 @@ class eZOOImport
                     $paragraphContent .= "<strong>";
                 if ( $fontStyle == "italic" )
                     $paragraphContent .= "<emphasize>";
-                $paragraphContent .= $childNode->textContent();
+
+                $paragraphContent .= $childNode->textContent;
 
                 if ( $fontStyle == "italic" )
                     $paragraphContent .= "</emphasize>";
@@ -1741,16 +1682,16 @@ class eZOOImport
 
             default:
             {
-                eZDebug::writeError( "Unsupported node: " . $childNode->name() . "<br>" );
+                eZDebug::writeError( "Unsupported node: " . $childNode->localName . "<br>" );
             }break;
 
         }
 
-        if( $nextLineBreak )
+        if ( $nextLineBreak )
         {
             $paragraphContent = '<line>' . $paragraphContent . '</line>';
         }
-        elseif( $prevLineBreak && $paragraphContent )
+        elseif ( $prevLineBreak && $paragraphContent )
         {
             $paragraphContent = '<line>' . $paragraphContent . '</line>';
         }
@@ -1806,7 +1747,6 @@ class eZOOImport
                 $dataMap[$titleAttribudeIdentifier]->setAttribute( 'data_text', $name );
                 $dataMap[$titleAttribudeIdentifier]->store();
 
-                include_once( 'lib/ezutils/classes/ezoperationhandler.php' );
                 $operationResult = eZOperationHandler::execute( 'content', 'publish', array( 'object_id' => $contentObjectID,
                                                                                              'version' => 1 ) );
 
@@ -1826,22 +1766,12 @@ class eZOOImport
 
     /*!
       \private
+      \deprecated use $node->textContent directly
       Converts a dom node/tree to a plain ascii string
     */
     function domToText( $node )
     {
-        $textContent = "";
-
-        foreach ( $node->children() as $childNode )
-        {
-            $textContent .= eZOOImport::domToText( $childNode );
-        }
-
-        if  ( $node->name() == "#text" )
-        {
-            $textContent .= $node->content();
-        }
-        return $textContent;
+        return $node->textContent;
     }
 
 
