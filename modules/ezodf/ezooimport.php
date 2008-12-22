@@ -37,10 +37,6 @@
 
 */
 
-include_once( 'lib/ezxml/classes/ezxml.php' );
-include_once( 'lib/ezlocale/classes/ezdatetime.php' );
-include_once( 'lib/ezfile/classes/ezdir.php' );
-
 class eZOOImport
 {
     const ERROR_NOERROR = 0;
@@ -59,6 +55,14 @@ class eZOOImport
     const ERROR_IMPORTING = 13;
     const ERROR_UNKNOWNCLASS = 14;
     const ERROR_UNKNOWN = 127;
+
+    const NAMESPACE_OFFICE = 'urn:oasis:names:tc:opendocument:xmlns:office:1.0';
+    const NAMESPACE_TEXT = 'urn:oasis:names:tc:opendocument:xmlns:text:1.0';
+    const NAMESPACE_STYLE = 'urn:oasis:names:tc:opendocument:xmlns:style:1.0';
+    const NAMESPACE_TABLE = 'urn:oasis:names:tc:opendocument:xmlns:table:1.0';
+    const NAMESPACE_DRAWING = 'urn:oasis:names:tc:opendocument:xmlns:drawing:1.0';
+    const NAMESPACE_SVG_COMPATIBLE = 'urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0';
+    const NAMESPACE_XLINK = 'http://www.w3.org/1999/xlink';
 
     var $ERROR = array();
     var $currentUserID;
@@ -97,67 +101,46 @@ class eZOOImport
     */
     function setError( $errorNumber = 0, $errorDescription = "" )
     {
+        $this->ERROR['number'] = $errorNumber;
+        $this->ERROR['description'] = $errorDescription;
+
         switch( $errorNumber )
         {
             case self::ERROR_NOERROR :
-                $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = "";
-                $this->ERROR['description'] = $errorDescription;
                 break;
             case self::ERROR_UNSUPPORTEDTYPE :
-                $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "File extension or type is not allowed." );
-                $this->ERROR['description'] = $errorDescription;
                 break;
             case self::ERROR_PARSEXML :
-                $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Could not parse XML." );
-                $this->ERROR['description'] = $errorDescription;
                 break;
             case self::ERROR_OPENSOCKET :
-                $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Can not open socket. Please check if extension/ezodf/daemon.php is running." );
-                $this->ERROR['description'] = $errorDescription;
                 break;
             case self::ERROR_CONVERT :
-                $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Can not convert the given document." );
-                $this->ERROR['description'] = $errorDescription;
                 break;
             case self::ERROR_DAEMONCALL :
-                $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unable to call daemon. Fork can not create child process." );
-                $this->ERROR['description'] = $errorDescription;
                 break;
             case self::ERROR_DAEMON :
-                $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Daemon reported error." );
-                $this->ERROR['description'] = $errorDescription;
                 break;
             case self::ERROR_UNKNOWNNODE:
-                $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unknown node." );
-                $this->ERROR['description'] = $errorDescription;
                 break;
             case self::ERROR_ACCESSDENIED:
-                $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Access denied." );
-                $this->ERROR['description'] = $errorDescription;
                 break;
             case self::ERROR_IMPORTING:
-                $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Error during import." );
-                $this->ERROR['description'] = $errorDescription;
                 break;
             case self::ERROR_UNKNOWNCLASS:
-                $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unknown content class specified in odf.ini:" );
-                $this->ERROR['description'] = $errorDescription;
                 break;
             default :
-                $this->ERROR['number'] = $errorNumber;
                 $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unknown error." );
-                $this->ERROR['description'] = $errorDescription;
                 break;
         }
     }
@@ -253,7 +236,6 @@ class eZOOImport
              $GLOBALS["OOImportObjectID"] = $placeNodeID;
 
         // Check if we have access to node
-        include_once( 'kernel/content/ezcontentfunctioncollection.php' );
         $place_node = eZContentObjectTreeNode::fetch( $placeNodeID );
 
         $importClassIdentifier = $ooINI->variable( 'ODFImport', 'DefaultImportClass' );
@@ -280,7 +262,7 @@ class eZOOImport
 
             if ( $locationOK === false || $locationOK === null )
             {
-                $this->setError( self::ERROR_UNKNOWNNODE, ezi18n( 'extension/ezodf/import/error',"Unable to fetch node with id  ") . $placeNodeID );
+                $this->setError( self::ERROR_UNKNOWNNODE, ezi18n( 'extension/ezodf/import/error', "Unable to fetch node with id ") . $placeNodeID );
                 return false;
             }
 
@@ -332,7 +314,6 @@ class eZOOImport
         }
 
         $importResult = array();
-        include_once( "lib/ezfile/classes/ezdir.php" );
         $unzipResult = "";
         $uniqueImportDir = $this->ImportDir;
         // Need to create the directory in two steps. On Mac the recursive dir creation did not work
