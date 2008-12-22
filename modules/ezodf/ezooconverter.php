@@ -58,267 +58,266 @@ class eZOOConverter
 
         $node = eZContentObjectTreeNode::fetch( $nodeID );
 
-        if ( $node )
+        if ( !is_object( $node ) )
         {
-            $object = $node->attribute( 'object' );
-            $attributes = $object->contentObjectAttributes();
-            $xml = new eZXML();
-
-            // Clear the view cache when exporting, for some reason images are re-generated and the resolution is becomming poor
-            include_once( "kernel/classes/ezcontentcachemanager.php" );
-            eZContentCacheManager::clearObjectViewCache( $object->attribute( "id" ) );
-
-            $odfINI = eZINI::instance( 'odf.ini' );
-            $ClassMappingToHeader = ( $odfINI->variable( 'ODFExport', 'ClassAttributeMappingToHeader' ) == 'enabled' ) ? true : false;
-
-            // @bf 2008-08-21: Fetch the current class identifier and the .ini settings for the enabled attributes for this
-            $classIdentifier = $object->contentClassIdentifier();
-            $enabledClassAttributes = $odfINI->variable( $classIdentifier, 'Attribute' );
-
-            foreach ( $attributes as $attribute )
-            {
-                $attributeIdentifier = $attribute->contentClassAttributeIdentifier();
-
-                // @bf 2008-08-21: Only export attribute if it is enabled
-                if ( !array_key_exists( $attributeIdentifier, $enabledClassAttributes ) )
-                {
-                    continue;
-                }
-
-                if( !$ClassMappingToHeader )
-                {
-                    $ooGenerator->startSection( $attributeIdentifier );
-                }
-                else
-                {
-                    $ooGenerator->startClassMapHeader( $attributeIdentifier );
-                }
-
-                switch ( $attribute->attribute( 'data_type_string' ) )
-                {
-                    case "ezstring":
-                    {
-                        $text = trim( $attribute->content() );
-                        if ( $text != "" )
-                        {
-                            $ooGenerator->addHeader( $attribute->content() );
-                        }
-                    }break;
-
-                    case "eztext":
-                    {
-                        $ooGenerator->addParagraph( $attribute->content() );
-                    }break;
-
-                    case "ezxmltext":
-                    {
-                        $xmlData = $attribute->attribute( 'data_text' );
-                        $domTree = $xml->domTree( $xmlData );
-                        if ( $domTree )
-                        {
-                            $root = $domTree->root();
-                            foreach ( $root->children() as $node )
-                            {
-                                eZOOConverter::handleNode( $node, $ooGenerator );
-                            }
-                        }
-                    }break;
-
-
-                    case "ezimage":
-                    {
-                        $imageHandler = $attribute->content();
-                        $originalImage = $imageHandler->attribute( 'original' );
-                        $displayImage = $imageHandler->attribute( 'original' );
-                        $displayWidth = $displayImage['width'];
-                        $displayHeight = $displayImage['height'];
-
-                        $imageArray = array( "FileName" => $originalImage['url'],
-                                               "Alignment" => "center",
-                                               "DisplayWidth" => $displayWidth,
-                                               "DisplayHeight" => $displayHeight );
-
-                        $ooGenerator->addImage( $imageArray);
-                    }break;
-
-                    case "ezdate":
-                    {
-                        $date = $attribute->content();
-                        $ooGenerator->addParagraph( $date->attribute( "day" ) . "/" . $date->attribute( "month" ) . "/" . $date->attribute( "year" ) );
-                    }break;
-
-
-                    case "ezdatetime":
-                    {
-                        $date = $attribute->content();
-                        $ooGenerator->addParagraph( $date->attribute( "day" ) . "/" . $date->attribute( "month" ) . "/" . $date->attribute( "year" ) . " " . $date->attribute( "hour" )  . ":" . $date->attribute( "minute" )  );
-                    }break;
-
-                    case "ezmatrix":
-                    {
-                        $matrix = $attribute->content();
-
-                        $columns = $matrix->attribute( "columns" );
-
-                        $ooGenerator->startTable();
-
-                        foreach ( $columns['sequential'] as $column )
-                        {
-                            $ooGenerator->addParagraph( $column['name'] );
-                            $ooGenerator->nextCell();
-                        }
-
-                        $ooGenerator->nextRow( "defaultstyle" );
-
-                        $rows = $matrix->attribute( "rows" );
-
-                        foreach ( $rows['sequential'] as $row )
-                        {
-                            foreach ( $row['columns'] as $cell )
-                            {
-                                $ooGenerator->addParagraph( $cell );
-                                $ooGenerator->nextCell();
-                            }
-                            $ooGenerator->nextRow( "defaultstyle" );
-                        }
-
-                        $ooGenerator->endTable();
-                    }break;
-
-                    default:
-                    {
-                        eZDebug::writeError( "Unsupported attribute for OO conversion: '" . $attribute->attribute( 'data_type_string' ) . "'" );
-                    }break;
-                }
-
-                if( !$ClassMappingToHeader )
-                {
-                    $ooGenerator->endSection();
-                }
-            }
-
-
-            /*
-            $ooGenerator->addHeader( "Test code from here" );
-
-            $ooGenerator->startList( "unordered" );
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-            $ooGenerator->nextListItem();
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-            $ooGenerator->nextListItem();
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-            $ooGenerator->nextListItem();
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-            $ooGenerator->nextListItem();
-            $ooGenerator->endList( );
-
-            $ooGenerator->startList( "ordered" );
-            $ooGenerator->addParagraph( "Level 2" );
-            $ooGenerator->nextListItem();
-            $ooGenerator->addParagraph( "Level 2" );
-            $ooGenerator->nextListItem();
-            $ooGenerator->addParagraph( "Level 2" );
-            $ooGenerator->nextListItem();
-            $ooGenerator->addParagraph( "Level 2" );
-            $ooGenerator->nextListItem();
-
-
-            $ooGenerator->endList( );
-            */
-/*
-            $ooGenerator->startTable();
-            $ooGenerator->setCurrentColSpan( 2 );
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-            $ooGenerator->nextCell(2);
-            $ooGenerator->setCurrentColSpan( 2 );
-
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-            $ooGenerator->nextCell();
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-            $ooGenerator->nextCell();
-
-            $ooGenerator->nextRow( "defaultstyle" );
-
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-            $ooGenerator->nextCell();
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-            $ooGenerator->nextCell();
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-
-            $ooGenerator->nextRow( "defaultstyle" );
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-            $ooGenerator->nextCell();
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-            $ooGenerator->nextCell();
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-
-            $ooGenerator->endTable();
-*/
-
-            /*
-            $ooGenerator->addHeader( "This is generated from PHP!!" );
-
-            $ooGenerator->addParagraph( array( eZOOGenerator::STYLE_START, "bold" ),
-                                        array( eZOOGenerator::TEXT, "Pent vaaaar i dag"),
-                                        array( eZOOGenerator::STYLE_STOP ),
-                                        array( eZOOGenerator::LINK, "eZ systems", "http://ez.no"),
-                                        array( eZOOGenerator::TEXT, "Test" ) );
-
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-            $ooGenerator->addHeader( "This is generated from PHP!!" );
-
-            $ooGenerator->addImage( "documents/ooo_logo.gif" );
-
-            $paragraph = $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-
-            // Generating a list
-            $ooGenerator->startList( "bullet/numbered" );
-
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-            $ooGenerator->addImage( "documents/ooo_logo.gif" );
-
-            $ooGenerator->nextListItem();
-
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-            $ooGenerator->addHeader( "This is generated from PHP!!" );
-            $ooGenerator->addImage( "documents/ooo_logo.gif" );
-
-            $ooGenerator->endList();
-
-            */
-            /*
-            // Generate a table
-            $ooGenerator->startTable();
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-            $ooGenerator->nextCell();
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-            $ooGenerator->nextCell();
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-            $ooGenerator->nextCell();
-
-            $ooGenerator->nextRow( "defaultstyle" );
-
-            $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
-            $ooGenerator->nextCell();
-            $ooGenerator->nextCell();
-
-            $ooGenerator->endTable();
-
-            $ooGenerator->addParagraph( "Preformatted_20_Text", array( eZOOGenerator::TEXT, "This is just a sample paragraph. And it's of course added via PHP." ) );
-            $ooGenerator->addParagraph( "eZ_PRE_style", "Normal text here." );
-
-            */
-
-
-            $destFile = $ooGenerator->writeDocument();
-
-            return $destFile;
+            return false;
         }
 
-        // Conversion failed
-        return false;
+        $object = $node->attribute( 'object' );
+        $attributes = $object->contentObjectAttributes();
+        $xml = new eZXML();
+
+        // Clear the view cache when exporting, for some reason images are re-generated and the resolution is becomming poor
+        include_once( "kernel/classes/ezcontentcachemanager.php" );
+        eZContentCacheManager::clearObjectViewCache( $object->attribute( "id" ) );
+
+        $odfINI = eZINI::instance( 'odf.ini' );
+        $ClassMappingToHeader = ( $odfINI->variable( 'ODFExport', 'ClassAttributeMappingToHeader' ) == 'enabled' ) ? true : false;
+
+        // @bf 2008-08-21: Fetch the current class identifier and the .ini settings for the enabled attributes for this
+        $classIdentifier = $object->contentClassIdentifier();
+        $enabledClassAttributes = $odfINI->variable( $classIdentifier, 'Attribute' );
+
+        foreach ( $attributes as $attribute )
+        {
+            $attributeIdentifier = $attribute->contentClassAttributeIdentifier();
+
+            // @bf 2008-08-21: Only export attribute if it is enabled
+            if ( !array_key_exists( $attributeIdentifier, $enabledClassAttributes ) )
+            {
+                continue;
+            }
+
+            if( !$ClassMappingToHeader )
+            {
+                $ooGenerator->startSection( $attributeIdentifier );
+            }
+            else
+            {
+                $ooGenerator->startClassMapHeader( $attributeIdentifier );
+            }
+
+            switch ( $attribute->attribute( 'data_type_string' ) )
+            {
+                case "ezstring":
+                {
+                    $text = trim( $attribute->content() );
+                    if ( $text != "" )
+                    {
+                        $ooGenerator->addHeader( $attribute->content() );
+                    }
+                }break;
+
+                case "eztext":
+                {
+                    $ooGenerator->addParagraph( $attribute->content() );
+                }break;
+
+                case "ezxmltext":
+                {
+                    $xmlData = $attribute->attribute( 'data_text' );
+                    $domTree = $xml->domTree( $xmlData );
+                    if ( $domTree )
+                    {
+                        $root = $domTree->root();
+                        foreach ( $root->children() as $node )
+                        {
+                            eZOOConverter::handleNode( $node, $ooGenerator );
+                        }
+                    }
+                }break;
+
+
+                case "ezimage":
+                {
+                    $imageHandler = $attribute->content();
+                    $originalImage = $imageHandler->attribute( 'original' );
+                    $displayImage = $imageHandler->attribute( 'original' );
+                    $displayWidth = $displayImage['width'];
+                    $displayHeight = $displayImage['height'];
+
+                    $imageArray = array( "FileName" => $originalImage['url'],
+                                           "Alignment" => "center",
+                                           "DisplayWidth" => $displayWidth,
+                                           "DisplayHeight" => $displayHeight );
+
+                    $ooGenerator->addImage( $imageArray);
+                }break;
+
+                case "ezdate":
+                {
+                    $date = $attribute->content();
+                    $ooGenerator->addParagraph( $date->attribute( "day" ) . "/" . $date->attribute( "month" ) . "/" . $date->attribute( "year" ) );
+                }break;
+
+
+                case "ezdatetime":
+                {
+                    $date = $attribute->content();
+                    $ooGenerator->addParagraph( $date->attribute( "day" ) . "/" . $date->attribute( "month" ) . "/" . $date->attribute( "year" ) . " " . $date->attribute( "hour" )  . ":" . $date->attribute( "minute" )  );
+                }break;
+
+                case "ezmatrix":
+                {
+                    $matrix = $attribute->content();
+
+                    $columns = $matrix->attribute( "columns" );
+
+                    $ooGenerator->startTable();
+
+                    foreach ( $columns['sequential'] as $column )
+                    {
+                        $ooGenerator->addParagraph( $column['name'] );
+                        $ooGenerator->nextCell();
+                    }
+
+                    $ooGenerator->nextRow( "defaultstyle" );
+
+                    $rows = $matrix->attribute( "rows" );
+
+                    foreach ( $rows['sequential'] as $row )
+                    {
+                        foreach ( $row['columns'] as $cell )
+                        {
+                            $ooGenerator->addParagraph( $cell );
+                            $ooGenerator->nextCell();
+                        }
+                        $ooGenerator->nextRow( "defaultstyle" );
+                    }
+
+                    $ooGenerator->endTable();
+                }break;
+
+                default:
+                {
+                    eZDebug::writeError( "Unsupported attribute for OO conversion: '" . $attribute->attribute( 'data_type_string' ) . "'" );
+                }break;
+            }
+
+            if( !$ClassMappingToHeader )
+            {
+                $ooGenerator->endSection();
+            }
+        }
+
+
+        /*
+        $ooGenerator->addHeader( "Test code from here" );
+
+        $ooGenerator->startList( "unordered" );
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+        $ooGenerator->nextListItem();
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+        $ooGenerator->nextListItem();
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+        $ooGenerator->nextListItem();
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+        $ooGenerator->nextListItem();
+        $ooGenerator->endList( );
+
+        $ooGenerator->startList( "ordered" );
+        $ooGenerator->addParagraph( "Level 2" );
+        $ooGenerator->nextListItem();
+        $ooGenerator->addParagraph( "Level 2" );
+        $ooGenerator->nextListItem();
+        $ooGenerator->addParagraph( "Level 2" );
+        $ooGenerator->nextListItem();
+        $ooGenerator->addParagraph( "Level 2" );
+        $ooGenerator->nextListItem();
+
+
+        $ooGenerator->endList( );
+        */
+/*
+        $ooGenerator->startTable();
+        $ooGenerator->setCurrentColSpan( 2 );
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+        $ooGenerator->nextCell(2);
+        $ooGenerator->setCurrentColSpan( 2 );
+
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+        $ooGenerator->nextCell();
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+        $ooGenerator->nextCell();
+
+        $ooGenerator->nextRow( "defaultstyle" );
+
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+        $ooGenerator->nextCell();
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+        $ooGenerator->nextCell();
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+
+        $ooGenerator->nextRow( "defaultstyle" );
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+        $ooGenerator->nextCell();
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+        $ooGenerator->nextCell();
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+
+        $ooGenerator->endTable();
+*/
+
+        /*
+        $ooGenerator->addHeader( "This is generated from PHP!!" );
+
+        $ooGenerator->addParagraph( array( eZOOGenerator::STYLE_START, "bold" ),
+                                    array( eZOOGenerator::TEXT, "Pent vaaaar i dag"),
+                                    array( eZOOGenerator::STYLE_STOP ),
+                                    array( eZOOGenerator::LINK, "eZ systems", "http://ez.no"),
+                                    array( eZOOGenerator::TEXT, "Test" ) );
+
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+        $ooGenerator->addHeader( "This is generated from PHP!!" );
+
+        $ooGenerator->addImage( "documents/ooo_logo.gif" );
+
+        $paragraph = $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+
+        // Generating a list
+        $ooGenerator->startList( "bullet/numbered" );
+
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+        $ooGenerator->addImage( "documents/ooo_logo.gif" );
+
+        $ooGenerator->nextListItem();
+
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+        $ooGenerator->addHeader( "This is generated from PHP!!" );
+        $ooGenerator->addImage( "documents/ooo_logo.gif" );
+
+        $ooGenerator->endList();
+
+        */
+        /*
+        // Generate a table
+        $ooGenerator->startTable();
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+        $ooGenerator->nextCell();
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+        $ooGenerator->nextCell();
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+        $ooGenerator->nextCell();
+
+        $ooGenerator->nextRow( "defaultstyle" );
+
+        $ooGenerator->addParagraph( "This is just a sample paragraph. And it's of course added via PHP." );
+        $ooGenerator->nextCell();
+        $ooGenerator->nextCell();
+
+        $ooGenerator->endTable();
+
+        $ooGenerator->addParagraph( "Preformatted_20_Text", array( eZOOGenerator::TEXT, "This is just a sample paragraph. And it's of course added via PHP." ) );
+        $ooGenerator->addParagraph( "eZ_PRE_style", "Normal text here." );
+
+        */
+
+
+        $destFile = $ooGenerator->writeDocument();
+
+        return $destFile;
     }
 
     /*!
