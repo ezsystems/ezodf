@@ -186,18 +186,12 @@ if ( $doExport == true )
                 header( "X-Powered-By: eZ Publish" );
                 header( "Content-disposition: attachment; filename=\"$escapedOriginalFileName\"" );
                 header( "Content-Transfer-Encoding: binary" );
-                header( "Accept-Ranges: bytes" );
 
                 $fh = fopen( "$fileName", "rb" );
-                if ( $fileOffset )
-                {
-                    fseek( $fh, $fileOffset );
-                }
 
                 ob_end_clean();
                 fpassthru( $fh );
                 fclose( $fh );
-                fflush();
 
                 unlink( $fileName );
                 eZExecution::cleanExit();
