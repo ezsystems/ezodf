@@ -31,8 +31,6 @@
 /*! \file ezoogenerator.php
 */
 
-include_once( "lib/ezfile/classes/ezfilehandler.php" );
-
 /*!
   \class eZOOGenerator ezoogenerator.php
   \brief The class eZOOGenerator does
@@ -62,13 +60,10 @@ class eZOOGenerator
         $ooINI = eZINI::instance( 'odf.ini' );
 
         // Initalize directories
-        include_once( "lib/ezfile/classes/ezdir.php" );
         eZDir::mkdir( $this->OORootDir );
-        eZDir::mkdir( $this->OOExportDir );
-        eZDir::mkdir( $this->OOExportDir . "/META-INF" );
+        eZDir::mkdir( $this->OOExportDir . "META-INF", false, true );
         eZDir::mkdir( $this->OOTemplateDir );
 
-        // Write meta XML file
         $metaXML = "<?xml version='1.0' encoding='UTF-8'?>" .
                    "<office:document-meta xmlns:office='urn:oasis:names:tc:opendocument:xmlns:office:1.0' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:meta='urn:oasis:names:tc:opendocument:xmlns:meta:1.0' xmlns:ooo='http://openoffice.org/2004/office' office:version='1.0' xmlns:ezpublish='http://www.ez.no/ezpublish/oasis'>" .
                      "<office:meta>" .
@@ -86,27 +81,18 @@ class eZOOGenerator
                      " </office:meta>" .
                      "</office:document-meta>";
 
-        $fileName = $this->OOExportDir . "meta.xml";
-        $fp = fopen( $fileName, "w" );
-        fwrite( $fp, $metaXML );
-        fclose( $fp );
-
-        // Write settings XML file
+        file_put_contents( $this->OOExportDir . "meta.xml", $metaXML );
 
         $settingsXML = "<?xml version='1.0' encoding='UTF-8'?>" .
                        "<office:document-settings xmlns:office='urn:oasis:names:tc:opendocument:xmlns:office:1.0' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:config='urn:oasis:names:tc:opendocument:xmlns:config:1.0' xmlns:ooo='http://openoffice.org/2004/office' office:version='1.0'>" .
                        "  <office:settings>" .
                        " </office:settings>" .
                        "</office:document-settings>";
-
-        $fileName = $this->OOExportDir . "settings.xml";
-        $fp = fopen( $fileName, "w" );
-        fwrite( $fp, $settingsXML );
-        fclose( $fp );
+        file_put_contents( $this->OOExportDir . "settings.xml", $settingsXML );
 
         $useTemplate = ( $ooINI->variable( 'ODFExport', 'UseTemplate' ) == "true" );
         $templateName = $ooINI->variable( 'ODFExport', 'TemplateName' );
-        if ( $useTemplate == true )
+        if ( $useTemplate )
         {
             $templateFile = "extension/ezodf/templates/" . $templateName;
             // Check if zlib extension is loaded, if it's loaded use bundled ZIP library,
@@ -170,20 +156,11 @@ class eZOOGenerator
                  "  </office:styles>" .
                  "</office:document-styles>";
 
-            $fileName = $this->OOExportDir . "styles.xml";
-            $fp = fopen( $fileName, "w" );
-            fwrite( $fp, $stylesXML );
-            fclose( $fp );
+            file_put_contents( $this->OOExportDir . "styles.xml", $stylesXML );
         }
 
-
-        // Write mimetype file
         $mimeType = "application/vnd.oasis.opendocument.text";
-
-        $fileName = $this->OOExportDir . "mimetype";
-        $fp = fopen( $fileName, "w" );
-        fwrite( $fp, $mimeType );
-        fclose( $fp );
+        file_put_contents( $this->OOExportDir . "mimetype", $mimeType );
 
         // Write content XML file
         $contentXML = "<?xml version='1.0' encoding='UTF-8'?>" .
@@ -267,10 +244,7 @@ class eZOOGenerator
         // Add the content end
         $contentXML .= "</office:text></office:body></office:document-content>";
 
-        $fileName = $this->OOExportDir . "content.xml";
-        $fp = fopen( $fileName, "w" );
-        fwrite( $fp, $contentXML );
-        fclose( $fp );
+        file_put_contents( $this->OOExportDir . "content.xml", $contentXML );
 
         // Write the manifest file
         $manifestXML = "<?xml version='1.0' encoding='UTF-8'?>" .
@@ -294,10 +268,7 @@ class eZOOGenerator
         }
         $manifestXML .= "</manifest:manifest>";
 
-        $fileName = $this->OOExportDir . "META-INF/manifest.xml";
-        $fp = fopen( $fileName, "w" );
-        fwrite( $fp, $manifestXML );
-        fclose( $fp );
+        file_put_contents( $this->OOExportDir . "META-INF/manifest.xml", $manifestXML );
 
         // Check if zlib extension is loaded, if it's loaded use bundled ZIP library,
         // if not rely on the zip commandline version.
@@ -322,7 +293,6 @@ class eZOOGenerator
         }
 
         $fileName = $this->OORootDir . "ootest.odt";
-
 
         // Clean up
         eZDir::recursiveDelete( $this->OOExportDir );
@@ -357,14 +327,14 @@ class eZOOGenerator
 
                     $headerContents['Element'][] = array( 'Type' => 'text', "Content" => $tagContent );
                 }break;
-                
+
                 case self::LINK:
                 {
                     $headerContents['Element'][] = array( 'Type' => 'link',
                                                           "Content" => $content = $paragraphElement[2],
                                                           "HREF" => $paragraphElement[1] );
                 }break;
-                
+
                 case self::LINE:
                 {
                     $headerContents['Element'][] = array( 'Type' => 'line',
@@ -385,12 +355,13 @@ class eZOOGenerator
     /*!
       Adds a new paragraph to the document
     */
-    function addParagraph( )
+    function addParagraph()
     {
         $style = "";
+        $numArgs = func_num_args();
         $argArray = func_get_args();
 
-        if ( func_num_args() > 1 )
+        if ( $numArgs > 1 )
         {
             // Check for style definition
             if ( !is_array( $argArray[0] ) )
@@ -400,7 +371,7 @@ class eZOOGenerator
             }
         }
 
-        if ( func_num_args() > 0 and ( is_array( $argArray[0] ) ) )
+        if ( $numArgs > 0 and is_array( $argArray[0] ) )
         {
             $paragraphArray = array();
 
@@ -419,7 +390,7 @@ class eZOOGenerator
                         $tagContent = str_replace( '"', "&quot;", $tagContent );
 
                         $paragraphArray[] = array( 'Type' => 'text', "Content" => $tagContent );
-                    }break;
+                    } break;
 
                     case self::STYLE_START:
                     {
@@ -431,20 +402,20 @@ class eZOOGenerator
                         if ( substr( $paragraphElement[1], 0, 18 ) == "eZCustominline_20_" )
                             $paragraphArray[] = array( 'Type' => 'custom_inline_start', 'Name' => $paragraphElement[1] );
 
-                    }break;
+                    } break;
 
                     case self::STYLE_STOP:
                     {
                         $paragraphArray[] = array( 'Type' => 'style_stop' );
-                    }break;
+                    } break;
 
                     case self::LINK:
                     {
                         $paragraphArray[] = array( 'Type' => 'link',
                                                    "Content" => $content = $paragraphElement[2],
                                                    "HREF" => $paragraphElement[1] );
-                    }break;
-                    
+                    } break;
+
                     case self::LINE:
                     {
                         $paragraphArray[] = array( 'Type' => 'line',
@@ -454,14 +425,18 @@ class eZOOGenerator
                     default:
                     {
                         eZDebug::writeError( "Unknown paragraph element." );
-                    }break;
+                    } break;
                 }
             }
         }
-        else
+        else if ( $numArgs > 0 )
         {
             // Alex 2008-06-03 - Added isset()
             $paragraphArray = array( array( 'Type' => 'text', "Content" => isset( $argArray[0] ) ? $argArray[0] : '' ) );
+        }
+        else
+        {
+            $paragraphArray = array( array( 'Type' => 'text', "Content" => '' ) );
         }
 
         $elementArray = array( 'Type' => 'paragraph',
@@ -522,7 +497,7 @@ class eZOOGenerator
       Starts an un-ordered or numbered list sequence. The $type parameter can either be the string
       unordered or ordered.
     */
-    function startList( $type="unordered" )
+    function startList( $type = "unordered" )
     {
         $this->CurrentStackNumber += 1;
         $this->DocumentStack[$this->CurrentStackNumber]['Type'] = 'list';
@@ -569,7 +544,7 @@ class eZOOGenerator
             $this->addElement( $elementArray );
         }
     }
-    
+
     /*!
        Starts a new paragraph section with the given name.
 
@@ -731,7 +706,7 @@ class eZOOGenerator
                         {
                             $contentXML .= "<text:a xlink:type='simple' xlink:href='" . $paragraphElement['HREF']. "'>" . $paragraphElement['Content'] . "</text:a>";
                         }break;
-                        
+
                         case "line":
                         {
                             $contentXML .= "<text:line-break />";
@@ -747,7 +722,7 @@ class eZOOGenerator
 
 
             }break;
-            
+
             case "class-map-header":
             {
                 $contentXML .= "<text:p text:style-name='Defualt'></text:p>" . "\n";
@@ -788,7 +763,7 @@ class eZOOGenerator
                             case "link":
                             {
                                 $contentXML .= "<text:a xlink:type='simple' xlink:href='" . $headerElement['HREF']. "'>";
-                                
+
                                 if( strlen( $element['ClassName'] ) )
                                 {
                                     $contentXML .=  "<text:span text:style-name='eZClassification_20_" . $element['ClassName'] . "'>";
@@ -798,11 +773,11 @@ class eZOOGenerator
                                 else
                                 {
                                     $contentXML .= $headerElement['Content'];
-                                
+
                                 }
                                 $contentXML .= "</text:a>";
                             }break;
-                            
+
                             case "line":
                             {
                                 $contentXML .= "<text:line-break />";
@@ -826,15 +801,15 @@ class eZOOGenerator
             {
                 $uniquePart = substr( md5( time() . rand( 0, 20000 ) ), 6 );
                 $fileName = $element['SRC'];
-                $destFile = $this->OOExportDir . "Pictures/" . $uniquePart . basename( $fileName );
                 $relativeFile = "Pictures/" . $uniquePart . basename( $fileName );
+                $destFile = $this->OOExportDir . $relativeFile;
 
                 if ( copy( $fileName, $destFile ) )
                 {
                     $realFileName = $destFile;
                     $sizeArray = getimagesize( $destFile );
 
-                    $this->ImageFileArray[] = "Pictures/" . $uniquePart . basename( $fileName );
+                    $this->ImageFileArray[] = $relativeFile;
                     $widthRatio = ( $element['DisplayWidth'] / 580 ) * 100;
 
                     // If image is larger than 300 px make it full page, or pixelsize
@@ -908,8 +883,6 @@ class eZOOGenerator
                 $tableCounter = 1;
 
                 $columnCount = 0;
-                // Alex 2008-06-03 - Added initialization for $columnDefinition
-                $columnDefinition = "";
                 $rowContent = "";
                 $rowCount = 1;
                 foreach ( $element['Content'] as $rowArray )
@@ -964,7 +937,7 @@ class eZOOGenerator
                 $numberLetter = "A";
                 $numberOfColumns = $columnCount;
 
-                $columnDefinition .= "<table:table-column table:style-name='Table$tableCounter.$numberLetter' table:number-columns-repeated='$numberOfColumns' />\n";
+                $columnDefinition = "<table:table-column table:style-name='Table$tableCounter.$numberLetter' table:number-columns-repeated='$numberOfColumns' />\n";
 
                 $contentXML .= "<table:table table:name='Table$tableCounter' table:style-name='Table$tableCounter'>\n" . $columnDefinition . $rowContent . "</table:table>";
 

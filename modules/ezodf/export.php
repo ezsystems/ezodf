@@ -26,15 +26,7 @@
 // ## END COPYRIGHT, LICENSE AND WARRANTY NOTICE ##
 //
 
-include_once( "kernel/common/template.php" );
-
-include_once( 'kernel/classes/ezcontentobject.php' );
-include_once( 'lib/ezlocale/classes/ezdatetime.php' );
-
-include_once( "kernel/classes/ezcontentbrowse.php" );
-
-include_once( "extension/ezodf/modules/ezodf/ezooconverter.php" );
-
+require_once( "kernel/common/template.php" );
 
 $http = eZHTTPTool::instance();
 $module = $Params["Module"];
@@ -95,9 +87,9 @@ else if ( $exportTypeParam == "PDF" or $exportTypeParam == "Word" )
 {
     $exportType = $exportTypeParam;
 }
-else if ( strlen( trim ( $exportTypeParam) ) != 0 )
+else if ( strlen( trim( $exportTypeParam ) ) != 0 )
 {
-    $tpl->setVariable( "error_string", ezi18n( 'extension/ezodf/export/error',"Destination file format not supported" ) );
+    $tpl->setVariable( "error_string", ezi18n( 'extension/ezodf/export/error', "Destination file format not supported" ) );
     $success = false;
 }
 
@@ -107,10 +99,8 @@ $tmpDir = getcwd() . "/" . eZSys::cacheDirectory();
 
 if ( $doExport == true )
 {
-
     if ( is_numeric( $nodeID ) )
     {
-
         $node = eZContentObjectTreeNode::fetch( $nodeID );
 
         // Check if we have read access to this node
@@ -126,7 +116,6 @@ if ( $doExport == true )
                 $originalFileName = $nodeName . ".odt";
                 $contentType = "application/vnd.oasis.opendocument.text";
 
-                include_once( 'lib/ezi18n/classes/ezchartransform.php' );
                 $trans = eZCharTransform::instance();
                 $nodeName = $trans->transformByGroup( $nodeName, 'urlalias' );
 
@@ -150,8 +139,7 @@ if ( $doExport == true )
                             $success = false;
                             $tpl->setVariable( "error_string", ezi18n( 'extension/ezodf/export/error',"PDF conversion failed" ) );
                         }
-
-                    }break;
+                    } break;
 
                     case "Word" :
                     {
@@ -166,11 +154,8 @@ if ( $doExport == true )
                             $success = false;
                             $tpl->setVariable( "error_string", ezi18n( 'extension/ezodf/export/error',"Word conversion failed" ) );
                         }
-
-                    }break;
-
+                    } break;
                 }
-
             }
             else
             {
@@ -194,7 +179,7 @@ if ( $doExport == true )
                 // Download the file
                 header( "Pragma: " );
                 header( "Cache-Control: " );
-                /* Set cache time out to 10 minutes, this should be good enough to work around an IE bug */
+                // Set cache time out to 10 minutes, this should be good enough to work around an IE bug
                 header( "Expires: ". gmdate('D, d M Y H:i:s', time() + 600) . 'GMT');
                 header( "Content-Length: $contentLength" );
                 header( "Content-Type: $contentType" );
@@ -219,7 +204,7 @@ if ( $doExport == true )
             }
             else
             {
-                $tpl->setVariable( "error_string", ezi18n( 'extension/ezodf/export/error',"Unable to open file %1 on server side", null, array( $fileName ) ) );
+                $tpl->setVariable( "error_string", ezi18n( 'extension/ezodf/export/error', "Unable to open file %1 on server side", null, array( $fileName ) ) );
             }
         }
     }
