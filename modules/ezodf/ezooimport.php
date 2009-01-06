@@ -446,7 +446,7 @@ class eZOOImport
             $eZSectionDefinitionStyleName = array();
             foreach( $automaticStyleArray->item( 0 )->childNodes as $child )
             {
-                if( $child->getAttribute( 'parent-style-name' ) == 'eZSectionDefinition' )
+                if( $child->nodeType === XML_ELEMENT_NODE && $child->getAttribute( 'parent-style-name' ) == 'eZSectionDefinition' )
                 {
                      $eZSectionDefinitionStyleName[] = $child->getAttribute('name');
                 }
@@ -456,11 +456,14 @@ class eZOOImport
             $sectionNodeArray = array();
             $paragraphSectionName = NULL;
             $firstChildFlag = false;
+            $paragraphSectionNodeArray = array();
             foreach ( $bodyNodeArray->item( 0 )->childNodes as $childNode )
             {
                 $firstChildFlag = true;
-                if ( in_array( $childNode->getAttribute( 'style-name' ), $eZSectionDefinitionStyleName ) ||
-                     $childNode->getAttribute( 'style-name' ) == 'eZSectionDefinition' )
+                if ( $childNode->nodeType == XML_ELEMENT_NODE &&
+                     ( in_array( $childNode->getAttribute( 'style-name' ), $eZSectionDefinitionStyleName ) ||
+                       $childNode->getAttribute( 'style-name' ) == 'eZSectionDefinition' )
+                   )
                 {
                     $firstChildFlag = false;
                     $childNodeChildren = $childNode->childNodes;
@@ -1000,8 +1003,8 @@ class eZOOImport
                             $nextLineBreak = ( isset( $childNode->nextSibling ) &&
                                                $childNode->nextSibling->localName == 'line-break' );
 
-                            $prevLineBreak ( isset( $childNode->previousSibling ) &&
-                                             $childNode->previousSibling->localName == 'line-break' );
+                            $prevLineBreak = ( isset( $childNode->previousSibling ) &&
+                                               $childNode->previousSibling->localName == 'line-break' );
 
                             $headerContent .= self::handleInlineNode( $childNode, $nextLineBreak, $prevLineBreak );
                         }
@@ -1057,6 +1060,11 @@ class eZOOImport
                     $headerLevel = false;
                     foreach ( $this->AutomaticStyles as $style )
                     {
+                        if ( $style->nodeType !== XML_ELEMENT_NODE )
+                        {
+                            continue;
+                        }
+
                         $tmpStyleName = $style->getAttributeNS( self::NAMESPACE_STYLE, "name" );
 
                         if ( $styleName == $tmpStyleName )
@@ -1110,8 +1118,8 @@ class eZOOImport
                         $nextLineBreak = ( isset( $childNode->nextSibling ) &&
                                            $childNode->nextSibling->localName == 'line-break' );
 
-                        $prevLineBreak ( isset( $childNode->previousSibling ) &&
-                                         $childNode->previousSibling->localName == 'line-break' );
+                        $prevLineBreak = ( isset( $childNode->previousSibling ) &&
+                                           $childNode->previousSibling->localName == 'line-break' );
 
                         $paragraphContent .= self::handleInlineNode( $childNode, $nextLineBreak, $prevLineBreak );
                     }
@@ -1215,6 +1223,11 @@ class eZOOImport
                     $listType = false;
                     foreach ( $this->AutomaticStyles as $style )
                     {
+                        if ( $style->nodeType !== XML_ELEMENT_NODE )
+                        {
+                            continue;
+                        }
+
                         $tmpStyleName = $style->getAttributeNS( self::NAMESPACE_STYLE, "name" );
 
                         if ( $styleName == $tmpStyleName )
@@ -1456,6 +1469,11 @@ class eZOOImport
                             $imageAlignment = "center";
                             foreach ( $this->AutomaticStyles as $style )
                             {
+                                if ( $style->nodeType !== XML_ELEMENT_NODE )
+                                {
+                                    continue;
+                                }
+
                                 $tmpStyleName = $style->getAttributeNS( self::NAMESPACE_STYLE, "name" );
 
                                 if ( $styleName == $tmpStyleName )
@@ -1640,6 +1658,11 @@ class eZOOImport
                 $fontStyle = false;
                 foreach ( $this->AutomaticStyles as $style )
                 {
+                    if ( $style->nodeType !== XML_ELEMENT_NODE )
+                    {
+                        continue;
+                    }
+
                     $tmpStyleName = $style->getAttributeNS( self::NAMESPACE_STYLE, "name" );
 
                     if ( $styleName == $tmpStyleName )
