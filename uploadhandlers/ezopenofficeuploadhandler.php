@@ -33,7 +33,7 @@
 
 /*!
   \class eZOpenofficehandler ezopenofficehandler.php
-  \brief The class eZOpenofficehandler does
+  \brief The class eZOpenofficehandler handles uploads of ODF files
 
 */
 
