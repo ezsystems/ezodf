@@ -95,25 +95,13 @@ class eZOOGenerator
         if ( $useTemplate )
         {
             $templateFile = "extension/ezodf/templates/" . $templateName;
-            // Check if zlib extension is loaded, if it's loaded use bundled ZIP library,
-            // if not rely on the unzip commandline version.
-            if ( !function_exists( 'gzopen' ) )
-            {
-                exec( "unzip -o $templateFile -d $this->OOTemplateDir", $unzipResult );
-            }
-            else
-            {
-                require_once('extension/ezodf/lib/pclzip.lib.php');
-                $templateArchive = new PclZip( $templateFile );
-                $templateArchive->extract( PCLZIP_OPT_PATH, $this->OOTemplateDir );
 
-                if ( $templateArchive->errorCode() <> 0 )
-                {
-                    return array( self::ERROR_TEMPLATE_NOT_READABLE, "Could not read template file" );
-                }
-            }
+            $archiveOptions = new ezcArchiveOptions( array( 'readOnly' => true ) );
+            $archive = ezcArchive::open( $templateFile, null, $archiveOptions );
 
-            // Copy styles.xml and images, if any to the document beeing generated
+            $archive->extract( $this->OOTemplateDir );
+
+            // Copy styles.xml and images, if any to the document being generated
             if ( !copy( $this->OOTemplateDir . "styles.xml", $this->OOExportDir . "styles.xml" ) )
             {
                 return array( self::ERROR_COULD_NOT_COPY, "Could not copy the styles.xml file." );
@@ -121,7 +109,7 @@ class eZOOGenerator
 
             $sourceDir = $this->OOTemplateDir . "Pictures";
             $destDir = $this->OOExportDir . "Pictures";
-            eZDir::mkdir( $destDir );
+            eZDir::mkdir( $destDir, false, true );
             eZDir::copy( $sourceDir, $destDir, false, true );
         }
         else
@@ -270,29 +258,24 @@ class eZOOGenerator
 
         file_put_contents( $this->OOExportDir . "META-INF/manifest.xml", $manifestXML );
 
-        // Check if zlib extension is loaded, if it's loaded use bundled ZIP library,
-        // if not rely on the zip commandline version.
-        if ( !function_exists( 'gzopen' ) )
-        {
-            $currentDir = getcwd();
-            chdir( $this->OOExportDir );
-            $zipPath = $ooINI->variable( 'ODFSettings', 'ZipPath' );
-            $execStr = $zipPath . "zip -r ../ootest.odt *";
-
-            exec(  $execStr, $result );
-            chdir( $currentDir );
-        }
-        else
-        {
-            require_once('extension/ezodf/lib/pclzip.lib.php');
-            $archive = new PclZip( $this->OORootDir . "ootest.odt" );
-            $archSourcePath = rtrim( $this->OOExportDir, "/" );
-
-            $archive->create( $archSourcePath,
-                              PCLZIP_OPT_REMOVE_PATH, $archSourcePath );
-        }
-
         $fileName = $this->OORootDir . "ootest.odt";
+
+        $zipArchive = ezcArchive::open( $fileName, ezcArchive::ZIP );
+        $zipArchive->truncate();
+
+        $prefix = $this->OOExportDir;
+        $fileList = array();
+        eZDir::recursiveList( $this->OOExportDir, $this->OOExportDir, $fileList );
+
+        foreach ( $fileList as $fileInfo )
+        {
+            $path = $fileInfo['type'] === 'dir' ?
+                $fileInfo['path'] . '/' . $fileInfo['name'] . '/' :
+                $fileInfo['path'] . '/' . $fileInfo['name'];
+            $zipArchive->append( array( $path ), $prefix );
+        }
+
+        $zipArchive->close();
 
         // Clean up
         eZDir::recursiveDelete( $this->OOExportDir );

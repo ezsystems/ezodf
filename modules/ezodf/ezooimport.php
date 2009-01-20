@@ -316,24 +316,13 @@ class eZOOImport
         $importResult = array();
         $unzipResult = "";
         $uniqueImportDir = $this->ImportDir;
-        // Need to create the directory in two steps. On Mac the recursive dir creation did not work
-        eZDir::mkdir( $this->ImportBaseDir );
-        eZDir::mkdir( $uniqueImportDir );
+        eZDir::mkdir( $uniqueImportDir, false, true );
 
         $http = eZHTTPTool::instance();
 
-        // Check if zlib extension is loaded, if it's loaded use bundled ZIP library,
-        // if not rely on the unzip commandline version.
-        if ( !function_exists( 'gzopen' ) )
-        {
-            exec( "unzip -o $file -d " . $uniqueImportDir, $unzipResult );
-        }
-        else
-        {
-            require_once('extension/ezodf/lib/pclzip.lib.php');
-            $archive = new PclZip( $file );
-            $archive->extract( PCLZIP_OPT_PATH, $uniqueImportDir );
-        }
+        $archiveOptions = new ezcArchiveOptions( array( 'readOnly' => true ) );
+        $archive = ezcArchive::open( $file, null, $archiveOptions );
+        $archive->extract( $uniqueImportDir );
 
         $fileName = $uniqueImportDir . "content.xml";
         $dom = new DOMDocument( '1.0', 'UTF-8' );
