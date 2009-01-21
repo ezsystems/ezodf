@@ -12,6 +12,7 @@ Changes from 2.1 beta 1 to 2.1 beta 2
   connection problems.
 - Fixed bug: missing output washing of node name
 - Implemented enhancement #14230: Use the Archive Component in ezodf
+- Implemented enhancement #13785: Use PHP 5 DOM functions instead of ezxml
 
 Changes from 2.0 beta 3 to 2.1 beta 1
 -------------------------------------
