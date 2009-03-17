@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="en_US">
+<!DOCTYPE TS><TS>
 <defaultcodec></defaultcodec>
 <context>
     <name>extension/ezodf</name>
@@ -41,11 +40,11 @@
     </message>
     <message>
         <source>Export eZ publish content to OpenOffice.org</source>
-        <translation>eZ PublsihのコンテントをOpenOffice.orgへエクスポート</translation>
+        <translation type="obsolete">eZ PublsihのコンテントをOpenOffice.orgへエクスポート</translation>
     </message>
     <message>
         <source>Here you can export any eZ publish content object to an OpenOffice.org Writer document format.</source>
-        <translation>eZ Publish のコンテントをOpenOffice.org Writer へエクスポートします。</translation>
+        <translation type="obsolete">eZ Publish のコンテントをOpenOffice.org Writer へエクスポートします。</translation>
     </message>
     <message>
         <source>Document is now imported</source>
@@ -61,7 +60,7 @@
     </message>
     <message>
         <source>The images are placed in the media and can be re-used.</source>
-        <translation>画像はメディアへ保存されました。再利用が可能です。</translation>
+        <translation type="obsolete">画像はメディアへ保存されました。再利用が可能です。</translation>
     </message>
     <message>
         <source>Import another document</source>
@@ -84,8 +83,27 @@
 asked where to place the document and eZ publish does the rest. The document is converted into
 the appropriate class during the import, you get a notice about this after the import is done.
 Images are placed in the media library so you can re-use them in other articles.</source>
-        <translation>OpenOffice.org WriterドキュメントをeZ Publishへインポートします。ドキュメントの配置先を指定して下さい。
+        <translation type="obsolete">OpenOffice.org WriterドキュメントをeZ Publishへインポートします。ドキュメントの配置先を指定して下さい。
 インポート完了後に通知が表示されます。画像はメディアライブラリに保存されますので、後に再利用が可能です。</translation>
+    </message>
+    <message>
+        <source>Export eZ Publish content to OpenOffice.org</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Here you can export any eZ Publish content object to an OpenOffice.org Writer document format.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The images are placed in the media library and can be re-used.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You can import OpenOffice.org Writer documents directly into eZ Publish from this page. You are
+asked where to place the document and eZ Publish does the rest. The document is converted into
+the appropriate class during the import, you get a notice about this after the import is done.
+Images are placed in the media library so you can re-use them in other articles.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -185,7 +203,7 @@ Images are placed in the media library so you can re-use them in other articles.
     </message>
     <message>
         <source>Unable to fetch node with id  </source>
-        <translation>ノードが見つかりません</translation>
+        <translation type="obsolete">ノードが見つかりません</translation>
     </message>
     <message>
         <source>Folder for images could not be created, access denied.</source>
@@ -193,7 +211,7 @@ Images are placed in the media library so you can re-use them in other articles.
     </message>
     <message>
         <source>Document is not suported.</source>
-        <translation>ドキュメントはサポートされていません。</translation>
+        <translation type="obsolete">ドキュメントはサポートされていません。</translation>
     </message>
     <message>
         <source>Cannot import. File not found. Already imported?</source>
@@ -206,6 +224,14 @@ Images are placed in the media library so you can re-use them in other articles.
     <message>
         <source>Cannot store uploaded file, cannot import.</source>
         <translation>アップロードしたファイルを保存できません。</translation>
+    </message>
+    <message>
+        <source>Unable to fetch node with id </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Document is not supported.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
