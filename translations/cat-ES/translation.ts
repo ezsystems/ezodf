@@ -172,7 +172,7 @@ Clica sobre el nom de les ubicacions per a canviar la llista de navegació.
     </message>
     <message>
         <source>Unable to fetch node with id  </source>
-        <translation>No es pot recuperar el nòdul amb id</translation>
+        <translation type="obsolete">No es pot recuperar el nòdul amb id</translation>
     </message>
     <message>
         <source>Folder for images could not be created, access denied.</source>
@@ -193,6 +193,10 @@ Clica sobre el nom de les ubicacions per a canviar la llista de navegació.
     <message>
         <source>Cannot store uploaded file, cannot import.</source>
         <translation>No es pot desar el document carregat, no es pot importar.</translation>
+    </message>
+    <message>
+        <source>Unable to fetch node with id </source>
+        <translation>No es pot recuperar el node amb id </translation>
     </message>
 </context>
 <context>
