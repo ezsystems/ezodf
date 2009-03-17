@@ -1,4 +1,6 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS><TS version="1.1" language="en_US">
+<defaultcodec></defaultcodec>
 <context>
     <name>extension/ezodf</name>
     <message>
@@ -75,7 +77,7 @@
     </message>
     <message>
         <source>Import to</source>
-        <translation>インポート先</translation>
+        <translation>インポート先: </translation>
     </message>
     <message>
         <source>You can import OpenOffice.org Writer documents directly into eZ publish from this page. You are
@@ -83,15 +85,14 @@ asked where to place the document and eZ publish does the rest. The document is 
 the appropriate class during the import, you get a notice about this after the import is done.
 Images are placed in the media library so you can re-use them in other articles.</source>
         <translation>OpenOffice.org WriterドキュメントをeZ Publishへインポートします。ドキュメントの配置先を指定して下さい。
-インポート完了語に通知が表示されます。
-画像はメディアライブラリに保存されますので、後に再利用が可能です。</translation>
+インポート完了後に通知が表示されます。画像はメディアライブラリに保存されますので、後に再利用が可能です。</translation>
     </message>
 </context>
 <context>
     <name>extension/ezodf/browse</name>
     <message>
         <source>Choose document placement</source>
-        <translation>ドキュメントの配置を選択してください</translation>
+        <translation>ドキュメントの配置先を選択してください</translation>
     </message>
     <message>
         <source>Please choose the placement for the OpenOffice.org object.
@@ -172,7 +173,7 @@ Images are placed in the media library so you can re-use them in other articles.
     </message>
     <message>
         <source>Unknown content class specified in odf.ini:</source>
-        <translation>不明なコンテントクラスodf.ini:</translation>
+        <translation>odf.iniに不明なコンテントクラスが見つかりました:</translation>
     </message>
     <message>
         <source>Unknown error.</source>
@@ -231,19 +232,19 @@ Images are placed in the media library so you can re-use them in other articles.
     </message>
     <message>
         <source>OpenOffice.org</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenOffice.org</translation>
     </message>
     <message>
         <source>Export OpenOffice</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenOfficeファイルにエクスポートする</translation>
     </message>
     <message>
         <source>Import OpenOffice</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenOfficeファイルをインポートする</translation>
     </message>
     <message>
         <source>Replace OpenOffice</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenOfficeファイルをリプレイスする</translation>
     </message>
 </context>
 </TS>
