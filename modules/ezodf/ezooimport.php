@@ -722,7 +722,7 @@ class eZOOImport
                                         $imageNode = $children->item( 0 );
                                         if ( $imageNode && $imageNode->localName == "image" )
                                         {
-                                            $fileName = $imageNode->getAttribute( "href" );
+                                            $fileName = ltrim( $imageNode->getAttributeNS( self::NAMESPACE_XLINK, 'href' ), '#' );
                                             $filePath = $this->ImportDir . $fileName;
 
                                             if ( file_exists( $filePath ) )
@@ -1066,7 +1066,7 @@ class eZOOImport
 
                             // Get the parent style name, it's used to see if it's a
                             // header which comes from Word conversion
-                            $parentStyleName = $style->getAttributeNS( "parent-style-name" );
+                            $parentStyleName = $style->getAttributeNS( self::NAMESPACE_STYLE, "parent-style-name" );
 
                             // Check if we've got a header definition and which level Heading_20
                             // Header styles is either defined in style-name or parent-style-name when
@@ -1380,8 +1380,14 @@ class eZOOImport
      */
     function handleInlineNode( $childNode, $nextLineBreak = false, $prevLineBreak = false )
     {
-        $paragraphContent = "";
-        switch ( $childNode->localName )
+        $localName = $childNode->localName;
+
+        if ( $localName == '' )
+            $localName = $childNode->nodeName;
+
+        // Get the real name
+        $paragraphContent = '';
+        switch ( $localName )
         {
             case "frame":
             {
@@ -1694,7 +1700,7 @@ class eZOOImport
 
             default:
             {
-                eZDebug::writeError( "Unsupported node: " . $childNode->localName . "<br>" );
+                eZDebug::writeError( "Unsupported node: '" . $localName . "'" );
             }break;
 
         }

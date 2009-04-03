@@ -1,5 +1,10 @@
-Changes from 2.1 beta 1 to 2.1 beta 2
--------------------------------------
+Changes from 2.3 to 2.3.1
+-------------------------
+- Fixed #14661: ODF Import is broken
+  (Merged from trunk rev. 3815)
+
+Changes from 2.2 to 2.3
+-----------------------
 
 - Added ezrest methods for content operations from OpenOffice and Word 2007:
   retrieve node list, export/import/replace document.
