@@ -2,6 +2,7 @@ Changes from 2.3 to 2.4
 -----------------------
 - Fixed #14661: ODF Import is broken
 - Fixed bug #014770: eZODF: exported document can not be imported due to fatal errors related to DOM port
+- Fixed bug #014777: eZODF: export header issues
 
 Changes from 2.2 to 2.3
 -----------------------

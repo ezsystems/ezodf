@@ -226,12 +226,12 @@ class eZOOConverter
                 $prevLineBreak = false;
                 foreach ( $node->childNodes as $childNode )
                 {
-                    $return = eZOOConverter::handleInlineNode( $child, $generator, $prevLineBreak );
+                    $return = eZOOConverter::handleInlineNode( $childNode, $generator, $prevLineBreak );
                     $paragraphParameters = array_merge( $paragraphParameters,  $return['paragraph_parameters'] );
                     $prevLineBreak = ( $childNode->nodeType === XML_ELEMENT_NODE &&
                                        $childNode->localName === 'line' );
                 }
-                $generator->addHeader( trim( $node->textContent() ), $level, $paragraphParameters );
+                $generator->addHeader( trim( $node->nodeValue ), $level, $paragraphParameters );
             } break;
 
             case "ul":
