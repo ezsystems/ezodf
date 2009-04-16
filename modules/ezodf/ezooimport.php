@@ -62,6 +62,7 @@ class eZOOImport
     const NAMESPACE_TABLE = 'urn:oasis:names:tc:opendocument:xmlns:table:1.0';
     const NAMESPACE_DRAWING = 'urn:oasis:names:tc:opendocument:xmlns:drawing:1.0';
     const NAMESPACE_SVG_COMPATIBLE = 'urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0';
+    const NAMESPACE_FO = 'urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0';
     const NAMESPACE_XLINK = 'http://www.w3.org/1999/xlink';
 
     var $ERROR = array();
@@ -715,6 +716,10 @@ class eZOOImport
                                 // Look for paragraphs in the section
                                 foreach ( $sectionNodeHash[$sectionName]->childNodes as $paragraph )
                                 {
+                                    if( !$paragraph->hasChildNodes() ) 
+                                    {
+                                        continue;
+                                    }
                                     // Look for frame node
                                     foreach ( $paragraph->childNodes as $frame )
                                     {
@@ -1062,8 +1067,8 @@ class eZOOImport
                         {
                             foreach ( $style->childNodes as $styleChild )
                             {
-                                $fontWeight = $styleChild->getAttribute( 'font-weight' );
-                                $fontStyle = $styleChild->getAttribute( 'font-style' );
+                                $fontWeight = $styleChild->getAttributeNS( self::NAMESPACE_FO, 'font-weight' );
+                                $fontStyle = $styleChild->getAttributeNS( self::NAMESPACE_FO, 'font-style' );
                             }
 
                             // Get the parent style name, it's used to see if it's a
@@ -1674,8 +1679,8 @@ class eZOOImport
                                     continue;
                                 }
 
-                                $fontWeight = $styleChild->getAttribute( 'font-weight' );
-                                $fontStyle = $styleChild->getAttribute( 'font-style' );
+                                $fontWeight = $styleChild->getAttributeNS( self::NAMESPACE_FO, 'font-weight' );
+                                $fontStyle = $styleChild->getAttributeNS( self::NAMESPACE_FO, 'font-style' );
                             }
                         }
                     }
