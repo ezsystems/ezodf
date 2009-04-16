@@ -435,9 +435,10 @@ class eZOOImport
             $eZSectionDefinitionStyleName = array();
             foreach( $automaticStyleArray->item( 0 )->childNodes as $child )
             {
-                if( $child->nodeType === XML_ELEMENT_NODE && $child->getAttribute( 'parent-style-name' ) == 'eZSectionDefinition' )
+                if( $child->nodeType === XML_ELEMENT_NODE && 
+                        $child->getAttributeNS( self::NAMESPACE_STYLE, 'parent-style-name' ) === 'eZSectionDefinition' )
                 {
-                     $eZSectionDefinitionStyleName[] = $child->getAttribute('name');
+                     $eZSectionDefinitionStyleName[] = $child->getAttributeNS( self::NAMESPACE_STYLE, 'name' );
                 }
             }
 
@@ -449,12 +450,13 @@ class eZOOImport
             foreach ( $bodyNodeArray->item( 0 )->childNodes as $childNode )
             {
                 $firstChildFlag = true;
-                if ( $childNode->nodeType == XML_ELEMENT_NODE &&
-                     ( in_array( $childNode->getAttribute( 'style-name' ), $eZSectionDefinitionStyleName ) ||
-                       $childNode->getAttribute( 'style-name' ) == 'eZSectionDefinition' )
+                if ( $childNode->nodeType === XML_ELEMENT_NODE &&
+                     ( in_array( $childNode->getAttributeNS( self::NAMESPACE_TEXT, 'style-name' ), $eZSectionDefinitionStyleName ) ||
+                       $childNode->getAttributeNS( self::NAMESPACE_TEXT, 'style-name' ) === 'eZSectionDefinition' )
                    )
                 {
                     $firstChildFlag = false;
+
                     $childNodeChildren = $childNode->childNodes;
                     $paragraphSectionName = trim( $childNodeChildren->item( 0 )->textContent );
                     $sectionNameArray[] = $paragraphSectionName;
@@ -462,14 +464,14 @@ class eZOOImport
 
                 if ( $paragraphSectionName && $firstChildFlag )
                 {
-                    $paragraphSectionNodeArray[ $paragraphSectionName ][] = $childNode;
+                    $paragraphSectionNodeArray[$paragraphSectionName][] = $childNode;
                 }
             }
 
             $sectionNodeArray = array();
             foreach ( $paragraphSectionNodeArray as $key => $childNodes )
             {
-                $sectionNode = $dom->createElementNode( 'section' );
+                $sectionNode = $dom->createElement( 'section' );
 
                 foreach ( $childNodes as $childNode )
                 {
@@ -1666,6 +1668,12 @@ class eZOOImport
                         {
                             foreach ( $style->childNodes as $styleChild )
                             {
+                                if ( $styleChild->nodeType !== XML_ELEMENT_NODE
+                                    || !$styleChild->hasAttributes() )
+                                {
+                                    continue;
+                                }
+
                                 $fontWeight = $styleChild->getAttribute( 'font-weight' );
                                 $fontStyle = $styleChild->getAttribute( 'font-style' );
                             }

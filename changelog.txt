@@ -2,6 +2,8 @@ Changes from 2.3 to 2.3.1
 -------------------------
 - Fixed #14661: ODF Import is broken
   (Merged from trunk rev. 3815)
+- Fixed bug #014770: eZODF: exported document can not be imported due to fatal errors related to DOM port
+  (Merged from ezodf trunk rev. 3844)
 
 Changes from 2.2 to 2.3
 -----------------------
