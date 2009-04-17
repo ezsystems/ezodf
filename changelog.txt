@@ -1,3 +1,8 @@
+Changes from 2.2.0 to 2.2.1
+___________________________
+- Fixed bug #014550: error in odf import if ezwebin not installed
+ (Merged from ezodf trunk rev. 3853)
+
 Changes from 2.0 beta 3 to 2.1 beta 1
 -------------------------------------
 - Fixed proper importing of headers in documents converted from Word
@@ -13,7 +18,7 @@ Changes from 2.0 beta 3 to 2.1 beta 1
 - Fixed better error handling when exporting object
 
 
-Changes from 2.0 beta 2 to 2.0 beta 3
+Changeg fro 2.0 beta 2 to 2.0 beta 3
 -------------------------------------
 - Added links to export PDF and Word directly in the context menu
 - Added support for colspan in tables

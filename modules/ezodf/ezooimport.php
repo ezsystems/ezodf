@@ -493,6 +493,14 @@ class eZOOImport
 
                 $creatorID = $this->currentUserID;
                 $parentNodeID = $placeNodeID;
+
+                if ( !is_object( $class ) )
+                {
+                    eZDebug::writeError( "Content class <strong>$importClassIdentifier</strong> specified in odf.ini does not exist." );
+                    $this->setError( self::ERROR_UNKNOWNCLASS, $importClassIdentifier );
+                    return false;
+                }
+
                 $object = $class->instantiate( $creatorID, $sectionID );
 
                 $nodeAssignment = eZNodeAssignment::create( array(
