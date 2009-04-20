@@ -1,3 +1,5 @@
+<?php /*
+
 [ODFSettings]
 # Path to zip program on windows you can use:
 # http://www.info-zip.org/pub/infozip/
@@ -97,3 +99,5 @@ TopNodeNameList[]
 TopNodeNameList[]=RootNode
 TopNodeNameList[]=UserRootNode
 TopNodeNameList[]=MediaRootNode
+
+*/ ?>

@@ -1,0 +1,19 @@
+Changes from 2.2.0 to 2.3.0
+
+*Bugs*
+
+- Fixed bug: missing output washing of node name
+- Fixed importing of enabled attributes from Word documents.
+- Fixed several wrong checks, small bugs and unitialized variables.
+
+*Enhancements*
+
+- Added ezrest methods for content operations from OpenOffice and Word 2007:
+  retrieve node list, export/import/replace document.
+- Added support for export/import of blog_post data type (same as article).
+- Added eZSectionDefinition to templates/ezpublish.ott.
+- Changed the name of the OpenOffice executable to 'ooffice' in daemon.php.
+- Changed the timeout for the connection with the daemon from 0 to 10 to avoid
+  connection problems.
+- Implemented enhancement #14230: Use the Archive Component in ezodf
+- Implemented enhancement #13785: Use PHP 5 DOM functions instead of ezxml

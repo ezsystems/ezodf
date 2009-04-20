@@ -1,0 +1,34 @@
+Changes from 1.0.0 to 2.0.0
+
+*Bugs*
+
+- Fixed export of table headers
+- Fixed import support for numbered-paragraph tag
+- Fixed proper UTF-8 conversion on export
+- Fixed not re-importing allready imported images when replacing a document
+- Fixed converting &nbsp; to spaces on import
+- Fixed proper support for importing bold and italic text
+- Fixed cache bug when exporting objects. Scaled images was displayed with poor image quality
+- Fixed generating complete file list in manifest.xml when exporting objects
+- Fixed export of empty table cells
+
+*Enhancements*
+
+- Added WebDAV import support for OpenOffice 2 documents
+- Added daemon script and macros for document conversion, so you can import Word, RTF files etc.
+- Added OpenOffice.org export link directly in the popup menu in the admin interface (3.6+ only)
+- Added OpenOffice.org import link directly in the popup menu in the admin interface (3.6+ only)
+- Changed document format from OpenOffice.org Writer 1.x to OASIS OpenDocument Text format
+- Added support for lists in table cells
+- Added .ini option to specify the path to the zip command used for export
+- Changed image size calculation to keep images the same after multiple import/exports
+- Added sections support when exporting document
+- Added support for import of literal text
+- Added support for nested lists during import
+- Added replace document function
+- Added support for matcing OOo styles named "eZCustom mytag" to eZ Publish custom tags
+- Added links to export PDF and Word directly in the context menu
+- Added support for colspan in tables
+- Added ini setting for tmp directory
+- Added support for importing and exporting custom inline tags. The tags needs to be defined in the OOo template to be visible on export. Named "eZCustominlin tagname"
+

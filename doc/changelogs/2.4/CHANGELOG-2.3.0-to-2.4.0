@@ -1,0 +1,12 @@
+Changes from 2.3.0 to 2.4.0
+
+*Bugs*
+
+- Fixed #14661: ODF Import is broken
+- Fixed bug #014770: eZODF: exported document can not be imported due to fatal errors related to DOM port
+- Fixed bug #014777: eZODF: export header issues
+- Fixed bug #014782: eZODF: bold and italics formatting lost on import
+- Fixed bug #014550: error in odf import if ezwebin not installed
+
+*Enhancements*
+

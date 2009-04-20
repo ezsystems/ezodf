@@ -1,0 +1,19 @@
+Changes from 2.0.0beta1 to 2.0.0beta2
+
+*Bugs*
+
+- Fixed proper UTF-8 conversion on export
+- Fixed not re-importing allready imported images when replacing a document
+- Fixed converting &nbsp; to spaces on import
+- Fixed proper support for importing bold and italic text
+- Fixed cache bug when exporting objects. Scaled images was displayed with poor image quality
+- Fixed generating complete file list in manifest.xml when exporting objects
+
+*Enhancements*
+
+- Changed image size calculation to keep images the same after multiple import/exports
+- Added sections support when exporting document
+- Added support for import of literal text
+- Added support for nested lists during import
+- Added replace document function
+- Added support for matcing OOo styles named "eZCustom mytag" to eZ Publish custom tags
