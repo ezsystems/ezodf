@@ -31,8 +31,6 @@
 /*! \file ezoogenerator.php
 */
 
-include_once( "lib/ezfile/classes/ezfilehandler.php" );
-
 /*!
   \class eZOOGenerator ezoogenerator.php
   \brief The class eZOOGenerator does
@@ -61,7 +59,6 @@ class eZOOGenerator
         $ooINI = eZINI::instance( 'odf.ini' );
 
         // Initalize directories
-        include_once( "lib/ezfile/classes/ezdir.php" );
         eZDir::mkdir( $this->OORootDir );
         eZDir::mkdir( $this->OOExportDir );
         eZDir::mkdir( $this->OOExportDir . "/META-INF" );
@@ -256,7 +253,6 @@ class eZOOGenerator
         }
 
         // Handle charset conversion if needed
-        include_once( 'lib/ezi18n/classes/eztextcodec.php' );
         $charset = 'UTF-8';
         $codec = eZTextCodec::instance( false, $charset );
         $bodyXML = $codec->convertString( $bodyXML );

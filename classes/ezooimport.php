@@ -37,10 +37,6 @@
 
 */
 
-include_once( 'lib/ezxml/classes/ezxml.php' );
-include_once( 'lib/ezlocale/classes/ezdatetime.php' );
-include_once( 'lib/ezfile/classes/ezdir.php' );
-
 class eZOOImport
 {
     const ERROR_NOERROR = 0;
@@ -253,7 +249,6 @@ class eZOOImport
              $GLOBALS["OOImportObjectID"] = $placeNodeID;
 
         // Check if we have access to node
-        include_once( 'kernel/content/ezcontentfunctioncollection.php' );
         $place_node = eZContentObjectTreeNode::fetch( $placeNodeID );
 
         $importClassIdentifier = $ooINI->variable( 'ODFImport', 'DefaultImportClass' );
@@ -331,7 +326,6 @@ class eZOOImport
         }
 
         $importResult = array();
-        include_once( "lib/ezfile/classes/ezdir.php" );
         $unzipResult = "";
         $uniqueImportDir = $this->ImportDir;
         // Need to create the directory in two steps. On Mac the recursive dir creation did not work
@@ -809,7 +803,6 @@ class eZOOImport
                 $dataMap[$bodyAttribute]->store();
             }
 
-            include_once( 'lib/ezutils/classes/ezoperationhandler.php' );
             $operationResult = eZOperationHandler::execute( 'content', 'publish', array( 'object_id' => $contentObjectID,
                                                                                          'version' => $version->attribute( 'version' ) ) );
 
@@ -853,7 +846,6 @@ class eZOOImport
                                                              );
                 $nodeAssignment->store();
 
-                include_once( 'lib/ezutils/classes/ezoperationhandler.php' );
                 $operationResult = eZOperationHandler::execute( 'content', 'publish', array( 'object_id' => $image['ID'],
                                                                                              'version' => 1 ) );
 
@@ -1669,7 +1661,6 @@ class eZOOImport
                 $dataMap[$titleAttribudeIdentifier]->setAttribute( 'data_text', $name );
                 $dataMap[$titleAttribudeIdentifier]->store();
 
-                include_once( 'lib/ezutils/classes/ezoperationhandler.php' );
                 $operationResult = eZOperationHandler::execute( 'content', 'publish', array( 'object_id' => $contentObjectID,
                                                                                              'version' => 1 ) );
 

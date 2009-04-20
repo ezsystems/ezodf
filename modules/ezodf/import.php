@@ -27,14 +27,6 @@
 //
 
 include_once( "kernel/common/template.php" );
-include_once( 'lib/ezxml/classes/ezxml.php' );
-include_once( 'lib/ezutils/classes/ezhttpfile.php' );
-
-include_once( 'kernel/classes/ezcontentobject.php' );
-include_once( 'lib/ezlocale/classes/ezdatetime.php' );
-
-include_once( "kernel/classes/ezcontentbrowse.php" );
-
 
 function makeErrorArray( $num, $msg )
 {
