@@ -1,0 +1,26 @@
+Changes from 1.0.0alpha1 to 1.0.0beta1
+
+*Bugs*
+
+- Fixed support for header definitions larger than 6.
+- Fixed adding embedded images as related objects
+- Fixed proper handling of XML special chars in string and text datatype during import
+
+*Enhancements*
+
+- Added support for date and initial-creator nodes as inline elements.
+- Added removal of empty paragraphs.
+- Added support for sections in non-custom documents
+- Imported images are now placed in a separate folder for each imported object
+- Added support for exporting documents using OpenOffice.org Writer Templates
+  Template usage can be turned on/off in odf.ini, template file is also set in odf.ini
+- Added better error checking
+- Added support for multiple levels of headers in export
+- Added support for image size and alignment during import
+- Added support for image size and alignment during export
+- Added support for multiple header levels during import
+- Added support for exporting ordered and unordered lists.
+- Added support for exporting tables.
+- Added support for sequences during import, used to e.g. number images
+- Added removal of temporary files after import/export
+

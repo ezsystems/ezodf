@@ -27,7 +27,6 @@
 //
 
 require_once( "kernel/common/template.php" );
-include_once( "extension/ezodf/modules/ezodf/ezooimport.php" );
 
 function makeErrorArray( $num, $msg )
 {

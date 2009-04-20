@@ -1,0 +1,11 @@
+Changes from 1.0.0beta2 to 1.0.0
+
+*Bugs*
+
+- Fixed name of generated filename on export to be based on the name of the exported object
+
+*Enhancements*
+
+- Updated documentation
+- Made PDF version of the documentation
+

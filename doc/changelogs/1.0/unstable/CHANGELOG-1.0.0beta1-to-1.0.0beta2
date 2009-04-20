@@ -1,0 +1,14 @@
+Changes from 1.0.0beta1 to 1.0.0beta2
+
+*Bugs*
+
+- Fixed proper character handling when importing documents
+- Fixed correct temporary storing of images during import
+- Fixed proper cleanup of temporary files after import and export
+- Fixed broken table export
+
+*Enhancements*
+
+- Added preliminary documentation
+- Added internationalization support
+

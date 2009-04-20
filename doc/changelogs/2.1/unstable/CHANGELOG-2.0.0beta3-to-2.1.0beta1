@@ -1,0 +1,17 @@
+Changes from 2.0.0beta3 to 2.1.0beta1
+
+*Bugs*
+
+- Fixed proper importing of headers in documents converted from Word
+- Fixed hardcoding of settings into ini-files
+- Fixed concurrency problems in conversion by using unique names for each document
+- Fixed better error handling when exporting object
+
+*Enhancements*
+
+- Added cleanup routines for uploaded files- Improved image handling when importing using popup option
+- Simplyfied and corrected code for image handling
+- Added checking of access rights for inline images
+- Changed direct sql statements from ezooimport to use fetch-function (should now work with other database)
+- Added access control (partially implemented, still some issues when uploading images in document)
+- Changed import errorhandling to be more consistent

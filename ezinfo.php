@@ -28,10 +28,10 @@ class ezodfInfo
 {
     static function info()
     {
-        return array( 'Name' => "eZ OpenOffice.org extension",
-                      'Version' => "2.3.1",
-                      'Copyright' => "Copyright (C) 1999-2009 eZ Systems AS",
-                      'License' => "GNU General Public License v2.0",
+        return array( 'Name' => 'eZ OpenOffice.org extension',
+                      'Version' => '2.3.1',
+                      'Copyright' => 'Copyright (C) 1999-' . date( 'Y' ) . ' eZ Systems AS',
+                      'License' => 'GNU General Public License v2.0',
                       );
     }
 }
