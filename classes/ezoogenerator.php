@@ -222,7 +222,6 @@ class eZOOGenerator
         }
 
         // Handle charset conversion if needed
-        include_once( 'lib/ezi18n/classes/eztextcodec.php' );
         $charset = 'UTF-8';
         $codec = eZTextCodec::instance( false, $charset );
         $bodyXML = $codec->convertString( $bodyXML );
