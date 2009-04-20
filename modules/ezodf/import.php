@@ -35,7 +35,6 @@ include_once( 'lib/ezlocale/classes/ezdatetime.php' );
 
 include_once( "kernel/classes/ezcontentbrowse.php" );
 
-include_once( "extension/ezodf/modules/ezodf/ezooimport.php" );
 
 function makeErrorArray( $num, $msg )
 {

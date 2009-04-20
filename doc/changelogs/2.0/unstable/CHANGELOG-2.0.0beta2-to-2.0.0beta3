@@ -1,0 +1,12 @@
+Changes from 2.0.0beta2 to 2.0.0beta3
+
+*Bugs*
+
+- Fixed export of empty table cells
+
+*Enhancements*
+
+- Added links to export PDF and Word directly in the context menu
+- Added support for colspan in tables
+- Added ini setting for tmp directory
+- Added support for importing and exporting custom inline tags. The tags needs to be defined in the OOo template to be visible on export. Named "eZCustominlin tagname"
