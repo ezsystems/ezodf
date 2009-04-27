@@ -167,10 +167,6 @@ Klikněte na uspořádání jmen pro změnu prohlížení seznamu.
         <translation>Tip souboru:</translation>
     </message>
     <message>
-        <source>Unable to fetch node with id  </source>
-        <translation>Není možné dosáhnout uzlu s id</translation>
-    </message>
-    <message>
         <source>Folder for images could not be created, access denied.</source>
         <translation>Složka pro obrázky nemůže být vytvořena, přístup byl odmítnut.</translation>
     </message>
@@ -189,6 +185,10 @@ Klikněte na uspořádání jmen pro změnu prohlížení seznamu.
     <message>
         <source>Cannot store uploaded file, cannot import.</source>
         <translation>Nemůže uložit nahraný soubor, nemůže importovat.</translation>
+    </message>
+    <message>
+        <source>Unable to fetch node with id </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

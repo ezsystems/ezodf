@@ -169,10 +169,6 @@ Obrazy są umieszczane w bibliotece mediów, więc możesz używac ich w innych 
         <translation>Typ pliku:</translation>
     </message>
     <message>
-        <source>Unable to fetch node with id  </source>
-        <translation>Nie można pobrać węzła o identyfikatorze (sp)(sp)</translation>
-    </message>
-    <message>
         <source>Folder for images could not be created, access denied.</source>
         <translation>Nie można utworzyć katalogu dla obrazów, zabroniony dostęp.</translation>
     </message>
@@ -191,6 +187,10 @@ Obrazy są umieszczane w bibliotece mediów, więc możesz używac ich w innych 
     <message>
         <source>Cannot store uploaded file, cannot import.</source>
         <translation>Nie można przechowywać przesłanych plików, nie można importować.</translation>
+    </message>
+    <message>
+        <source>Unable to fetch node with id </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

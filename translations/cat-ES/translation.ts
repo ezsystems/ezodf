@@ -171,10 +171,6 @@ Clica sobre el nom de les ubicacions per a canviar la llista de navegació.
         <translation>Tipus de document:</translation>
     </message>
     <message>
-        <source>Unable to fetch node with id  </source>
-        <translation type="obsolete">No es pot recuperar el nòdul amb id</translation>
-    </message>
-    <message>
         <source>Folder for images could not be created, access denied.</source>
         <translation>No s&apos;ha pogut crear la carpeta d&apos;imatges, accés denegat.</translation>
     </message>

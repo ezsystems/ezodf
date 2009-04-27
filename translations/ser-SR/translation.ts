@@ -170,10 +170,6 @@ Slike su stavljene u biblioteku medija tako da ih možete ponovo koristiti i u d
         <translation>Tip datoteke:</translation>
     </message>
     <message>
-        <source>Unable to fetch node with id  </source>
-        <translation>Nije moguće dohvatiti čvor sa id</translation>
-    </message>
-    <message>
         <source>Folder for images could not be created, access denied.</source>
         <translation>Nije moguće kreirati fasciklu za slike, pristup nije dozvoljen.</translation>
     </message>
@@ -192,6 +188,10 @@ Slike su stavljene u biblioteku medija tako da ih možete ponovo koristiti i u d
     <message>
         <source>Document is not supported.</source>
         <translation>Dokument nije podržan.</translation>
+    </message>
+    <message>
+        <source>Unable to fetch node with id </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

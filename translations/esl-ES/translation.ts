@@ -1,52 +1,5 @@
 <!DOCTYPE TS><TS>
 <context>
-    <name>design/ezwebin/parts/website_toolbar</name>
-    <message>
-        <source>About</source>
-        <translation type="obsolete">Acerca de</translation>
-    </message>
-    <message>
-        <source>Create here</source>
-        <translation type="obsolete">Crear aquí</translation>
-    </message>
-    <message>
-        <source>Edit: %node_name [%class_name]</source>
-        <translation type="obsolete">Editar: %node_name [%class_name]</translation>
-    </message>
-    <message>
-        <source>Move</source>
-        <translation type="obsolete">Mover</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">Eliminar</translation>
-    </message>
-    <message>
-        <source>Add locations</source>
-        <translation type="obsolete">Añadir ubicaciones</translation>
-    </message>
-    <message>
-        <source>Timeline</source>
-        <translation type="obsolete">Línea cronológica</translation>
-    </message>
-    <message>
-        <source>Documentation</source>
-        <translation type="obsolete">Documentación</translation>
-    </message>
-    <message>
-        <source>Replace</source>
-        <translation type="obsolete">Sustituir</translation>
-    </message>
-    <message>
-        <source>Export</source>
-        <translation type="obsolete">Exportar</translation>
-    </message>
-    <message>
-        <source>Import</source>
-        <translation type="obsolete">Importar</translation>
-    </message>
-</context>
-<context>
     <name>extension/ezodf</name>
     <message>
         <source>OpenOffice.org export</source>
@@ -265,45 +218,6 @@ Las imágenes se colocan en la biblioteca multimedia de manera que puedes reutil
     <message>
         <source>Replace OpenOffice</source>
         <translation>Reemplazar OpenOffice</translation>
-    </message>
-</context>
-<context>
-    <name>ezmultiupload</name>
-    <message>
-        <source>Multiupload</source>
-        <translation type="obsolete">Multicarga</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Error</translation>
-    </message>
-    <message>
-        <source>The files are uploaded to</source>
-        <translation type="obsolete">Los archivos se van a cargar a </translation>
-    </message>
-    <message>
-        <source>Select files</source>
-        <translation type="obsolete">Seleccionar archivos</translation>
-    </message>
-    <message>
-        <source>Unable to load Flash content. You can download the latest version of Flash Player from the</source>
-        <translation type="obsolete">No se puede cargar el contenido Flash. Descargue la última versiónde Flash Player desde</translation>
-    </message>
-    <message>
-        <source>Adobe Flash Player Download Center</source>
-        <translation type="obsolete">Centro de descargas de Adobe Flash Player</translation>
-    </message>
-    <message>
-        <source>All files received.</source>
-        <translation type="obsolete">Se han recibido todos los archivos.</translation>
-    </message>
-    <message>
-        <source>Thumbnail created.</source>
-        <translation type="obsolete">Miniatura creada.</translation>
-    </message>
-    <message>
-        <source>Starting...</source>
-        <translation type="obsolete">Iniciando...</translation>
     </message>
 </context>
 </TS>
