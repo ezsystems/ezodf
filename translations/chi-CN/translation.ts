@@ -167,10 +167,6 @@ Images are placed in the media library so you can re-use them in other articles.
         <translation>文件类型: </translation>
     </message>
     <message>
-        <source>Unable to fetch node with id  </source>
-        <translation>无法提取节点id  </translation>
-    </message>
-    <message>
         <source>Folder for images could not be created, access denied.</source>
         <translation>无法创建图片文件夹，拒绝访问。</translation>
     </message>
@@ -188,6 +184,10 @@ Images are placed in the media library so you can re-use them in other articles.
     </message>
     <message>
         <source>Document is not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to fetch node with id </source>
         <translation type="unfinished"></translation>
     </message>
 </context>

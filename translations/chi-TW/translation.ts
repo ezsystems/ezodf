@@ -2,22 +2,6 @@
 <context>
     <name>extension/ezodf</name>
     <message>
-        <source>Import</source>
-        <translation type="obsolete">匯入</translation>
-    </message>
-    <message>
-        <source>Export</source>
-        <translation type="obsolete">匯出</translation>
-    </message>
-    <message>
-        <source>Replace</source>
-        <translation type="obsolete">置換</translation>
-    </message>
-    <message>
-        <source>Choose document placement</source>
-        <translation type="obsolete">選擇文件位置</translation>
-    </message>
-    <message>
         <source>Upload file</source>
         <translation>上傳檔案</translation>
     </message>
@@ -38,14 +22,6 @@
         <translation>OpenOffice.org 匯出</translation>
     </message>
     <message>
-        <source>Export eZ publish content to OpenOffice.org</source>
-        <translation>將 eZ publish 內容匯出到 OpenOffice.org</translation>
-    </message>
-    <message>
-        <source>Here you can export any eZ publish content object to an OpenOffice.org Writer document format.</source>
-        <translation>您可以在這裏將任何 eZ publish 的內容物件匯出為 OpenOffice.org Writer 的文件格式。</translation>
-    </message>
-    <message>
         <source>Document is now imported</source>
         <translation>現在文件已匯入</translation>
     </message>
@@ -56,10 +32,6 @@
     <message>
         <source>Document imported as</source>
         <translation>將文件匯入為</translation>
-    </message>
-    <message>
-        <source>The images are placed in the media and can be re-used.</source>
-        <translation>圖像放置於媒體庫中且能被再利用。</translation>
     </message>
     <message>
         <source>Import another document</source>
@@ -78,13 +50,23 @@
         <translation>匯入到</translation>
     </message>
     <message>
-        <source>You can import OpenOffice.org Writer documents directly into eZ publish from this page. You are
-asked where to place the document and eZ publish does the rest. The document is converted into
+        <source>Export eZ Publish content to OpenOffice.org</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Here you can export any eZ Publish content object to an OpenOffice.org Writer document format.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The images are placed in the media library and can be re-used.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You can import OpenOffice.org Writer documents directly into eZ Publish from this page. You are
+asked where to place the document and eZ Publish does the rest. The document is converted into
 the appropriate class during the import, you get a notice about this after the import is done.
 Images are placed in the media library so you can re-use them in other articles.</source>
-        <translation>您可以經由此頁直接將 OpenOffice.org Writer 文件匯入 eZ publish。
-您將被要求輸入放置文件的地方，eZ publish 則會完成剩下的工作。文件於匯入時會轉換為適當的類別，在匯入完成之後您會獲得相關說明。
-圖像被放置於媒體庫中，因此您可以在其他文章中重覆利用它們。</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -183,16 +165,8 @@ Images are placed in the media library so you can re-use them in other articles.
         <translation>檔案類型：</translation>
     </message>
     <message>
-        <source>Unable to fetch node with id  </source>
-        <translation>無法以 id 擷取節點</translation>
-    </message>
-    <message>
         <source>Folder for images could not be created, access denied.</source>
         <translation>無法建立圖像資料夾，存取被拒。</translation>
-    </message>
-    <message>
-        <source>Document is not suported.</source>
-        <translation>不支援該文件。</translation>
     </message>
     <message>
         <source>Cannot import. File not found. Already imported?</source>
@@ -206,13 +180,17 @@ Images are placed in the media library so you can re-use them in other articles.
         <source>Cannot store uploaded file, cannot import.</source>
         <translation>無法儲存上傳的檔案，無法匯入。</translation>
     </message>
+    <message>
+        <source>Unable to fetch node with id </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Document is not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>extension/ezodf/popupmenu</name>
-    <message>
-        <source>Export OpenOffice.org</source>
-        <translation type="obsolete">匯出 OpenOffice.org</translation>
-    </message>
     <message>
         <source>Export PDF</source>
         <translation>匯出 PDF</translation>
@@ -220,14 +198,6 @@ Images are placed in the media library so you can re-use them in other articles.
     <message>
         <source>Export Word</source>
         <translation>匯出 Word</translation>
-    </message>
-    <message>
-        <source>Import OpenOffice.org</source>
-        <translation type="obsolete">匯入 OpenOffice.org</translation>
-    </message>
-    <message>
-        <source>Replace OpenOffice.org</source>
-        <translation type="obsolete">置換 OpenOffice.org</translation>
     </message>
     <message>
         <source>OpenOffice.org</source>

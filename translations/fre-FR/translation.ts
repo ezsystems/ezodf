@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="en_US">
+<!DOCTYPE TS><TS>
 <defaultcodec></defaultcodec>
 <context>
     <name>extension/ezodf</name>
@@ -171,10 +170,6 @@ Cliquez sur le nom de l&apos;emplacement pour modifier la liste de navigation.</
         <translation>Type de fichier :</translation>
     </message>
     <message>
-        <source>Unable to fetch node with id  </source>
-        <translation>Impossible de récupérer le noeud avec l&apos;identifiant</translation>
-    </message>
-    <message>
         <source>Folder for images could not be created, access denied.</source>
         <translation>Impossible de créer le dossier pour les images : accès refusé.</translation>
     </message>
@@ -193,6 +188,10 @@ Cliquez sur le nom de l&apos;emplacement pour modifier la liste de navigation.</
     <message>
         <source>Cannot store uploaded file, cannot import.</source>
         <translation>Impossible d&apos;enregistrer le fichier téléchargé, importation impossible.</translation>
+    </message>
+    <message>
+        <source>Unable to fetch node with id </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

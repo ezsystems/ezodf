@@ -174,10 +174,6 @@ Kuvat on sijoitettu mediakirjastoon, joten voit käyttää niitä uudelleen muis
         <translation>Tiedostotyyppi:</translation>
     </message>
     <message>
-        <source>Unable to fetch node with id  </source>
-        <translation>Solmun hakeminen ei mahdollista tunnuksella  </translation>
-    </message>
-    <message>
         <source>Folder for images could not be created, access denied.</source>
         <translation>Kansiota kuville ei voitu luoda, pääsy evätty.</translation>
     </message>
@@ -196,6 +192,10 @@ Kuvat on sijoitettu mediakirjastoon, joten voit käyttää niitä uudelleen muis
     <message>
         <source>Document is not supported.</source>
         <translation>Asiakirjaa ei tueta.</translation>
+    </message>
+    <message>
+        <source>Unable to fetch node with id </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

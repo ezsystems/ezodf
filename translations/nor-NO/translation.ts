@@ -169,10 +169,6 @@ Klikk navnene til objektene for å gå igjennom treet.</translation>
         <translation>Filtype: </translation>
     </message>
     <message>
-        <source>Unable to fetch node with id  </source>
-        <translation>Kunne ikke hente node med id  </translation>
-    </message>
-    <message>
         <source>Folder for images could not be created, access denied.</source>
         <translation>Mappe for bilder kunne ikke opprettes, tilgang nektet.</translation>
     </message>
@@ -191,6 +187,10 @@ Klikk navnene til objektene for å gå igjennom treet.</translation>
     <message>
         <source>Cannot store uploaded file, cannot import.</source>
         <translation>Kan ikke lagre opplastet fil, kan ikke importere.</translation>
+    </message>
+    <message>
+        <source>Unable to fetch node with id </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
