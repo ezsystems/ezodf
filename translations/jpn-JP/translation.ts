@@ -2,22 +2,6 @@
 <context>
     <name>extension/ezodf</name>
     <message>
-        <source>Import</source>
-        <translation type="obsolete">インポート</translation>
-    </message>
-    <message>
-        <source>Export</source>
-        <translation type="obsolete">エクスポート</translation>
-    </message>
-    <message>
-        <source>Replace</source>
-        <translation type="obsolete">リプレイス</translation>
-    </message>
-    <message>
-        <source>Choose document placement</source>
-        <translation type="obsolete">ドキュメントの配置を選択してください</translation>
-    </message>
-    <message>
         <source>Upload file</source>
         <translation>ファイルをアップロード</translation>
     </message>
@@ -38,14 +22,6 @@
         <translation>OpenOffice.orgエクスポート</translation>
     </message>
     <message>
-        <source>Export eZ publish content to OpenOffice.org</source>
-        <translation>eZ PublsihのコンテントをOpenOffice.orgへエクスポート</translation>
-    </message>
-    <message>
-        <source>Here you can export any eZ publish content object to an OpenOffice.org Writer document format.</source>
-        <translation>eZ Publish のコンテントをOpenOffice.org Writer へエクスポートします。</translation>
-    </message>
-    <message>
         <source>Document is now imported</source>
         <translation>ドキュメントはインポートされました</translation>
     </message>
@@ -56,10 +32,6 @@
     <message>
         <source>Document imported as</source>
         <translation>インポートされたドキュメント:</translation>
-    </message>
-    <message>
-        <source>The images are placed in the media and can be re-used.</source>
-        <translation>画像はメディアへ保存されました。再利用が可能です。</translation>
     </message>
     <message>
         <source>Import another document</source>
@@ -78,13 +50,23 @@
         <translation>インポート先</translation>
     </message>
     <message>
-        <source>You can import OpenOffice.org Writer documents directly into eZ publish from this page. You are
-asked where to place the document and eZ publish does the rest. The document is converted into
+        <source>Export eZ Publish content to OpenOffice.org</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Here you can export any eZ Publish content object to an OpenOffice.org Writer document format.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The images are placed in the media library and can be re-used.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You can import OpenOffice.org Writer documents directly into eZ Publish from this page. You are
+asked where to place the document and eZ Publish does the rest. The document is converted into
 the appropriate class during the import, you get a notice about this after the import is done.
 Images are placed in the media library so you can re-use them in other articles.</source>
-        <translation>OpenOffice.org WriterドキュメントをeZ Publishへインポートします。ドキュメントの配置先を指定して下さい。
-インポート完了語に通知が表示されます。
-画像はメディアライブラリに保存されますので、後に再利用が可能です。</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -191,10 +173,6 @@ Images are placed in the media library so you can re-use them in other articles.
         <translation>アクセスが拒否されました。画像フォルダーが作成できませんでした。</translation>
     </message>
     <message>
-        <source>Document is not suported.</source>
-        <translation>ドキュメントはサポートされていません。</translation>
-    </message>
-    <message>
         <source>Cannot import. File not found. Already imported?</source>
         <translation>インポートできません。ファイルが見つかりませんでした。既にインポートしていますか?</translation>
     </message>
@@ -206,13 +184,13 @@ Images are placed in the media library so you can re-use them in other articles.
         <source>Cannot store uploaded file, cannot import.</source>
         <translation>アップロードしたファイルを保存できません。</translation>
     </message>
+    <message>
+        <source>Document is not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>extension/ezodf/popupmenu</name>
-    <message>
-        <source>Export OpenOffice.org</source>
-        <translation type="obsolete">OpenOffice.orgをエクスポート</translation>
-    </message>
     <message>
         <source>Export PDF</source>
         <translation>PDFをエクスポート</translation>
@@ -220,14 +198,6 @@ Images are placed in the media library so you can re-use them in other articles.
     <message>
         <source>Export Word</source>
         <translation>Wordをエクスポート</translation>
-    </message>
-    <message>
-        <source>Import OpenOffice.org</source>
-        <translation type="obsolete">OpenOffice.orgをインポート</translation>
-    </message>
-    <message>
-        <source>Replace OpenOffice.org</source>
-        <translation type="obsolete">OpenOffice.orgをリプレイス</translation>
     </message>
     <message>
         <source>OpenOffice.org</source>

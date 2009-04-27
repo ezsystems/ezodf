@@ -6,16 +6,8 @@
         <translation>OpenOffice.org Export</translation>
     </message>
     <message>
-        <source>Export eZ publish content to OpenOffice.org</source>
-        <translation>Inhalte aus eZ publish nach OpenOffice.org exportieren</translation>
-    </message>
-    <message>
         <source>Error</source>
         <translation>Fehler</translation>
-    </message>
-    <message>
-        <source>Here you can export any eZ publish content object to an OpenOffice.org Writer document format.</source>
-        <translation>Hier können Sie beliebigen Inhalt aus eZ publish in das OpenOffice.org Writer Format exportieren.</translation>
     </message>
     <message>
         <source>Export Object</source>
@@ -38,10 +30,6 @@
         <translation>Das Objekt wurde importiert als</translation>
     </message>
     <message>
-        <source>The images are placed in the media and can be re-used.</source>
-        <translation>Die Bilder wurden im Media Bereich gespeichert und können wiederverwendet werden.</translation>
-    </message>
-    <message>
         <source>Import another document</source>
         <translation>Weiteres Dokument importieren</translation>
     </message>
@@ -62,13 +50,23 @@
         <translation>Importieren nach</translation>
     </message>
     <message>
-        <source>You can import OpenOffice.org Writer documents directly into eZ publish from this page. You are
-asked where to place the document and eZ publish does the rest. The document is converted into
+        <source>Export eZ Publish content to OpenOffice.org</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Here you can export any eZ Publish content object to an OpenOffice.org Writer document format.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The images are placed in the media library and can be re-used.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You can import OpenOffice.org Writer documents directly into eZ Publish from this page. You are
+asked where to place the document and eZ Publish does the rest. The document is converted into
 the appropriate class during the import, you get a notice about this after the import is done.
 Images are placed in the media library so you can re-use them in other articles.</source>
-        <translation>Sie können OpenOffice.org Writer Dokumente direkt in eZ publish importieren.
-Sie werden gefragt wo das Dokument gespeichert werden soll und eZ publish startet die Verarbeitung. Das Dokument wird in eine passende Klasse konvertiert,
-Sie erhalten eine Benachrichtigung darüber, wenn der Import abgeschlossen ist. Bilder werden im Media Bereich gespeichert und können somit weiter verwendet werden.</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -176,10 +174,6 @@ Klicken Sie auf den Namen der Plazierung um die Auflistung des Browsers zu ände
         <translation>Der Ordner für die Bilder konnte nicht erstellt werden. Zugriff verweigert.</translation>
     </message>
     <message>
-        <source>Document is not suported.</source>
-        <translation>Dokument wird nicht unterstützt.</translation>
-    </message>
-    <message>
         <source>Cannot import. File not found. Already imported?</source>
         <translation>Konnte nicht importieren. Datei nicht gefunden. Bereits importiert?</translation>
     </message>
@@ -191,13 +185,13 @@ Klicken Sie auf den Namen der Plazierung um die Auflistung des Browsers zu ände
         <source>Cannot store uploaded file, cannot import.</source>
         <translation>Kann hochgeladene Datei nicht speichern. Import nicht möglich.</translation>
     </message>
+    <message>
+        <source>Document is not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>extension/ezodf/popupmenu</name>
-    <message>
-        <source>Export OpenOffice.org</source>
-        <translation type="obsolete">OpenOffice.org exportieren</translation>
-    </message>
     <message>
         <source>Export PDF</source>
         <translation>PDF exportieren</translation>
@@ -205,14 +199,6 @@ Klicken Sie auf den Namen der Plazierung um die Auflistung des Browsers zu ände
     <message>
         <source>Export Word</source>
         <translation>Word exportieren</translation>
-    </message>
-    <message>
-        <source>Import OpenOffice.org</source>
-        <translation type="obsolete">OpenOffice.org importieren</translation>
-    </message>
-    <message>
-        <source>Replace OpenOffice.org</source>
-        <translation type="obsolete">OpenOffice.org ersetzen</translation>
     </message>
     <message>
         <source>OpenOffice.org</source>

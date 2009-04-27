@@ -2,22 +2,6 @@
 <context>
     <name>extension/ezodf</name>
     <message>
-        <source>Import</source>
-        <translation type="obsolete">Importar</translation>
-    </message>
-    <message>
-        <source>Export</source>
-        <translation type="obsolete">Exportar</translation>
-    </message>
-    <message>
-        <source>Replace</source>
-        <translation type="obsolete">Substituir</translation>
-    </message>
-    <message>
-        <source>Choose document placement</source>
-        <translation type="obsolete">Escolher local do documento</translation>
-    </message>
-    <message>
         <source>Upload file</source>
         <translation>Carregar arquivo</translation>
     </message>
@@ -38,14 +22,6 @@
         <translation>Exportar OpenOffice.org</translation>
     </message>
     <message>
-        <source>Export eZ publish content to OpenOffice.org</source>
-        <translation type="obsolete">Exportar conteúdo do eZ Publish para OpenOffice.org</translation>
-    </message>
-    <message>
-        <source>Here you can export any eZ publish content object to an OpenOffice.org Writer document format.</source>
-        <translation type="obsolete">Aqui você pode exportar qualquer objeto de conteúdo do eZ Publish para um documento OpenOffice.org Writer.</translation>
-    </message>
-    <message>
         <source>Document is now imported</source>
         <translation>O documento foi importado agora</translation>
     </message>
@@ -56,10 +32,6 @@
     <message>
         <source>Document imported as</source>
         <translation>Documento importado como</translation>
-    </message>
-    <message>
-        <source>The images are placed in the media and can be re-used.</source>
-        <translation type="obsolete">As imagens foram colocadas na pasta mídia e podem ser reutilizadas.</translation>
     </message>
     <message>
         <source>Import another document</source>
@@ -76,16 +48,6 @@
     <message>
         <source>Import to</source>
         <translation>Importar para</translation>
-    </message>
-    <message>
-        <source>You can import OpenOffice.org Writer documents directly into eZ publish from this page. You are
-asked where to place the document and eZ publish does the rest. The document is converted into
-the appropriate class during the import, you get a notice about this after the import is done.
-Images are placed in the media library so you can re-use them in other articles.</source>
-        <translation type="obsolete">Você pode importar documentos OpenOffice.org Writer diretamente para o eZ Publish a partir desta página.
-Você escolherá onde colocar o documento e o eZ Publish fará o resto. O documento é convertido para
-a classe apropriada durante a importação, você receberá um aviso sobre isto após concluída a importação
-As imagens são colocadas na biblioteca e você poderá reutilizá-las em outros artigos.</translation>
     </message>
     <message>
         <source>Export eZ Publish content to OpenOffice.org</source>
@@ -231,24 +193,12 @@ Images are placed in the media library so you can re-use them in other articles.
 <context>
     <name>extension/ezodf/popupmenu</name>
     <message>
-        <source>Export OpenOffice.org</source>
-        <translation type="obsolete">Exportar OpenOffice.org</translation>
-    </message>
-    <message>
         <source>Export PDF</source>
         <translation>Exportar PDF</translation>
     </message>
     <message>
         <source>Export Word</source>
         <translation>Exportar Word</translation>
-    </message>
-    <message>
-        <source>Import OpenOffice.org</source>
-        <translation type="obsolete">Importar OpenOffice.org</translation>
-    </message>
-    <message>
-        <source>Replace OpenOffice.org</source>
-        <translation type="obsolete">Substituir OpenOffice.org</translation>
     </message>
     <message>
         <source>OpenOffice.org</source>
