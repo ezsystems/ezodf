@@ -279,6 +279,13 @@ class eZOOGenerator
         // Clean up
         eZDir::recursiveDelete( $this->OOExportDir );
         eZDir::recursiveDelete( $this->OOTemplateDir);
+
+        // Clean up temporary image files if any
+        $fileHandler = eZClusterFileHandler::instance();
+
+        foreach ( $this->SourceImageArray as $sourceImageFile )
+            $fileHandler->fileDeleteLocal( $sourceImageFile );
+
         return $fileName;
     }
 
@@ -792,6 +799,7 @@ class eZOOGenerator
                     $sizeArray = getimagesize( $destFile );
 
                     $this->ImageFileArray[] = $relativeFile;
+                    $this->SourceImageArray[] = $fileName;
                     $widthRatio = ( $element['DisplayWidth'] / 580 ) * 100;
 
                     // If image is larger than 300 px make it full page, or pixelsize
@@ -939,6 +947,7 @@ class eZOOGenerator
     var $DocumentArray = array();
 
     var $ImageFileArray = array();
+    var $SourceImageArray = array();
 
     var $OORootDir = "var/cache/ezodf/";
     var $OOExportDir = "var/cache/ezodf/export/";

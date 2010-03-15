@@ -140,7 +140,10 @@ class eZOOConverter
                 {
                     $originalImage = $attribute->content()->attribute( 'original' );
 
-                    $imageArray = array( "FileName" => $originalImage['url'],
+                    $fileHandler = eZClusterFileHandler::instance( $originalImage['url'] );
+                    $uniqueFile = $fileHandler->fetchUnique();
+
+                    $imageArray = array( "FileName" => $uniqueFile,
                                          "Alignment" => "center",
                                          "DisplayWidth" => $originalImage['width'],
                                          "DisplayHeight" => $originalImage['height'] );
@@ -324,10 +327,14 @@ class eZOOConverter
 
                                 $imageHandler = $imageAttribute->content();
                                 $originalImage = $imageHandler->attribute( 'original' );
+
+                                $fileHandler = eZClusterFileHandler::instance( $originalImage['url'] );
+                                $uniqueFile = $fileHandler->fetchUnique();
+
                                 $displayImage = $imageHandler->attribute( $imageSize );
                                 $displayWidth = $displayImage['width'];
                                 $displayHeight = $displayImage['height'];
-                                $imageArray[] = array( "FileName" => $originalImage['url'],
+                                $imageArray[] = array( "FileName" => $uniqueFile,
                                                        "Alignment" => $imageAlignment,
                                                        "DisplayWidth" => $displayWidth,
                                                        "DisplayHeight" => $displayHeight );
@@ -513,10 +520,14 @@ class eZOOConverter
 
                         $imageHandler = $imageAttribute->content();
                         $originalImage = $imageHandler->attribute( 'original' );
+
+                        $fileHandler = eZClusterFileHandler::instance( $originalImage['url'] );
+                        $uniqueFile = $fileHandler->fetchUnique();
+
                         $displayImage = $imageHandler->attribute( $imageSize );
                         $displayWidth = $displayImage['width'];
                         $displayHeight = $displayImage['height'];
-                        $imageArray[] = array( "FileName" => $originalImage['url'],
+                        $imageArray[] = array( "FileName" => $uniqueFile,
                                                "Alignment" => $imageAlignment,
                                                "DisplayWidth" => $displayWidth,
                                                "DisplayHeight" => $displayHeight );
