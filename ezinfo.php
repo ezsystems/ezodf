@@ -3,7 +3,7 @@
 // ## BEGIN COPYRIGHT, LICENSE AND WARRANTY NOTICE ##
 // SOFTWARE NAME: eZ Publish
 // SOFTWARE RELEASE: 3.9.x
-// COPYRIGHT NOTICE: Copyright (C) 1999-2006 eZ systems AS
+// COPYRIGHT NOTICE: Copyright (C) 1999-2010 eZ systems AS
 // SOFTWARE LICENSE: GNU General Public License v2.0
 // NOTICE: >
 //   This program is free software; you can redistribute it and/or
@@ -30,7 +30,7 @@ class ezodfInfo
     {
         return array( 'Name' => 'eZ OpenOffice.org extension',
                       'Version' => '2.4.0',
-                      'Copyright' => 'Copyright (C) 1999-' . date( 'Y' ) . ' eZ Systems AS',
+                      'Copyright' => 'Copyright (C) 1999-2010 eZ Systems AS',
                       'License' => 'GNU General Public License v2.0',
                       );
     }
