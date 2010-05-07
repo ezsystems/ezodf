@@ -616,28 +616,12 @@ class eZOOGenerator
     */
     function endTable()
     {
-        $rowArray = array();
-
-        foreach ( $this->DocumentStack[$this->CurrentStackNumber]['ChildArray'] as $tableRowArray )
-        {
-            $cellArray = array();
-            foreach ( $tableRowArray as $cell )
-            {
-                $cellArray[] = $cell;
-            }
-            $rowArray[] = $cellArray;
-        }
-
         $this->CurrentStackNumber -= 1;
 
         if ( $this->CurrentStackNumber == 0 )
         {
             $this->DocumentArray[] = array( 'Type' => 'table',
-                                            'Content' => $rowArray );
-        }
-        else
-        {
-            // Inside a list or a table
+                                            'Content' => $this->DocumentStack[1]['ChildArray'] );
         }
     }
 
