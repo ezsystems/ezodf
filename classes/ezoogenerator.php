@@ -898,11 +898,11 @@ class eZOOGenerator
                         $cellLetter++;
                     }
 
-                    if ( $rowCount == 1 )
+                    if ( $this->IsInsideTableHeading )
                         $rowContent .= "<table:table-header-rows>";
 
                     $rowContent .= "<table:table-row>\n" . $cellContent . "</table:table-row>\n";
-                    if ( $rowCount == 1 )
+                    if ( $this->IsInsideTableHeading )
                         $rowContent .= "</table:table-header-rows>";
 
                     $rowCount++;
