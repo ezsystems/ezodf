@@ -714,7 +714,7 @@ class eZOOGenerator
 
             case "class-map-header":
             {
-                $contentXML .= "<text:p text:style-name='Defualt'></text:p>" . "\n";
+                $contentXML .= "<text:p text:style-name='Default'></text:p>" . "\n";
                 $contentXML .= "<text:p text:style-name='eZSectionDefinition'>" . "\n";
                 $contentXML .= $element['Text'];
                 $contentXML .= "</text:p>". "\n";
