@@ -73,7 +73,11 @@ function convert_to( $sourceFileName, $convertCommand, $destinationFileName )
         case "convertToOOo":
         case "convertToDoc":
         {
-            $result = shell_exec( $ooexecutable . " -writer -invisible -display " . $display . " 'macro:///eZconversion.Module1." . $convertCommand . "(\"$sourceFileName\", \"$destinationFileName\")'" );
+            $convertShellCommand = escapeshellcmd( $ooexecutable . " -writer -invisible -display " . $display ) . " " .
+            escapeshellarg( "macro:///eZconversion.Module1.$convertCommand(\"$sourceFileName\", \"$destinationFileName\")" );
+
+            $result = shell_exec( $convertShellCommand  );
+
             echo "$result\n";
         }break;
 
