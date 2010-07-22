@@ -4,6 +4,7 @@ Changes from 2.4.0 to 2.5.0
 
 - Fixed bug #16309: TC-60 - When exporting a document with an image to ODF (OpenOffice) format, the image was not in the ODF document
 - Fixed bug #9879: some table cells become table header cells when exporting to OOo
+- Fixed bug #13419: command injection in daemon.php ezodf script
 
 *Enhancements*
 
