@@ -1,9 +1,11 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="it_IT">
 <context>
     <name>extension/ezodf</name>
     <message>
         <source>Upload file</source>
-        <translation>Upload file</translation>
+        <translation>Carica file</translation>
     </message>
     <message>
         <source>Error</source>
@@ -23,11 +25,11 @@
     </message>
     <message>
         <source>Document is now imported</source>
-        <translation>Il domento è stato importato</translation>
+        <translation>Il documento è stato importato</translation>
     </message>
     <message>
         <source>The object was imported as: %class_name</source>
-        <translation>L&apos;oggeto è stato importato come: %class_name</translation>
+        <translation>L&apos;oggetto è stato importato come: %class_name</translation>
     </message>
     <message>
         <source>Document imported as</source>
@@ -51,22 +53,25 @@
     </message>
     <message>
         <source>Export eZ Publish content to OpenOffice.org</source>
-        <translation type="unfinished"></translation>
+        <translation>Esporta un contenuto eZ Publish in OpenOffice.org</translation>
     </message>
     <message>
         <source>Here you can export any eZ Publish content object to an OpenOffice.org Writer document format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Qui puoi esportare qualunque oggetto contenuto di eZ Publish in un documento in formato OpenOffice.org Writer.</translation>
     </message>
     <message>
         <source>The images are placed in the media library and can be re-used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le immagini vengono collocate nella libreria media e possono essere riutilizzate.</translation>
     </message>
     <message>
         <source>You can import OpenOffice.org Writer documents directly into eZ Publish from this page. You are
 asked where to place the document and eZ Publish does the rest. The document is converted into
 the appropriate class during the import, you get a notice about this after the import is done.
 Images are placed in the media library so you can re-use them in other articles.</source>
-        <translation type="unfinished"></translation>
+        <translation>Puoi importare documenti OpenOffice.org Writer direttamente in eZ Publish da questa pagina. Ti verrà chiesto
+dove posizionare i documenti e eZ Publish farà il resto. Il documento viene convertito nella classe
+appropriata durante l&apos;importazione, ne riceverai notifica al completamento dell&apos;importazione.
+Le immagini vengono collocate nella libreria media in modo da poter essere riutilizzate.</translation>
     </message>
 </context>
 <context>
@@ -134,7 +139,7 @@ Images are placed in the media library so you can re-use them in other articles.
     </message>
     <message>
         <source>Unable to call daemon. Fork can not create child process.</source>
-        <translation>Impossibile chiamare il demone. Fork non riesce a careare il processo figlio.</translation>
+        <translation>Impossibile chiamare il demone. Fork non riesce a caricare il processo figlio.</translation>
     </message>
     <message>
         <source>Daemon reported error.</source>
@@ -166,7 +171,7 @@ Images are placed in the media library so you can re-use them in other articles.
     </message>
     <message>
         <source>Folder for images could not be created, access denied.</source>
-        <translation>La directory per le immagini non può essere creata per errore di accesso negato.</translation>
+        <translation>La directory per le immagini non può essere creata, accesso negato.</translation>
     </message>
     <message>
         <source>Cannot import. File not found. Already imported?</source>
@@ -182,11 +187,11 @@ Images are placed in the media library so you can re-use them in other articles.
     </message>
     <message>
         <source>Unable to fetch node with id </source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile trovare il nodo con id</translation>
     </message>
     <message>
         <source>Document is not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Documento non supportato.</translation>
     </message>
 </context>
 <context>
@@ -201,19 +206,19 @@ Images are placed in the media library so you can re-use them in other articles.
     </message>
     <message>
         <source>OpenOffice.org</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenOffice.org</translation>
     </message>
     <message>
         <source>Export OpenOffice</source>
-        <translation type="unfinished"></translation>
+        <translation>Esporta OpenOffice</translation>
     </message>
     <message>
         <source>Import OpenOffice</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa OpenOffice</translation>
     </message>
     <message>
         <source>Replace OpenOffice</source>
-        <translation type="unfinished"></translation>
+        <translation>Sostituisci OpenOffice</translation>
     </message>
 </context>
 </TS>
