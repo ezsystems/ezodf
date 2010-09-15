@@ -30,7 +30,7 @@ class ezodfInfo
     {
         return array( 'Name' => 'eZ OpenOffice.org extension',
                       'Version' => '2.4.0',
-                      'Copyright' => 'Copyright (C) 1999-' . date( 'Y' ) . ' eZ Systems AS',
+                      'Copyright' => 'Copyright (C) 1999-2010 eZ Systems AS',
                       'License' => 'GNU General Public License v2.0',
                       );
     }
