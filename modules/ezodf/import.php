@@ -120,7 +120,7 @@ if ( $module->isCurrentAction( 'OOPlace' ) )
                 else
                 {
                     $tpl->setVariable( 'error', makeErrorArray( eZOOImport::ERROR_DOCNOTSUPPORTED,
-                                                                ezi18n( 'extension/ezodf/import/error', "Document is not supported." ) ) );
+                                                                ezpI18n::tr( 'extension/ezodf/import/error', "Document is not supported." ) ) );
                 }
 
             }
@@ -133,14 +133,14 @@ if ( $module->isCurrentAction( 'OOPlace' ) )
         {
             eZDebug::writeError( "Cannot import. File not found. Already imported?" );
             $tpl->setVariable( 'error', makeErrorArray( eZOOImport::ERROR_FILENOTFOUND,
-                                                        ezi18n( 'extension/ezodf/import/error', "Cannot import. File not found. Already imported?" ) ) );
+                                                        ezpI18n::tr( 'extension/ezodf/import/error', "Cannot import. File not found. Already imported?" ) ) );
         }
     }
     else
     {
         eZDebug::writeError( "Cannot import document, supplied placement nodeID is not valid." );
         $tpl->setVariable( 'error', makeErrorArray( eZOOImport::ERROR_PLACEMENTINVALID,
-                                                    ezi18n( 'extension/ezodf/import/error', "Cannot import document, supplied placement nodeID is not valid." ) ) );
+                                                    ezpI18n::tr( 'extension/ezodf/import/error', "Cannot import document, supplied placement nodeID is not valid." ) ) );
     }
 
 //    $tpl->setVariable( 'oo_mode', 'imported' );
@@ -189,7 +189,7 @@ else
                         else
                         {
                             $tpl->setVariable( 'error', makeErrorArray( eZOOImport::ERROR_DOCNOTSUPPORTED,
-                                                                        ezi18n( 'extension/ezodf/import/error',"Document is not supported." ) ) );
+                                                                        ezpI18n::tr( 'extension/ezodf/import/error',"Document is not supported." ) ) );
                         }
                     }
                     $http->removeSessionVariable( 'oo_direct_import_node' );
@@ -214,7 +214,7 @@ else
             {
                 eZDebug::writeError( "Cannot store uploaded file, cannot import" );
                 $tpl->setVariable( 'error', makeErrorArray( eZOOImport::ERROR_CANNOTSTORE,
-                                                            ezi18n( 'extension/ezodf/import/error',"Cannot store uploaded file, cannot import." ) ) );
+                                                            ezpI18n::tr( 'extension/ezodf/import/error',"Cannot store uploaded file, cannot import." ) ) );
             }
         }
     }
@@ -225,7 +225,7 @@ else
 $Result = array();
 $Result['content'] = $tpl->fetch( "design:ezodf/import.tpl" );
 $Result['path'] = array( array( 'url' => '/ezodf/import/',
-                                'text' => ezi18n( 'extension/ezodf', 'OpenOffice.org import' ) ));
+                                'text' => ezpI18n::tr( 'extension/ezodf', 'OpenOffice.org import' ) ));
 
 
 

@@ -79,7 +79,7 @@ if ( $http->hasPostVariable( "ExportType" ) )
     }
     else
     {
-        $tpl->setVariable( "error_string", ezi18n( 'extension/ezodf/export/error',"Destination file format not supported" ) );
+        $tpl->setVariable( "error_string", ezpI18n::tr( 'extension/ezodf/export/error',"Destination file format not supported" ) );
         $success = false;
     }
 }
@@ -89,7 +89,7 @@ else if ( $exportTypeParam == "PDF" or $exportTypeParam == "Word" )
 }
 else if ( strlen( trim( $exportTypeParam ) ) != 0 )
 {
-    $tpl->setVariable( "error_string", ezi18n( 'extension/ezodf/export/error', "Destination file format not supported" ) );
+    $tpl->setVariable( "error_string", ezpI18n::tr( 'extension/ezodf/export/error', "Destination file format not supported" ) );
     $success = false;
 }
 
@@ -137,7 +137,7 @@ if ( $doExport == true )
                         else
                         {
                             $success = false;
-                            $tpl->setVariable( "error_string", ezi18n( 'extension/ezodf/export/error',"PDF conversion failed" ) );
+                            $tpl->setVariable( "error_string", ezpI18n::tr( 'extension/ezodf/export/error',"PDF conversion failed" ) );
                         }
                     } break;
 
@@ -152,7 +152,7 @@ if ( $doExport == true )
                         else
                         {
                             $success = false;
-                            $tpl->setVariable( "error_string", ezi18n( 'extension/ezodf/export/error',"Word conversion failed" ) );
+                            $tpl->setVariable( "error_string", ezpI18n::tr( 'extension/ezodf/export/error',"Word conversion failed" ) );
                         }
                     } break;
                 }
@@ -165,7 +165,7 @@ if ( $doExport == true )
         }
         else
         {
-            $tpl->setVariable( "error_string", ezi18n( 'extension/ezodf/export/error',"Unable to fetch node, or no read access" ) );
+            $tpl->setVariable( "error_string", ezpI18n::tr( 'extension/ezodf/export/error',"Unable to fetch node, or no read access" ) );
             $success = false;
         }
 
@@ -198,7 +198,7 @@ if ( $doExport == true )
             }
             else
             {
-                $tpl->setVariable( "error_string", ezi18n( 'extension/ezodf/export/error', "Unable to open file %1 on server side", null, array( $fileName ) ) );
+                $tpl->setVariable( "error_string", ezpI18n::tr( 'extension/ezodf/export/error', "Unable to open file %1 on server side", null, array( $fileName ) ) );
             }
         }
     }
@@ -207,7 +207,7 @@ if ( $doExport == true )
 $Result = array();
 $Result['content'] = $tpl->fetch( "design:ezodf/export.tpl" );
 $Result['path'] = array( array( 'url' => '/ezodf/export/',
-                                'text' => ezi18n( 'extension/ezodf', 'OpenOffice.org export' ) ) );
+                                'text' => ezpI18n::tr( 'extension/ezodf', 'OpenOffice.org export' ) ) );
 
 
 /*!

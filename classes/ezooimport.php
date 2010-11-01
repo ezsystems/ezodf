@@ -111,37 +111,37 @@ class eZOOImport
                 $this->ERROR['value'] = "";
                 break;
             case self::ERROR_UNSUPPORTEDTYPE :
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "File extension or type is not allowed." );
+                $this->ERROR['value'] = ezpI18n::tr( 'extension/ezodf/import/error', "File extension or type is not allowed." );
                 break;
             case self::ERROR_PARSEXML :
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Could not parse XML." );
+                $this->ERROR['value'] = ezpI18n::tr( 'extension/ezodf/import/error', "Could not parse XML." );
                 break;
             case self::ERROR_OPENSOCKET :
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Can not open socket. Please check if extension/ezodf/daemon.php is running." );
+                $this->ERROR['value'] = ezpI18n::tr( 'extension/ezodf/import/error', "Can not open socket. Please check if extension/ezodf/daemon.php is running." );
                 break;
             case self::ERROR_CONVERT :
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Can not convert the given document." );
+                $this->ERROR['value'] = ezpI18n::tr( 'extension/ezodf/import/error', "Can not convert the given document." );
                 break;
             case self::ERROR_DAEMONCALL :
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unable to call daemon. Fork can not create child process." );
+                $this->ERROR['value'] = ezpI18n::tr( 'extension/ezodf/import/error', "Unable to call daemon. Fork can not create child process." );
                 break;
             case self::ERROR_DAEMON :
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Daemon reported error." );
+                $this->ERROR['value'] = ezpI18n::tr( 'extension/ezodf/import/error', "Daemon reported error." );
                 break;
             case self::ERROR_UNKNOWNNODE:
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unknown node." );
+                $this->ERROR['value'] = ezpI18n::tr( 'extension/ezodf/import/error', "Unknown node." );
                 break;
             case self::ERROR_ACCESSDENIED:
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Access denied." );
+                $this->ERROR['value'] = ezpI18n::tr( 'extension/ezodf/import/error', "Access denied." );
                 break;
             case self::ERROR_IMPORTING:
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Error during import." );
+                $this->ERROR['value'] = ezpI18n::tr( 'extension/ezodf/import/error', "Error during import." );
                 break;
             case self::ERROR_UNKNOWNCLASS:
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unknown content class specified in odf.ini:" );
+                $this->ERROR['value'] = ezpI18n::tr( 'extension/ezodf/import/error', "Unknown content class specified in odf.ini:" );
                 break;
             default :
-                $this->ERROR['value'] = ezi18n( 'extension/ezodf/import/error', "Unknown error." );
+                $this->ERROR['value'] = ezpI18n::tr( 'extension/ezodf/import/error', "Unknown error." );
                 break;
         }
     }
@@ -228,7 +228,7 @@ class eZOOImport
 
         if ( !in_array( $originalFileType,$allowedTypes, false ) and !in_array( $originalFileType, $convertTypes, false ) )
         {
-            $this->setError( self::ERROR_UNSUPPORTEDTYPE, ezi18n( 'extension/ezodf/import/error',"Filetype: " ). $originalFileType );
+            $this->setError( self::ERROR_UNSUPPORTEDTYPE, ezpI18n::tr( 'extension/ezodf/import/error',"Filetype: " ). $originalFileType );
             return false;
         }
 
@@ -263,7 +263,7 @@ class eZOOImport
 
             if ( $locationOK === false || $locationOK === null )
             {
-                $this->setError( self::ERROR_UNKNOWNNODE, ezi18n( 'extension/ezodf/import/error', "Unable to fetch node with id ") . $placeNodeID );
+                $this->setError( self::ERROR_UNKNOWNNODE, ezpI18n::tr( 'extension/ezodf/import/error', "Unable to fetch node with id ") . $placeNodeID );
                 return false;
             }
 
@@ -1751,7 +1751,7 @@ class eZOOImport
         //pk
         if ( !$node->canCreate() )
         {
-            $this->setError( self::ERROR_ACCESSDENIED, ezi18n( 'extension/ezodf/import/error', "Folder for images could not be created, access denied." ) );
+            $this->setError( self::ERROR_ACCESSDENIED, ezpI18n::tr( 'extension/ezodf/import/error', "Folder for images could not be created, access denied." ) );
             return false;
         }
 
