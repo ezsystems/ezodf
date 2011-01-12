@@ -1,11 +1,11 @@
-<script language="JavaScript1.2" type="text/javascript">
-menuArray['OpenOffice'] = new Array();
-menuArray['OpenOffice']['depth'] = 1; // this is a first level submenu of ContextMenu
-menuArray['OpenOffice']['elements'] = new Array();
+<script type="text/javascript">
+menuArray['OpenOffice'] = [];
+menuArray['OpenOffice']['depth'] = 1;
+menuArray['OpenOffice']['elements'] = [];
 </script>
 
- <hr/>
-    <a id="menu-openoffice" class="more" href="#" onmouseover="ezpopmenu_showSubLevel( event, 'OpenOffice', 'menu-openoffice' ); return false;">{'OpenOffice.org'|i18n( 'extension/ezodf/popupmenu' )}</a>
+<hr />
+<a id="menu-openoffice" class="more" href="#" onmouseover="ezpopmenu_showSubLevel( event, 'OpenOffice', 'menu-openoffice' ); return false;">{'OpenOffice.org'|i18n( 'extension/ezodf/popupmenu' )}</a>
 
 {* Export to OOo / OASIS document *}
 <form id="menu-form-export-ooo" method="post" action={"/ezodf/export/"|ezurl}>
