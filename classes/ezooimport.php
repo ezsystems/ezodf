@@ -370,7 +370,7 @@ class eZOOImport
             {
                 $attributeArray = $ooINI->variable( $className, 'Attribute' );
 
-                if ( count( $attributeArray ) > 0 )
+                if ( !empty( $attributeArray ) )
                 {
                     // Convert space to _ in section names
                     foreach ( $sectionNameArray as $key => $value )
@@ -382,7 +382,7 @@ class eZOOImport
                     sort( $sectionNameArray );
 
                     $diff = array_diff( $attributeArray, $sectionNameArray );
-                    if ( count( $diff ) == 0 )
+                    if ( empty( $diff ) )
                     {
                         $importClassIdentifier = $className;
                         $customClassFound = true;
@@ -492,7 +492,7 @@ class eZOOImport
                 {
                     $attributeArray = $ooINI->variable( $className, 'Attribute' );
 
-                    if ( count( $attributeArray ) > 0 )
+                    if ( !empty( $attributeArray ) )
                     {
                         // Convert space to _ in section names
                         foreach ( $sectionNameArray as $key => $value )
@@ -504,7 +504,7 @@ class eZOOImport
                         sort( $sectionNameArray );
 
                         $diff = array_diff( $attributeArray, $sectionNameArray );
-                        if ( count( $diff ) == 0 )
+                        if ( empty( $diff ) )
                         {
                             $importClassIdentifier = $className;
                             $customClassFound = true;
@@ -1755,7 +1755,7 @@ class eZOOImport
             return false;
         }
 
-        if ( count( $namedChildrenArray ) == 0 )
+        if ( empty( $namedChildrenArray ) )
         {
             $class = eZContentClass::fetchByIdentifier( "folder" );
             {

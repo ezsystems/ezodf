@@ -74,7 +74,7 @@
         }
 
         //Test if not empty
-        if ( count( $array ) == 0 )
+        if ( empty( $array ) )
         {
             print( 'problem:No Items' );
             eZExecution::cleanExit();

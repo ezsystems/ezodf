@@ -264,7 +264,7 @@ class eZOOConverter
                     $generator->addImage( $image );
                 }
 
-                if ( count( $paragraphParameters ) > 0 && isset( $GLOBALS['CustomTagStyle'] ) and $GLOBALS['CustomTagStyle'] != false )
+                if ( !empty( $paragraphParameters ) && isset( $GLOBALS['CustomTagStyle'] ) and $GLOBALS['CustomTagStyle'] != false )
                 {
                     array_unshift( $paragraphParameters, $GLOBALS['CustomTagStyle'] );
                 }
