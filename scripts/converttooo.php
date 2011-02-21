@@ -45,7 +45,6 @@ Needs the following in PHP Configuration
 */
 
 $homeDir = "/tmp";
-$displayNum = 1;
 #$ooexecutable = "openoffice.org-2.0";
 $ooexecutable = "/usr/bin/ooffice";
 
@@ -59,11 +58,10 @@ set_time_limit( 0 );
  * @param string $destinationFileName Destination filename.
  * @param string $executable OpenOffice.org executable.
  * @param string $homeDir Home directory.
- * @param integer $displayNum X display number.
  *
  * @throws Exception
  */
-function convertTo( $sourceFileName, $convertCommand, $destinationFileName, $executable, $homeDir, $displayNum )
+function convertTo( $sourceFileName, $convertCommand, $destinationFileName, $executable, $homeDir )
 {
     switch ( $convertCommand )
     {
@@ -71,7 +69,7 @@ function convertTo( $sourceFileName, $convertCommand, $destinationFileName, $exe
         case "convertToOOo":
         case "convertToDoc":
         {
-            $convertShellCommand = "export HOME=\"$homeDir\"\n" . escapeshellcmd( $executable . " -writer -invisible -display :" . (int)$displayNum ) . " " . 
+            $convertShellCommand = "export HOME=\"$homeDir\"\n" . escapeshellcmd( $executable . " -writer -invisible -headless -nofirststartwizard -norestore" ) . " " . 
             escapeshellarg( "macro:///eZconversion.Module1.$convertCommand(\"$sourceFileName\", \"$destinationFileName\")" ) . " 2>&1 ";
 
             $result = shell_exec( $convertShellCommand );
@@ -108,7 +106,7 @@ try
     }
 
     sleep( 10 );
-    convertTo( $fileName, $command, $destName, $ooexecutable, $homeDir, $displayNum );
+    convertTo( $fileName, $command, $destName, $ooexecutable, $homeDir );
     echo "FilePath: $destName\n";
 
 }

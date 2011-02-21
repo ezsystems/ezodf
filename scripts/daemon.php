@@ -44,7 +44,6 @@ $port = 9090;
 $ooexecutable = "ooffice";
 
 $maxClients = 3;
-$display = ':0';
 
 
 set_time_limit( 0 );
@@ -63,7 +62,6 @@ print( "Started OpenOffice.org daemon\n" );
 function convert_to( $sourceFileName, $convertCommand, $destinationFileName )
 {
     global $ooexecutable;
-    global $display;
 
     print( "Converting document with $convertCommand\n" );
 
@@ -73,7 +71,7 @@ function convert_to( $sourceFileName, $convertCommand, $destinationFileName )
         case "convertToOOo":
         case "convertToDoc":
         {
-            $convertShellCommand = escapeshellcmd( $ooexecutable . " -writer -invisible -display " . $display ) . " " .
+            $convertShellCommand = escapeshellcmd( $ooexecutable . " -writer -invisible -headless -nofirststartwizard -norestore" ) . " " .
             escapeshellarg( "macro:///eZconversion.Module1.$convertCommand(\"$sourceFileName\", \"$destinationFileName\")" );
 
             $result = shell_exec( $convertShellCommand  );

@@ -16,27 +16,11 @@ Note: To get the daemon to work you need to have compiled PHP with the following
 --enable-pcntl
 --enable-sockets
 
-During the conversion, daemon runs openoffice from command line to do the actual conversion. Unfortunately
-openoffice requres X server to connect to, eventhough with -invisible key it does not display anything. So openoffice 
-checks if it can connect to some X server. If you do not want to have X server running on your server you can use 
-"fake" X server Xvfb ( X virtual frame buffer server ). This server does not open or requre any phisical screen 
-devices to run. It just maps screen in the memory. Other possibility is to use X server on another machine, 
-this X server has to allow X connections from remote host. So in daemon.php you need to specify DISPLAY openoffice 
-binary will try to connect to. On the top of daemon.php you will find variable you need to modify:
+During the conversion, daemon runs openoffice from command line to do the actual conversion. The parameters
+used for this conversion can be found in deamon.php and is at time of writing:
+ -writer -invisible -headless -nofirststartwizard -norestore
 
-$display = ':0'; 
-
-Set the numeber of display you are going to use. For the current running X server it is :0. 
-If you start Xvfb server you may specify the display number it will use. 
-
-$ Xvfb :1 &
-
-So after this in daemon.php you set:
-
-$display = ':1'; 
-
-And openoffice will use X server on virtual screen :1 to connect to.
-
+The use of -headless implies that ezodf requries OpenOffice 2.4 or higher.
 
 Document conversion daemon can be configured as xinetd service. For this you need coverttooo.php utility which is 
 supplied with this ezodf extension. Here is and example of xinetd conf file which needs to be placed 
@@ -66,12 +50,9 @@ Where:
 Openoffice requires HOME env. variable, for proper configuration please edit converttooo.php and on the 
 top of the file modify the:
 $homeDir = "/home/sp";
-and 
-$display = ':1';  
-(display here has the same meaning as for daemon.php)
-variable. To be sure that openoffice will start from conversion script login to the system with user 
+
+To be sure that openoffice will start from conversion script login to the system with user
 from whom convert daemon will run and then:
-$ export DISPLAY=[display you set above]
 $ export HOME=[home dir from above]
 $ openoffice.org-2.0
 If openoffice starts it means that mostprobably you wont have any problems with conversion script.
