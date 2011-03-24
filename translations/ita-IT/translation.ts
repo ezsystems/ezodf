@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="it_IT">
+<!DOCTYPE TS><TS>
 <context>
     <name>extension/ezodf</name>
     <message>
@@ -100,98 +98,98 @@ Le immagini vengono collocate nella libreria media in modo da poter essere riuti
     <name>extension/ezodf/export/error</name>
     <message>
         <source>Destination file format not supported</source>
-        <translation>Formato del file destinazione non supportato</translation>
+        <translation type="obsolete">Formato del file destinazione non supportato</translation>
     </message>
     <message>
         <source>PDF conversion failed</source>
-        <translation>Conversione a pdf fallita</translation>
+        <translation type="obsolete">Conversione a pdf fallita</translation>
     </message>
     <message>
         <source>Word conversion failed</source>
-        <translation>Conversione Word fallita</translation>
+        <translation type="obsolete">Conversione Word fallita</translation>
     </message>
     <message>
         <source>Unable to fetch node, or no read access</source>
-        <translation>Impossibile trovare il nodo o mancato permesso di lettura</translation>
+        <translation type="obsolete">Impossibile trovare il nodo o mancato permesso di lettura</translation>
     </message>
     <message>
         <source>Unable to open file %1 on server side</source>
-        <translation>Impossibile aprire il file %1 sul server</translation>
+        <translation type="obsolete">Impossibile aprire il file %1 sul server</translation>
     </message>
 </context>
 <context>
     <name>extension/ezodf/import/error</name>
     <message>
         <source>File extension or type is not allowed.</source>
-        <translation>Tipo di estensione o tipo di file non ammesso.</translation>
+        <translation type="obsolete">Tipo di estensione o tipo di file non ammesso.</translation>
     </message>
     <message>
         <source>Could not parse XML.</source>
-        <translation>Impossibile elaborare la parte XML.</translation>
+        <translation type="obsolete">Impossibile elaborare la parte XML.</translation>
     </message>
     <message>
         <source>Can not open socket. Please check if extension/ezodf/daemon.php is running.</source>
-        <translation>Impossibile aprire il socket. Controllare che il demone extension/ezodf/daemon.php stia funzionando.</translation>
+        <translation type="obsolete">Impossibile aprire il socket. Controllare che il demone extension/ezodf/daemon.php stia funzionando.</translation>
     </message>
     <message>
         <source>Can not convert the given document.</source>
-        <translation>Impossibile convertire il documento.</translation>
+        <translation type="obsolete">Impossibile convertire il documento.</translation>
     </message>
     <message>
         <source>Unable to call daemon. Fork can not create child process.</source>
-        <translation>Impossibile chiamare il demone. Fork non riesce a caricare il processo figlio.</translation>
+        <translation type="obsolete">Impossibile chiamare il demone. Fork non riesce a caricare il processo figlio.</translation>
     </message>
     <message>
         <source>Daemon reported error.</source>
-        <translation>Il demone ha riportato un errore.</translation>
+        <translation type="obsolete">Il demone ha riportato un errore.</translation>
     </message>
     <message>
         <source>Unknown node.</source>
-        <translation>Nodo sconosciuto.</translation>
+        <translation type="obsolete">Nodo sconosciuto.</translation>
     </message>
     <message>
         <source>Access denied.</source>
-        <translation>Accesso negato.</translation>
+        <translation type="obsolete">Accesso negato.</translation>
     </message>
     <message>
         <source>Error during import.</source>
-        <translation>Errore durante l&apos;importazione.</translation>
+        <translation type="obsolete">Errore durante l&apos;importazione.</translation>
     </message>
     <message>
         <source>Unknown content class specified in odf.ini:</source>
-        <translation>Classe sconociuta specificata in odf.ini:</translation>
+        <translation type="obsolete">Classe sconociuta specificata in odf.ini:</translation>
     </message>
     <message>
         <source>Unknown error.</source>
-        <translation>Errore sconosciuto.</translation>
+        <translation type="obsolete">Errore sconosciuto.</translation>
     </message>
     <message>
         <source>Filetype: </source>
-        <translation>Tipo di file: </translation>
+        <translation type="obsolete">Tipo di file: </translation>
     </message>
     <message>
         <source>Folder for images could not be created, access denied.</source>
-        <translation>La directory per le immagini non può essere creata, accesso negato.</translation>
+        <translation type="obsolete">La directory per le immagini non può essere creata, accesso negato.</translation>
     </message>
     <message>
         <source>Cannot import. File not found. Already imported?</source>
-        <translation>Impossibile importare. File non trovato. Già importato?</translation>
+        <translation type="obsolete">Impossibile importare. File non trovato. Già importato?</translation>
     </message>
     <message>
         <source>Cannot import document, supplied placement nodeID is not valid.</source>
-        <translation>Impossibile importare il documento, il nodeID specificato non è valido.</translation>
+        <translation type="obsolete">Impossibile importare il documento, il nodeID specificato non è valido.</translation>
     </message>
     <message>
         <source>Cannot store uploaded file, cannot import.</source>
-        <translation>Impossibile salvare il file caricato, impossibile importare.</translation>
+        <translation type="obsolete">Impossibile salvare il file caricato, impossibile importare.</translation>
     </message>
     <message>
         <source>Unable to fetch node with id </source>
-        <translation>Impossibile trovare il nodo con id</translation>
+        <translation type="obsolete">Impossibile trovare il nodo con id</translation>
     </message>
     <message>
         <source>Document is not supported.</source>
-        <translation>Documento non supportato.</translation>
+        <translation type="obsolete">Documento non supportato.</translation>
     </message>
 </context>
 <context>

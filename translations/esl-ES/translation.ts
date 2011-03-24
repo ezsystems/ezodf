@@ -146,98 +146,98 @@ Las imágenes se colocan en la biblioteca multimedia de manera que puedes reutil
     <name>extension/ezodf/export/error</name>
     <message>
         <source>Destination file format not supported</source>
-        <translation>Formato de archivo de destino no soportado</translation>
+        <translation type="obsolete">Formato de archivo de destino no soportado</translation>
     </message>
     <message>
         <source>PDF conversion failed</source>
-        <translation>Conversión PDF fallida</translation>
+        <translation type="obsolete">Conversión PDF fallida</translation>
     </message>
     <message>
         <source>Word conversion failed</source>
-        <translation>Conversión Word fallida</translation>
+        <translation type="obsolete">Conversión Word fallida</translation>
     </message>
     <message>
         <source>Unable to fetch node, or no read access</source>
-        <translation>Imposible recuperar el nodo, o sin acceso de lectura</translation>
+        <translation type="obsolete">Imposible recuperar el nodo, o sin acceso de lectura</translation>
     </message>
     <message>
         <source>Unable to open file %1 on server side</source>
-        <translation>Imposible abrir el archivo %1 en el servidor</translation>
+        <translation type="obsolete">Imposible abrir el archivo %1 en el servidor</translation>
     </message>
 </context>
 <context>
     <name>extension/ezodf/import/error</name>
     <message>
         <source>File extension or type is not allowed.</source>
-        <translation>La extensión o el tipo de archivo no está permitido.</translation>
+        <translation type="obsolete">La extensión o el tipo de archivo no está permitido.</translation>
     </message>
     <message>
         <source>Could not parse XML.</source>
-        <translation>No se puede analizar el XML.</translation>
+        <translation type="obsolete">No se puede analizar el XML.</translation>
     </message>
     <message>
         <source>Can not open socket. Please check if extension/ezodf/daemon.php is running.</source>
-        <translation>No se puede abrir el socket. Por favor comprobar si extension/ezodf/daemon.php se está ejecutando.</translation>
+        <translation type="obsolete">No se puede abrir el socket. Por favor comprobar si extension/ezodf/daemon.php se está ejecutando.</translation>
     </message>
     <message>
         <source>Can not convert the given document.</source>
-        <translation>No se puede convertir el documento.</translation>
+        <translation type="obsolete">No se puede convertir el documento.</translation>
     </message>
     <message>
         <source>Unable to call daemon. Fork can not create child process.</source>
-        <translation>Incapaz de llamar al demonio. La bifurcación no puede crear proceso hijo.</translation>
+        <translation type="obsolete">Incapaz de llamar al demonio. La bifurcación no puede crear proceso hijo.</translation>
     </message>
     <message>
         <source>Daemon reported error.</source>
-        <translation>El demonio ha reportado un error.</translation>
+        <translation type="obsolete">El demonio ha reportado un error.</translation>
     </message>
     <message>
         <source>Unknown node.</source>
-        <translation>Nodo desconocido.</translation>
+        <translation type="obsolete">Nodo desconocido.</translation>
     </message>
     <message>
         <source>Access denied.</source>
-        <translation>Acceso denegado.</translation>
+        <translation type="obsolete">Acceso denegado.</translation>
     </message>
     <message>
         <source>Error during import.</source>
-        <translation>Error durante la importación.</translation>
+        <translation type="obsolete">Error durante la importación.</translation>
     </message>
     <message>
         <source>Unknown content class specified in odf.ini:</source>
-        <translation>Clase de contenido desconocida especificada en odf.ini:</translation>
+        <translation type="obsolete">Clase de contenido desconocida especificada en odf.ini:</translation>
     </message>
     <message>
         <source>Unknown error.</source>
-        <translation>Error desconocido.</translation>
+        <translation type="obsolete">Error desconocido.</translation>
     </message>
     <message>
         <source>Filetype: </source>
-        <translation>Tipo de archivo: </translation>
+        <translation type="obsolete">Tipo de archivo: </translation>
     </message>
     <message>
         <source>Unable to fetch node with id </source>
-        <translation>Imposible recuperar el nodo con id </translation>
+        <translation type="obsolete">Imposible recuperar el nodo con id </translation>
     </message>
     <message>
         <source>Folder for images could not be created, access denied.</source>
-        <translation>La carpeta para imágenes no puede ser creada, acceso denegado.</translation>
+        <translation type="obsolete">La carpeta para imágenes no puede ser creada, acceso denegado.</translation>
     </message>
     <message>
         <source>Document is not supported.</source>
-        <translation>El documento no es soportado.</translation>
+        <translation type="obsolete">El documento no es soportado.</translation>
     </message>
     <message>
         <source>Cannot import. File not found. Already imported?</source>
-        <translation>No se puede importar. Archivo no encontrado. ¿Importado anteriormente?</translation>
+        <translation type="obsolete">No se puede importar. Archivo no encontrado. ¿Importado anteriormente?</translation>
     </message>
     <message>
         <source>Cannot import document, supplied placement nodeID is not valid.</source>
-        <translation>No se puede importar el documento, el nodeID de localización indicado no es válido.</translation>
+        <translation type="obsolete">No se puede importar el documento, el nodeID de localización indicado no es válido.</translation>
     </message>
     <message>
         <source>Cannot store uploaded file, cannot import.</source>
-        <translation>No se puede guardar el archivo subido, no se puede importar.</translation>
+        <translation type="obsolete">No se puede guardar el archivo subido, no se puede importar.</translation>
     </message>
 </context>
 <context>

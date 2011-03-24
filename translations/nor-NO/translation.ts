@@ -99,98 +99,94 @@ Klikk navnene til objektene for å gå igjennom treet.</translation>
     <name>extension/ezodf/export/error</name>
     <message>
         <source>Destination file format not supported</source>
-        <translation>Filformatet du vil konvertere til er ikke støttet</translation>
+        <translation type="obsolete">Filformatet du vil konvertere til er ikke støttet</translation>
     </message>
     <message>
         <source>PDF conversion failed</source>
-        <translation>En feil har oppstått under konvertering til PDF</translation>
+        <translation type="obsolete">En feil har oppstått under konvertering til PDF</translation>
     </message>
     <message>
         <source>Word conversion failed</source>
-        <translation>En feil har oppstått under konvertering til Word</translation>
+        <translation type="obsolete">En feil har oppstått under konvertering til Word</translation>
     </message>
     <message>
         <source>Unable to fetch node, or no read access</source>
-        <translation>Kunne ikke hente node, eller mangler lesetilgang</translation>
+        <translation type="obsolete">Kunne ikke hente node, eller mangler lesetilgang</translation>
     </message>
     <message>
         <source>Unable to open file %1 on server side</source>
-        <translation>Kunne ikke åpne filen %1 på serveren</translation>
+        <translation type="obsolete">Kunne ikke åpne filen %1 på serveren</translation>
     </message>
 </context>
 <context>
     <name>extension/ezodf/import/error</name>
     <message>
         <source>File extension or type is not allowed.</source>
-        <translation>Filendelsen eller -typen er ikke tillatt.</translation>
+        <translation type="obsolete">Filendelsen eller -typen er ikke tillatt.</translation>
     </message>
     <message>
         <source>Could not parse XML.</source>
-        <translation>Kunne ikke lese XML.</translation>
+        <translation type="obsolete">Kunne ikke lese XML.</translation>
     </message>
     <message>
         <source>Can not open socket. Please check if extension/ezodf/daemon.php is running.</source>
-        <translation>Kunne ikke åpne socket. Vennligst kontroller om extension/ezodf/daemon.php kjører.</translation>
+        <translation type="obsolete">Kunne ikke åpne socket. Vennligst kontroller om extension/ezodf/daemon.php kjører.</translation>
     </message>
     <message>
         <source>Can not convert the given document.</source>
-        <translation>Kan ikke konvertere dokumentet.</translation>
+        <translation type="obsolete">Kan ikke konvertere dokumentet.</translation>
     </message>
     <message>
         <source>Unable to call daemon. Fork can not create child process.</source>
-        <translation>Kunne ikke starte daemon. Fork kan ikke opprette subprosess.</translation>
+        <translation type="obsolete">Kunne ikke starte daemon. Fork kan ikke opprette subprosess.</translation>
     </message>
     <message>
         <source>Daemon reported error.</source>
-        <translation>Daemon rapperterer feil.</translation>
+        <translation type="obsolete">Daemon rapperterer feil.</translation>
     </message>
     <message>
         <source>Unknown node.</source>
-        <translation>Ukjent node.</translation>
+        <translation type="obsolete">Ukjent node.</translation>
     </message>
     <message>
         <source>Access denied.</source>
-        <translation>Mangler tilgang.</translation>
+        <translation type="obsolete">Mangler tilgang.</translation>
     </message>
     <message>
         <source>Error during import.</source>
-        <translation>Feil under import.</translation>
+        <translation type="obsolete">Feil under import.</translation>
     </message>
     <message>
         <source>Unknown content class specified in odf.ini:</source>
-        <translation>Ukjent innholdsklasse spesifisert i odf.ini:</translation>
+        <translation type="obsolete">Ukjent innholdsklasse spesifisert i odf.ini:</translation>
     </message>
     <message>
         <source>Unknown error.</source>
-        <translation>Ukjent feil.</translation>
+        <translation type="obsolete">Ukjent feil.</translation>
     </message>
     <message>
         <source>Filetype: </source>
-        <translation>Filtype: </translation>
+        <translation type="obsolete">Filtype: </translation>
     </message>
     <message>
         <source>Folder for images could not be created, access denied.</source>
-        <translation>Mappe for bilder kunne ikke opprettes, tilgang nektet.</translation>
+        <translation type="obsolete">Mappe for bilder kunne ikke opprettes, tilgang nektet.</translation>
     </message>
     <message>
         <source>Document is not supported.</source>
-        <translation>Dokumentet er ikke støttet.</translation>
+        <translation type="obsolete">Dokumentet er ikke støttet.</translation>
     </message>
     <message>
         <source>Cannot import. File not found. Already imported?</source>
-        <translation>Kan ikke importere. Filen ble ikke funnet. Er den allerede importert?</translation>
+        <translation type="obsolete">Kan ikke importere. Filen ble ikke funnet. Er den allerede importert?</translation>
     </message>
     <message>
         <source>Cannot import document, supplied placement nodeID is not valid.</source>
-        <translation>Kan ikke importere dokument, den oppgitte node-IDen er ikke gyldig.</translation>
+        <translation type="obsolete">Kan ikke importere dokument, den oppgitte node-IDen er ikke gyldig.</translation>
     </message>
     <message>
         <source>Cannot store uploaded file, cannot import.</source>
-        <translation>Kan ikke lagre opplastet fil, kan ikke importere.</translation>
-    </message>
-    <message>
-        <source>Unable to fetch node with id </source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Kan ikke lagre opplastet fil, kan ikke importere.</translation>
     </message>
 </context>
 <context>

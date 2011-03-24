@@ -95,98 +95,90 @@ Images are placed in the media library so you can re-use them in other articles.
     <name>extension/ezodf/export/error</name>
     <message>
         <source>Destination file format not supported</source>
-        <translation>不支援目的檔案格式</translation>
+        <translation type="obsolete">不支援目的檔案格式</translation>
     </message>
     <message>
         <source>PDF conversion failed</source>
-        <translation>PDF 轉換失敗</translation>
+        <translation type="obsolete">PDF 轉換失敗</translation>
     </message>
     <message>
         <source>Word conversion failed</source>
-        <translation>Word 轉換失敗</translation>
+        <translation type="obsolete">Word 轉換失敗</translation>
     </message>
     <message>
         <source>Unable to fetch node, or no read access</source>
-        <translation>無法擷取節點，或是沒有讀取權限</translation>
+        <translation type="obsolete">無法擷取節點，或是沒有讀取權限</translation>
     </message>
     <message>
         <source>Unable to open file %1 on server side</source>
-        <translation>無法在伺服器端開啟檔案 %1</translation>
+        <translation type="obsolete">無法在伺服器端開啟檔案 %1</translation>
     </message>
 </context>
 <context>
     <name>extension/ezodf/import/error</name>
     <message>
         <source>File extension or type is not allowed.</source>
-        <translation>不允許擴充檔名或者型態。</translation>
+        <translation type="obsolete">不允許擴充檔名或者型態。</translation>
     </message>
     <message>
         <source>Could not parse XML.</source>
-        <translation>無法解析 XML。</translation>
+        <translation type="obsolete">無法解析 XML。</translation>
     </message>
     <message>
         <source>Can not open socket. Please check if extension/ezodf/daemon.php is running.</source>
-        <translation>無法開啟通訊端。請檢查 extension/ezodf/daemon.php 是否正在運行。</translation>
+        <translation type="obsolete">無法開啟通訊端。請檢查 extension/ezodf/daemon.php 是否正在運行。</translation>
     </message>
     <message>
         <source>Can not convert the given document.</source>
-        <translation>無法轉換所給的文件。</translation>
+        <translation type="obsolete">無法轉換所給的文件。</translation>
     </message>
     <message>
         <source>Unable to call daemon. Fork can not create child process.</source>
-        <translation>無法呼叫守護程式。無法藉由衍生建立子程序。</translation>
+        <translation type="obsolete">無法呼叫守護程式。無法藉由衍生建立子程序。</translation>
     </message>
     <message>
         <source>Daemon reported error.</source>
-        <translation>守護程式回報錯誤。</translation>
+        <translation type="obsolete">守護程式回報錯誤。</translation>
     </message>
     <message>
         <source>Unknown node.</source>
-        <translation>不明的節點。</translation>
+        <translation type="obsolete">不明的節點。</translation>
     </message>
     <message>
         <source>Access denied.</source>
-        <translation>存取被拒。</translation>
+        <translation type="obsolete">存取被拒。</translation>
     </message>
     <message>
         <source>Error during import.</source>
-        <translation>匯入時發生錯誤。</translation>
+        <translation type="obsolete">匯入時發生錯誤。</translation>
     </message>
     <message>
         <source>Unknown content class specified in odf.ini:</source>
-        <translation>在 odf.ini 中所指定的不明內容類別：</translation>
+        <translation type="obsolete">在 odf.ini 中所指定的不明內容類別：</translation>
     </message>
     <message>
         <source>Unknown error.</source>
-        <translation>不明錯誤。</translation>
+        <translation type="obsolete">不明錯誤。</translation>
     </message>
     <message>
         <source>Filetype: </source>
-        <translation>檔案類型：</translation>
+        <translation type="obsolete">檔案類型：</translation>
     </message>
     <message>
         <source>Folder for images could not be created, access denied.</source>
-        <translation>無法建立圖像資料夾，存取被拒。</translation>
+        <translation type="obsolete">無法建立圖像資料夾，存取被拒。</translation>
     </message>
     <message>
         <source>Cannot import. File not found. Already imported?</source>
-        <translation>無法匯入。找不到檔案。已經匯入了嗎？</translation>
+        <translation type="obsolete">無法匯入。找不到檔案。已經匯入了嗎？</translation>
     </message>
     <message>
         <source>Cannot import document, supplied placement nodeID is not valid.</source>
-        <translation>無法匯入文件，所提供的位置 nodeID 無效。</translation>
+        <translation type="obsolete">無法匯入文件，所提供的位置 nodeID 無效。</translation>
     </message>
     <message>
         <source>Cannot store uploaded file, cannot import.</source>
-        <translation>無法儲存上傳的檔案，無法匯入。</translation>
-    </message>
-    <message>
-        <source>Unable to fetch node with id </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Document is not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">無法儲存上傳的檔案，無法匯入。</translation>
     </message>
 </context>
 <context>
