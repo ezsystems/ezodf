@@ -1,4 +1,6 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0">
 <context>
     <name>extension/ezodf</name>
     <message>
@@ -115,74 +117,74 @@ As imagens serão colocadas na biblioteca e você poderá reutilizá-las em outr
     <name>extension/ezodf/export/error</name>
     <message>
         <source>Destination file format not supported</source>
-        <translation type="obsolete">O formato do documento de destino não é suportado</translation>
+        <translation type="unfinished">O formato do documento de destino não é suportado</translation>
     </message>
     <message>
         <source>PDF conversion failed</source>
-        <translation type="obsolete">A conversão de PDF falhou</translation>
+        <translation type="unfinished">A conversão de PDF falhou</translation>
     </message>
     <message>
         <source>Word conversion failed</source>
-        <translation type="obsolete">A conversão de Word falhou</translation>
+        <translation type="unfinished">A conversão de Word falhou</translation>
     </message>
     <message>
         <source>Unable to fetch node, or no read access</source>
-        <translation type="obsolete">Incapaz de alcançar nó desejado, ou não há permissão de acesso para leitura</translation>
+        <translation type="unfinished">Incapaz de alcançar nó desejado, ou não há permissão de acesso para leitura</translation>
     </message>
     <message>
         <source>Unable to open file %1 on server side</source>
-        <translation type="obsolete">Não foi possível abrir o documento %1 no lado do servidor</translation>
+        <translation type="unfinished">Não foi possível abrir o documento %1 no lado do servidor</translation>
     </message>
 </context>
 <context>
     <name>extension/ezodf/import/error</name>
     <message>
         <source>File extension or type is not allowed.</source>
-        <translation type="obsolete">A extensão ou tipo de documento não é permitido.</translation>
+        <translation type="unfinished">A extensão ou tipo de documento não é permitido.</translation>
     </message>
     <message>
         <source>Could not parse XML.</source>
-        <translation type="obsolete">Não foi possível processar o XML.</translation>
+        <translation type="unfinished">Não foi possível processar o XML.</translation>
     </message>
     <message>
         <source>Can not open socket. Please check if extension/ezodf/daemon.php is running.</source>
-        <translation type="obsolete">Não foi possível abrir o socket. Confira se o serviço extension/ezodf/daemon.php está rodando.</translation>
+        <translation type="unfinished">Não foi possível abrir o socket. Confira se o serviço extension/ezodf/daemon.php está rodando.</translation>
     </message>
     <message>
         <source>Can not convert the given document.</source>
-        <translation type="obsolete">Não foi possível converter o documento fornecido.</translation>
+        <translation type="unfinished">Não foi possível converter o documento fornecido.</translation>
     </message>
     <message>
         <source>Unable to call daemon. Fork can not create child process.</source>
-        <translation type="obsolete">Não foi possível comunicar-se com o serviço, portanto nenhum processo de conversão pôde ser iniciado.</translation>
+        <translation type="unfinished">Não foi possível comunicar-se com o serviço, portanto nenhum processo de conversão pôde ser iniciado.</translation>
     </message>
     <message>
         <source>Daemon reported error.</source>
-        <translation type="obsolete">O Serviço reportou um erro.</translation>
+        <translation type="unfinished">O Serviço reportou um erro.</translation>
     </message>
     <message>
         <source>Unknown node.</source>
-        <translation type="obsolete">Nó desconhecido.</translation>
+        <translation type="unfinished">Nó desconhecido.</translation>
     </message>
     <message>
         <source>Access denied.</source>
-        <translation type="obsolete">Acesso negado.</translation>
+        <translation type="unfinished">Acesso negado.</translation>
     </message>
     <message>
         <source>Error during import.</source>
-        <translation type="obsolete">Erro durante a importação.</translation>
+        <translation type="unfinished">Erro durante a importação.</translation>
     </message>
     <message>
         <source>Unknown content class specified in odf.ini:</source>
-        <translation type="obsolete">A classe de conteúdo especificada em odf.ini é desconhecida:</translation>
+        <translation type="unfinished">A classe de conteúdo especificada em odf.ini é desconhecida:</translation>
     </message>
     <message>
         <source>Unknown error.</source>
-        <translation type="obsolete">Erro desconhecido.</translation>
+        <translation type="unfinished">Erro desconhecido.</translation>
     </message>
     <message>
         <source>Filetype: </source>
-        <translation type="obsolete">Tipo de documento:</translation>
+        <translation type="unfinished">Tipo de documento:</translation>
     </message>
     <message>
         <source>Unable to fetch node with id  </source>
@@ -190,7 +192,7 @@ As imagens serão colocadas na biblioteca e você poderá reutilizá-las em outr
     </message>
     <message>
         <source>Folder for images could not be created, access denied.</source>
-        <translation type="obsolete">A pasta para imagens não pôde ser criada, acesso negado.</translation>
+        <translation type="unfinished">A pasta para imagens não pôde ser criada, acesso negado.</translation>
     </message>
     <message>
         <source>Document is not suported.</source>
@@ -198,15 +200,23 @@ As imagens serão colocadas na biblioteca e você poderá reutilizá-las em outr
     </message>
     <message>
         <source>Cannot import. File not found. Already imported?</source>
-        <translation type="obsolete">Não foi possível realizar a importação. O arquivo não foi encontrado. Este arquivo já foi importado?</translation>
+        <translation type="unfinished">Não foi possível realizar a importação. O arquivo não foi encontrado. Este arquivo já foi importado?</translation>
     </message>
     <message>
         <source>Cannot import document, supplied placement nodeID is not valid.</source>
-        <translation type="obsolete">Não foi possível importar o documento, o ID do local (nó) fornecido é inválido.</translation>
+        <translation type="unfinished">Não foi possível importar o documento, o ID do local (nó) fornecido é inválido.</translation>
     </message>
     <message>
         <source>Cannot store uploaded file, cannot import.</source>
-        <translation type="obsolete">Não foi possível armazenar o documento enviado, importação cancelada.</translation>
+        <translation type="unfinished">Não foi possível armazenar o documento enviado, importação cancelada.</translation>
+    </message>
+    <message>
+        <source>Unable to fetch node with id </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Document is not supported.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
