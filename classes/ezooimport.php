@@ -1598,12 +1598,13 @@ class eZOOImport
                                     //echo "Initializing Image from $href<br />";
                                     $imageContent->initializeFromFile( $href, false, basename( $href ) );
                                     $dataMap['image']->store();
-                                    $this->RelatedImageArray[] = array( "ID" => $contentObjectID,
-                                                                        "ContentObject" => $contentObject );
+
                                 }
                                 else
                                     $contentObjectID = $contentObject->attribute( 'id' );
 
+                                $this->RelatedImageArray[] = array( "ID" => $contentObjectID,
+                                                                    "ContentObject" => $contentObject );
 
                                 $frameContent .= "<embed object_id='$contentObjectID' align='$imageAlignment' size='$imageSize' />";
 
