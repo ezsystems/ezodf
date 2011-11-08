@@ -105,11 +105,11 @@ Cliquez sur le nom de l&apos;emplacement pour modifier la liste de navigation.</
     </message>
     <message>
         <source>PDF conversion failed</source>
-        <translation>Echec de la conversion PDF</translation>
+        <translation>Échec de la conversion PDF</translation>
     </message>
     <message>
         <source>Word conversion failed</source>
-        <translation>Echec de la conversion Word</translation>
+        <translation>Échec de la conversion Word</translation>
     </message>
     <message>
         <source>Unable to fetch node, or no read access</source>
@@ -140,7 +140,7 @@ Cliquez sur le nom de l&apos;emplacement pour modifier la liste de navigation.</
     </message>
     <message>
         <source>Unable to call daemon. Fork can not create child process.</source>
-        <translation>Impossible d&apos;appeler le démon (deamon). La branche (fork)  ne peut pas créer de processus enfant.</translation>
+        <translation>Impossible d&apos;appeler le démon (daemon). La processus ne peut créer de processus enfant.</translation>
     </message>
     <message>
         <source>Daemon reported error.</source>
