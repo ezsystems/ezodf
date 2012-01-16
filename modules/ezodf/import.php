@@ -26,8 +26,6 @@
 // ## END COPYRIGHT, LICENSE AND WARRANTY NOTICE ##
 //
 
-require_once( "kernel/common/template.php" );
-
 function makeErrorArray( $num, $msg )
 {
     return array( 'number' => $num, 'message' => $msg );
@@ -38,7 +36,7 @@ $module = $Params["Module"];
 $NodeID = $Params['NodeID'];
 $ImportType = $Params['ImportType'];
 
-$tpl = templateInit();
+$tpl = eZTemplate::factory();
 
 $tpl->setVariable( 'error', false );
 $tpl->setVariable( 'import_type', 'import' );

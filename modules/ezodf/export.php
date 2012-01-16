@@ -26,14 +26,12 @@
 // ## END COPYRIGHT, LICENSE AND WARRANTY NOTICE ##
 //
 
-require_once( "kernel/common/template.php" );
-
 $http = eZHTTPTool::instance();
 $module = $Params["Module"];
 $NodeID = $Params['NodeID'];
 $exportTypeParam = $Params['ExportType'];
 
-$tpl = templateInit();
+$tpl = eZTemplate::factory();
 
 $success = true;
 
