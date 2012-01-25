@@ -931,7 +931,7 @@ class eZOOImport
                                                              );
                 $nodeAssignment->store();
 
-                $operationResult = eZOperationHandler::execute( 'content', 'publish', array( 'object_id' => $image['ID'],
+                eZOperationHandler::execute( 'content', 'publish', array( 'object_id' => $image['ID'],
                                                                                              'version' => 1 ) );
 
                 $object->addContentObjectRelation( $image['ID'], 1 );
@@ -940,9 +940,19 @@ class eZOOImport
             $mainNode = $object->attribute( 'main_node' );
             // Create object stop.
             $importResult['Object'] = $object;
-            $importResult['MainNode'] = $mainNode;
-            $importResult['URLAlias'] = $mainNode->attribute( 'url_alias' );
-            $importResult['NodeName'] = $mainNode->attribute( 'name' );
+            $importResult['Published'] = ( $operationResult['status'] == eZModuleOperationInfo::STATUS_CONTINUE );
+            if ( $mainNode instanceof eZContentObjectTreeNode )
+            {
+                $importResult['MainNode'] = $mainNode;
+                $importResult['URLAlias'] = $mainNode->attribute( 'url_alias' );
+                $importResult['NodeName'] = $mainNode->attribute( 'name' );
+            }
+            else
+            {
+                $importResult['MainNode'] = false;
+                $importResult['URLAlias'] = false;
+                $importResult['NodeName'] = false;
+            }
             $importResult['ClassIdentifier'] = $importClassIdentifier;
         }
 

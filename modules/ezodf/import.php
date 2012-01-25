@@ -178,6 +178,7 @@ else
                         $tpl->setVariable( 'class_identifier', $result['ClassIdentifier'] );
                         $tpl->setVariable( 'url_alias', $result['URLAlias'] );
                         $tpl->setVariable( 'node_name', $result['NodeName'] );
+                        $tpl->setVariable( 'published', $result['Published'] );
                         $tpl->setVariable( 'oo_mode', 'imported' );
                     }
                     else
