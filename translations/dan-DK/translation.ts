@@ -70,6 +70,10 @@ the appropriate class during the import, you get a notice about this after the i
 Images are placed in the media library so you can re-use them in other articles.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>The imported document is waiting for an approbation to be published.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>extension/ezodf/browse</name>

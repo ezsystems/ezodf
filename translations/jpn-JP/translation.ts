@@ -71,6 +71,10 @@ Images are placed in the media library so you can re-use them in other articles.
         <translation>OpenOffice.org WriterドキュメントをeZ Publishへインポートします。ドキュメントの配置先を指定して下さい。
 インポート完了後に通知が表示されます。画像はメディアリソースに保存されますので、後に再利用が可能です。</translation>
     </message>
+    <message>
+        <source>The imported document is waiting for an approbation to be published.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>extension/ezodf/browse</name>

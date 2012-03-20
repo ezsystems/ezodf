@@ -73,6 +73,10 @@ definir on vols ubicar el document i l&apos;eZ Publish fa la resta. El document 
 format adecuat durant el procés d&apos;importació. Se te n&apos;informarà un cop el document hagi estat convertit.
 Les imatges es coloquen a la mediateca per tal que puguin ser reutilitzades en altre articles.</translation>
     </message>
+    <message>
+        <source>The imported document is waiting for an approbation to be published.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>extension/ezodf/browse</name>

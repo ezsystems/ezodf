@@ -73,6 +73,10 @@ indiquer l&apos;emplacement du document et eZ Publish s&apos;occupe du reste. Le
 la classe appropriée lors de l&apos;import. Vous recevrez des informations concernant cette conversion une fois l&apos;import terminé.
 Les images sont placées dans la médiathèque : vous pouvez les réutiliser dans d&apos;autres articles. </translation>
     </message>
+    <message>
+        <source>The imported document is waiting for an approbation to be published.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>extension/ezodf/browse</name>

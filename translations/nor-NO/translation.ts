@@ -73,6 +73,10 @@ spurt om hvor du vil plassere dokumentet, og eZ Publish gjør resten. Dokumentet
 riktig klasse, og du får en melding når importen er ferdig. Bilder blir plassert i mediebiblioteket, slik
 at du kan gjenbruke dem i andre artikler.</translation>
     </message>
+    <message>
+        <source>The imported document is waiting for an approbation to be published.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>extension/ezodf/browse</name>

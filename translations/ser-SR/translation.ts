@@ -74,6 +74,10 @@ klasu prilikom uvoza, a Vi ćete dobiti obaveštenje o ovome nakon što se zavr�
 Slike su stavljene u biblioteku medija tako da ih možete ponovo koristiti i u drugim člancima.
 </translation>
     </message>
+    <message>
+        <source>The imported document is waiting for an approbation to be published.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>extension/ezodf/browse</name>

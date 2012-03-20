@@ -73,6 +73,10 @@ zapytany, w którym miejscu chcesz umieścić dokument i następnie eZ Publish w
 zastosowanej klasy podczas importu i otrzymasz powiadomienie o zakończeniu importu.(new line)
 Obrazy są umieszczane w bibliotece mediów, więc możesz używac ich w innych artykułach.</translation>
     </message>
+    <message>
+        <source>The imported document is waiting for an approbation to be published.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>extension/ezodf/browse</name>

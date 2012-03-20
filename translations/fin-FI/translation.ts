@@ -73,6 +73,10 @@ kysytään minne haluat sijoittaa asiakirjan ja eZ Publish tekee loput. Asiakirj
 oikeaan luokkaan tuonnin aikana ja saat ilmoituksen, kun vienti on valmis.
 Kuvat on sijoitettu mediakirjastoon, joten voit käyttää niitä uudelleen muissa artikkeleissa.</translation>
     </message>
+    <message>
+        <source>The imported document is waiting for an approbation to be published.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>extension/ezodf/browse</name>

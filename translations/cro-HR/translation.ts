@@ -73,6 +73,10 @@ da odaberete lokaciju dokumenta i eZ Publish će odraditi ostatak. Dokument će 
 u odgovarajuću klasu prilikom uvoza i bit ćete obavješteni o tome nakon što je uvoz završen.
 Slike će biti smještene u biblioteku medija da ih možete koristiti u člancima.</translation>
     </message>
+    <message>
+        <source>The imported document is waiting for an approbation to be published.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>extension/ezodf/browse</name>

@@ -89,6 +89,10 @@ Você escolhe onde colocar o documento e o eZ Publish fará o resto. O documento
 o tipo de conteúdo apropriado durante a importação, você receberá um aviso sobre isto depois de concluída a importação
 As imagens serão colocadas na biblioteca e você poderá reutilizá-las em outros artigos.</translation>
     </message>
+    <message>
+        <source>The imported document is waiting for an approbation to be published.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>extension/ezodf/browse</name>

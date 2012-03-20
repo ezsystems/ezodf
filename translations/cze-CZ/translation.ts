@@ -70,6 +70,10 @@ the appropriate class during the import, you get a notice about this after the i
 Images are placed in the media library so you can re-use them in other articles.</source>
         <translation>Můžete importovat dokumenty OpenOffice.org Writer přímo do eZ Publish z této stránky. Jste optáni kam umístit dokument a eZ Publish se postará o zbytek. Dokument je  převeden do odpovídající třídy během importu, poté co je import hotový, obdržíte o tom zprávu. Obrázky jsou umístěny v mediální knihovně, tudíž je můžete znovu použít v dalších článcích.</translation>
     </message>
+    <message>
+        <source>The imported document is waiting for an approbation to be published.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>extension/ezodf/browse</name>

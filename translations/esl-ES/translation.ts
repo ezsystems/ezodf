@@ -120,6 +120,10 @@ pedirá donde ubicar el documente y eZ Publish hará el resto. El documento se c
 apropiada durante la importación, obtendrás una noticia sobre esto una vez la importación haya finalizado.
 Las imágenes se colocan en la biblioteca multimedia de manera que puedes reutilizarlas en otros artículos.</translation>
     </message>
+    <message>
+        <source>The imported document is waiting for an approbation to be published.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>extension/ezodf/browse</name>
