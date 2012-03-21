@@ -75,7 +75,7 @@ Les images sont placées dans la médiathèque : vous pouvez les réutiliser dan
     </message>
     <message>
         <source>The imported document is waiting for an approbation to be published.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le document importé est en attente d&apos;approbation pour être publié.</translation>
     </message>
 </context>
 <context>
