@@ -25,7 +25,7 @@
     </message>
     <message>
         <source>Document is now imported</source>
-        <translation>Il documento è stato importato</translation>
+        <translation>Documento in fase di importatazione</translation>
     </message>
     <message>
         <source>The object was imported as: %class_name</source>
@@ -68,14 +68,12 @@
 asked where to place the document and eZ Publish does the rest. The document is converted into
 the appropriate class during the import, you get a notice about this after the import is done.
 Images are placed in the media library so you can re-use them in other articles.</source>
-        <translation>Puoi importare documenti OpenOffice.org Writer direttamente in eZ Publish da questa pagina. Ti verrà chiesto
-dove posizionare i documenti e eZ Publish farà il resto. Il documento viene convertito nella classe
-appropriata durante l&apos;importazione, ne riceverai notifica al completamento dell&apos;importazione.
+        <translation>Puoi importare documenti OpenOffice.org Writer direttamente in eZ Publish da questa pagina. Ti verrà chiesto dove posizionare i documenti e eZ Publish farà il resto. Il documento viene convertito nella classe appropriata durante l&apos;importazione, ne riceverai notifica al completamento dell&apos;importazione.
 Le immagini vengono collocate nella libreria media in modo da poter essere riutilizzate.</translation>
     </message>
     <message>
         <source>The imported document is waiting for an approbation to be published.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il documento importato è in attesa di approvazione per la pubblicazione.</translation>
     </message>
 </context>
 <context>
@@ -97,14 +95,14 @@ Le immagini vengono collocate nella libreria media in modo da poter essere riuti
     </message>
     <message>
         <source>Select</source>
-        <translation>Selezione</translation>
+        <translation>Seleziona</translation>
     </message>
 </context>
 <context>
     <name>extension/ezodf/export/error</name>
     <message>
         <source>Destination file format not supported</source>
-        <translation>Formato del file destinazione non supportato</translation>
+        <translation>Formato del file di destinazione non supportato</translation>
     </message>
     <message>
         <source>PDF conversion failed</source>
@@ -135,15 +133,15 @@ Le immagini vengono collocate nella libreria media in modo da poter essere riuti
     </message>
     <message>
         <source>Can not open socket. Please check if extension/ezodf/daemon.php is running.</source>
-        <translation>Impossibile aprire il socket. Controllare che il demone extension/ezodf/daemon.php stia funzionando.</translation>
+        <translation>Impossibile aprire il socket. Controllare che il demone extension/ezodf/daemon.php sia in esecuzione.</translation>
     </message>
     <message>
         <source>Can not convert the given document.</source>
-        <translation>Impossibile convertire il documento.</translation>
+        <translation>Impossibile convertire il documento fornito.</translation>
     </message>
     <message>
         <source>Unable to call daemon. Fork can not create child process.</source>
-        <translation>Impossibile chiamare il demone. Fork non riesce a caricare il processo figlio.</translation>
+        <translation>Impossibile richiamare il demone. Fork non riesce a caricare il processo figlio.</translation>
     </message>
     <message>
         <source>Daemon reported error.</source>
