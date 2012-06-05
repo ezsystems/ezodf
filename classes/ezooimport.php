@@ -210,10 +210,20 @@ class eZOOImport
         return $this->daemonConvert( $sourceFile, $destFile );
     }
 
-    /*!
-      Imports an OpenOffice.org document from the given file.
-    */
-    function import( $file, $placeNodeID, $originalFileName, $importType = "import", $upload = null )
+    /**
+     * Creates a new content or updates an existing one based on $file
+     *
+     * @param string $file the file to import
+     * @param int $placeNodeID the node id where to place the new document or
+     *        the node of the document to update
+     * @param string $originalFileName
+     * @param string $importType "import" or "replace"
+     * @param eZContentUpload|null $upload (not used in this method)
+     * @param string|false $locale the locale to use while creating/updating
+     *        the content
+     * @return array|false false if something went wrong
+     */
+    function import( $file, $placeNodeID, $originalFileName, $importType = "import", $upload = null, $locale = false )
     {
         $ooINI = eZINI::instance( 'odf.ini' );
         //$tmpDir = $ooINI->variable( 'ODFSettings', 'TmpDir' );
@@ -547,13 +557,18 @@ class eZOOImport
         {
             // Check if we are allowed to edit the node
             $functionCollection = new eZContentFunctionCollection();
-            $access = $functionCollection->checkAccess( 'edit', $place_node, false, false );
+            $access = $functionCollection->checkAccess(
+                'edit', $place_node, false, false, $locale
+            );
         }
         else
         {
             // Check if we are allowed to create a node under the node
             $functionCollection = new eZContentFunctionCollection();
-            $access = $functionCollection->checkAccess( 'create', $place_node, $importClassIdentifier, $place_node->attribute( 'class_identifier' ) );
+            $access = $functionCollection->checkAccess(
+                'create', $place_node, $importClassIdentifier,
+                $place_node->attribute( 'class_identifier' ), $locale
+            );
         }
 
         if ( $access['result'] )
@@ -576,7 +591,7 @@ class eZOOImport
                     return false;
                 }
 
-                $object = $class->instantiate( $creatorID, $sectionID );
+                $object = $class->instantiate( $creatorID, $sectionID, false, $locale );
 
                 $nodeAssignment = eZNodeAssignment::create( array(
                                                                  'contentobject_id' => $object->attribute( 'id' ),
@@ -623,9 +638,9 @@ class eZOOImport
 
                 // already fetched: $node = eZContentObjectTreeNode::fetch( $placeNodeID );
                 $object = $place_node->attribute( 'object' );
-                $version = $object->createNewVersion();
+                $version = $object->createNewVersionIn( $locale );
 
-                $dataMap = $object->fetchDataMap( $version->attribute( 'version' ) );
+                $dataMap = $version->dataMap();
             }
             $contentObjectID = $object->attribute( 'id' );
 
