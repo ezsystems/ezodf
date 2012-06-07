@@ -537,37 +537,6 @@ class eZOOImport
                 $sectionNodeArray[$key] = $sectionNode;
             }
 
-            if ( $sectionNameArray )
-            {
-                $registeredClassArray = $this->ooINI->variable( 'ODFImport', 'RegisteredClassArray' );
-
-                // Check if there is a corresponding eZ Publish class for this document
-                foreach ( $registeredClassArray as $className )
-                {
-                    $attributeArray = $this->ooINI->variable( $className, 'Attribute' );
-
-                    if ( count( $attributeArray ) > 0 )
-                    {
-                        // Convert space to _ in section names
-                        foreach ( $sectionNameArray as $key => $value )
-                        {
-                            $sectionNameArray[$key] = str_replace( " ", "_", $value );
-                        }
-
-                        sort( $attributeArray );
-                        sort( $sectionNameArray );
-
-                        $diff = array_diff( $attributeArray, $sectionNameArray );
-                        if ( count( $diff ) == 0 )
-                        {
-                            $importClassIdentifier = $className;
-                            $this->useCustomClass = true;
-                            break;
-                        }
-                    }
-                }
-            }
-
             if ( $this->useCustomClass )
             {
                 foreach ( $sectionNodeArray as $key => $sectionNode )
