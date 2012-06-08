@@ -256,7 +256,6 @@ class eZOOImport
                     )
                 );
             }
-            sort( $sectionNameArray );
 
             // Check if there is a coresponding eZ Publish class for this document
             foreach ( $registeredClassArray as $className )
@@ -268,8 +267,10 @@ class eZOOImport
                     continue;
 
                 sort( $attributeArray );
+                sort( $sectionNameArray );
 
-                if ( $sectionNameArray === $attributeArray )
+                $diff = array_diff( $attributeArray, $sectionNameArray );
+                if ( empty( $diff ) )
                 {
                     $importClassIdentifier = $className;
                     break;
@@ -971,7 +972,7 @@ class eZOOImport
         }
 
         // Clean up
-        eZDir::recursiveDelete( $this->ImportDir );
+        eZDir::recursiveDelete( $uniqueImportDir );
         return $importResult;
     }
 
