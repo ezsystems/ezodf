@@ -270,25 +270,7 @@ class eZOOImport
             $placeNodeID = $parentMainNode;
             $place_node = eZContentObjectTreeNode::fetch( $placeNodeID );
         }
-        if ( $importType == "replace" )
-        {
-            // Check if we are allowed to edit the node
-            $functionCollection = new eZContentFunctionCollection();
-            $access = $functionCollection->checkAccess( 'edit', $place_node, false, false );
-        }
-        else
-        {
-            // Check if we are allowed to create a node under the node
-            $functionCollection = new eZContentFunctionCollection();
-            $access = $functionCollection->checkAccess( 'create', $place_node, $importClassIdentifier, $place_node->attribute( 'class_identifier' ) );
-        }
 
-        if ( ! ( $access['result'] ) )
-        {
-            $this->setError( self::ERROR_ACCESSDENIED );
-            return false;
-        }
-        //return false;
 
         // Check if document conversion is needed
         //
@@ -561,7 +543,20 @@ class eZOOImport
             }
         }
 
-        // Create object start
+        if ( $importType == "replace" )
+        {
+            // Check if we are allowed to edit the node
+            $functionCollection = new eZContentFunctionCollection();
+            $access = $functionCollection->checkAccess( 'edit', $place_node, false, false );
+        }
+        else
+        {
+            // Check if we are allowed to create a node under the node
+            $functionCollection = new eZContentFunctionCollection();
+            $access = $functionCollection->checkAccess( 'create', $place_node, $importClassIdentifier, $place_node->attribute( 'class_identifier' ) );
+        }
+
+        if ( $access['result'] )
         {
             // Check if we should replace the current object or import a new
             if ( $importType !== "replace" )
@@ -955,6 +950,12 @@ class eZOOImport
             }
             $importResult['ClassIdentifier'] = $importClassIdentifier;
         }
+        else
+        {
+            $this->setError( self::ERROR_ACCESSDENIED );
+            return false;
+        }
+
 
         // Clean up
         eZDir::recursiveDelete( $uniqueImportDir );
