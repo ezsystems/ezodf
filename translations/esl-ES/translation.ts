@@ -2,6 +2,29 @@
 <!DOCTYPE TS>
 <TS version="2.0">
 <context>
+    <name>design/ezodf/import</name>
+    <message>
+        <source>File:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create or update the translation in:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Existing translations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New translations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import in:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>design/ezwebin/parts/website_toolbar</name>
     <message>
         <source>About</source>
@@ -96,7 +119,7 @@
     </message>
     <message>
         <source>Upload file</source>
-        <translation>Subir archivo</translation>
+        <translation type="obsolete">Subir archivo</translation>
     </message>
     <message>
         <source>Import OpenOffice.org document</source>
@@ -122,6 +145,10 @@ Las imágenes se colocan en la biblioteca multimedia de manera que puedes reutil
     </message>
     <message>
         <source>The imported document is waiting for an approbation to be published.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import document</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

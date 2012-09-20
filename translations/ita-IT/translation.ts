@@ -2,10 +2,33 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="it_IT">
 <context>
+    <name>design/ezodf/import</name>
+    <message>
+        <source>File:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create or update the translation in:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Existing translations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New translations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import in:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>extension/ezodf</name>
     <message>
         <source>Upload file</source>
-        <translation>Carica file</translation>
+        <translation type="obsolete">Carica file</translation>
     </message>
     <message>
         <source>Error</source>
@@ -74,6 +97,10 @@ Le immagini vengono collocate nella libreria media in modo da poter essere riuti
     <message>
         <source>The imported document is waiting for an approbation to be published.</source>
         <translation>Il documento importato è in attesa di approvazione per la pubblicazione.</translation>
+    </message>
+    <message>
+        <source>Import document</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

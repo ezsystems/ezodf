@@ -2,6 +2,29 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="fr_FR">
 <context>
+    <name>design/ezodf/import</name>
+    <message>
+        <source>File:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create or update the translation in:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Existing translations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New translations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import in:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>extension/ezodf</name>
     <message>
         <source>OpenOffice.org export</source>
@@ -49,7 +72,7 @@
     </message>
     <message>
         <source>Upload file</source>
-        <translation>Télécharger le fichier</translation>
+        <translation type="obsolete">Télécharger le fichier</translation>
     </message>
     <message>
         <source>Import OpenOffice.org document</source>
@@ -76,6 +99,10 @@ Les images sont placées dans la médiathèque : vous pouvez les réutiliser dan
     <message>
         <source>The imported document is waiting for an approbation to be published.</source>
         <translation>Le document importé est en attente d&apos;approbation pour être publié.</translation>
+    </message>
+    <message>
+        <source>Import document</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
