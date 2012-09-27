@@ -597,7 +597,7 @@ class eZRESTODFHandler extends eZRESTBaseHandler
         // Add odt document to DOMElement
         $ooDocumentElement->setAttribute( 'base64Encoded', '1' );
         $ooDocumentElement->setAttribute( 'filename', $node->attribute( 'name' ) . '.odt' );
-        $ooDocumentElement->appendChild( $domDocument->createCDATASection( base64_encode( eZFile::getContents( $fileName ) ) ) );
+        $ooDocumentElement->appendChild( $domDocument->createCDATASection( base64_encode( file_get_contents( $fileName ) ) ) );
 
         unlink( $fileName );
 
