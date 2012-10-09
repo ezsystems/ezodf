@@ -75,7 +75,7 @@ Slike će biti smještene u biblioteku medija da ih možete koristiti u člancim
     </message>
     <message>
         <source>The imported document is waiting for an approbation to be published.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uvezeni dokument čeka na odobrenje za objavu.</translation>
     </message>
 </context>
 <context>
