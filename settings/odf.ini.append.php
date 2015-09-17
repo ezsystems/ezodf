@@ -27,6 +27,7 @@ OOConverterAddress=127.0.0.1
 [ODFExport]
 UseTemplate=true
 TemplateName=ezpublish.ott
+TemplateRepository=extension/ezodf/templates
 
 # There are two mapping options available.
 # One is using sections in OO and the other is using headers to separate the input data into each attribute. 
