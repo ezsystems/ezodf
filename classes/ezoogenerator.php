@@ -94,7 +94,12 @@ class eZOOGenerator
         $templateName = $ooINI->variable( 'ODFExport', 'TemplateName' );
         if ( $useTemplate )
         {
-            $templateFile = "extension/ezodf/templates/" . $templateName;
+            $templateRepository = "extension/ezodf/templates";   
+            if ( $ooINI->hasVariable( 'ODFExport', 'TemplateRepository' ) )
+            {
+                $templateRepository = trim( $ooINI->variable( 'ODFExport', 'TemplateRepository' ), '/' );   
+            }
+            $templateFile = $templateRepository . "/" . $templateName;
 
             $archiveOptions = new ezcArchiveOptions( array( 'readOnly' => true ) );
             $archive = ezcArchive::open( $templateFile, null, $archiveOptions );
